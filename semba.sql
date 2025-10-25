@@ -1049,7 +1049,6 @@ VALUES
 ;
 
 -- Area 300402
-
 INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
 VALUES
 (300402, 309001, 300402901, 30900101, '{"type": 3, "id": 1, "sequenceId": 30900101, "label": "Hoimi"}')
@@ -1119,4 +1118,11 @@ VALUES
 ,(300401, 300401613)
 ,(300401, 300401614)
 ,(300401, 300401615)
+;
+-- Area 101381
+INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+VALUES
+(101381, 700055, 101381101, 7010111, '{"type": 3, "id": 1, "sequenceId": 7000801, "label": "Houseplant"}')
+,(101381, 700056, 101381102, 7010121, '{"type": 3, "id": 1, "sequenceId": 7000811, "label": "Window"}')
+,(101381, 700057, 101381103, 7010131, '{"type": 3, "id": 1, "sequenceId": 7000821, "label": "Bed"}')
 ;
