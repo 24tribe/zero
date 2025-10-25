@@ -97,32 +97,31 @@ proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
 
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
+  var jsonRes: JsonNode
 
   if uri == "echo":
     let dataUpper = jsonReq["data"].getStr().toUpperAscii()
-    let resJson = %*{"data": dataUpper}
-    result = dupString($resJson)
+    jsonRes = %*{"data": dataUpper}
   elif uri == "/auth/steam_user":
-    let res = %*{"userId": "696969696969"}
-    result = dupString($res)
+    jsonRes = %*{"userId": "696969696969"}
   elif uri == "/auth/nonce":
-    let res = %*{"nonce": "6969696969696969"}
-    result = dupString($res)
+    jsonRes = %*{"nonce": "6969696969696969"}
   elif uri == "/auth/sign_in":
-    let res = %*{"sessionToken": "69696969-6969-6969-6969-696969696969", "language": 2}
-    result = dupString($res)
+    jsonRes = %*{"sessionToken": "69696969-6969-6969-6969-696969696969", "language": 2}
   elif uri == "/adventure/area_object":
-    result = dupString($adventure_AreaObject(jsonReq))
+    jsonRes = adventure_AreaObject(jsonReq)
   elif uri == "/tip/release":
-    result = dupString($tip_Release(jsonReq))
+    jsonRes = tip_Release(jsonReq)
   elif uri == "/adventure/move_to_area":
-    result = dupString($adventure_MoveToArea(jsonReq))
+    jsonRes = adventure_MoveToArea(jsonReq)
   else:
-    result = nil
+    jsonRes = nil
+
+  result = if jsonRes != nil: dupString($jsonRes) else: nil
 
   echo "[SembaCall] uri: ", uri
-  echo "[SembaCall] request": request
-  echo "[SembaCall] result": result
+  echo "[SembaCall] request: ", request
+  echo "[SembaCall] response: ", result
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
