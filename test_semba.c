@@ -39,4 +39,8 @@ int main(void) {
     printf("calling /user/cross_date ...\n");
     res = SembaCall("/user/cross_date", "");
     printf("%s\n\n", res);
+
+    printf("calling /user/log_in ...\n");
+    res = SembaCall("/user/log_in", "");
+    printf("%s\n\n", res);
 }

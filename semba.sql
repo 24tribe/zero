@@ -58,9 +58,46 @@ CREATE TABLE gates (
 );
 
 DROP TABLE IF EXISTS characters;
--- CREATE TABLE characters (
--- 
---);
+CREATE TABLE characters (
+    characterId INTEGER,
+    exp INTEGER,
+    hp INTEGER,
+    attack INTEGER,
+    defense INTEGER,
+    maxHp INTEGER,
+    receivedAt STRING,
+    characterOwnershipType INTEGER,
+    criticalRate INTEGER,
+    criticalDamageRate INTEGER,
+    movementSpeed INTEGER,
+    damageInflictedRate INTEGER,
+    tensionIncreaseRate INTEGER,
+    cpRecastRate INTEGER,
+    spGaugeIncreaseRate INTEGER,
+    attackSpeed INTEGER,
+    characterCostumeId INTEGER,
+    abnormalityParamSet STRING,
+    trainingScoreLevelScore INTEGER,
+    trainingScoreRankScore INTEGER,
+    actionPointMax INTEGER,
+    actionPointRate INTEGER,
+    actionPointConsumption INTEGER,
+    damageTakenRate INTEGER
+);
+
+INSERT INTO characters
+(characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
+criticalRate, criticalDamageRate, movementSpeed, damageInflictedRate, tensionIncreaseRate,
+cpRecastRate, spGaugeIncreaseRate, attackSpeed, characterCostumeId, abnormalityParamSet,
+trainingScoreLevelScore, trainingScoreRankScore, actionPointMax,
+actionPointRate, actionPointConsumption, damageTakenRate)
+VALUES
+(100101, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)
+;
 
 INSERT INTO gates (fromAreaId, fromPosX, fromPosY, fromPosZ, toAreaId, toPosX, toPosY, toPosZ, toDirection)
 VALUES
