@@ -1,3 +1,5 @@
 *.dll
 *.exe
 *.a
+*.o
+__pycache__

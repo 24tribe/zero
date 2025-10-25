@@ -16,28 +16,12 @@ typedef void *(*MEMORYMAPPEDFILEMAP)(struct FileHandle *);
 
 typedef void *(*LOADMETADATAFILE)(const char *fileName);
 
-typedef HMODULE (WINAPI *LOADLIBRARYA)(LPCSTR);
-typedef HMODULE (WINAPI *LOADLIBRARYEXA)(LPCSTR, HANDLE, DWORD);
 typedef HMODULE (WINAPI *LOADLIBRARYW)(LPCWSTR);
-typedef HMODULE (WINAPI *LOADLIBRARYEXW)(LPCWSTR, HANDLE, DWORD);
 
-LOADLIBRARYA fpLoadLibraryA = NULL;
-LOADLIBRARYEXA fpLoadLibraryExA = NULL;
 LOADLIBRARYW fpLoadLibraryW = NULL;
-LOADLIBRARYEXW fpLoadLibraryExW = NULL;
 MEMORYMAPPEDFILEMAP fpMemoryMappedFileMap = NULL;
 LOADMETADATAFILE fpLoadMetadataFile = NULL;
 
-HMODULE WINAPI DetourLoadLibraryA(LPCSTR s) {
-    printf("LoadLibraryA: %s\n", s);
-    return fpLoadLibraryA(s);
-}
-
-HMODULE WINAPI DetourLoadLibraryExA(LPCSTR s, HANDLE reserved, DWORD flags) {
-    printf("LoadLibraryExA: %s\n", s);
- 
-    return fpLoadLibraryExA(s, reserved, flags);
-}
 
 ptrdiff_t MemoryMappedFileMapOffset = 0x670b90;
 ptrdiff_t LoadMetadataFileOffset = 0x6b0870;
@@ -162,53 +146,11 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
     return res;
 }
 
-HMODULE WINAPI DetourLoadLibraryExW(LPCWSTR s, HANDLE reserved, DWORD flags) {
-    char news[MY_LINE_SIZE];
-    WideToUtf8(news, s);
-    printf("LoadLibraryExW: %s\n", news);
-    return fpLoadLibraryExW(s, reserved, flags);
-}
-
-
-
 void HookLoadLibrary() {
-    if (MH_CreateHook(&LoadLibraryA, &DetourLoadLibraryA, 
-        (LPVOID*)(&fpLoadLibraryA)) != MH_OK)
-    {
-        fputs("Failed to create LoadLibraryA hook", stdout);
-        return;
-    }
-
-    if (MH_CreateHook(&LoadLibraryExA, &DetourLoadLibraryExA, 
-        (LPVOID*)(&fpLoadLibraryExA)) != MH_OK)
-    {
-        fputs("Failed to create LoadLibraryExA hook", stdout);
-        return;
-    }
-
     if (MH_CreateHook(&LoadLibraryW, &DetourLoadLibraryW, 
         (LPVOID*)(&fpLoadLibraryW)) != MH_OK)
     {
         fputs("Failed to create LoadLibraryW hook", stdout);
-        return;
-    }
-
-    if (MH_CreateHook(&LoadLibraryExW, &DetourLoadLibraryExW, 
-        (LPVOID*)(&fpLoadLibraryExW)) != MH_OK)
-    {
-        fputs("Failed to create LoadLibraryExW hook", stdout);
-        return;
-    }
-
-    if (MH_EnableHook(&LoadLibraryA, TRUE) != MH_OK)
-    {
-        fputs("Failed to enable LoadLibraryA hook", stdout);
-        return;
-    }
-
-    if (MH_EnableHook(&LoadLibraryExA, TRUE) != MH_OK)
-    {
-        fputs("Failed to enable LoadLibraryExA hook", stdout);
         return;
     }
 
@@ -217,13 +159,4 @@ void HookLoadLibrary() {
         fputs("Failed to enable LoadLibraryW hook", stdout);
         return;
     }
-
-    if (MH_EnableHook(&LoadLibraryExW, TRUE) != MH_OK)
-    {
-        fputs("Failed to enable LoadLibraryExW hook", stdout);
-        return;
-    }
 }
-
-
-
