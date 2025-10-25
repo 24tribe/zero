@@ -26,20 +26,35 @@ def main():
     api_funcs_with_req_and_res = map(lambda x: f"Neon.Model.Api.ApiService$${x}", api_funcs_with_req_and_res)
 
     api_funcs_with_req_and_res = set(api_funcs_with_req_and_res)
-     
-    autohook_h = createAutohookH(api_funcs_with_req_and_res, script)
+
+    impl_code, decl_code = createAutohookH(api_funcs_with_req_and_res, script)
+
+    code = [
+        "#ifdef AUTOHOOK_TN_IMPL"
+    ] 
+
+    for c in impl_code:
+        code.append(c)
+
+    code.append("#endif")
+
+    code.append("#ifndef AUTOHOOK_TN_H_2025_30_02_00")
+    code.append("#define AUTOHOOK_TN_H_2025_30_02_00")
+
+    for c in decl_code:
+        code.append(c)
+
+    code.append("#endif")
 
     with open(args.out_h, "w", encoding="utf-8") as f:
-        f.write(autohook_h)
+        f.write("\n".join(code))
 
 def createAutohookH(req_hooks, script):
     hookNames = []
 
     list_data = []
 
-    code = [
-        "#ifdef AUTOHOOK_TN_IMPL"
-    ]
+    impl_code = []
 
     for script_method in script["ScriptMethod"]:
         if script_method["Name"] in req_hooks:
@@ -73,16 +88,16 @@ def createAutohookH(req_hooks, script):
 
             list_data.append(f"""{{"Neon.Model.Api.Rpc.{res}", (Il2CppObject **)&{lastReq}, "{path}"}}, """)
 
-            code.append(f"{funcPtrType} {fpVar} = NULL;")
-            code.append(f"Neon_Model_Api_Rpc_{req}_o *{lastReq} = NULL;")
-            code.append(f"""
+            impl_code.append(f"{funcPtrType} {fpVar} = NULL;")
+            impl_code.append(f"Neon_Model_Api_Rpc_{req}_o *{lastReq} = NULL;")
+            impl_code.append(f"""
 {newSignature}
     {lastReq} = data;
     return {fpVar}({", ".join(args)});
 }}
 """)
 
-            code.append(f"""
+            impl_code.append(f"""
 void {hookName}(void) {{
     if (MH_CreateHook(
         (void *)(uintptr_t){var},
@@ -104,21 +119,17 @@ void {hookName}(void) {{
         print(f"Couldn't find {req_hooks}")
         sys.exit(1)
 
-    code.append("void AutoHookTN(void) {")
+    impl_code.append("void AutoHookTN(void) {")
     for hookName in hookNames:
-        code.append(f"    {hookName}();")
+        impl_code.append(f"    {hookName}();")
 
-    code.append("}")
+    impl_code.append("}")
 
-    code.append("#endif")
+    decl_code = []
+    decl_code.append("#define AUTOHOOK_TN_LIST_DATA \\")
+    decl_code.append(" \\\n".join(list_data))
 
-    code.append("#ifndef AUTOHOOK_TN_H_2025_30_02_00")
-    code.append("#define AUTOHOOK_TN_H_2025_30_02_00")
-    code.append("#define AUTOHOOK_TN_LIST_DATA \\")
-    code.append(" \\\n".join(list_data))
-    code.append("#endif")
-
-    return "\n".join(code) 
+    return impl_code, decl_code
 
 if __name__ == "__main__":
     main()
