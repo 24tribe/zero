@@ -50,6 +50,39 @@ typedef Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o (*NEON_MODEL_API_A
 NEON_MODEL_API_APISERVICE__TIP_RELEASE Neon_Model_Api_ApiService__Tip_Release = NULL;
 NEON_MODEL_API_APISERVICE__TIP_RELEASE fpNeon_Model_Api_ApiService__Tip_Release = NULL;
 
+Neon_Model_Api_Rpc_TipReleaseRequest_o *lastTipReleaseRequest = NULL;
+
+Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o DetourTipRelease(
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_TipReleaseRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    System_String_o *s = ConvertObjectToString((Il2CppObject *)data);
+    PutString(s);
+    lastTipReleaseRequest = data;
+    return fpNeon_Model_Api_ApiService__Tip_Release(
+        __this, data, requestHandler, cancellationToken, method
+    );
+}
+
+void HookTipRelease(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Tip_Release,
+        (LPVOID)(uintptr_t)&DetourTipRelease,
+        (LPVOID *)(&fpNeon_Model_Api_ApiService__Tip_Release)
+    ) != MH_OK) {
+        fputs("Failed to create Neon_Model_Api_ApiService__Tip_Release hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Tip_Release, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Neon_Model_Api_ApiService__Tip_Release hook\n", stdout);
+        return;
+    }
+}
+
 Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* lastAdventureAreaObjectResponse = NULL;
 
 Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o DetourAdventureAreaObject(
@@ -137,15 +170,6 @@ System_Uri_o *ChangeUrl(char *url) {
 }
 #undef NEW_URL_SIZE
 #undef BASE_URL_SIZE
-
-void PutString(System_String_o *s) {
-    int32_t sLen = s->fields._stringLength;
-    uint16_t *firstChar = &(s->fields._firstChar);
-    for (int32_t i = 0; i < sLen; ++i) {
-        putchar((uint8_t)(firstChar[i]));
-    }
-    putchar('\n');
-}
 
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
     sds url = sds16to8(&(uri->fields.m_String->fields._firstChar), uri->fields.m_String->fields._stringLength);

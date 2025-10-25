@@ -116,3 +116,12 @@ char *ChangeLoggedInAtStr(sds data, const char *newValue) {
 
     return res;
 }
+
+void PutString(System_String_o *s) {
+    int32_t sLen = s->fields._stringLength;
+    uint16_t *firstChar = &(s->fields._firstChar);
+    for (int32_t i = 0; i < sLen; ++i) {
+        putchar((uint8_t)(firstChar[i]));
+    }
+    putchar('\n');
+}
