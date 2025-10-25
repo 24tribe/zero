@@ -17,6 +17,7 @@ References:
 #include "Config.h"
 #include "TimeString.h"
 #include "NimInit.h"
+#include "re.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -31,6 +32,7 @@ References:
 struct ResponseTypeToRequestPtr {
     char *responseType;
     Il2CppObject **requestPtr;
+    char *uriPath;
 };
 
 struct ResponseTypeToRequestPtr_List {
@@ -50,19 +52,19 @@ Neon_Model_Api_Rpc_FormationUpdateRequest_o *lastFormationUpdateRequest = NULL;
 Neon_Model_Api_Rpc_TipReleaseRequest_o *lastTipReleaseRequest = NULL;
 
 struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
-    {"Neon.Model.Api.Rpc.AuthSteamUserResponse", NULL},
-    {"Neon.Model.Api.Rpc.AuthNonceResponse", NULL},
-    {"Neon.Model.Api.Rpc.AuthSignInResponse", NULL},
-    {"Neon.Model.Api.Rpc.UserLogInResponse", NULL},
-    {"Neon.Model.Api.Rpc.UserCrossDateResponse", NULL},
-    {"Neon.Model.Api.Rpc.AdventureAreaObjectResponse", (Il2CppObject **)&lastAdventureAreaObjectRequest},
-    {"Neon.Model.Api.Rpc.AdventureMoveToAreaResponse", (Il2CppObject **)&lastAdventureMoveToAreaRequest},
-    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastUpdateCharacterStatusRequest},
-    {"Neon.Model.Api.Rpc.BattleFinishResponse", (Il2CppObject **)&lastBattleFinishRequest},
-    {"Neon.Model.Api.Rpc.BattleStartResponse", (Il2CppObject **)&lastBattleStartRequest},
-    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastCharacterCostumeUpdateRequest},
-    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastFormationUpdateRequest},
-    {"Neon.Model.Api.Rpc.TipReleaseResponse", (Il2CppObject **)&lastTipReleaseRequest},
+    {"Neon.Model.Api.Rpc.AuthSteamUserResponse", NULL, "/auth/steam_user"},
+    {"Neon.Model.Api.Rpc.AuthNonceResponse", NULL, "/auth/nonce"},
+    {"Neon.Model.Api.Rpc.AuthSignInResponse", NULL, "/auth/sign_in"},
+    {"Neon.Model.Api.Rpc.UserLogInResponse", NULL, "/user/log_in"},
+    {"Neon.Model.Api.Rpc.UserCrossDateResponse", NULL, "/user/cross_date"},
+    {"Neon.Model.Api.Rpc.AdventureAreaObjectResponse", (Il2CppObject **)&lastAdventureAreaObjectRequest, "/adventure/area_object"},
+    {"Neon.Model.Api.Rpc.AdventureMoveToAreaResponse", (Il2CppObject **)&lastAdventureMoveToAreaRequest, "/adventure/move_to_area"},
+    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastUpdateCharacterStatusRequest, "/adventure/update_character_status"},
+    {"Neon.Model.Api.Rpc.BattleFinishResponse", (Il2CppObject **)&lastBattleFinishRequest, "/battle/finish"},
+    {"Neon.Model.Api.Rpc.BattleStartResponse", (Il2CppObject **)&lastBattleStartRequest, "/battle/start"},
+    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastCharacterCostumeUpdateRequest, "/character/costume_update"},
+    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastFormationUpdateRequest, "/formation/update"},
+    {"Neon.Model.Api.Rpc.TipReleaseResponse", (Il2CppObject **)&lastTipReleaseRequest, "/tip/release"},
 };
 
 struct ResponseTypeToRequestPtr_List RES_TYPE_TO_REQ_PTR_LIST = {
@@ -422,11 +424,23 @@ sds GetFqn(Il2CppObject *obj) {
     return res;
 }
 
-struct ResponseTypeToRequestPtr *findResTypeToReqPtr(char *responseType) {
+struct ResponseTypeToRequestPtr *findResTypeToReqPtrWithReq(char *responseType) {
     struct ResponseTypeToRequestPtr *end = RES_TYPE_TO_REQ_PTR_LIST.data + RES_TYPE_TO_REQ_PTR_LIST.len;
     struct ResponseTypeToRequestPtr *it;
     for (it = RES_TYPE_TO_REQ_PTR_LIST.data; it != end; ++it) {
         if (!strcmp(responseType, it->responseType) && it->requestPtr && *it->requestPtr) {
+            return it;
+        }
+    }
+
+    return NULL;
+}
+
+struct ResponseTypeToRequestPtr *findResTypeToReqPtrWithoutReq(char *responseType) {
+    struct ResponseTypeToRequestPtr *end = RES_TYPE_TO_REQ_PTR_LIST.data + RES_TYPE_TO_REQ_PTR_LIST.len;
+    struct ResponseTypeToRequestPtr *it;
+    for (it = RES_TYPE_TO_REQ_PTR_LIST.data; it != end; ++it) {
+        if (!strcmp(responseType, it->responseType) && !it->requestPtr) {
             return it;
         }
     }
@@ -448,7 +462,7 @@ Il2CppObject *DetourSourceCore_GetResult(
     if (neonApiPath && fqn && strstr(fqn, "Neon.Model.Api.Rpc")) {
         printf("[DetourSourceCore_GetResult] %s\n", fqn);
         sds jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
-        struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtr(fqn);
+        struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtrWithReq(fqn);
         sds jsonReq;
         if (resTypeToReqPtr) {
             jsonReq = System_String_toSds(ConvertObjectToString(*resTypeToReqPtr->requestPtr));
@@ -524,82 +538,61 @@ Il2CppObject *CallParseJson(
         return another;
     }
 }
- 
+
+re_t GetNeonModelApiPattern(void) {
+    return re_compile("Neon.Model.Api.Rpc.\\w+");
+}
+
+sds MatchNeonModelApi(re_t patt, char *s) {
+    int match_length;
+    int match_idx = re_matchp(patt, s, &match_length);
+    if (match_idx != -1) {
+        return sdsnewlen(s + match_idx, match_length);
+    }
+
+    return NULL;
+}
+
 Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
     RunNimMainOnce();
 
-    Il2CppObject *res = NULL;
     System_String_o *s = ConvertObjectToString((Il2CppObject *)messageParser);
     sds sUtf8 = System_String_toSds(s);
 
-    printf("[GetMockResponse] %s\n", sUtf8);
-
-    if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSteamUserResponse")) {    
-        res = CallParseJson(
-            messageParser,
-            SembaCall("/auth/steam_user", "")
-        );
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthNonceResponse")) {
-        res = CallParseJson(
-            messageParser,
-            SembaCall("/auth/nonce", "")
-        );
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSignInResponse")) {
-        res = CallParseJson(
-            messageParser,
-            SembaCall("/auth/sign_in", "")
-        );
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserLogInResponse")) {
-        res = CallParseJson(messageParser, SembaCall("/user/log_in", ""));
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserCrossDateResponse")) {
-        res = CallParseJson(messageParser, SembaCall("/user/cross_date", ""));
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureAreaObjectResponse")) {
-        sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectRequest));
-        res = CallParseJson(messageParser, SembaCall("/adventure/area_object", reqJson));
-        sdsfree(reqJson);
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureMoveToAreaResponse")) {
-        sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureMoveToAreaRequest));
-        const char *resJson = SembaCall("/adventure/move_to_area", reqJson);
-        printf("[GetMockResponse] resJson=%s\n", resJson);
-        res = CallParseJson(messageParser, resJson);
-        sdsfree(reqJson);
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.TipReleaseResponse")) {
-        System_String_o *s = ConvertObjectToString((Il2CppObject *)lastTipReleaseRequest);
-        sds reqJson = System_String_toSds(s);
-        res = CallParseJson(messageParser, SembaCall("/tip/release", reqJson));
-        sdsfree(reqJson);
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.BattleStartResponse")) {
-        System_String_o *s = ConvertObjectToString((Il2CppObject *)lastBattleStartRequest);
-        sds reqJson = System_String_toSds(s);
-        const char *resJson = SembaCall("/battle/start", reqJson);
-        res = CallParseJson(messageParser, resJson);
-        sdsfree(reqJson);
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.BattleFinishResponse")) {
-        System_String_o *s = ConvertObjectToString((Il2CppObject *)lastBattleFinishRequest);
-        sds reqJson = System_String_toSds(s);
-        const char *resJson = SembaCall("/battle/finish", reqJson);
-        res = CallParseJson(messageParser, resJson);
-        sdsfree(reqJson);
-    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.ChangedResourcesResponse")) {
-        if (lastUpdateCharacterStatusRequest != NULL) {
-            sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastUpdateCharacterStatusRequest));
-            res = CallParseJson(messageParser, SembaCall("/adventure/update_character_status", reqJson));
-            sdsfree(reqJson);
-            lastUpdateCharacterStatusRequest = NULL;
-        } else if (lastFormationUpdateRequest != NULL) {
-            sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastFormationUpdateRequest));
-            res = CallParseJson(messageParser, SembaCall("/formation/update", reqJson));
-            sdsfree(reqJson);
-            lastFormationUpdateRequest = NULL;
-        } else if (lastCharacterCostumeUpdateRequest != NULL) {
-            sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastCharacterCostumeUpdateRequest));
-            res = CallParseJson(messageParser, SembaCall("/character/costume_update", reqJson));
-            sdsfree(reqJson);
-            lastCharacterCostumeUpdateRequest = NULL;
-        }
+    re_t pat = GetNeonModelApiPattern();
+    sds resType = MatchNeonModelApi(pat, sUtf8);
+    if (!resType) {
+        printf("MatchNeonModelApi failed for '%s'!\n", sUtf8);
+        return NULL;
     }
 
     sdsfree(sUtf8);
+
+    printf("[GetMockResponse] '%s'\n", resType);
+    
+    sds reqJson = sdsempty();
+
+    struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtrWithoutReq(resType);
+
+    if (!resTypeToReqPtr) {
+        resTypeToReqPtr = findResTypeToReqPtrWithReq(resType);
+        if (resTypeToReqPtr) {
+            sdsfree(reqJson);
+            reqJson = System_String_toSds(ConvertObjectToString(*resTypeToReqPtr->requestPtr));
+            *resTypeToReqPtr->requestPtr = NULL;
+        }
+    }
+
+    Il2CppObject *res = NULL;
+
+    if (resTypeToReqPtr) {
+        char *resJson = SembaCall(resTypeToReqPtr->uriPath, reqJson);
+        res = CallParseJson(messageParser, resJson);
+        free(resJson);
+    }
+
+    sdsfree(reqJson);
+
     return res;
 }
 
@@ -611,8 +604,6 @@ Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
     Google_Protobuf_MessageParser_TResponse__o* PNICKJFPBHH,
     const MethodInfo_F6CAF0* method
 ) {
-    printf("DetourNeonApiGetResponse called!!\n");
-
     if (ZERO_CONFIG.offlineMode) {
         Il2CppClass *uniTaskClass = il2cpp_type_get_class_or_element_class(method->return_type);
         Il2CppObject *xResponse = GetMockResponse(PNICKJFPBHH);

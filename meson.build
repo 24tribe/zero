@@ -70,7 +70,8 @@ zero_src = [
     'FuncPtrs.c',
     'md5sum.c',
     'NimInit.c',
-    func_ptrs
+    func_ptrs,
+    're.c'
 ]
 
 semba_dep = declare_dependency(
@@ -108,3 +109,5 @@ executable('test_jansson', 'test_jansson.c', zero_src, dependencies : zero_deps)
 executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
 
 executable('semba', 'semba.c', dependencies : [semba_dep])
+
+executable('test_re', 'test_re.c', 're.c')
