@@ -12,22 +12,15 @@
 #define STACKTRACES_PATH "stacktraces"
 #define RESPONSES_PATH "responses"
 
+#include "funcPtrs.h"
+
 typedef System_String_o *(*System_Diagnostics_StackTrace_toString)(System_Diagnostics_StackTrace_o *, const MethodInfo *);
-typedef void (*STACKTRACECONSTRUCTOR)(System_Diagnostics_StackTrace_o* __this, const MethodInfo* method);
 typedef System_String_o *(*object_toString)(Il2CppObject *, const MethodInfo *);
-
-STACKTRACECONSTRUCTOR System_Diagnostics_StackTrace_ctor = NULL;
-Il2CppClass **System_Diagnostics_StackTrace_TypeInfo = NULL;
-
-void InitLogger(void *GameAssembly) {
-    System_Diagnostics_StackTrace_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129545976ull);
-    System_Diagnostics_StackTrace_ctor = (STACKTRACECONSTRUCTOR)((unsigned long long)GameAssembly + 55774032ull);
-}
 
 System_String_o *GetStackTrace(void) {
     System_Diagnostics_StackTrace_o *stackTrace;
     stackTrace = (System_Diagnostics_StackTrace_o *)il2cpp_object_new(*System_Diagnostics_StackTrace_TypeInfo);
-    System_Diagnostics_StackTrace_ctor(stackTrace, NULL);
+    System_Diagnostics_StackTrace___ctor(stackTrace, NULL);
 
     VirtualInvokeData *toString = &(stackTrace->klass->vtable._3_ToString);
     System_Diagnostics_StackTrace_toString toStringFunc;

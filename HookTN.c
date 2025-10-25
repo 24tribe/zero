@@ -602,6 +602,4 @@ void HookTN(void *GameAssembly) {
     HookUpdateCharacterStatus();
     HookFormationUpdate();
     HookCharacter_CostumeUpdate();
-
-    InitLogger(GameAssembly);
 }
