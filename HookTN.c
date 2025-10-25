@@ -60,12 +60,6 @@ struct ResponseTypeToRequestPtr_List RES_TYPE_TO_REQ_PTR_LIST = {
     .data = RES_TYPE_TO_REQ_PTR_LIST_DATA
 };
 
-Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult_FuncPtr fpSourceCore_GetResult = NULL;
-
-CDGPJELFAMK__NOCKJHKDMGF_object__FuncPtr fpNeonApiGetResponse = NULL;
-
-KBJLHEAOHMD__KPFFCLMEMEG_FuncPtr fpKbjlheaohmd__Kpffclmemeg = NULL;
-
 Neon_Model_Api_ApiService__Auth_SteamUser_FuncPtr fpNeon_Model_Api_ApiService__Auth_SteamUser = NULL;
 
 Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o DetourAuth_SteamUser(
@@ -100,6 +94,8 @@ void HookAuth_SteamUser(void) {
         return;
     }
 }
+
+KBJLHEAOHMD__KPFFCLMEMEG_FuncPtr fpKbjlheaohmd__Kpffclmemeg = NULL;
 
 bool DetourKbjlheaohmd__Kpffclmemeg(System_DateTime_o HKIOCIMKCCP, System_DateTime_o CJKBFINFMNP, const MethodInfo* method) {
     if (HKIOCIMKCCP.fields._dateData == 0) {
@@ -202,6 +198,8 @@ struct ResponseTypeToRequestPtr *findResTypeToReqPtrWithoutReq(char *responseTyp
 
     return NULL;
 }
+
+Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult_FuncPtr fpSourceCore_GetResult = NULL;
 
 Il2CppObject *DetourSourceCore_GetResult(
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o __this,
@@ -352,6 +350,8 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
 
     return res;
 }
+
+CDGPJELFAMK__NOCKJHKDMGF_object__FuncPtr fpNeonApiGetResponse = NULL;
 
 Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
     CDGPJELFAMK_o* __this,
