@@ -11,6 +11,7 @@ Neon.Model.Api.ApiService$$Auth_SteamUser
 Neon.Model.Api.ApiService$$Xb_Formation
 KBJLHEAOHMD$$KPFFCLMEMEG
 CDGPJELFAMK$$NOCKJHKDMGF<object>
+Best.HTTP.HTTPRequest$$.ctor
 Cysharp.Threading.Tasks.UniTaskCompletionSourceCore<object>$$GetResult
 System.Uri$$.ctor
 System.Diagnostics.StackTrace$$.ctor

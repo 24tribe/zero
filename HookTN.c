@@ -154,13 +154,16 @@ void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, i
     fpHTTPRequestCtor(__this, uri, methodType, method);
 }
 
-void HookHTTPRequestCtor(void *GameAssembly) {
-    void *addr = (char *)GameAssembly + 10655472;
-    if (MH_CreateHook(addr, (LPVOID)(uintptr_t)&DetourHTTPRequestCtor, (LPVOID *)(&fpHTTPRequestCtor)) != MH_OK) {
+void HookHTTPRequestCtor(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Best_HTTP_HTTPRequest___ctor,
+        (LPVOID)(uintptr_t)&DetourHTTPRequestCtor, (LPVOID *)(&fpHTTPRequestCtor)
+    ) != MH_OK) {
         fputs("Failed to create HTTPRequestCtor hook\n", stdout);
         return;
     }
-    if (MH_EnableHook(addr, /* changePermissions = */ FALSE) != MH_OK) {
+
+    if (MH_EnableHook((void *)(uintptr_t)Best_HTTP_HTTPRequest___ctor, /* changePermissions = */ FALSE) != MH_OK) {
         fputs("Failed to enable HTTPRequestCtor hook\n", stdout);
         return;
     }
@@ -394,7 +397,7 @@ void HookNeonApiGetResponse(void) {
 void HookTN(void *GameAssembly) {
     InitGamePtrs(GameAssembly);
 
-    HookHTTPRequestCtor(GameAssembly);
+    HookHTTPRequestCtor();
     HookSourceCore_GetResult(GameAssembly);
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
