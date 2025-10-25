@@ -44,16 +44,6 @@ APISERVICEAUTHSTEAMUSER fpApiServiceAuthSteamUser = NULL;
 typedef void (*HTTPRequestCtor)(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method);
 HTTPRequestCtor fpHTTPRequestCtor = NULL;
 
-typedef void (*ONFGHC)(
-    ONFKFJKNECJ_o* __this,
-    System_Byte_array* NNINDKGNJFD,
-    System_Byte_array* PHHLEEIDLBN,
-    int32_t AIJNMMLONOD,
-    const MethodInfo* method
-);
-
-ONFGHC fpOnfGhc = NULL;
-
 System_Uri_o *ChangeUrl(char *url) {
     printf("url: %s\n", url);
 
@@ -130,32 +120,6 @@ void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, i
     System_Uri_o *newUri = ChangeUrl(url);
 
     fpHTTPRequestCtor(__this, newUri ? newUri : uri, methodType, method);
-    printf("Afetr ChangeProxy\n");
-}
-
-void DetourOnfGhc(
-    ONFKFJKNECJ_o* __this,
-    System_Byte_array* NNINDKGNJFD,
-    System_Byte_array* PHHLEEIDLBN,
-    int32_t AIJNMMLONOD,
-    const MethodInfo* method
-) {
-    printf("OnfGhc called!\n");
-    fpOnfGhc(__this, NNINDKGNJFD, PHHLEEIDLBN, AIJNMMLONOD, method);
-}
-
-void HookOnfGhc(void *GameAssembly) {
-    void *addr = (char *)GameAssembly + 8877440;
-
-    if (MH_CreateHook(addr, (LPVOID)(uintptr_t)&DetourOnfGhc, (LPVOID *)&fpOnfGhc) != MH_OK) {
-        printf("Failed to create OnfGhc hook\n");
-        return;
-    }
-
-    if (MH_EnableHook(addr, /* changePermissions = */ FALSE) != MH_OK) {
-        printf("Failed to enable OnfGhc hook\n");
-        return;
-    }
 }
 
 void HookHTTPRequestCtor(void *GameAssembly) {
@@ -271,7 +235,6 @@ void HookIl2Cpp(void *GameAssembly) {
     System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
 
-    HookHTTPRequestCtor(GameAssembly);
-    HookOnfGhc(GameAssembly);
+    // HookHTTPRequestCtor(GameAssembly);
     HookApiServiceAuthSteamUser(GameAssembly);
 }
