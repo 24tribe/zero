@@ -1,1 +1,2 @@
 Neon.Model.Api.ApiService$$Character_CostumeUpdate
+Neon.Model.Api.ApiService$$Formation_Update

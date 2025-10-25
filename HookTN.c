@@ -25,6 +25,8 @@ References:
 #include <string.h>
 #include <inttypes.h>
 
+#include "funcPtrs.c.h"
+
 Il2CppClass **System_Uri_TypeInfo = NULL;
 
 typedef Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o (*NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
@@ -66,9 +68,7 @@ typedef Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o (*NEON_MODEL
 NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = NULL;
 NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS fpNeon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = NULL;
 
-typedef Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o (*NEON_MODEL_API_APISERVICE__FORMATION_UPDATE)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_FormationUpdateRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
-NEON_MODEL_API_APISERVICE__FORMATION_UPDATE Neon_Model_Api_ApiService__Formation_Update = NULL;
-NEON_MODEL_API_APISERVICE__FORMATION_UPDATE fpNeon_Model_Api_ApiService__Formation_Update = NULL;
+Neon_Model_Api_ApiService__Formation_Update_FuncPtr fpNeon_Model_Api_ApiService__Formation_Update = NULL;
 
 Neon_Model_Api_Rpc_FormationUpdateRequest_o *lastFormationUpdateRequest = NULL;
 
@@ -576,8 +576,6 @@ void HookNeonApiGetResponse(void) {
     }
 }
 
-#include "funcPtrs.c.h"
-
 Neon_Model_Api_ApiService__Character_CostumeUpdate_FuncPtr fpCharacter_CostumeUpdate = NULL;
 
 Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourCharacter_CostumeUpdate(
@@ -634,7 +632,7 @@ void HookTN(void *GameAssembly) {
 
     Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = (NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS)((unsigned long long)GameAssembly + 79409872ull);
 
-    Neon_Model_Api_ApiService__Formation_Update = (NEON_MODEL_API_APISERVICE__FORMATION_UPDATE)((unsigned long long)GameAssembly + 79425184ull);
+    InitGameFuncPtrs(GameAssembly);
 
     HookHTTPRequestCtor(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
@@ -647,9 +645,6 @@ void HookTN(void *GameAssembly) {
     HookBattleFinish();
     HookUpdateCharacterStatus();
     HookFormationUpdate();
-
-    InitGameFuncPtrs(GameAssembly);
-    
     HookCharacter_CostumeUpdate();
 
     InitLogger(GameAssembly);
