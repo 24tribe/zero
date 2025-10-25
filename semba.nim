@@ -2,12 +2,17 @@ import std/json
 import std/strutils
 import system/ansi_c
 
+import db_connector/db_sqlite
+
 proc DupString(s: cstring): cstring =
   result = cast[cstring](c_malloc((s.len + 1).csize_t))
   copyMem(result, s, s.len + 1)
 
 proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
+
+  let db = open("mytest.db", "", "", "")
+  db.close()
 
   if uri == "echo":
     let dataUpper = jsonReq["data"].getStr().toUpperAscii()

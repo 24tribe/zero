@@ -19,12 +19,6 @@ jansson_dep = jansson_proj.get_variable('libjansson_dep')
 inih_proj = subproject('inih')
 inih_dep = inih_proj.get_variable('libinih_dep')
 
-sqlite3_proj = subproject('sqlite3')
-sqlite3_dep = sqlite3_proj.get_variable('libsqlite3_dep')
-
-semba_proj = subproject('semba')
-semba_dep = semba_proj.get_variable('semba_dep')
-
 zero_src = [
     'mylib.c',
     'load_library_hook.c',
@@ -44,6 +38,22 @@ zero_src = [
     'TimeString.c'
 ]
 
+fs = import('fs')
+semba_nimble = fs.copyfile('semba.nimble')
+sqlite3_c = fs.copyfile('sqlite3.c')
+
+libsemba = custom_target(
+    'libsemba',
+    depends : [semba_nimble, sqlite3_c],
+    input : ['semba.nim'],
+    output : 'libsemba.a',
+    command : ['nimble', 'c', '-d:staticSqlite', '--verbose', '--app:staticlib', '--noMain:on', '-o:@OUTPUT@', '@INPUT@']
+)
+
+semba_dep = declare_dependency(
+    link_with : libsemba
+)
+
 zero_deps = [
     libminhook_dep,
     ntdll_lib,
@@ -51,7 +61,6 @@ zero_deps = [
     sds_dep,
     jansson_dep,
     inih_dep,
-    sqlite3_dep,
     semba_dep
 ]
 
@@ -72,7 +81,5 @@ executable('RegenSections', 'RegenSections.c', 'Section.c')
 executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, dependencies : zero_deps)
 
 executable('test_jansson', 'test_jansson.c', zero_src, dependencies : zero_deps)
-
-executable('test_sqlite3', 'test_sqlite3.c', zero_src, dependencies : zero_deps)
 
 executable('test_semba', 'test_semba.c', dependencies : semba_dep)
