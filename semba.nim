@@ -454,6 +454,25 @@ proc getCharacters(): seq[JsonNode] =
       "damageTakenRate": damageTakenRate
     })
 
+proc getNineSequences(): seq[JsonNode] =
+  let nineSequencesRows = db.getAllRows(sql"""
+    SELECT nineSequenceId, expiresAt, lastReceiveAt, lastReadAt
+    FROM nineSequences
+  """)
+
+  for nineSequenceRow in nineSequencesRows:
+    let nineSequenceId = parseInt(nineSequenceRow[0])
+    let expiresAt = nineSequenceRow[1]
+    let lastReceiveAt = nineSequenceRow[2]
+    let lastReadAt = nineSequenceRow[3]
+
+    result.add(%*{
+      "nineSequenceId": nineSequenceId,
+      "expiresAt": expiresAt,
+      "lastReceiveAt": lastReceiveAt,
+      "lastReadAt": lastReadAt
+    })
+
 proc user_LogIn(): JsonNode =
   return %*{
     "resources": {
@@ -465,7 +484,9 @@ proc user_LogIn(): JsonNode =
       "characterMountingPowerCommon": {},
       "notifications": getNotifications(),
       "challenges": [{"challengeId": 100, "state": 8}],
-      "challengeProgresses": getChallengeProgresses()
+      "challengeProgresses": getChallengeProgresses(),
+      "areas": [{"areaId": 300401}, {"areaId": 300402}],
+      "nineSequences": getNineSequences()
     }
   }
 

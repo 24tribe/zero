@@ -103,6 +103,20 @@ CREATE TABLE challengeProgresses (
     state INTEGER
 );
 
+DROP TABLE IF EXISTS nineSequences;
+CREATE TABLE nineSequences (
+    nineSequenceId INTEGER,
+    expiresAt STRING,
+    lastReceiveAt STRING,
+    lastReadAt STRING
+);
+
+INSERT INTO nineSequences (nineSequenceId, expiresAt, lastReceiveAt, lastReadAt)
+VALUES
+(10000000, "2025-09-10T02:22:53Z", "2025-09-10T02:22:53Z", "2025-09-10T02:22:53Z")
+,(10001002, '2025-09-10T02:22:53Z', '2025-09-10T02:22:53Z', '2025-09-10T02:22:53Z')
+;
+
 INSERT INTO challengeProgresses (challengeProgressId, clearedAt, state)
 VALUES
 (1000011, '2025-09-10T02:22:53Z', 3)
