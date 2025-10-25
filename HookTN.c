@@ -170,7 +170,7 @@ System_Uri_o *ChangeUrl(char *url) {
 #undef BASE_URL_SIZE
 
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
-    sds url = sds16to8(&(uri->fields.m_String->fields._firstChar), uri->fields.m_String->fields._stringLength);
+    sds url = System_String_toSds(uri->fields.m_String);
     SaveStackTrace(url);
     sdsfree(url);
     fpHTTPRequestCtor(__this, uri, methodType, method);
@@ -265,7 +265,7 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
 
     Il2CppObject *res = NULL;
     System_String_o *s = ConvertObjectToString((Il2CppObject *)messageParser);
-    sds sUtf8 = sds16to8(&(s->fields._firstChar), s->fields._stringLength);
+    sds sUtf8 = System_String_toSds(s);
 
     printf("[GetMockResponse] %s\n", sUtf8);
 
@@ -300,10 +300,10 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
         sdsfree(userCrossDateResponseText);
         free(newResponse);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureAreaObjectResponse")) {
-        System_String_o *obj = ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectResponse);
-        sds resTxt = sds16to8(&(obj->fields._firstChar), obj->fields._stringLength);
-        res = CallParseJson(messageParser, SembaCall("/adventure/area_object", resTxt));
-        sdsfree(resTxt);
+        System_String_o *req = ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectResponse);
+        sds reqJson = System_String_toSds(req);
+        res = CallParseJson(messageParser, SembaCall("/adventure/area_object", reqJson));
+        sdsfree(reqJson);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureMoveToAreaResponse")) {
         // Should return current login date
         sds adventureMoveToAreaResponse = SlurpFile("responses\\2025_9_14_12_58_12_AdventureMoveToAreaResponse.txt");
