@@ -848,7 +848,6 @@ VALUES
 ,(2013, '2025-09-10T02:22:53Z')
 ,(2034, '2025-09-10T02:22:53Z')
 ,(3006, '2025-09-10T02:22:53Z')
-,(3012, '2025-09-16T21:43:57Z')
 ;
 
 INSERT INTO nineSequences (nineSequenceId, expiresAt, lastReceiveAt, lastReadAt)
