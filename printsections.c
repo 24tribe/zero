@@ -9,6 +9,40 @@
 
 NTAPI PIMAGE_NT_HEADERS RtlImageNtHeader(PVOID ModuleAddress);
 
+void PrintSection(PIMAGE_SECTION_HEADER section) {
+    unsigned char *sectionName = section->Name;
+    printf("SectionName: %c%c%c%c%c%c%c%c\n",
+            sectionName[0], sectionName[1], sectionName[2], sectionName[3],
+            sectionName[4], sectionName[5], sectionName[6], sectionName[7]);
+    printf(" Misc.PhysicalAddress: 0x%lx\n", section->Misc.PhysicalAddress);
+    printf(" Misc.VirtualSize: 0x%lx\n", section->Misc.VirtualSize);
+    printf(" VirtualAddress: 0x%lx\n", section->VirtualAddress);
+    printf(" SizeOfRawData: 0x%lx\n", section->SizeOfRawData);
+    printf(" PointerToRawData: 0x%lx\n", section->PointerToRawData);
+    printf(" PointerToRelocations: 0x%lx\n", section->PointerToRelocations);
+    printf(" PointerToLinenumbers: 0x%lx\n", section->PointerToLinenumbers);
+    printf(" NumberOfRelocations: %d\n", section->NumberOfRelocations);
+    printf(" NumberOfLinenumbers: %d\n", section->NumberOfLinenumbers);
+    printf(" Characteristics: 0x%lx\n", section->Characteristics);
+}
+
+
+// printf("Name,RawAddr,RawSize,VirtualAddr,VirtualSize\n");
+
+void PrintSection2(PIMAGE_SECTION_HEADER section) {
+    unsigned char *sectionName = section->Name;
+    if (!memchr(sectionName, 0, 8)) {
+        fputs("sectionName is not a c-string\n", stderr);
+        exit(1);
+    }
+
+    printf(
+        "%s,%lx,%lx,%lx,%lx\n",
+        sectionName, (unsigned long)(section->PointerToRawData),
+        section->SizeOfRawData, section->VirtualAddress, section->Misc.VirtualSize
+    );
+}
+
 void PrintSections(void *data) {
     PIMAGE_NT_HEADERS headers = RtlImageNtHeader(data);
 
@@ -25,20 +59,7 @@ void PrintSections(void *data) {
     PIMAGE_SECTION_HEADER sections = IMAGE_FIRST_SECTION(headers);
     for (int i = 0; i < numberOfSections; ++i) {
         PIMAGE_SECTION_HEADER section = sections + i;
-        unsigned char *sectionName = section->Name;
-        printf("SectionName: %c%c%c%c%c%c%c%c\n",
-               sectionName[0], sectionName[1], sectionName[2], sectionName[3],
-               sectionName[4], sectionName[5], sectionName[6], sectionName[7]);
-        printf(" Misc.PhysicalAddress: 0x%lx\n", section->Misc.PhysicalAddress);
-        printf(" Misc.VirtualSize: 0x%lx\n", section->Misc.VirtualSize);
-        printf(" VirtualAddress: 0x%lx\n", section->VirtualAddress);
-        printf(" SizeOfRawData: 0x%lx\n", section->SizeOfRawData);
-        printf(" PointerToRawData: 0x%lx\n", section->PointerToRawData);
-        printf(" PointerToRelocations: 0x%lx\n", section->PointerToRelocations);
-        printf(" PointerToLinenumbers: 0x%lx\n", section->PointerToLinenumbers);
-        printf(" NumberOfRelocations: %d\n", section->NumberOfRelocations);
-        printf(" NumberOfLinenumbers: %d\n", section->NumberOfLinenumbers);
-        printf(" Characteristics: 0x%lx\n", section->Characteristics);
+        PrintSection2(section);
     }
 
     printf("ImageBase: 0x%llx\n", headers->OptionalHeader.ImageBase);

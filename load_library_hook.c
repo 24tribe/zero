@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "RemapMem.h"
 #include "MetadataDump.h"
+#include "Recons.h"
 
 #include <MinHook.h>
 
@@ -26,22 +27,32 @@ bool SaveAddress(const char *outname, void *GameAssembly) {
 }
 
 // editbin /REBASE:BASE=0x180000000 GA.dll
-void DumpGameAssembly(HMODULE GameAssembly) {
+void GameAssemblyCallback(HMODULE GameAssembly) {
+    if (alreadyDumped) {
+        return;
+    }
+
+    alreadyDumped = true;
+
     unsigned long long GameAssemblySize = CalcDLLSize(GameAssembly);
 
     printf("GameAssembly: addr: %p, size: 0x%llx\n", (void *)GameAssembly, GameAssemblySize);
 
-    if (SaveMetadata("GA.dump", (void *)GameAssembly, GameAssemblySize)) {
-        fputs("Saved GA.dump\n", stdout);
-    } else {
-        fputs("Failed to save ga.dump\n", stdout);
+    BYTE *buf = malloc(GameAssemblySize);
+
+    if (!buf) {
+        printf("Malloc failed\n");
+        return;
     }
 
-    if (SaveAddress("GA.txt", GameAssembly)) {
-        printf("Saved address to GA.txt\n");
+    memcpy(buf, GameAssembly, GameAssemblySize);
+
+    if (DumpGameAssembly("GA.dll", buf, (unsigned long)GameAssemblySize, (unsigned long long)GameAssembly) < 0) {
+        printf("DumpGameAssembly failed\n");
+        return;
     }
 
-    
+    printf("Created GA.dll\n");
 
     InitRemapMem();
 
@@ -64,11 +75,8 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
     HMODULE res = fpLoadLibraryW(s);
 
     if (isGameAssembly) {
-        if (!alreadyDumped) {
-            alreadyDumped = true;
-            DumpGameAssembly(res);
-            // fpLoadLibraryW(L"D:\\tribenine\\version.dll");
-        }
+        GameAssemblyCallback(res);
+        // fpLoadLibraryW(L"D:\\tribenine\\version.dll");
     }
     
     return res;
