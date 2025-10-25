@@ -34,6 +34,7 @@ SOURCE_CORE_GETRESULT Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object
 SOURCE_CORE_GETRESULT fpSourceCore_GetResult = NULL;
 
 typedef System_String_o *(*System_Diagnostics_StackTrace_toString)(System_Diagnostics_StackTrace_o *, const MethodInfo *);
+typedef System_String_o *(*object_toString)(Il2CppObject *, const MethodInfo *);
 
 typedef Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o (*APISERVICEAUTHSTEAMUSER)(
     Neon_Model_Api_ApiService_o* __this,
@@ -84,6 +85,17 @@ void PutString(System_String_o *s) {
         putchar((uint8_t)(firstChar[i]));
     }
     putchar('\n');
+}
+
+FILE *logFile = NULL;
+
+void WriteToLog(System_String_o *s) {
+    int32_t sLen = s->fields._stringLength;
+    uint16_t *firstChar = &(s->fields._firstChar);
+    if (logFile) {
+        fwrite(firstChar, 2, sLen, logFile);
+        fflush(logFile);
+    }
 }
 
 void PrintStackTrace() {
@@ -140,6 +152,11 @@ Il2CppObject *DetourSourceCore_GetResult(
             printf("AuthSteamUserResponse(userId_=%" PRIu64 ")\n", authSteamUserRes->fields.userId_);
         } else {
             printf("Name='%s', Namespace='%s'\n", name, namespaze);
+            object_toString toString = (object_toString)(uintptr_t)(res->klass->vtable[3 /* _3_toString*/].methodPtr);
+            System_String_o *resStr = toString(res, res->klass->vtable[3 /* _3_toString*/].method);
+            WriteToLog(resStr);
+            fputs("\n", logFile);
+            fputc(0x00, logFile);
         }
     }
 
@@ -208,4 +225,9 @@ void HookTN(void *GameAssembly) {
     HookHTTPRequestCtor(GameAssembly);
     HookApiServiceAuthSteamUser(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
+
+    logFile = fopen("Zero.log", "wb");
+    if (!logFile) {
+        printf("Failed to create log file\n");
+    }
 }
