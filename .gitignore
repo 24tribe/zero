@@ -14,3 +14,4 @@ dumper_out
 stacktraces/*.txt
 responses/*.txt
 config.ini
+*.db

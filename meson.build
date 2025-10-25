@@ -19,6 +19,9 @@ jansson_dep = jansson_proj.get_variable('libjansson_dep')
 inih_proj = subproject('inih')
 inih_dep = inih_proj.get_variable('libinih_dep')
 
+sqlite3_proj = subproject('sqlite3')
+sqlite3_dep = sqlite3_proj.get_variable('libsqlite3_dep')
+
 zero_src = [
     'mylib.c',
     'load_library_hook.c',
@@ -38,7 +41,7 @@ zero_src = [
     'TimeString.c'
 ]
 
-zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep, jansson_dep, inih_dep]
+zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep, jansson_dep, inih_dep, sqlite3_dep]
 
 shared_library('zero', zero_src, dependencies : zero_deps)
 
@@ -57,3 +60,5 @@ executable('RegenSections', 'RegenSections.c', 'Section.c')
 executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, dependencies : zero_deps)
 
 executable('test_jansson', 'test_jansson.c', zero_src, dependencies : zero_deps)
+
+executable('test_sqlite3', 'test_sqlite3.c', zero_src, dependencies : zero_deps)
