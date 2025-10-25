@@ -7,4 +7,5 @@ Neon.Model.Api.ApiService$$Adventure_UpdateCharacterStatus
 Neon.Model.Api.ApiService$$Battle_Finish
 Neon.Model.Api.ApiService$$Adventure_ReadSequence
 Neon.Model.Api.ApiService$$Formation_Update
+Neon.Model.Api.ApiService$$Adventure_AcquireAreaItem
 Neon.Model.Api.ApiService$$Battle_Start

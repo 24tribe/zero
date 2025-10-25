@@ -45,8 +45,6 @@ struct ResponseTypeToRequestPtr_List {
 
 #define STATIC_ARRAY_LEN(a) (sizeof a/sizeof *a)
 
-Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o* lastAdventureAcquireAreaItemRequest = NULL;
-
 struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
     AUTOHOOK_TN_LIST_DATA
     {"Neon.Model.Api.Rpc.AuthSteamUserResponse", NULL, "/auth/steam_user"},
@@ -55,7 +53,6 @@ struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
     {"Neon.Model.Api.Rpc.UserLogInResponse", NULL, "/user/log_in"},
     {"Neon.Model.Api.Rpc.UserCrossDateResponse", NULL, "/user/cross_date"},
     {"Neon.Model.Api.Rpc.GachaListResponse", NULL, "/gacha/list"},
-    {"Neon.Model.Api.Rpc.AdventureAcquireAreaItemResponse", (Il2CppObject **)&lastAdventureAcquireAreaItemRequest, "/adventure/acquire_area_item"}
 };
 
 struct ResponseTypeToRequestPtr_List RES_TYPE_TO_REQ_PTR_LIST = {
@@ -100,37 +97,6 @@ void HookAuth_SteamUser(void) {
 
     if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Auth_SteamUser, /* changePermissions = */ FALSE) != MH_OK) {
         fputs("Failed to enable Neon_Model_Api_ApiService__Auth_SteamUser hook\n", stdout);
-        return;
-    }
-}
-
-Neon_Model_Api_ApiService__Adventure_AcquireAreaItem_FuncPtr fpNeon_Model_Api_ApiService__Adventure_AcquireAreaItem = NULL;
-
-Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__o DetourAdventure_AcquireAreaItem(
-    Neon_Model_Api_ApiService_o* __this,
-    Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o* data,
-    LPCOHPIGHIN_o* requestHandler,
-    System_Threading_CancellationToken_o cancellationToken,
-    const MethodInfo* method
-) {
-    lastAdventureAcquireAreaItemRequest = data;
-    return fpNeon_Model_Api_ApiService__Adventure_AcquireAreaItem(
-        __this, data, requestHandler, cancellationToken, method
-    );
-}
-
-void HookAdventure_AcquireAreaItem(void) {
-    if (MH_CreateHook(
-        (void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_AcquireAreaItem,
-        (LPVOID)(uintptr_t)&DetourAdventure_AcquireAreaItem,
-        (LPVOID *)(&fpNeon_Model_Api_ApiService__Adventure_AcquireAreaItem)
-    ) != MH_OK) {
-        fputs("Failed to create Neon_Model_Api_ApiService__Adventure_AcquireAreaItem hook\n", stdout);
-        return;
-    }
-
-    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_AcquireAreaItem, /* changePermissions = */ FALSE) != MH_OK) {
-        fputs("Failed to enable Neon_Model_Api_ApiService__Adventure_AcquireAreaItem hook\n", stdout);
         return;
     }
 }
@@ -432,7 +398,6 @@ void HookTN(void *GameAssembly) {
     HookSourceCore_GetResult(GameAssembly);
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
-    HookAdventure_AcquireAreaItem();
     HookAuth_SteamUser();
 
     AutoHookTN();
