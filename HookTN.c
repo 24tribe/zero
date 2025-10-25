@@ -52,9 +52,7 @@ typedef Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o (*NEON_MODEL_API_A
 NEON_MODEL_API_APISERVICE__TIP_RELEASE Neon_Model_Api_ApiService__Tip_Release = NULL;
 NEON_MODEL_API_APISERVICE__TIP_RELEASE fpNeon_Model_Api_ApiService__Tip_Release = NULL;
 
-typedef Cysharp_Threading_Tasks_UniTask_AdventureMoveToAreaResponse__o (*NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_AdventureMoveToAreaRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
-NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA Neon_Model_Api_ApiService__Adventure_MoveToArea = NULL;
-NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA fpNeon_Model_Api_ApiService__Adventure_MoveToArea = NULL;
+Neon_Model_Api_ApiService__Adventure_MoveToArea_FuncPtr fpNeon_Model_Api_ApiService__Adventure_MoveToArea = NULL;
 
 Neon_Model_Api_ApiService__Battle_Start_FuncPtr fpNeon_Model_Api_ApiService__Battle_Start = NULL;
 
@@ -617,8 +615,6 @@ void HookTN(void *GameAssembly) {
     Neon_Model_Api_ApiService__Adventure_AreaObject = (NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT)((unsigned long long)GameAssembly + 79407520ull);
 
     Neon_Model_Api_ApiService__Tip_Release = (NEON_MODEL_API_APISERVICE__TIP_RELEASE)((unsigned long long)GameAssembly + 79451120ull);
-
-    Neon_Model_Api_ApiService__Adventure_MoveToArea = (NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA)((unsigned long long)GameAssembly + 79408528ull);
 
     InitGameFuncPtrs(GameAssembly);
 
