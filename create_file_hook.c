@@ -31,13 +31,13 @@ HANDLE WINAPI DetourCreateFileW(
 }
 
 void HookCreateFile() {
-    if (MH_CreateHook(&CreateFileW, &DetourCreateFileW,
+    if (MH_CreateHook((void *)(uintptr_t)&CreateFileW, (void *)(uintptr_t)&DetourCreateFileW,
         (LPVOID *)(&fpCreateFileW)) != MH_OK) {
         fputs("Failed to create CreateFileW hook\n", stdout);
         return;
     }
 
-    if (MH_EnableHook(&CreateFileW, TRUE) != MH_OK) {
+    if (MH_EnableHook((void *)(uintptr_t)&CreateFileW, TRUE) != MH_OK) {
         fputs("failed to enable CreateFileW hook", stdout);
         return;
     }

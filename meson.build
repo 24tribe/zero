@@ -10,6 +10,9 @@ libpeconv_dep = libpeconv_proj.get_variable('libpeconv_dep')
 minhook_proj = subproject('minhook')
 libminhook_dep = minhook_proj.get_variable('libminhook_dep')
 
+sds_proj = subproject('sds')
+sds_dep = sds_proj.get_variable('libsds_dep')
+
 zero_src = [
     'mylib.c',
     'load_library_hook.c',
@@ -25,7 +28,7 @@ zero_src = [
     'HookExample.cpp'
 ]
 
-shared_library('zero', zero_src, dependencies : [libminhook_dep, ntdll_lib, libpeconv_dep])
+shared_library('zero', zero_src, dependencies : [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep])
 relocation_test = shared_library('relocation_test', 'RelocationTest.c')
 
 executable('loader', 'loader.c')

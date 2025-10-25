@@ -214,20 +214,22 @@ NTAPI NTSTATUS DetourNtQueryDirectoryFile(
 }
 
 void HookNtQueryDirectoryFile() {
-    NTQUERYDIRECTORYFILE NtQueryDirectoryFile = (void *)GetProcAddress(
+    NTQUERYDIRECTORYFILE NtQueryDirectoryFile = (NTQUERYDIRECTORYFILE)(uintptr_t)GetProcAddress(
         GetModuleHandle("NTDLL.dll"), "NtQueryDirectoryFile"
     );
 
-    printf("NtQueryDirectoryFile: %p\n", (void*)NtQueryDirectoryFile);
+    printf("NtQueryDirectoryFile: 0x%llx\n", (unsigned long long)NtQueryDirectoryFile);
 
     if (MH_CreateHook(
-        NtQueryDirectoryFile, &DetourNtQueryDirectoryFile, (PVOID *)&fpNtQueryDirectoryFile
+        (void *)(uintptr_t)NtQueryDirectoryFile,
+        (void *)(uintptr_t)&DetourNtQueryDirectoryFile,
+        (PVOID *)&fpNtQueryDirectoryFile
     ) != MH_OK) {
         printf("CreateHook NtQueryDirectoryFile failed\n");
         return;
     }
 
-    if (MH_EnableHook(NtQueryDirectoryFile, TRUE) != MH_OK) {
+    if (MH_EnableHook((void *)(uintptr_t)NtQueryDirectoryFile, TRUE) != MH_OK) {
         printf("MH_EnableHook NtQueryDirectoryFile failed\n");
         return;
     }

@@ -30,10 +30,10 @@ bool _RemapViewOfSection(HANDLE ProcessHandle, PVOID BaseAddress, SIZE_T RegionS
 	int error = 0;
     SIZE_T numberOfBytesRead = 0;
     HANDLE hSection = NULL;
-    LARGE_INTEGER sectionMaxSize = {};
+    LARGE_INTEGER sectionMaxSize = {0};
     sectionMaxSize.QuadPart = RegionSize;
     PVOID viewBase = BaseAddress;
-    LARGE_INTEGER sectionOffset = {};
+    LARGE_INTEGER sectionOffset = {0};
     SIZE_T viewSize = 0;
     if (!ReadProcessMemory(ProcessHandle, BaseAddress, CopyBuffer, RegionSize, &numberOfBytesRead))
 	{
@@ -88,11 +88,12 @@ bool RemapViewOfSection(HANDLE ProcessHandle, PVOID BaseAddress, SIZE_T RegionSi
 }
 
 void InitRemapMem(void) {
-    ZwCreateSection = (void *)GetProcAddress(GetModuleHandleA("ntdll.dll"), "ZwCreateSection");
-	ZwUnmapViewOfSection = (void *)GetProcAddress(GetModuleHandleA("ntdll.dll"), "ZwUnmapViewOfSection");
-	ZwMapViewOfSection = (void *)GetProcAddress(GetModuleHandleA("ntdll.dll"), "ZwMapViewOfSection");
-	Log("INIT", "Test Nt function offsets: %p %p %p\n",
-        ZwCreateSection, ZwUnmapViewOfSection, ZwMapViewOfSection);
+    ZwCreateSection = (TZwCreateSection)(uintptr_t)GetProcAddress(GetModuleHandleA("ntdll.dll"), "ZwCreateSection");
+	ZwUnmapViewOfSection = (TZwUnmapViewOfSection)(uintptr_t)GetProcAddress(GetModuleHandleA("ntdll.dll"), "ZwUnmapViewOfSection");
+	ZwMapViewOfSection = (TZwMapViewOfSection)(uintptr_t)GetProcAddress(GetModuleHandleA("ntdll.dll"), "ZwMapViewOfSection");
+	printf("ZwCreateSection: 0x%llx\n", (unsigned long long)ZwCreateSection);
+    printf("ZwUnmapViewOfSection: 0x%llx\n", (unsigned long long)ZwUnmapViewOfSection);
+    printf("ZwMapViewOfSection: 0x%llx\n", (unsigned long long)ZwMapViewOfSection);
 }
 
 unsigned long long calcNext(unsigned long long size) {

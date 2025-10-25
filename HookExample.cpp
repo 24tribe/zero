@@ -38,7 +38,7 @@ void MyAction(void *idk, System_String_o *text, const MethodInfo *method) {
 }
 
 void ChangeText(NewBehaviourScript_o *__this) {
-    System_String_o *s = il2cpp_string_new((char *)"UWAAAAAA");
+    System_String_o *s = il2cpp_string_new((char *)"Mariana Maga\x01ña des\nenmarañará mañana la maraña que enmarañara Mariana Magaña.");
     VirtualInvokeData *vid = &(__this->fields.tmp_pro->klass->vtable._66_set_text);
     ((SET_TEXT)(vid->methodPtr))(__this->fields.tmp_pro, s, vid->method);
 }
@@ -49,8 +49,10 @@ void DetourNewBehaviourScript__Sudo(
     il2cpp_thread_attach(il2cpp_domain_get());
     printf("DetourNewBehaviourScript__Sudo called!!\n");
 
+    /*
     press_enter_to_continue();
     ChangeText(__this);
+    */
 
     /*
     System_Action_string__o *myCb = (System_Action_string__o*)il2cpp_object_new(*System_Action_string_TypeInfo);
@@ -66,8 +68,10 @@ void DetourNewBehaviourScript__Sudo(
 void DetourNewBehaviourScript__Start(NewBehaviourScript_o* __this, const MethodInfo* method) {
     il2cpp_thread_attach(il2cpp_domain_get());
     printf("DetourNewBehaviourScript__Start called!!\n");
+    
+    fpNewBehaviourScript__Start(__this, method);
 
-    return fpNewBehaviourScript__Start(__this, method);
+    ChangeText(__this);
 }
 
 extern "C" void HookExample(void *GameAssembly) {
