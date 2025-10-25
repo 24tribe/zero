@@ -352,17 +352,19 @@ proc battle_Finish(jsonReq: JsonNode): JsonNode =
    
   return %*{
     "characterExps": characterExps,
-    "rewards": {
-      "type": 6,
-      "contents": [
-        {
-          "type": 7,
-          "id": 50021,
-          "quantity": 1,
-          "isNew": true
-        }
-      ]
-    },
+    "rewards": [
+      {
+        "type": 6,
+        "contents": [
+          {
+            "type": 7,
+            "id": 50021,
+            "quantity": 1,
+            "isNew": true
+          }
+        ]
+      }
+    ],
     "changedResources": {
       "status": getUserStatus(),
       "characters": getCharacters()
