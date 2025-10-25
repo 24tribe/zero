@@ -32,6 +32,6 @@ int main(void) {
     printf("%s\n\n", res);
 
     printf("calling /adventure/move_to_area areaId=300401 ...\n");
-    res = SembaCall("/adventure/move_to_area", "{\"areaId\": 300401}");
+    res = SembaCall("/adventure/move_to_area", "{\"areaId\": 300402, \"currentLocation\": {\"areaType\": 1, \"direction\": 5, \"positionCoordinates\": {\"x\": -9.795328, \"y\": 53.59764, \"z\": -15.6977167}, \"areaKeyId\": 300402}}");
     printf("%s\n\n", res);
 }

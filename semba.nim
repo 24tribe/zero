@@ -11,6 +11,90 @@ proc DupString(str: string): cstring =
   result = cast[cstring](c_malloc((s.len + 1).csize_t))
   copyMem(result, s, s.len + 1)
 
+proc Adventure_AreaObject(jsonReq: JsonNode): JsonNode =
+  let areaId = jsonReq["areaId"].getInt()
+  let rows = db.getAllRows(sql"""
+    SELECT areaObjectId, areaPointId, areaObjectBehaviorId, action
+    FROM areaObjects
+    WHERE areaId = ?
+  """, areaId)
+
+  var areaObjects = newSeq[JsonNode]();
+
+  for row in rows:
+    areaObjects.add(%*{
+      "areaObjectId": parseInt(row[0]),
+      "areaPointId": parseInt(row[1]),
+      "areaObjectBehaviorId": parseInt(row[2]),
+      "action": parseJson(row[3])
+    })
+
+  let enemies = db.getAllRows(sql"""
+    SELECT areaPointId, areaEnemyRateSetId, action
+    FROM areaEnemies
+    WHERE areaId = ?
+  """, areaId)
+
+  for enemy in enemies:
+    areaObjects.add(%*{
+      "areaPointId": parseInt(enemy[0]),
+      "areaEnemyRateSetId": parseInt(enemy[1]),
+      "action": parseJson(enemy[2])
+    })
+
+  var areaItemsRes = newSeq[JsonNode]()
+
+  let areaItems = db.getAllRows(sql"SELECT areaItemId FROM areaItems WHERE areaId = ?", areaId)
+
+  for areaItem in areaItems:
+    areaItemsRes.add(%*{"areaItemId": parseInt(areaItem[0])})
+
+  return %*{"areaObjects": areaObjects, "areaItems": areaItemsRes}
+
+proc Tip_Release(jsonReq: JsonNode): JsonNode =
+  var tips = newSeq[JsonNode]()
+  var areaObjects = newSeq[JsonNode]()
+
+  for node in jsonReq["tipIds"]:
+    let tipId = node.num
+    tips.add(%*{"tipId": tipId, "releasedAt": "2025-09-10T02:17:06Z"})
+
+    let newAreaObjects = db.getAllRows(sql"""
+      SELECT areaObjectId, newAreaPointId, newAreaObjectBehaviorId, newAction
+      FROM tipRelease
+      WHERE tipId = ?
+    """, tipId)
+
+    for areaObject in newAreaObjects:
+      areaObjects.add(%*{
+        "areaObjectId": parseInt(areaObject[0]),
+        "areaPointId": parseInt(areaObject[1]),
+        "areaObjectBehaviorId": parseInt(areaObject[2]),
+        "action": parseJson(areaObject[3]),
+      })
+
+    db.exec(sql"""
+      UPDATE areaObjects
+      SET areaPointId = t.newAreaPointId,
+          areaObjectBehaviorId = t.newAreaObjectBehaviorId,
+          action = t.newAction
+      FROM tipRelease as t
+      WHERE t.tipId = ? AND areaObjects.areaId = t.areaId AND areaObjects.areaObjectId = t.areaObjectId
+    """, tipId)
+
+  return %*{
+    "changedResources": {"tips": tips},
+    "areaObjects": areaObjects
+  }
+
+proc Adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
+  let areaId = jsonReq["areaId"].getInt()
+  let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
+
+  return %*{
+    "areaBgm": {"id": parseInt(areaBgmRow[0]), "eventName": areaBgmRow[1]}
+  }
+
 proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
 
@@ -28,96 +112,17 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     let res = %*{"sessionToken": "69696969-6969-6969-6969-696969696969", "language": 2}
     result = DupString($res)
   elif uri == "/adventure/area_object":
-    let areaId = jsonReq["areaId"].getInt()
-    let rows = db.getAllRows(sql"""
-      SELECT areaObjectId, areaPointId, areaObjectBehaviorId, action
-      FROM areaObjects
-      WHERE areaId = ?
-    """, areaId)
-
-    var areaObjects = newSeq[JsonNode]();
-
-    for row in rows:
-      areaObjects.add(%*{
-        "areaObjectId": parseInt(row[0]),
-        "areaPointId": parseInt(row[1]),
-        "areaObjectBehaviorId": parseInt(row[2]),
-        "action": parseJson(row[3])
-      })
-
-    let enemies = db.getAllRows(sql"""
-      SELECT areaPointId, areaEnemyRateSetId, action
-      FROM areaEnemies
-      WHERE areaId = ?
-    """, areaId)
-
-    for enemy in enemies:
-      areaObjects.add(%*{
-        "areaPointId": parseInt(enemy[0]),
-        "areaEnemyRateSetId": parseInt(enemy[1]),
-        "action": parseJson(enemy[2])
-      })
-
-    var areaItemsRes = newSeq[JsonNode]()
-
-    let areaItems = db.getAllRows(sql"SELECT areaItemId FROM areaItems WHERE areaId = ?", areaId)
-
-    for areaItem in areaItems:
-      areaItemsRes.add(%*{"areaItemId": parseInt(areaItem[0])})
-
-    let res = %*{"areaObjects": areaObjects, "areaItems": areaItemsRes}
-    result = DupString($res)
+    result = DupString($Adventure_AreaObject(jsonReq))
   elif uri == "/tip/release":
-    var tips = newSeq[JsonNode]()
-    var areaObjects = newSeq[JsonNode]()
-
-    for node in jsonReq["tipIds"]:
-      let tipId = node.num
-      tips.add(%*{"tipId": tipId, "releasedAt": "2025-09-10T02:17:06Z"})
-
-      let newAreaObjects = db.getAllRows(sql"""
-        SELECT areaObjectId, newAreaPointId, newAreaObjectBehaviorId, newAction
-        FROM tipRelease
-        WHERE tipId = ?
-      """, tipId)
-
-      for areaObject in newAreaObjects:
-        areaObjects.add(%*{
-          "areaObjectId": parseInt(areaObject[0]),
-          "areaPointId": parseInt(areaObject[1]),
-          "areaObjectBehaviorId": parseInt(areaObject[2]),
-          "action": parseJson(areaObject[3]),
-        })
-
-      db.exec(sql"""
-        UPDATE areaObjects
-        SET areaPointId = t.newAreaPointId,
-            areaObjectBehaviorId = t.newAreaObjectBehaviorId,
-            action = t.newAction
-        FROM tipRelease as t
-        WHERE t.tipId = ? AND areaObjects.areaId = t.areaId AND areaObjects.areaObjectId = t.areaObjectId
-      """, tipId)
-
-
-    let res = %*{
-      "changedResources": {"tips": tips},
-      "areaObjects": areaObjects
-    }
-
-    result = DupString($res)
+    result = DupString($Tip_Release(jsonReq))
   elif uri == "/adventure/move_to_area":
-    let areaId = jsonReq["areaId"].getInt()
-    let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
-
-    let res = %*{
-      "areaBgm": {"id": parseInt(areaBgmRow[0]), "eventName": areaBgmRow[1]}
-    }
-
-    result = DupString($res)
+    result = DupString($Adventure_MoveToArea(jsonReq))
   else:
     result = nil
 
-  echo uri, request, result
+  echo "[SembaCall] uri: ", uri
+  echo "[SembaCall] request": request
+  echo "[SembaCall] result": result
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
