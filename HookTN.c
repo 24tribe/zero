@@ -495,7 +495,9 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
         sdsfree(reqJson);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureMoveToAreaResponse")) {
         sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureMoveToAreaRequest));
-        res = CallParseJson(messageParser, SembaCall("/adventure/move_to_area", reqJson));
+        const char *resJson = SembaCall("/adventure/move_to_area", reqJson);
+        printf("[GetMockResponse] resJson=%s\n", resJson);
+        res = CallParseJson(messageParser, resJson);
         sdsfree(reqJson);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.TipReleaseResponse")) {
         System_String_o *s = ConvertObjectToString((Il2CppObject *)lastTipReleaseRequest);

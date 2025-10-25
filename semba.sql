@@ -806,6 +806,8 @@ VALUES
 ,(1030001, '2025-04-18T03:39:46Z')
 ,(1030013, '2025-04-24T03:36:45Z')
 ,(1030112, '2025-04-24T03:49:59Z')
+,(1004001, '2025-04-24T03:49:59Z')
+,(1014001, '2025-04-24T03:49:59Z')
 ;
 
 INSERT INTO tips (tipId, releasedAt)
@@ -903,6 +905,12 @@ VALUES
 100, 100, 100, 1003012, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
+-- miu?
+,(100401, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1004001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)
 ,(100501, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
 100, 100, 100, 1005105, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
@@ -946,6 +954,12 @@ VALUES
 ,(101301, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
 100, 100, 100, 1013001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)
+-- kazuki?
+,(101401, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1014001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
 ,(101501, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
