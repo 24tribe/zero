@@ -16,6 +16,9 @@ sds_dep = sds_proj.get_variable('libsds_dep')
 jansson_proj = subproject('jansson')
 jansson_dep = jansson_proj.get_variable('libjansson_dep')
 
+inih_proj = subproject('inih')
+inih_dep = inih_proj.get_variable('libinih_dep')
+
 zero_src = [
     'mylib.c',
     'load_library_hook.c',
@@ -32,7 +35,7 @@ zero_src = [
     'Logger.c'
 ]
 
-zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep, jansson_dep]
+zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep, jansson_dep, inih_dep]
 
 shared_library('zero', zero_src, dependencies : zero_deps)
 
