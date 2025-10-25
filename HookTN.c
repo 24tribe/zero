@@ -66,6 +66,49 @@ typedef Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o (*NEON_MODEL
 NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = NULL;
 NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS fpNeon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = NULL;
 
+typedef Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o (*NEON_MODEL_API_APISERVICE__FORMATION_UPDATE)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_FormationUpdateRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
+NEON_MODEL_API_APISERVICE__FORMATION_UPDATE Neon_Model_Api_ApiService__Formation_Update = NULL;
+NEON_MODEL_API_APISERVICE__FORMATION_UPDATE fpNeon_Model_Api_ApiService__Formation_Update = NULL;
+
+Neon_Model_Api_Rpc_FormationUpdateRequest_o *lastFormationUpdateRequest = NULL;
+
+Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourFormationUpdate(
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_FormationUpdateRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    lastFormationUpdateRequest = data;
+    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
+    printf("[DetourFormationUpdate] %s\n", reqJson);
+    sdsfree(reqJson);
+    return fpNeon_Model_Api_ApiService__Formation_Update(
+        __this,
+        data,
+        requestHandler,
+        cancellationToken,
+        method
+    );
+}
+
+
+void HookFormationUpdate(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Formation_Update,
+        (LPVOID)(uintptr_t)&DetourFormationUpdate,
+        (LPVOID *)(&fpNeon_Model_Api_ApiService__Formation_Update)
+    ) != MH_OK) {
+        fputs("Failed to create Neon_Model_Api_ApiService__Formation_Update hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Formation_Update, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Neon_Model_Api_ApiService__Formation_Update hook\n", stdout);
+        return;
+    }
+}
+
 Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o *lastUpdateCharacterStatusRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourUpdateCharacterStatus(
@@ -541,6 +584,8 @@ void HookTN(void *GameAssembly) {
 
     Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = (NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS)((unsigned long long)GameAssembly + 79409872ull);
 
+    Neon_Model_Api_ApiService__Formation_Update = (NEON_MODEL_API_APISERVICE__FORMATION_UPDATE)((unsigned long long)GameAssembly + 79425184ull);
+
     HookHTTPRequestCtor(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
     HookNeonApiGetResponse();
@@ -551,6 +596,7 @@ void HookTN(void *GameAssembly) {
     HookBattleStart();
     HookBattleFinish();
     HookUpdateCharacterStatus();
+    HookFormationUpdate();
 
     InitLogger(GameAssembly);
 }

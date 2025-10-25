@@ -2308,4 +2308,41 @@ typedef struct Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o {
 	Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_Fields fields;
 } Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o;
 
+typedef struct Neon_Model_Api_Rpc_FormationUpdateRequest_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	int32_t number_;
+	struct Neon_Model_Api_Model_FormationMembers_o* members_;
+	struct Neon_Model_Api_Model_FormationCards_o* cards_;
+} Neon_Model_Api_Rpc_FormationUpdateRequest_Fields;
+
+typedef struct Neon_Model_Api_Rpc_FormationUpdateRequest_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_MergeFrom;
+	VirtualInvokeData _5_MergeFrom;
+	VirtualInvokeData _6_WriteTo;
+	VirtualInvokeData _7_CalculateSize;
+	VirtualInvokeData _8_pb__Google_Protobuf_IMessage_get_Descriptor;
+	VirtualInvokeData _9_Equals;
+	VirtualInvokeData _10_Clone;
+	VirtualInvokeData _11_pb__Google_Protobuf_IBufferMessage_InternalMergeFrom;
+	VirtualInvokeData _12_pb__Google_Protobuf_IBufferMessage_InternalWriteTo;
+} Neon_Model_Api_Rpc_FormationUpdateRequest_VTable;
+
+typedef struct Neon_Model_Api_Rpc_FormationUpdateRequest_c {
+	Il2CppClass_1 _1;
+	struct Neon_Model_Api_Rpc_FormationUpdateRequest_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_Api_Rpc_FormationUpdateRequest_VTable vtable;
+} Neon_Model_Api_Rpc_FormationUpdateRequest_c;
+
+typedef struct Neon_Model_Api_Rpc_FormationUpdateRequest_o {
+	Neon_Model_Api_Rpc_FormationUpdateRequest_c *klass;
+	void *monitor;
+	Neon_Model_Api_Rpc_FormationUpdateRequest_Fields fields;
+} Neon_Model_Api_Rpc_FormationUpdateRequest_o;
+
 #endif
