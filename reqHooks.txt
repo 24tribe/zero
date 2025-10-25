@@ -1,1 +1,2 @@
 Neon.Model.Api.ApiService$$Xb_Formation
+Neon.Model.Api.ApiService$$Battle_Start
