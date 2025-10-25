@@ -121,9 +121,6 @@ void HookKbjlheaohmd__Kpffclmemeg(void) {
     }
 }
 
-typedef void (*HTTPRequestCtor)(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method);
-HTTPRequestCtor fpHTTPRequestCtor = NULL;
-
 sds neonApiPath = NULL;
 
 void SaveNeonApiPath(sds url) {
@@ -141,6 +138,8 @@ System_Uri_o *CreateSystemUri(char *s) {
     System_Uri___ctor(uri, il2cpp_string_new(s), NULL);
     return uri;
 }
+
+Best_HTTP_HTTPRequest___ctor_FuncPtr fpHTTPRequestCtor = NULL;
 
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
     sds url = System_String_toSds(uri->fields.m_String);
@@ -237,9 +236,7 @@ Il2CppObject *DetourSourceCore_GetResult(
     return res;
 }
 
-void HookSourceCore_GetResult(void *GameAssembly) {
-    (void)GameAssembly;
-
+void HookSourceCore_GetResult(void) {
     if (MH_CreateHook(
         (void *)(uintptr_t)Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult,
         (LPVOID)(uintptr_t)&DetourSourceCore_GetResult,
@@ -398,7 +395,7 @@ void HookTN(void *GameAssembly) {
     InitGamePtrs(GameAssembly);
 
     HookHTTPRequestCtor();
-    HookSourceCore_GetResult(GameAssembly);
+    HookSourceCore_GetResult();
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
     HookAuth_SteamUser();
