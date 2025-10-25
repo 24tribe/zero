@@ -27,6 +27,10 @@ References:
 
 Il2CppClass **System_Uri_TypeInfo = NULL;
 
+typedef Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o (*NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
+NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT Neon_Model_Api_ApiService__Adventure_AreaObject = NULL;
+NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT fpNeon_Model_Api_ApiService__Adventure_AreaObject = NULL;
+
 typedef void (*URICONSTRUCTOR)(System_Uri_o* __this, System_String_o* uriString, const MethodInfo* method);
 URICONSTRUCTOR System_Uri_ctor = NULL;
 
@@ -41,6 +45,37 @@ NEON_API_GET_RESPONSE fpNeonApiGetResponse = NULL;
 typedef bool (*KBJLHEAOHMD__KPFFCLMEMEG)(System_DateTime_o HKIOCIMKCCP, System_DateTime_o CJKBFINFMNP, const MethodInfo* method);
 KBJLHEAOHMD__KPFFCLMEMEG Kbjlheaohmd__Kpffclmemeg = NULL;
 KBJLHEAOHMD__KPFFCLMEMEG fpKbjlheaohmd__Kpffclmemeg = NULL;
+
+Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* lastAdventureAreaObjectResponse = NULL;
+
+Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o DetourAdventureAreaObject(
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    lastAdventureAreaObjectResponse = data;
+    return fpNeon_Model_Api_ApiService__Adventure_AreaObject(
+        __this, data, requestHandler, cancellationToken, method
+    );
+}
+
+void HookAdventureAreaObject(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_AreaObject,
+        (LPVOID)(uintptr_t)&DetourAdventureAreaObject,
+        (LPVOID *)(&fpNeon_Model_Api_ApiService__Adventure_AreaObject)
+    ) != MH_OK) {
+        fputs("Failed to create Neon_Model_Api_ApiService__Adventure_AreaObject hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_AreaObject, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Neon_Model_Api_ApiService__Adventure_AreaObject hook\n", stdout);
+        return;
+    }
+}
 
 bool DetourKbjlheaohmd__Kpffclmemeg(System_DateTime_o HKIOCIMKCCP, System_DateTime_o CJKBFINFMNP, const MethodInfo* method) {
     if (HKIOCIMKCCP.fields._dateData == 0) {
@@ -239,11 +274,10 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
         sdsfree(userCrossDateResponseText);
         free(newResponse);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureAreaObjectResponse")) {
-        sds adventureAreaObjectResponse = SlurpFile("responses\\2025_9_14_12_58_9_AdventureAreaObjectResponse.txt");
-
-        res = CallParseJson(messageParser, adventureAreaObjectResponse);
-
-        sdsfree(adventureAreaObjectResponse);
+        System_String_o *obj = ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectResponse);
+        sds resTxt = sds16to8(&(obj->fields._firstChar), obj->fields._stringLength);
+        res = CallParseJson(messageParser, SembaCall("/adventure/area_object", resTxt));
+        sdsfree(resTxt);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureMoveToAreaResponse")) {
         // Should return current login date
         sds adventureMoveToAreaResponse = SlurpFile("responses\\2025_9_14_12_58_12_AdventureMoveToAreaResponse.txt");
@@ -309,10 +343,13 @@ void HookTN(void *GameAssembly) {
 
     Kbjlheaohmd__Kpffclmemeg = (KBJLHEAOHMD__KPFFCLMEMEG)((unsigned long long)GameAssembly + 59260912ull);
 
+    Neon_Model_Api_ApiService__Adventure_AreaObject = (NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT)((unsigned long long)GameAssembly + 79407520ull);
+
     HookHTTPRequestCtor(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
+    HookAdventureAreaObject();
 
     InitLogger(GameAssembly);
 }

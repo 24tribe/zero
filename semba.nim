@@ -4,6 +4,8 @@ import system/ansi_c
 
 import db_connector/db_sqlite
 
+var db = open("semba.db", "", "", "")
+
 proc DupString(s: cstring): cstring =
   result = cast[cstring](c_malloc((s.len + 1).csize_t))
   copyMem(result, s, s.len + 1)
@@ -23,6 +25,26 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     result = DupString($res)
   elif uri == "/auth/sign_in":
     let res = %*{"sessionToken": "69696969-6969-6969-6969-696969696969", "language": 2}
+    result = DupString($res)
+  elif uri == "/adventure/area_object":
+    let areaId = jsonReq["areaId"].getInt()
+    let rows = db.getAllRows(sql"""
+      SELECT areaObjectId, areaPointId, areaObjectBehaviorId, action
+      FROM areaObjects
+      WHERE areaId = ?
+    """, areaId)
+
+    var areaObjects = newSeq[JsonNode]();
+
+    for row in rows:
+      areaObjects.add(%*{
+        "areaObjectId": parseInt(row[0]),
+        "areaPointId": parseInt(row[1]),
+        "areaObjectBehaviorId": parseInt(row[2]),
+        "action": parseJson(row[3])
+      })
+
+    let res = %*{"areaObjects": areaObjects}
     result = DupString($res)
   else:
     result = nil

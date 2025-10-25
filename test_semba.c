@@ -5,11 +5,21 @@
 int main(void) {
     NimMain();
 
-    printf("%s\n", SembaCall("echo", "{\"data\":\"Hello World!!!\"}"));
+    const char *res;
 
-    const char *idk = SembaCall("asdsdjaksjd", "");
+    printf("calling hello world endpoint...\n");
+    res = SembaCall("echo", "{\"data\":\"Hello World!!!\"}");
+    printf("%s\n\n", res);
 
-    printf("%s\n", SembaCall("/auth/steam_user", ""));
+    printf("calling missing endpoint...\n");
+    res = SembaCall("asdsdjaksjd", "");
+    printf("%s\n\n", res);
 
-    printf("idk: %p\n", (void *)idk);
+    printf("calling /auth/steam_user ...\n");
+    res = SembaCall("/auth/steam_user", "");
+    printf("%s\n\n", res);
+
+    printf("calling /adventure/area_object ...\n");
+    res = SembaCall("/adventure/area_object", "{\"areaId\": 300402}");
+    printf("%s\n\n", res);
 }
