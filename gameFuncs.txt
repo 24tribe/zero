@@ -6,4 +6,5 @@ Neon.Model.Api.ApiService$$Battle_Start
 Neon.Model.Api.ApiService$$Adventure_MoveToArea
 Neon.Model.Api.ApiService$$Adventure_AreaObject
 KBJLHEAOHMD$$KPFFCLMEMEG
+CDGPJELFAMK$$NOCKJHKDMGF<object>
 Neon.Model.Api.ApiService$$Tip_Release

@@ -38,9 +38,7 @@ typedef Il2CppObject *(*SOURCE_CORE_GETRESULT)(Cysharp_Threading_Tasks_UniTaskCo
 SOURCE_CORE_GETRESULT Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = NULL;
 SOURCE_CORE_GETRESULT fpSourceCore_GetResult = NULL;
 
-typedef Cysharp_Threading_Tasks_UniTask_TResponse__o (*NEON_API_GET_RESPONSE)(CDGPJELFAMK_o* __this, BJAFDMJIDMJ_o* EFCDPGBOIHC, LPCOHPIGHIN_o* EAGJONBIADJ, System_Threading_CancellationToken_o JLCCEAFOLOE, Google_Protobuf_MessageParser_TResponse__o* PNICKJFPBHH, const MethodInfo_F6CAF0* method);
-NEON_API_GET_RESPONSE NeonApiGetResponse = NULL; // CDGPJELFAMK__NOCKJHKDMGF_object_
-NEON_API_GET_RESPONSE fpNeonApiGetResponse = NULL;
+CDGPJELFAMK__NOCKJHKDMGF_object__FuncPtr fpNeonApiGetResponse = NULL;
 
 KBJLHEAOHMD__KPFFCLMEMEG_FuncPtr fpKbjlheaohmd__Kpffclmemeg = NULL;
 
@@ -548,7 +546,7 @@ Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
 
 void HookNeonApiGetResponse(void) {
     if (MH_CreateHook(
-        (void *)(uintptr_t)NeonApiGetResponse,
+        (void *)(uintptr_t)CDGPJELFAMK__NOCKJHKDMGF_object_,
         (LPVOID)(uintptr_t)&DetourNeonApiGetResponse,
         (LPVOID *)&fpNeonApiGetResponse
     ) != MH_OK) {
@@ -556,7 +554,7 @@ void HookNeonApiGetResponse(void) {
         return;
     }
 
-    if (MH_EnableHook((void *)(uintptr_t)NeonApiGetResponse, /* changePermissions = */ FALSE) != MH_OK) {
+    if (MH_EnableHook((void *)(uintptr_t)CDGPJELFAMK__NOCKJHKDMGF_object_, /* changePermissions = */ FALSE) != MH_OK) {
         printf("Failed to enable NeonApiGetResponse hook\n");
         return;
     }
@@ -601,8 +599,6 @@ void HookTN(void *GameAssembly) {
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
 
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = (SOURCE_CORE_GETRESULT)((unsigned long long)GameAssembly + 34300640ull);
-
-    NeonApiGetResponse = (NEON_API_GET_RESPONSE)((unsigned long long)GameAssembly + 16173808ull);
 
     InitGameFuncPtrs(GameAssembly);
 
