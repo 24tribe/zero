@@ -445,12 +445,7 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
             SembaCall("/auth/sign_in", "")
         );
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserLogInResponse")) {
-        LOGIN_TIME = GetDateTime();
-        sds userLogInResponseText = SlurpFile("responses\\2025_9_14_12_57_55_UserLogInResponse.txt");
-
-        res = CallParseJson(messageParser, userLogInResponseText);
-
-        sdsfree(userLogInResponseText);
+        res = CallParseJson(messageParser, SembaCall("/user/log_in", ""));
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserCrossDateResponse")) {
         res = CallParseJson(messageParser, SembaCall("/user/cross_date", ""));
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureAreaObjectResponse")) {
