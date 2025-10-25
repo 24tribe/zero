@@ -29,9 +29,7 @@ References:
 
 Il2CppClass **System_Uri_TypeInfo = NULL;
 
-typedef Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o (*NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
-NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT Neon_Model_Api_ApiService__Adventure_AreaObject = NULL;
-NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT fpNeon_Model_Api_ApiService__Adventure_AreaObject = NULL;
+Neon_Model_Api_ApiService__Adventure_AreaObject_FuncPtr fpNeon_Model_Api_ApiService__Adventure_AreaObject = NULL;
 
 typedef void (*URICONSTRUCTOR)(System_Uri_o* __this, System_String_o* uriString, const MethodInfo* method);
 URICONSTRUCTOR System_Uri_ctor = NULL;
@@ -609,8 +607,6 @@ void HookTN(void *GameAssembly) {
     NeonApiGetResponse = (NEON_API_GET_RESPONSE)((unsigned long long)GameAssembly + 16173808ull);
 
     Kbjlheaohmd__Kpffclmemeg = (KBJLHEAOHMD__KPFFCLMEMEG)((unsigned long long)GameAssembly + 59260912ull);
-
-    Neon_Model_Api_ApiService__Adventure_AreaObject = (NEON_MODEL_API_APISERVICE__ADVENTURE_AREAOBJECT)((unsigned long long)GameAssembly + 79407520ull);
 
     InitGameFuncPtrs(GameAssembly);
 
