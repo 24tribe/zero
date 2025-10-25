@@ -59,8 +59,6 @@ Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o DetourTipRelease(
     System_Threading_CancellationToken_o cancellationToken,
     const MethodInfo* method
 ) {
-    System_String_o *s = ConvertObjectToString((Il2CppObject *)data);
-    PutString(s);
     lastTipReleaseRequest = data;
     return fpNeon_Model_Api_ApiService__Tip_Release(
         __this, data, requestHandler, cancellationToken, method
@@ -315,6 +313,11 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
 
         sdsfree(adventureMoveToAreaResponse);
         free(newResponse);
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.TipReleaseResponse")) {
+        System_String_o *s = ConvertObjectToString((Il2CppObject *)lastTipReleaseRequest);
+        sds reqJson = System_String_toSds(s);
+        res = CallParseJson(messageParser, SembaCall("/tip/release", reqJson));
+        sdsfree(reqJson);
     }
 
     sdsfree(sUtf8);
@@ -380,6 +383,7 @@ void HookTN(void *GameAssembly) {
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
     HookAdventureAreaObject();
+    HookTipRelease();
 
     InitLogger(GameAssembly);
 }

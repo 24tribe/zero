@@ -16,5 +16,6 @@ sds sds16to8(const uint16_t *s, uint32_t size);
 sds SlurpFile(const char *path);
 char *ChangeLoggedInAtStr(sds data, const char *newValue);
 void PutString(System_String_o *s);
+sds System_String_toSds(System_String_o *s);
 
 #endif

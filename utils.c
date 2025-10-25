@@ -125,3 +125,7 @@ void PutString(System_String_o *s) {
     }
     putchar('\n');
 }
+
+sds System_String_toSds(System_String_o *s) {
+    return sds16to8(&(s->fields._firstChar), s->fields._stringLength);
+}

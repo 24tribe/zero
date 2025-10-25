@@ -6,7 +6,8 @@ import db_connector/db_sqlite
 
 var db = open("semba.db", "", "", "")
 
-proc DupString(s: cstring): cstring =
+proc DupString(str: string): cstring =
+  let s = str.cstring
   result = cast[cstring](c_malloc((s.len + 1).csize_t))
   copyMem(result, s, s.len + 1)
 
@@ -46,8 +47,17 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
 
     let res = %*{"areaObjects": areaObjects}
     result = DupString($res)
+  elif uri == "/tip/release":
+    var tips = newSeq[JsonNode]()
+    for node in jsonReq["tipIds"]:
+      tips.add(%*{"tipId": node.num, "releasedAt": "2025-09-10T02:17:06Z"})
+
+    let res = %*{"changedResources": {"tips": tips}}
+    result = DupString($res)
   else:
     result = nil
+
+  echo uri, request, result
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
