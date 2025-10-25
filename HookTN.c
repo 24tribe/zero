@@ -278,12 +278,12 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthNonceResponse")) {
         res = CallParseJson(
             messageParser,
-            "{\"nonce\": \"6969696969696969\"}"
+            SembaCall("/auth/nonce", "")
         );
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSignInResponse")) {
         res = CallParseJson(
             messageParser,
-            "{\"sessionToken\": \"69696969-6969-6969-6969-696969696969\",\"language\": 2}"
+            SembaCall("/auth/sign_in", "")
         );
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserLogInResponse")) {
         LOGIN_TIME = GetDateTime();

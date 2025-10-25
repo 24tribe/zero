@@ -1,6 +1,5 @@
 import std/json
 import std/strutils
-import std/strformat
 import system/ansi_c
 
 proc DupString(s: cstring): cstring =
@@ -15,7 +14,13 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     let resJson = %*{"data": dataUpper}
     result = DupString($resJson)
   elif uri == "/auth/steam_user":
-    let res = %*{"userId": "690069006900"}
+    let res = %*{"userId": "696969696969"}
+    result = DupString($res)
+  elif uri == "/auth/nonce":
+    let res = %*{"nonce": "6969696969696969"}
+    result = DupString($res)
+  elif uri == "/auth/sign_in":
+    let res = %*{"sessionToken": "69696969-6969-6969-6969-696969696969", "language": 2}
     result = DupString($res)
   else:
     result = nil
