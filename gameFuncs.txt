@@ -7,4 +7,5 @@ Neon.Model.Api.ApiService$$Adventure_MoveToArea
 Neon.Model.Api.ApiService$$Adventure_AreaObject
 KBJLHEAOHMD$$KPFFCLMEMEG
 CDGPJELFAMK$$NOCKJHKDMGF<object>
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore<object>$$GetResult
 Neon.Model.Api.ApiService$$Tip_Release
