@@ -6,12 +6,12 @@ import db_connector/db_sqlite
 
 var db = open("build/semba.db", "", "", "")
 
-proc DupString(str: string): cstring =
+proc dupString(str: string): cstring =
   let s = str.cstring
   result = cast[cstring](c_malloc((s.len + 1).csize_t))
   copyMem(result, s, s.len + 1)
 
-proc Adventure_AreaObject(jsonReq: JsonNode): JsonNode =
+proc adventure_AreaObject(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
   let rows = db.getAllRows(sql"""
     SELECT areaObjectId, areaPointId, areaObjectBehaviorId, action
@@ -51,7 +51,7 @@ proc Adventure_AreaObject(jsonReq: JsonNode): JsonNode =
 
   return %*{"areaObjects": areaObjects, "areaItems": areaItemsRes}
 
-proc Tip_Release(jsonReq: JsonNode): JsonNode =
+proc tip_Release(jsonReq: JsonNode): JsonNode =
   var tips = newSeq[JsonNode]()
   var areaObjects = newSeq[JsonNode]()
 
@@ -87,7 +87,7 @@ proc Tip_Release(jsonReq: JsonNode): JsonNode =
     "areaObjects": areaObjects
   }
 
-proc Adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
+proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
   let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
 
@@ -95,28 +95,28 @@ proc Adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
     "areaBgm": {"id": parseInt(areaBgmRow[0]), "eventName": areaBgmRow[1]}
   }
 
-proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
+proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
 
   if uri == "echo":
     let dataUpper = jsonReq["data"].getStr().toUpperAscii()
     let resJson = %*{"data": dataUpper}
-    result = DupString($resJson)
+    result = dupString($resJson)
   elif uri == "/auth/steam_user":
     let res = %*{"userId": "696969696969"}
-    result = DupString($res)
+    result = dupString($res)
   elif uri == "/auth/nonce":
     let res = %*{"nonce": "6969696969696969"}
-    result = DupString($res)
+    result = dupString($res)
   elif uri == "/auth/sign_in":
     let res = %*{"sessionToken": "69696969-6969-6969-6969-696969696969", "language": 2}
-    result = DupString($res)
+    result = dupString($res)
   elif uri == "/adventure/area_object":
-    result = DupString($Adventure_AreaObject(jsonReq))
+    result = dupString($adventure_AreaObject(jsonReq))
   elif uri == "/tip/release":
-    result = DupString($Tip_Release(jsonReq))
+    result = dupString($tip_Release(jsonReq))
   elif uri == "/adventure/move_to_area":
-    result = DupString($Adventure_MoveToArea(jsonReq))
+    result = dupString($adventure_MoveToArea(jsonReq))
   else:
     result = nil
 
@@ -126,7 +126,7 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
-    result = SembaCallUnsafe(uri, request)
+    result = sembaCallUnsafe(uri, request)
   except:
     echo("Nim Exception: " & getCurrentExceptionMsg())
     result = nil
