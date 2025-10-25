@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    VOID *lb = GetProcAddress(hKernel32, "LoadLibraryA");
+    LPTHREAD_START_ROUTINE lb = (LPTHREAD_START_ROUTINE)(uintptr_t)GetProcAddress(hKernel32, "LoadLibraryA");
 
     if (!lb) {
         fputs("GetProcAddress failed", stderr);
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    rt = CreateRemoteThread(ph, NULL, 0, (LPTHREAD_START_ROUTINE)lb, rb, 0, NULL);
+    rt = CreateRemoteThread(ph, NULL, 0, lb, rb, 0, NULL);
 
     if (!rt) {
         fputs("CreateRemoteThread failed", stderr);
