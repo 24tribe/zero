@@ -74,13 +74,7 @@ System_Uri_o *ChangeUrl(char *url) {
 #undef NEW_URL_SIZE
 #undef BASE_URL_SIZE
 
-void CopyUnicodeToByteArray(char *out, System_String_o *s) {
-    int32_t sLen = s->fields._stringLength;
-    uint16_t *firstChar = &(s->fields._firstChar);
-    for (int32_t i = 0; i < sLen; ++i) {
-        out[i] = (uint8_t)(firstChar[i]);
-    }
-}
+
 
 void PutString(System_String_o *s) {
     int32_t sLen = s->fields._stringLength;

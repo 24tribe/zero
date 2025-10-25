@@ -7,6 +7,7 @@ __pycache__
 *.dump
 *.bin
 *.har
+example_dumper_out
 
 *Dummy
 dumper_out

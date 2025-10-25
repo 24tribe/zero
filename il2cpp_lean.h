@@ -265,10 +265,7 @@ typedef struct System_Uri_StaticFields {
 	struct System_Char_array* _WSchars;
 } System_Uri_StaticFields;
 
-typedef struct System_String_Fields {
-	int32_t _stringLength;
-	uint16_t _firstChar;
-} System_String_Fields;
+
 
 typedef struct System_String_VTable {
 	VirtualInvokeData _0_Equals;
@@ -307,12 +304,6 @@ typedef struct System_String_c {
 	Il2CppClass_2 _2;
 	System_String_VTable vtable;
 } System_String_c;
-
-typedef struct System_String_o {
-	System_String_c *klass;
-	void *monitor;
-	System_String_Fields fields;
-} System_String_o;
 
 typedef struct System_String_StaticFields {
 	struct System_String_o* Empty;
