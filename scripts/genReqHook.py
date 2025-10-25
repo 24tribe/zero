@@ -25,9 +25,19 @@ def main():
 
     api_funcs_with_req_and_res = map(lambda x: f"Neon.Model.Api.ApiService$${x}", api_funcs_with_req_and_res)
 
-    api_funcs_with_req_and_res = set(api_funcs_with_req_and_res)
+    api_funcs_with_req_and_res = set(api_funcs_with_req_and_res)      
 
-    impl_code, decl_code = createAutohookH(api_funcs_with_req_and_res, script)
+    impl_code, list_data = createAutohookH(api_funcs_with_req_and_res, script)
+
+    api_funcs_with_res_only = filter(
+        lambda x: req_hooks[x][0] == "None" and req_hooks[x][1] != "None", req_hooks
+    )
+
+    api_funcs_with_res_only = [(x, req_hooks[x][1]) for x in api_funcs_with_res_only]
+
+    for name, res in api_funcs_with_res_only:
+        path = nameToPath(name)
+        list_data.append(f"""{{"Neon.Model.Api.Rpc.{res}", NULL, "{path}"}}, """)
 
     code = [
         "#ifdef AUTOHOOK_TN_IMPL"
@@ -41,13 +51,21 @@ def main():
     code.append("#ifndef AUTOHOOK_TN_H_2025_30_02_00")
     code.append("#define AUTOHOOK_TN_H_2025_30_02_00")
 
-    for c in decl_code:
-        code.append(c)
+    code.append("#define AUTOHOOK_TN_LIST_DATA \\")
+    code.append(" \\\n".join(list_data))
 
     code.append("#endif")
 
     with open(args.out_h, "w", encoding="utf-8") as f:
         f.write("\n".join(code))
+
+def nameToPath(methodName):
+    path = re.findall(r"[A-Z][a-z]+", methodName)
+    return f"/{path[0]}/{"_".join(path[1:])}".lower()
+
+def reqNameToPath(req):
+    path = re.findall(r"[A-Z][a-z]+", req)
+    return f"/{path[0]}/{"_".join(path[1:-1])}".lower()
 
 def createAutohookH(req_hooks, script):
     hookNames = []
@@ -83,8 +101,7 @@ def createAutohookH(req_hooks, script):
 
             lastReq = f"last{req}"
 
-            path = re.findall(r"[A-Z][a-z]+", req)
-            path = f"/{path[0]}/{"_".join(path[1:-1])}".lower()
+            path = reqNameToPath(req)
 
             list_data.append(f"""{{"Neon.Model.Api.Rpc.{res}", (Il2CppObject **)&{lastReq}, "{path}"}}, """)
 
@@ -125,11 +142,7 @@ void {hookName}(void) {{
 
     impl_code.append("}")
 
-    decl_code = []
-    decl_code.append("#define AUTOHOOK_TN_LIST_DATA \\")
-    decl_code.append(" \\\n".join(list_data))
-
-    return impl_code, decl_code
+    return impl_code, list_data
 
 if __name__ == "__main__":
     main()
