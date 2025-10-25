@@ -24,7 +24,6 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("il2cpp_h")
     parser.add_argument("req_hooks_csv")
-    parser.add_argument("method_name")
     args = parser.parse_args()
 
     with open(args.il2cpp_h, "r", encoding="utf-8") as f:
@@ -34,13 +33,13 @@ def main():
 
     struct_names = set()
 
-    name = args.method_name
-    req, res = req_hooks[name]
-    fullReq = getReqFullName(req)
-    struct_names |= getStructNames(fullReq)
+    for name in req_hooks:
+        req, res = req_hooks[name]
+        fullReq = getReqFullName(req)
+        struct_names |= getStructNames(fullReq)
 
-    fullRes = getResFullName(res)
-    struct_names |= getStructNames(fullRes)
+        fullRes = getResFullName(res)
+        struct_names |= getStructNames(fullRes)
 
     for s in get_structs(il2cpp_h):
         if s.group(1) in struct_names:
