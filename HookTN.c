@@ -414,36 +414,13 @@ System_Uri_o *CreateSystemUri(char *s) {
     return uri;
 }
 
-System_Uri_o *ChangeUrl(char *url) {
-    printf("url: %s\n", url);
-
-    if (!strstr(url, "https://game.tribenine-game.com")) {
-        return NULL;
-    }
-
-    // len("https://game.tribenine-game.com") == 31
-#define BASE_URL_SIZE 31 
-#define NEW_URL_SIZE 4096
-    char new_url[NEW_URL_SIZE] = {0};
-
-    int err = snprintf(new_url, NEW_URL_SIZE, "http://127.0.0.1:8080%s", url + BASE_URL_SIZE);
-    
-    if (err < 0 || err >= MAX_PATH) {
-        fputs("snprintf new_url failed\n", stdout);
-        return NULL;
-    }
-
-    printf("new_url: %s\n", new_url);
-    
-    return CreateSystemUri(new_url);
-}
-#undef NEW_URL_SIZE
-#undef BASE_URL_SIZE
-
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
     sds url = System_String_toSds(uri->fields.m_String);
+    printf("[DetourHttpRequestCtor] %s\n", url);
+    if (ZERO_CONFIG.offlineMode) {
+        uri = CreateSystemUri("https://httpbin.org/status/500");
+    }
     SaveNeonApiPath(url);
-    printf("neonApiPath: '%s'\n", neonApiPath ? neonApiPath : "(null)");
     SaveStackTrace(url);
     sdsfree(url);
     fpHTTPRequestCtor(__this, uri, methodType, method);
