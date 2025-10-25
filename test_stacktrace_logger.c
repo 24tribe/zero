@@ -1,4 +1,4 @@
-#include "StackTraceLogger.h"
+#include "Logger.h"
 
 #include <stdio.h>
 

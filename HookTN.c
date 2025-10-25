@@ -12,7 +12,7 @@ References:
 #include "HookTN.h"
 #include "il2cpp_lean.h"
 #include "utils.h"
-#include "StackTraceLogger.h"
+#include "Logger.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -31,8 +31,6 @@ URICONSTRUCTOR System_Uri_ctor = NULL;
 typedef Il2CppObject *(*SOURCE_CORE_GETRESULT)(Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o __this, int16_t token, const MethodInfo_20B62E0* method);
 SOURCE_CORE_GETRESULT Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = NULL;
 SOURCE_CORE_GETRESULT fpSourceCore_GetResult = NULL;
-
-typedef System_String_o *(*object_toString)(Il2CppObject *, const MethodInfo *);
 
 typedef Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o (*APISERVICEAUTHSTEAMUSER)(
     Neon_Model_Api_ApiService_o* __this,
@@ -85,17 +83,6 @@ void PutString(System_String_o *s) {
     putchar('\n');
 }
 
-FILE *logFile = NULL;
-
-void WriteToLog(System_String_o *s) {
-    int32_t sLen = s->fields._stringLength;
-    uint16_t *firstChar = &(s->fields._firstChar);
-    if (logFile) {
-        fwrite(firstChar, 2, sLen, logFile);
-        fflush(logFile);
-    }
-}
-
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
     sds url = sds16to8(&(uri->fields.m_String->fields._firstChar), uri->fields.m_String->fields._stringLength);
     printf("Url: %s\n", url);
@@ -122,31 +109,8 @@ Il2CppObject *DetourSourceCore_GetResult(
     const MethodInfo_20B62E0* method
 ) {
     Il2CppObject *res = fpSourceCore_GetResult(__this, token, method);
-    const char *name = "unknown";
-    const char *namespaze = "unknown";
-    if (res) {
-        Il2CppClass *klass = res->klass;
     
-        if (klass) {
-            name = klass->_1.name;
-            namespaze = klass->_1.namespaze;
-        }
-    }
-
-    if (!strcmp(namespaze, "Neon.Model.Api.Rpc")) {
-        if (!strcmp(name, "AuthSteamUserResponse")) {
-            Neon_Model_Api_Rpc_AuthSteamUserResponse_o *authSteamUserRes;
-            authSteamUserRes = (Neon_Model_Api_Rpc_AuthSteamUserResponse_o *)res;
-            printf("AuthSteamUserResponse(userId_=%" PRIu64 ")\n", authSteamUserRes->fields.userId_);
-        } else {
-            printf("Name='%s', Namespace='%s'\n", name, namespaze);
-            object_toString toString = (object_toString)(uintptr_t)(res->klass->vtable[3 /* _3_toString*/].methodPtr);
-            System_String_o *resStr = toString(res, res->klass->vtable[3 /* _3_toString*/].method);
-            WriteToLog(resStr);
-            fputs("\n", logFile);
-            fputc(0x00, logFile);
-        }
-    }
+    LogResponse(res);
 
     return res;
 }
@@ -211,10 +175,5 @@ void HookTN(void *GameAssembly) {
     // HookApiServiceAuthSteamUser(GameAssembly);
     // HookSourceCore_GetResult(GameAssembly);
 
-    InitStackTraceLogger(GameAssembly);
-
-    logFile = fopen("Zero.log", "wb");
-    if (!logFile) {
-        printf("Failed to create log file\n");
-    }
+    InitLogger(GameAssembly);
 }

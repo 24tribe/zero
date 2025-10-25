@@ -26,7 +26,7 @@ zero_src = [
     'HookIl2Cpp.c',
     'HookTN.c',
     'HookExample.cpp',
-    'StackTraceLogger.c'
+    'Logger.c'
 ]
 
 zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep]
