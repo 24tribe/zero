@@ -53,6 +53,7 @@ struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
     {"Neon.Model.Api.Rpc.UserLogInResponse", NULL, "/user/log_in"},
     {"Neon.Model.Api.Rpc.UserCrossDateResponse", NULL, "/user/cross_date"},
     {"Neon.Model.Api.Rpc.GachaListResponse", NULL, "/gacha/list"},
+    {"Neon.Model.Api.Rpc.XbRetireResponse", NULL, "/xb/retire"},
 };
 
 struct ResponseTypeToRequestPtr_List RES_TYPE_TO_REQ_PTR_LIST = {

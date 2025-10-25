@@ -2676,4 +2676,29 @@ typedef struct Cysharp_Threading_Tasks_UniTask_XbStatusResponse__o {
 	Cysharp_Threading_Tasks_UniTask_XbStatusResponse__Fields fields;
 } Cysharp_Threading_Tasks_UniTask_XbStatusResponse__o;
 
+typedef struct Cysharp_Threading_Tasks_UniTask_XbRetireResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_XbRetireResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_XbRetireResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_XbRetireResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_XbRetireResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_XbRetireResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_XbRetireResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_XbRetireResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_XbRetireResponse__o {
+	Cysharp_Threading_Tasks_UniTask_XbRetireResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_XbRetireResponse__o;
+
 #endif
