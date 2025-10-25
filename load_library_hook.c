@@ -3,6 +3,7 @@
 #include "MetadataDump.h"
 #include "Recons.h"
 #include "HookIl2Cpp.h"
+#include "Config.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -109,7 +110,7 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
 
     HMODULE res;
 
-    if (strstr(libName, "steam_api64.dll")) {
+    if (strstr(libName, "steam_api64.dll") && ZERO_CONFIG.enableGoldbergSteam) {
         printf("[DetourLoadLibraryW] Changed steam_api64.dll to Goldberg\n");
         res = fpLoadLibraryW(GOLDBERG_STEAM);
     } else {

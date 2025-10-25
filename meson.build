@@ -32,7 +32,8 @@ zero_src = [
     'HookIl2Cpp.c',
     'HookTN.c',
     'HookExample.cpp',
-    'Logger.c'
+    'Logger.c',
+    'Config.c'
 ]
 
 zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep, jansson_dep, inih_dep]
