@@ -1,3 +1,10 @@
+# enable or disable offlineMode
+#
+# when offlineMode is false, the game communicates with the real tribe nine server
+# and logs the api calls (if onlineLogsPath is set)
+#
+# when offlineMode is true, the game intercepts the api calls and the game can be
+# played offline
 offlineMode=false
 
 # path to a save file created by createSaveFile.py
