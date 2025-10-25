@@ -7,7 +7,9 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("script_json")
     parser.add_argument("game_funcs_txt")
+    parser.add_argument("type_infos")
     parser.add_argument("output_c")
+    
     args = parser.parse_args()
 
     with open(args.script_json, "r", encoding="utf-8") as f:
@@ -34,16 +36,44 @@ def main():
             print(f"Couldn't find definitions for {gameFunc}")
             sys.exit(1)
 
+    with open(args.type_infos, "r", encoding="utf-8") as f:
+        type_infos = re.findall(r"([^\n]+)", f.read())
+
+    type_defs = []
+    type_inits = []
+
+    for type_info in type_infos:
+        found = False
+        for script_metadata in script["ScriptMetadata"]:
+            if script_metadata["Name"] == type_info:
+                found = True
+                definition, init = genTypeDefinitions(type_info, script_metadata)
+                type_defs.append(definition)
+                type_inits.append(init)
+        if not found:
+            print(f"Couldn't find type definitions for {type_info}")
+            sys.exit(1)
+
     with open(args.output_c, "w", encoding="utf-8") as f:
         f.write("\n".join(signatures))
         f.write("\n")
         f.write("\n".join(definitions))
         f.write("\n")
-        f.write("void InitGameFuncPtrs(void *GameAssembly) {\n  ")
+        f.write("\n".join(type_defs))
+        f.write("\n")
+        f.write("void InitGamePtrs(void *GameAssembly) {\n  ")
         f.write("\n  ".join(inits))
+        f.write("\n  ")
+        f.write("\n  ".join(type_inits))
         f.write("\n}\n")
 
     print("OK")
+
+def genTypeDefinitions(type_info, script_metadata):
+    varname = re.sub(r"[^a-zA-Z]", "_", type_info)
+    definition = f"Il2CppClass **{varname} = NULL;"
+    init = f"{varname} = (Il2CppClass **)((unsigned long long)GameAssembly + {script_metadata["Address"]}ull);"
+    return definition, init
 
 def genDefinitions(game_func, script_method):
     funcVar = re.sub(r"[^a-zA-Z]", "_", game_func)

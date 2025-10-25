@@ -27,8 +27,6 @@ References:
 
 #include "funcPtrs.c.h"
 
-Il2CppClass **System_Uri_TypeInfo = NULL;
-
 Neon_Model_Api_ApiService__Adventure_AreaObject_FuncPtr fpNeon_Model_Api_ApiService__Adventure_AreaObject = NULL;
 
 Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult_FuncPtr fpSourceCore_GetResult = NULL;
@@ -590,9 +588,7 @@ void HookCharacter_CostumeUpdate(void) {
 }
 
 void HookTN(void *GameAssembly) {
-    System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
-
-    InitGameFuncPtrs(GameAssembly);
+    InitGamePtrs(GameAssembly);
 
     HookHTTPRequestCtor(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);

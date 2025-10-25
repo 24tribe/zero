@@ -46,7 +46,7 @@ python3 = find_program('python3', required : true)
 
 func_ptrs = custom_target(
     'il2cppFuncPtrs',
-    input : ['scripts/genIl2CppFuncPtrs.py', 'dumper_out/script.json', 'gameFuncs.txt'],
+    input : ['scripts/genIl2CppPtrs.py', 'dumper_out/script.json', 'gameFuncs.txt', 'typeInfos.txt'],
     output : 'funcPtrs.c.h',
     command : [python3, '@INPUT@', '@OUTPUT@']
 )
