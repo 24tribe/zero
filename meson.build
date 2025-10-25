@@ -22,6 +22,9 @@ inih_dep = inih_proj.get_variable('libinih_dep')
 sqlite3_proj = subproject('sqlite3')
 sqlite3_dep = sqlite3_proj.get_variable('libsqlite3_dep')
 
+semba_proj = subproject('semba')
+semba_dep = semba_proj.get_variable('semba_dep')
+
 zero_src = [
     'mylib.c',
     'load_library_hook.c',
@@ -62,3 +65,5 @@ executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, depen
 executable('test_jansson', 'test_jansson.c', zero_src, dependencies : zero_deps)
 
 executable('test_sqlite3', 'test_sqlite3.c', zero_src, dependencies : zero_deps)
+
+executable('test_semba', 'test_semba.c', dependencies : semba_dep)
