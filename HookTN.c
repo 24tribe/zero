@@ -479,6 +479,10 @@ void HookTN(void *GameAssembly) {
         SembaInitOnlineDb(ZERO_CONFIG.onlineLogsPath);
     }
 
+    if (ZERO_CONFIG.sembaDbPath) {
+        SembaInitOfflineDb(ZERO_CONFIG.sembaDbPath);
+    }
+
     if (ZERO_CONFIG.offlineMode && ZERO_CONFIG.saveFile) {
         SembaLoadSave(ZERO_CONFIG.saveFile);
     }

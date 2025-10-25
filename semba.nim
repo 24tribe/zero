@@ -8,12 +8,16 @@ import db_connector/db_sqlite
 
 type SembaError = object of CatchableError
 
-var db = open("build/semba.db", "", "", "")
+var db: DbConn = nil
 var onlineDb: DbConn = nil
 
 proc SembaInitOnlineDb(path: cstring) {.exportc.} =
   if onlineDb == nil:
     onlineDb = open($path, "", "", "")
+
+proc SembaInitOfflineDb(path: cstring) {.exportc.} = 
+  if db == nil:
+    db = open($path, "", "", "")
 
 proc dupString(str: string): cstring =
   let s = str.cstring

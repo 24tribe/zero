@@ -9,6 +9,7 @@ struct Config {
     char *saveFile;
     char *onlineLogsPath;
     uint16_t *goldbergPath;
+    char *sembaDbPath;
 };
 
 extern struct Config ZERO_CONFIG;

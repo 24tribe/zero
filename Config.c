@@ -15,7 +15,8 @@ struct Config ZERO_CONFIG = {
     .offlineMode = false,
     .saveFile = NULL,
     .onlineLogsPath = NULL,
-    .goldbergPath = NULL
+    .goldbergPath = NULL,
+    .sembaDbPath = NULL
 };
 
 static void setGoldbergPath(const char *value) {
@@ -53,6 +54,8 @@ static int handler(void *user, const char *section, const char *name, const char
         ZERO_CONFIG.onlineLogsPath = sdsnew(value);  
     } else if (!strcmp(name, "goldbergPath")) {
         setGoldbergPath(value);
+    } else if (!strcmp(name, "sembaDbPath")) {
+        ZERO_CONFIG.sembaDbPath = sdsnew(value);
     } else {
         return 0; /* unknown section/name, error */
     }
@@ -68,6 +71,7 @@ void PrintZeroConfig(void) {
     printf("offlineMode=%s\n", ZERO_CONFIG.offlineMode ? "true" : "false");
     printf("saveFile=%s\n", string_null_escape(ZERO_CONFIG.saveFile));
     printf("onlineLogsPath=%s\n", string_null_escape(ZERO_CONFIG.onlineLogsPath));
+    printf("sembaDbPath=%s\n", string_null_escape(ZERO_CONFIG.sembaDbPath));
 
     sds goldbergPath;
     if (ZERO_CONFIG.goldbergPath) {
@@ -86,11 +90,16 @@ void PrintZeroConfig(void) {
     if (!ZERO_CONFIG.goldbergPath) {
         printf("WARNING: goldbergPath not set, steam emulation won't work!\n");
     }
+
+    if (!ZERO_CONFIG.sembaDbPath) {
+        printf("WARNING: sembaDbPath not set, offline mode won't work at all!\n");
+    }
 }
 
 void InitConfig(void) {
     if (ini_parse(CONFIG_LOCATION, handler, NULL) < 0) {
         printf("Can't load '" CONFIG_LOCATION "'\n");
+        return;
     }
 
     PrintZeroConfig();

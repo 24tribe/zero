@@ -16,3 +16,6 @@ offlineMode=true
 
 # path to the goldberg steam api emulator dll
 goldbergPath=steam_api64.dll
+
+# path to semba db (offline db)
+sembaDbPath=semba.db
