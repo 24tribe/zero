@@ -27,29 +27,11 @@ def main():
     with open(args.script_json, "r", encoding="utf-8") as f:
         script = json.load(f)
 
-    api_funcs_with_req_and_res = filter(
-        lambda x: req_hooks[x][0] != "None" and req_hooks[x][1] != "None", req_hooks
-    )
-
-    api_funcs_with_req_and_res = map(lambda x: f"Neon.Model.Api.ApiService$${x}", api_funcs_with_req_and_res)
-
-    api_funcs_with_req_and_res = set(api_funcs_with_req_and_res)      
-
-    empty_req_res_hooks = filter(
-        lambda x: req_hooks[x][0] == "None" and req_hooks[x][1] == "None", req_hooks
-    )
-
-    empty_req_res_hooks = map(lambda x: f"Neon.Model.Api.ApiService$${x}", empty_req_res_hooks)
-
-    empty_req_res_hooks = set(empty_req_res_hooks)
+    api_funcs_with_req_and_res = get_api_funcs_with_req_and_res(req_hooks) 
 
     impl_code, list_data, hookNames = createAutohookH(api_funcs_with_req_and_res, script)
 
-    api_funcs_with_res_only = filter(
-        lambda x: req_hooks[x][0] == "None" and req_hooks[x][1] != "None", req_hooks
-    )
-
-    api_funcs_with_res_only = [(x, req_hooks[x][1]) for x in api_funcs_with_res_only]
+    api_funcs_with_res_only = get_api_funcs_with_res_only(req_hooks)
 
     for name, res in api_funcs_with_res_only:
         path = nameToPath(name)
@@ -61,6 +43,8 @@ def main():
 
     for c in impl_code:
         code.append(c)
+
+    empty_req_res_hooks = get_empty_req_res_hooks(req_hooks)
 
     impl_code, moreHookNames = createAutohookHEmptyReqRes(empty_req_res_hooks, script)
 
@@ -85,6 +69,37 @@ def main():
 
     with open(args.out_h, "w", encoding="utf-8") as f:
         f.write("\n".join(code))
+
+def get_api_funcs_with_req_and_res(req_hooks):
+    api_funcs_with_req_and_res = filter(
+        lambda x: req_hooks[x][0] != "None" and req_hooks[x][1] != "None", req_hooks
+    )
+
+    api_funcs_with_req_and_res = map(lambda x: f"Neon.Model.Api.ApiService$${x}", api_funcs_with_req_and_res)
+
+    api_funcs_with_req_and_res = set(api_funcs_with_req_and_res)   
+
+    return api_funcs_with_req_and_res
+
+def get_empty_req_res_hooks(req_hooks):
+    empty_req_res_hooks = filter(
+        lambda x: req_hooks[x][0] == "None" and req_hooks[x][1] == "None", req_hooks
+    )
+
+    empty_req_res_hooks = map(lambda x: f"Neon.Model.Api.ApiService$${x}", empty_req_res_hooks)
+
+    empty_req_res_hooks = set(empty_req_res_hooks)
+
+    return empty_req_res_hooks
+
+def get_api_funcs_with_res_only(req_hooks):
+    api_funcs_with_res_only = filter(
+        lambda x: req_hooks[x][0] == "None" and req_hooks[x][1] != "None", req_hooks
+    )
+
+    api_funcs_with_res_only = [(x, req_hooks[x][1]) for x in api_funcs_with_res_only]
+
+    return api_funcs_with_res_only
 
 def nameToPath(methodName):
     path = re.findall(r"[A-Z][a-z]+", methodName)
