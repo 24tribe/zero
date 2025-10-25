@@ -29,12 +29,10 @@ zero_src = [
 ]
 
 shared_library('zero', zero_src, dependencies : [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep])
-relocation_test = shared_library('relocation_test', 'RelocationTest.c')
 
 executable('loader', 'loader.c')
 executable('metadata_test', 'metadata_test.c', 'MetadataDump.c')
 executable('printsections', 'printsections.c', 'MetadataDump.c', dependencies : ntdll_lib)
-executable('hellorld', 'HellorldMain.c', link_with : relocation_test)
 executable('test_utf', 'test_utf.c', 'utils.c', dependencies : sds_dep)
 
 executable(
