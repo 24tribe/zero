@@ -1,6 +1,7 @@
 #include "Section.h"
 
 #include <stdio.h>
+#include <limits.h>
 
 #define ARRAY_LEN(x) (sizeof x/sizeof *x)
 
@@ -19,7 +20,7 @@ int main(void) {
 
     struct Section Result[ARRAY_LEN(GameAssembly)];
 
-    FillUnknown(Result, GameAssembly, GameAssemblyLen);
+    FillUnknown(Result, GameAssembly, GameAssemblyLen, 0x1cbc00);
 
     for (size_t i = 0; i < GameAssemblyLen; ++i) {
         PrintSection(Result + i);

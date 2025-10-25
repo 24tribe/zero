@@ -32,3 +32,6 @@ executable(
 )
 
 executable('RegenSections', 'RegenSections.c', 'Section.c')
+executable(
+    'Bruteforce', 'Bruteforce.c', 'Recons.cpp', 'MetadataDump.c', 'Section.c',
+    dependencies : [libpeconv_dep, ntdll_lib])

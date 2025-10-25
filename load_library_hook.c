@@ -38,22 +38,16 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
 
     printf("GameAssembly: addr: %p, size: 0x%llx\n", (void *)GameAssembly, GameAssemblySize);
 
-    BYTE *buf = malloc(GameAssemblySize);
-
-    if (!buf) {
-        printf("Malloc failed\n");
-        return;
+    if (SaveMetadata("GA.dump", (void *)GameAssembly, GameAssemblySize)) {
+        fputs("Saved GA.dump\n", stdout);
+    } else {
+        fputs("Failed to save ga.dump\n", stdout);
     }
 
-    memcpy(buf, GameAssembly, GameAssemblySize);
-
-    if (DumpGameAssembly("GA.dll", buf, (unsigned long)GameAssemblySize, (unsigned long long)GameAssembly) < 0) {
-        printf("DumpGameAssembly failed\n");
-        return;
+    if (SaveAddress("GA.txt", GameAssembly)) {
+        printf("Saved address to GA.txt\n");
     }
-
-    printf("Created GA.dll\n");
-
+    
     InitRemapMem();
 
     if (RemapViewOfSection(GetCurrentProcess(), (void*)GameAssembly, GameAssemblySize, PAGE_EXECUTE_READWRITE)) {

@@ -11,7 +11,9 @@ struct Section {
     unsigned long VirtualSize;
 };
 
-void FillUnknown(struct Section *Result, struct Section *GameAssembly, size_t GameAssemblyLen);
+void FillUnknown(
+    struct Section *Result, struct Section *GameAssembly, size_t GameAssemblyLen,
+    unsigned long DataSectionSizeOfRawData);
 void PrintSection(struct Section *Section);
 
 #endif

@@ -5,9 +5,13 @@
 
 #include <stdbool.h>
 
+// Get the file size at path
+// Return LLONG_MAX on error
 extern long long GetMetadataSize(char *path);
+
 extern bool SaveMetadata(char *path, BYTE *buf, unsigned long size);
 extern bool IsMetadata(BYTE *buf);
+
 extern BYTE *ReadMetadata(const char *filename, unsigned long smallSize) ;
 
 #endif

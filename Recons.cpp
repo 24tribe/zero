@@ -12,7 +12,7 @@ extern "C" {
     NTAPI PIMAGE_NT_HEADERS RtlImageNtHeader(PVOID ModuleAddress);
 }
 
-int ChangeSections(BYTE *data) {
+int ChangeSections(BYTE *data, unsigned long DataSectionSizeOfRawData) {
     PIMAGE_NT_HEADERS headers = RtlImageNtHeader(data);
 
     if (!headers) {
@@ -41,7 +41,7 @@ int ChangeSections(BYTE *data) {
 
     std::vector<Section> Result(mySections.size());
 
-    FillUnknown(&Result[0], &mySections[0], mySections.size());
+    FillUnknown(&Result[0], &mySections[0], mySections.size(), DataSectionSizeOfRawData);
 
     sections = IMAGE_FIRST_SECTION(headers);
 
@@ -57,8 +57,11 @@ int ChangeSections(BYTE *data) {
     return 0;
 }
 
-extern "C" int DumpGameAssembly(const char *outpath, BYTE *buf, unsigned long smallSize, unsigned long long start_address) {
-    if (ChangeSections(buf) < 0) {
+extern "C" int DumpGameAssembly(
+    const char *outpath, BYTE *buf, unsigned long smallSize, unsigned long long start_address,
+    unsigned long DataSectionSizeOfRawData
+) {
+    if (ChangeSections(buf, DataSectionSizeOfRawData) < 0) {
         std::cout << "Failed to change sections\n";
         return -1;
     }

@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if (DumpGameAssembly(outpath, buf, smallSize, start_address) < 0) {
+    if (DumpGameAssembly(outpath, buf, smallSize, start_address, ULONG_MAX) < 0) {
         printf("Failed to dump game assembly\n");
         return 1;
     }    
