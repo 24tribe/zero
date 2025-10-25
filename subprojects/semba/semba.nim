@@ -1,6 +1,6 @@
 import std/json
 import std/strutils
-import std/segfaults
+import system/ansi_c
 
 proc DupString(s: cstring): cstring =
   result = cast[cstring](c_malloc((s.len + 1).csize_t))
