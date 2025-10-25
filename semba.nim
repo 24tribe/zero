@@ -25,6 +25,12 @@ proc logFlow(uri: string, req: string, res: string) =
     getDateNow(), uri, req, res
   )
 
+proc logFlowOffline(uri: string, req: string, res: string) =
+  db.exec(
+    sql"INSERT INTO debugLogsOffline (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
+    getDateNow(), uri, req, res
+  )
+
 proc SembaLogFlow(uri: cstring, req: cstring, res: cstring) {.exportc.} =
   logFlow($uri, $req, $res)
   
@@ -841,7 +847,7 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
 
   result = if jsonRes != nil: dupString($jsonRes) else: nil
 
-  logFlow($uri, $request, if jsonRes != nil: $jsonRes else: "")
+  logFlowOffline($uri, $request, if jsonRes != nil: $jsonRes else: "")
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:

@@ -6,6 +6,15 @@ CREATE TABLE debugLogs (
     res STRING
 );
 
+DROP TABLE IF EXISTS debugLogsOffline;
+CREATE TABLE debugLogsOffline (
+    receivedAt STRING,
+    uri STRING,
+    req STRING,
+    res STRING
+);
+
+
 DROP TABLE IF EXISTS areaObjects;
 CREATE TABLE areaObjects (
     areaId INTEGER,
