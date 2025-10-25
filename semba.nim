@@ -796,16 +796,21 @@ proc adventure_ReadSequence(jsonReq: JsonNode): JsonNode =
     SELECT areaObjects, changedResources FROM readSequence WHERE sequenceRequestId=?
   """, seqReqId);
 
-  let areaObjects = parseJson(row[0])
-  var changedResources = parseJson(row[1])
+  var areaObjects: JsonNode = nil
 
-  updateAreaObjects(jsonReq["areaKeyId"].getInt(), areaObjects)
+  if row[0] != "":
+    areaObjects = parseJson(row[0])
+    updateAreaObjects(jsonReq["areaKeyId"].getInt(), areaObjects)
+
+  var changedResources = parseJson(row[1]) 
   updateResources(changedResources)  
 
-  return %*{
-    "areaObjects": areaObjects,
+  result = %*{
     "changedResources": changedResources
   }
+
+  if areaObjects != nil:
+    result["areaObjects"] = areaObjects
 
 proc sembaCallUnsafe(uri: string, request: string): string =
   let jsonReq = if request != "": parseJson(request) else: nil

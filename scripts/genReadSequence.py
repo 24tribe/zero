@@ -3,7 +3,7 @@ from functools import partial
 import json
 import sys
 
-from dump_semba_logs import get_debug_logs
+from dumpSembaLogs import get_debug_logs
 
 def main():
     parser = ArgumentParser()
@@ -31,9 +31,11 @@ def write_sql(debug_logs, f):
 
             seqReqId = debug_log["req"]["sequenceRequestIds"][0]
             changedResources = debug_log["res"]["changedResources"]
-            areaObjects = debug_log["res"]["areaObjects"]
+            areaObjects = debug_log["res"].get("areaObjects")
 
-            printf(f"({seqReqId}, '{json.dumps(areaObjects)}', '{json.dumps(changedResources)}')")
+            areaObjectsStr = json.dumps(areaObjects) if areaObjects is not None else ""
+
+            printf(f"({seqReqId}, '{areaObjectsStr}', '{json.dumps(changedResources)}')")
     
     printf(";")
 
