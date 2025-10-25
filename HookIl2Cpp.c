@@ -170,6 +170,57 @@ void HookHTTPRequestCtor(void *GameAssembly) {
     }
 }
 
+/*
+References:
+[UniTaskCompletionSource example](https://github.com/Cysharp/UniTask)
+[TaskCompletionSource explanation](https://stackoverflow.com/questions/27891253/how-to-create-a-task-i-can-complete-manually)
+[Task.ContinueWith example](https://stackoverflow.com/questions/8244428/where-to-define-callback-for-task-based-asynchronous-method)
+[Task.ContinueWith docs](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.continuewith)
+[Delegate type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/reference-types#the-delegate-type)
+[Task.FromResult](https://stackoverflow.com/questions/19568280/what-is-the-use-for-task-fromresulttresult)
+[How Async and Await works](https://www.jacksondunstan.com/articles/4918)
+
+Pseudocode:
+using System;
+using System.Threading.Tasks;
+
+namespace AsyncBreakfast
+{
+    internal class UserResponse {
+        public int UserId;
+    }
+
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            Console.WriteLine($"[VICTIM] Waiting for UserResponse...");
+            var res = await AttackerGetUserResponse();
+            Console.WriteLine($"[VICTIM] Got UserId = {res.UserId}");
+        }
+
+        public static Task<UserResponse> AttackerGetUserResponse() {
+            Console.WriteLine("[ATTACKER] AttackerGetUserResponse called!");
+            var tcs = new TaskCompletionSource<UserResponse>();
+            var res = GetUserResponse();
+            res.ContinueWith((task) => {
+                var userResponse = task.Result;
+                Console.WriteLine($"[ATTACKER] Got UserId of {userResponse.UserId} changing to 80085...");
+                userResponse.UserId = 80085;
+                tcs.SetResult(userResponse);
+            });
+            return tcs.Task;
+        }
+
+        // TARGET METHOD
+        public static async Task<UserResponse> GetUserResponse() {
+            await Task.Delay(3000); // Simulate work
+            return new UserResponse {UserId = 6969};
+        }
+    }
+}
+*/
+
 Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o DetourApiServiceAuthSteamUser(
     Neon_Model_Api_ApiService_o* __this,
     Neon_Model_Api_Rpc_AuthSteamUserRequest_o* data,
@@ -177,8 +228,16 @@ Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o DetourApiServiceAuthSte
     System_Threading_CancellationToken_o cancellationToken,
     const MethodInfo* method
 ) {
-    printf("DetourApiServiceAuthSteamUser called!!!\n");
-    return fpApiServiceAuthSteamUser(__this, data, requestHandler, cancellationToken, method);
+    printf(
+        "DetourApiServiceAuthSteamUser(requestHandler=0x%llx, )\n",
+        (unsigned long long)requestHandler
+    );
+
+    Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o res = fpApiServiceAuthSteamUser(
+        __this, data, requestHandler, cancellationToken, method
+    );
+    
+    return res;
 }
 
 void HookApiServiceAuthSteamUser(void *GameAssembly) {
