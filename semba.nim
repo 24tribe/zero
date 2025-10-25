@@ -670,6 +670,7 @@ proc formation_Update(jsonReq: JsonNode): JsonNode =
   }
 
 # FIXME: this assumes that no new area object is created
+# FIXME: endrone disappears after re-login, probably his area object is not updated properly
 proc updateAreaObjects(areaId: int, areaObjects: JsonNode) =
   for areaObject in areaObjects:
     let areaObjectId = areaObject["areaObjectId"].getInt()
@@ -679,9 +680,9 @@ proc updateAreaObjects(areaId: int, areaObjects: JsonNode) =
 
     db.exec(sql"""
       UPDATE areaObjects
-      SET areaObjectBehaviorId = ?, action = ?
-      WHERE areaId = ? AND areaObjectId = ? AND areaPointId = ?
-    """, areaObjectBehaviorId, action, areaId, areaObjectId, areaPointId)
+      SET areaObjectBehaviorId = ?, action = ?, areaPointId = ?
+      WHERE areaId = ? AND areaObjectId = ?
+    """, areaObjectBehaviorId, action, areaPointId, areaId, areaObjectId)
 
 proc updateNineSequences(nineSequences: JsonNode) =
   for nineSequence in nineSequences:
@@ -705,7 +706,6 @@ proc updateAdventureVariables(adventureVariables: JsonNode) =
       ON CONFLICT (adventureVariableId) DO UPDATE SET value = ?
     """, adventureVariableId, value, value)
 
-# TODO: investigate what does row = db.getRow(...); row[i] does with a null value
 proc updateChallengeProgresses(challengeProgresses: JsonNode) =
   for challengeProgress in challengeProgresses:
     let challengeProgressId = challengeProgress["challengeProgressId"].getInt()
