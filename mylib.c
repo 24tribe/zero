@@ -22,11 +22,11 @@ void MyMain() {
 
     InitConfig();
 
-    HookNtQueryDirectoryFile();
+    // HookNtQueryDirectoryFile();
     HookLoadLibrary();
     // HookCreateFile();
 
-    puts("OK");
+    printf("OK! Reached end of MyMain!\n");
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,  DWORD  nReason, LPVOID lpReserved) {

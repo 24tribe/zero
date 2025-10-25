@@ -18,7 +18,7 @@
 typedef HMODULE (WINAPI *LOADLIBRARYW)(LPCWSTR);
 
 LOADLIBRARYW fpLoadLibraryW = NULL;
-bool alreadyDumped = false;
+bool alreadyCalledGameAssemblyCallback = false;
 
 bool SaveAddress(const char *outname, void *GameAssembly) {
     FILE *fp = fopen(outname, "w");
@@ -48,43 +48,25 @@ char *GetParentDir(char *path) {
     return first;
 }
 
-void GameAssemblyCallback(HMODULE GameAssembly) {
-    char path[MAX_PATH];
+void CalculateMd5Sum(sds path) {
+    sds GameAssemblyDll = SlurpFile(path);
 
-    char *gameName = "unknown";
-
-    // E:\TRIBENINE\GameAssembly.dll
-    // E:\SteamLibrary\steamapps\common\Ratatan Demo\GameAssembly.dll
-    // D:\unity\example\Build\GameAssembly.dll
-    if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
-        sds GameAssemblyDll = SlurpFile(path);
-        if (GameAssemblyDll) {
-            uint8_t digest[16];
-            md5sum_buffer((const uint8_t*)GameAssemblyDll, sdslen(GameAssemblyDll), digest);
-            char *hex = md5_hex(digest);
-            if (!strcmp(hex, "bf87cdb761f931b8ff806b2bd7a376af")) {
-                printf("Correct md5sum!!!\n");
-            } else {
-                printf("WARNING! Incorrect md5sum (%s), manually update script.json!\n", hex);
-            }
-            free(hex);
+    if (GameAssemblyDll) {
+        uint8_t digest[16];
+        md5sum_buffer((const uint8_t*)GameAssemblyDll, sdslen(GameAssemblyDll), digest);
+        char *hex = md5_hex(digest);
+        if (!strcmp(hex, "bf87cdb761f931b8ff806b2bd7a376af")) {
+            printf("Correct md5sum!!!\n");
+        } else {
+            printf("WARNING! Incorrect md5sum (%s), manually update script.json!\n", hex);
         }
+        free(hex);
 
-        gameName = GetParentDir(path);
+        sdsfree(GameAssemblyDll);
     }
+}
 
-    
-
-    if (alreadyDumped) {
-        return;
-    }
-
-    alreadyDumped = true;
-
-    unsigned long long GameAssemblySize = CalcDLLSize(GameAssembly);
-
-    printf("GameAssembly: addr: %p, size: 0x%llx\n", (void *)GameAssembly, GameAssemblySize);
-
+void DumpTNGameAssembly(char *gameName, void *GameAssembly, unsigned long long GameAssemblySize) {
     char dumpPath[MAX_PATH];
     char addressPath[MAX_PATH];
 
@@ -104,6 +86,33 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
             printf("Saved address to %s\n", addressPath);
         }
     }
+}
+
+void GameAssemblyCallback(HMODULE GameAssembly) {
+    char path[MAX_PATH];
+
+    char *gameName = "unknown";
+
+    // E:\TRIBENINE\GameAssembly.dll
+    // E:\SteamLibrary\steamapps\common\Ratatan Demo\GameAssembly.dll
+    // D:\unity\example\Build\GameAssembly.dll
+    if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
+        // CalculateMd5Sum(path);
+
+        gameName = GetParentDir(path);
+    }
+
+    if (alreadyCalledGameAssemblyCallback) {
+        return;
+    }
+
+    alreadyCalledGameAssemblyCallback = true;
+
+    unsigned long long GameAssemblySize = CalcDLLSize(GameAssembly);
+
+    printf("GameAssembly: addr: %p, size: 0x%llx\n", (void *)GameAssembly, GameAssemblySize);
+
+    // DumpTNGameAssembly(gameName, GameAssembly, GameAssemblySize);
    
     InitRemapMem();
 

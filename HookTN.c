@@ -483,6 +483,8 @@ void HookTN(void *GameAssembly) {
         SembaLoadSave(ZERO_CONFIG.saveFile);
     }
 
+    printf("Applying autohooks...\n");
     AutoHookTN();
+    printf("Autohooking done!\n");
     // Hook_HNNPFPKEEFE__KKHPCPHPBMF();
 }
