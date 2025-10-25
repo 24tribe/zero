@@ -408,5 +408,9 @@ void HookTN(void *GameAssembly) {
     HookKbjlheaohmd__Kpffclmemeg();
     HookAuth_SteamUser();
 
+    if (ZERO_CONFIG.onlineLogsPath) {
+        SembaInitOnlineDb(ZERO_CONFIG.onlineLogsPath);
+    }
+
     AutoHookTN();
 }

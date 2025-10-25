@@ -9,7 +9,8 @@
 
 struct Config ZERO_CONFIG = {
     .offlineMode = false,
-    .saveFile = NULL
+    .saveFile = NULL,
+    .onlineLogsPath = NULL
 };
 
 static int handler(void *user, const char *section, const char *name, const char *value) {
@@ -26,6 +27,8 @@ static int handler(void *user, const char *section, const char *name, const char
         }
     } else if (!strcmp(name, "saveFile")) {
         ZERO_CONFIG.saveFile = sdsnew(value);
+    } else if (!strcmp(name, "onlineLogsPath")) {
+        ZERO_CONFIG.onlineLogsPath = sdsnew(value);    
     } else {
         return 0; /* unknown section/name, error */
     }
@@ -33,9 +36,18 @@ static int handler(void *user, const char *section, const char *name, const char
     return 1;
 }
 
+static char *string_null_escape(char *s) {
+    return s ? s : "(null)";
+}
+
 void PrintZeroConfig(void) {
     printf("offlineMode=%s\n", ZERO_CONFIG.offlineMode ? "true" : "false");
-    printf("saveFile='%s'\n", ZERO_CONFIG.saveFile ? ZERO_CONFIG.saveFile : "(null)");
+    printf("saveFile=%s\n", string_null_escape(ZERO_CONFIG.saveFile));
+    printf("onlineLogsPath=%s\n", string_null_escape(ZERO_CONFIG.onlineLogsPath));
+
+    if (!ZERO_CONFIG.onlineLogsPath) {
+        printf("WARNING: onlineLogsPath not set, api call flows won't be saved!\n");
+    }
 }
 
 void InitConfig(void) {

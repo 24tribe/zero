@@ -1,11 +1,3 @@
-DROP TABLE IF EXISTS debugLogs;
-CREATE TABLE debugLogs (
-    receivedAt STRING,
-    uri STRING,
-    req STRING,
-    res STRING
-);
-
 DROP TABLE IF EXISTS debugLogsOffline;
 CREATE TABLE debugLogsOffline (
     receivedAt STRING,
@@ -13,7 +5,6 @@ CREATE TABLE debugLogsOffline (
     req STRING,
     res STRING
 );
-
 
 DROP TABLE IF EXISTS areaObjects;
 CREATE TABLE areaObjects (

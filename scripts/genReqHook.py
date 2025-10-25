@@ -1,3 +1,10 @@
+"""
+This script generates the HookTN function source, which hooks all game api
+functions in the game. This hooks put their request in a table and later,
+in other part of the code not generated in this file, is saved with the
+response in a database or used to intercept the api call in offline mode.
+"""
+
 from argparse import ArgumentParser
 import json
 import re

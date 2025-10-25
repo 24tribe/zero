@@ -1,1 +1,8 @@
 offlineMode=false
+
+# path to a save file created by createSaveFile.py
+# only used in offline mode
+#saveFile=
+
+# path to a sqlite3 db used to save api call flows in online mode
+#onlineLogsPath=

@@ -42,6 +42,15 @@ semba_db = custom_target(
     build_by_default : true
 )
 
+onlineLogs_db = custom_target(
+    'onlineLogs_db',
+    input : 'onlineLogs.sql',
+    output : 'onlineLogs.db',
+    command : [sqlite3, '@OUTPUT@'],
+    feed : true,
+    build_by_default : true
+)
+
 python3 = find_program('python3', required : true)
 
 func_ptrs = custom_target(

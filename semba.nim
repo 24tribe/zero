@@ -9,6 +9,11 @@ import db_connector/db_sqlite
 type SembaError = object of CatchableError
 
 var db = open("build/semba.db", "", "", "")
+var onlineDb: DbConn = nil
+
+proc SembaInitOnlineDb(path: cstring) {.exportc.} =
+  if onlineDb == nil:
+    onlineDb = open($path, "", "", "")
 
 proc dupString(str: string): cstring =
   let s = str.cstring
@@ -17,13 +22,12 @@ proc dupString(str: string): cstring =
 
 proc getDateNow(): string = $(now().utc)
 
-# stdout seems to be unreliable when called by the hook so
-# log to the db
 proc logFlow(uri: string, req: string, res: string) =
-  db.exec(
-    sql"INSERT INTO debugLogs (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
-    getDateNow(), uri, req, res
-  )
+  if onlineDb != nil:
+    onlineDb.exec(
+      sql"INSERT INTO debugLogs (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
+      getDateNow(), uri, req, res
+    )
 
 proc logFlowOffline(uri: string, req: string, res: string) =
   db.exec(
