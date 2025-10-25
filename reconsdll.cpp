@@ -1,5 +1,7 @@
 #include "peconv.h"
 
+#include <stdio.h>
+
 extern "C" {
 #include "MetadataDump.h"
 }
@@ -15,6 +17,8 @@ int main(int argc, char *argv[]) {
     char *outpath = argv[2];
     unsigned long long start_address = std::stoull(argv[3], nullptr, 0);
     peconv::t_pe_dump_mode dumpMode = (peconv::t_pe_dump_mode)atoi(argv[4]);
+
+    printf("address: %p, dumpMode: %d\n", (void *)start_address, (int)dumpMode);
 
     long long size = GetMetadataSize(ga_path);
     if (size == LLONG_MAX || size > (long long)ULONG_MAX) {

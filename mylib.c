@@ -1,6 +1,4 @@
-#include "create_file_hook.h"
 #include "load_library_hook.h"
-#include "utils.h"
 #include "NtQueryDirectoryFileHook.h"
 
 #include <MinHook.h>
@@ -22,7 +20,6 @@ void MyMain() {
 
     HookNtQueryDirectoryFile();
     HookLoadLibrary();
-    // HookCreateFile();
 
     puts("OK");
 }
@@ -30,16 +27,16 @@ void MyMain() {
 BOOL APIENTRY DllMain(HMODULE hModule,  DWORD  nReason, LPVOID lpReserved) {
     (void)hModule;
     (void)lpReserved;
-  switch (nReason) {
-  case DLL_PROCESS_ATTACH:
-    MyMain();
-    break;
-  case DLL_PROCESS_DETACH:
-    break;
-  case DLL_THREAD_ATTACH:
-    break;
-  case DLL_THREAD_DETACH:
-    break;
-  }
-  return TRUE;
+    switch (nReason) {
+    case DLL_PROCESS_ATTACH:
+        MyMain();
+        break;
+    case DLL_PROCESS_DETACH:
+        break;
+    case DLL_THREAD_ATTACH:
+        break;
+    case DLL_THREAD_DETACH:
+        break;
+    }
+    return TRUE;
 }

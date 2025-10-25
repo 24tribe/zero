@@ -14,6 +14,17 @@ typedef HMODULE (WINAPI *LOADLIBRARYW)(LPCWSTR);
 LOADLIBRARYW fpLoadLibraryW = NULL;
 bool alreadyDumped = false;
 
+bool SaveAddress(const char *outname, void *GameAssembly) {
+    FILE *fp = fopen(outname, "w");
+    if (!fp) {
+        printf("fopen failed\n");
+        return false;
+    }
+    fprintf(fp, "game_assembly_address=%p\n", GameAssembly);
+    fclose(fp);
+    return true;
+}
+
 // editbin /REBASE:BASE=0x180000000 GA.dll
 void DumpGameAssembly(HMODULE GameAssembly) {
     unsigned long long GameAssemblySize = CalcDLLSize(GameAssembly);
@@ -26,7 +37,12 @@ void DumpGameAssembly(HMODULE GameAssembly) {
         fputs("Failed to save ga.dump\n", stdout);
     }
 
-        
+    if (SaveAddress("GA.txt", GameAssembly)) {
+        printf("Saved address to GA.txt\n");
+    }
+
+    
+
     InitRemapMem();
 
     if (RemapViewOfSection(GetCurrentProcess(), (void*)GameAssembly, GameAssemblySize, PAGE_EXECUTE_READWRITE)) {

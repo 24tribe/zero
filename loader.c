@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
-        fputs("Usage: hello.exe game_exe_path dll_path\n", stdout);
+        fputs("Usage: Loader.exe game_exe_path dll_path\n", stdout);
         return 1;
     }
 
@@ -32,8 +32,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    STARTUPINFOA si = {};
-    PROCESS_INFORMATION pi = {};
+    STARTUPINFOA si = {0};
+    PROCESS_INFORMATION pi = {0};
     si.cb = sizeof(si);
     
     BOOL ret = CreateProcessA(NULL, path, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
