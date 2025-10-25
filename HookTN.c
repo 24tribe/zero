@@ -42,9 +42,7 @@ typedef Cysharp_Threading_Tasks_UniTask_TResponse__o (*NEON_API_GET_RESPONSE)(CD
 NEON_API_GET_RESPONSE NeonApiGetResponse = NULL; // CDGPJELFAMK__NOCKJHKDMGF_object_
 NEON_API_GET_RESPONSE fpNeonApiGetResponse = NULL;
 
-typedef bool (*KBJLHEAOHMD__KPFFCLMEMEG)(System_DateTime_o HKIOCIMKCCP, System_DateTime_o CJKBFINFMNP, const MethodInfo* method);
-KBJLHEAOHMD__KPFFCLMEMEG Kbjlheaohmd__Kpffclmemeg = NULL;
-KBJLHEAOHMD__KPFFCLMEMEG fpKbjlheaohmd__Kpffclmemeg = NULL;
+KBJLHEAOHMD__KPFFCLMEMEG_FuncPtr fpKbjlheaohmd__Kpffclmemeg = NULL;
 
 Neon_Model_Api_ApiService__Tip_Release_FuncPtr fpNeon_Model_Api_ApiService__Tip_Release = NULL;
 
@@ -313,7 +311,7 @@ bool DetourKbjlheaohmd__Kpffclmemeg(System_DateTime_o HKIOCIMKCCP, System_DateTi
 
 void HookKbjlheaohmd__Kpffclmemeg(void) {
     if (MH_CreateHook(
-        (void *)(uintptr_t)Kbjlheaohmd__Kpffclmemeg,
+        (void *)(uintptr_t)KBJLHEAOHMD__KPFFCLMEMEG,
         (LPVOID)(uintptr_t)&DetourKbjlheaohmd__Kpffclmemeg,
         (LPVOID *)(&fpKbjlheaohmd__Kpffclmemeg)
     ) != MH_OK) {
@@ -321,7 +319,7 @@ void HookKbjlheaohmd__Kpffclmemeg(void) {
         return;
     }
 
-    if (MH_EnableHook((void *)(uintptr_t)Kbjlheaohmd__Kpffclmemeg, /* changePermissions = */ FALSE) != MH_OK) {
+    if (MH_EnableHook((void *)(uintptr_t)KBJLHEAOHMD__KPFFCLMEMEG, /* changePermissions = */ FALSE) != MH_OK) {
         fputs("Failed to enable Kbjlheaohmd__Kpffclmemeg hook\n", stdout);
         return;
     }
@@ -605,8 +603,6 @@ void HookTN(void *GameAssembly) {
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = (SOURCE_CORE_GETRESULT)((unsigned long long)GameAssembly + 34300640ull);
 
     NeonApiGetResponse = (NEON_API_GET_RESPONSE)((unsigned long long)GameAssembly + 16173808ull);
-
-    Kbjlheaohmd__Kpffclmemeg = (KBJLHEAOHMD__KPFFCLMEMEG)((unsigned long long)GameAssembly + 59260912ull);
 
     InitGameFuncPtrs(GameAssembly);
 
