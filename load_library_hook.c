@@ -94,7 +94,7 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
         return;
     }
 
-    HookHTTPRequestCtor(GameAssembly);
+    HookIl2Cpp(GameAssembly);
 }
 
 HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
@@ -115,14 +115,14 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
 }
 
 void HookLoadLibrary() {
-    if (MH_CreateHook(&LoadLibraryW, &DetourLoadLibraryW, 
+    if (MH_CreateHook((void *)(uintptr_t)&LoadLibraryW, (void *)(uintptr_t)&DetourLoadLibraryW, 
         (LPVOID*)(&fpLoadLibraryW)) != MH_OK)
     {
         fputs("Failed to create LoadLibraryW hook", stdout);
         return;
     }
 
-    if (MH_EnableHook(&LoadLibraryW, TRUE) != MH_OK)
+    if (MH_EnableHook((void *)(uintptr_t)&LoadLibraryW, TRUE) != MH_OK)
     {
         fputs("Failed to enable LoadLibraryW hook", stdout);
         return;

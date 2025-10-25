@@ -20,7 +20,6 @@ zero_src = [
     'Section.c',
     'create_file_hook.c',
     'utils.c',
-    'il2cpptest.c',
     'HookIl2Cpp.c'
 ]
 

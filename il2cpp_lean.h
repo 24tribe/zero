@@ -414,6 +414,40 @@ typedef struct System_Byte_array {
 	uint8_t m_Items[65535];
 } System_Byte_array;
 
+typedef struct ONFKFJKNECJ_Fields {
+	struct System_Security_Cryptography_ICryptoTransform_o* NIEAFLBOJBE;
+} ONFKFJKNECJ_Fields;
+
+typedef struct ONFKFJKNECJ_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_DNMKCHKIBEJ;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_DNMKCHKIBEJ;
+	VirtualInvokeData _5_unknown;
+	VirtualInvokeData _6_unknown;
+	VirtualInvokeData _7_Dispose;
+	VirtualInvokeData _8_GHCGEDKKFPH;
+} ONFKFJKNECJ_VTable;
+
+typedef struct ONFKFJKNECJ_c {
+	Il2CppClass_1 _1;
+	struct ONFKFJKNECJ_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	ONFKFJKNECJ_VTable vtable;
+} ONFKFJKNECJ_c;
+
+typedef struct ONFKFJKNECJ_o {
+	ONFKFJKNECJ_c *klass;
+	void *monitor;
+	ONFKFJKNECJ_Fields fields;
+} ONFKFJKNECJ_o;
+
+typedef struct ONFKFJKNECJ_StaticFields {
+	struct System_Security_Cryptography_Aes_o* PPBNDDBMFJM;
+} ONFKFJKNECJ_StaticFields;
+
 typedef Il2CppObject *(*IL2CPPOBJECTNEW)(const Il2CppClass *klass);
 typedef System_String_o *(*IL2CPPSTRINGNEW)(char *s);
 typedef Il2CppDomain *(*IL2CPPDOMAINGET)(void);

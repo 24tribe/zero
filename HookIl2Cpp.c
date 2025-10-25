@@ -5,13 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/*
-void HookIl2Cpp(void *GameAssembly) {
-}
-
-void ONFKFJKNECJ__GHCGEDKKFPH(ONFKFJKNECJ_o* __this, System_Byte_array* NNINDKGNJFD, System_Byte_array* PHHLEEIDLBN, int32_t AIJNMMLONOD, const MethodInfo* method);
-*/
-
 static void *GAMEASSEMBLY_PTR;
 
 typedef void (*HTTPRequestCtor)(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method);
@@ -19,6 +12,16 @@ HTTPRequestCtor fpHTTPRequestCtor = NULL;
 
 typedef void (*HTTPPROXYCONSTRUCTOR)(Best_HTTP_Proxies_HTTPProxy_o* __this, System_Uri_o* address, const MethodInfo* method);
 typedef void (*URICONSTRUCTOR)(System_Uri_o* __this, System_String_o* uriString, const MethodInfo* method);
+
+typedef void (*ONFGHC)(
+    ONFKFJKNECJ_o* __this,
+    System_Byte_array* NNINDKGNJFD,
+    System_Byte_array* PHHLEEIDLBN,
+    int32_t AIJNMMLONOD,
+    const MethodInfo* method
+);
+
+ONFGHC fpOnfGhc = NULL;
 
 System_Uri_o *ChangeUrl(char *url, void *GameAssembly) {
     printf("url: %s\n", url);
@@ -77,9 +80,32 @@ void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, i
     printf("Afetr ChangeProxy\n");
 }
 
-void HookHTTPRequestCtor(void *GameAssembly) {
-    GAMEASSEMBLY_PTR = GameAssembly;
+void DetourOnfGhc(
+    ONFKFJKNECJ_o* __this,
+    System_Byte_array* NNINDKGNJFD,
+    System_Byte_array* PHHLEEIDLBN,
+    int32_t AIJNMMLONOD,
+    const MethodInfo* method
+) {
+    printf("OnfGhc called!\n");
+    fpOnfGhc(__this, NNINDKGNJFD, PHHLEEIDLBN, AIJNMMLONOD, method);
+}
 
+void HookOnfGhc(void *GameAssembly) {
+    void *addr = (char *)GameAssembly + 8877440;
+
+    if (MH_CreateHook(addr, (LPVOID)(uintptr_t)&DetourOnfGhc, (LPVOID *)&fpOnfGhc) != MH_OK) {
+        printf("Failed to create OnfGhc hook\n");
+        return;
+    }
+
+    if (MH_EnableHook(addr, /* RemapSectionPermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable OnfGhc hook\n");
+        return;
+    }
+}
+
+void HookHTTPRequestCtor(void *GameAssembly) {
     void *addr = (char *)GameAssembly + 10655472;
     if (MH_CreateHook(addr, (LPVOID)(uintptr_t)&DetourHTTPRequestCtor, (LPVOID *)(&fpHTTPRequestCtor)) != MH_OK) {
         fputs("Failed to create HTTPRequestCtor hook\n", stdout);
@@ -89,6 +115,13 @@ void HookHTTPRequestCtor(void *GameAssembly) {
         fputs("Failed to enable HTTPRequestCtor hook\n", stdout);
         return;
     }
+}
+
+void HookIl2Cpp(void *GameAssembly) {
+    GAMEASSEMBLY_PTR = GameAssembly;
+
+    HookHTTPRequestCtor(GameAssembly);
+    HookOnfGhc(GameAssembly);
 }
 
 Il2CppDomain *my_il2cpp_domain_get() {
