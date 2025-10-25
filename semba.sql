@@ -913,6 +913,7 @@ VALUES
 ,(1030113, '2025-04-24T03:49:59Z')
 ,(1004001, '2025-04-24T03:49:59Z')
 ,(1014001, '2025-04-24T03:49:59Z')
+,(1029001, '2025-04-24T03:49:59Z')
 ;
 
 INSERT INTO tips (tipId, releasedAt)
@@ -994,6 +995,11 @@ trainingScoreLevelScore, trainingScoreRankScore, actionPointMax,
 actionPointRate, actionPointConsumption, damageTakenRate)
 VALUES
 
+
+
+
+
+
 (100101, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
 100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
@@ -1069,6 +1075,11 @@ VALUES
 ,(101501, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
 100, 100, 100, 1015001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)
+,(102901, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1029001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
 ,(103001, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
