@@ -392,6 +392,48 @@ void HookNeonApiGetResponse(void) {
     }
 }
 
+Neon_Model_Api_ApiService__Xb_ForceRetire_FuncPtr fpNeon_Model_Api_ApiService__Xb_ForceRetire = NULL;
+
+Cysharp_Threading_Tasks_UniTask_o Detour_Neon_Model_Api_ApiService__Xb_ForceRetire(
+    Neon_Model_Api_ApiService_o* __this,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    RunNimMainOnce();
+
+    const char *path = "/xb/force_retire";
+
+    if (ZERO_CONFIG.offlineMode) {
+        SembaCall(path, "");
+
+        return (Cysharp_Threading_Tasks_UniTask_o){
+            .fields = {.source = NULL, .token = 0}
+        };
+    } else {
+        SembaLogFlow(path, "", "");
+        return fpNeon_Model_Api_ApiService__Xb_ForceRetire(
+            __this, requestHandler, cancellationToken, method
+        );
+    }
+}
+
+void Hook_Neon_Model_Api_ApiService__Xb_ForceRetire(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Xb_ForceRetire,
+        (LPVOID)(uintptr_t)&Detour_Neon_Model_Api_ApiService__Xb_ForceRetire,
+        (LPVOID *)&fpNeon_Model_Api_ApiService__Xb_ForceRetire
+    ) != MH_OK) {
+        printf("Failed to create Neon_Model_Api_ApiService__Xb_ForceRetire hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Xb_ForceRetire, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable Neon_Model_Api_ApiService__Xb_ForceRetire hook\n");
+        return;
+    }
+}
+
 void HookTN(void *GameAssembly) {
     InitGamePtrs(GameAssembly);
 
@@ -400,6 +442,7 @@ void HookTN(void *GameAssembly) {
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
     HookAuth_SteamUser();
+    Hook_Neon_Model_Api_ApiService__Xb_ForceRetire();
 
     AutoHookTN();
 }
