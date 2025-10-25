@@ -60,9 +60,7 @@ typedef Cysharp_Threading_Tasks_UniTask_BattleStartResponse__o (*NEON_MODEL_API_
 NEON_MODEL_API_APISERVICE__BATTLE_START Neon_Model_Api_ApiService__Battle_Start = NULL;
 NEON_MODEL_API_APISERVICE__BATTLE_START fpNeon_Model_Api_ApiService__Battle_Start = NULL;
 
-typedef Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o (*NEON_MODEL_API_APISERVICE__BATTLE_FINISH)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_BattleFinishRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
-NEON_MODEL_API_APISERVICE__BATTLE_FINISH Neon_Model_Api_ApiService__Battle_Finish = NULL;
-NEON_MODEL_API_APISERVICE__BATTLE_FINISH fpNeon_Model_Api_ApiService__Battle_Finish = NULL;
+Neon_Model_Api_ApiService__Battle_Finish_FuncPtr fpNeon_Model_Api_ApiService__Battle_Finish = NULL;
 
 Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus_FuncPtr fpNeon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = NULL;
 
@@ -625,8 +623,6 @@ void HookTN(void *GameAssembly) {
     Neon_Model_Api_ApiService__Adventure_MoveToArea = (NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA)((unsigned long long)GameAssembly + 79408528ull);
 
     Neon_Model_Api_ApiService__Battle_Start = (NEON_MODEL_API_APISERVICE__BATTLE_START)((unsigned long long)GameAssembly + 79413904ull);
-
-    Neon_Model_Api_ApiService__Battle_Finish = (NEON_MODEL_API_APISERVICE__BATTLE_FINISH)((unsigned long long)GameAssembly + 79412896ull);
 
     InitGameFuncPtrs(GameAssembly);
 
