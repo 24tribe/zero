@@ -569,6 +569,8 @@ void HookNeonApiGetResponse(void) {
     }
 }
 
+#include "funcPtrs.c.h"
+
 void HookTN(void *GameAssembly) {
     System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
@@ -604,6 +606,8 @@ void HookTN(void *GameAssembly) {
     HookBattleFinish();
     HookUpdateCharacterStatus();
     HookFormationUpdate();
+
+    InitGameFuncPtrs(GameAssembly);
 
     InitLogger(GameAssembly);
 }

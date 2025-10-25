@@ -19,24 +19,6 @@ jansson_dep = jansson_proj.get_variable('libjansson_dep')
 inih_proj = subproject('inih')
 inih_dep = inih_proj.get_variable('libinih_dep')
 
-zero_src = [
-    'mylib.c',
-    'load_library_hook.c',
-    'NtQueryDirectoryFileHook.c',
-    'RemapMem.c',
-    'MetadataDump.c',
-    'Recons.cpp',
-    'Section.c',
-    'create_file_hook.c',
-    'utils.c',
-    'HookIl2Cpp.c',
-    'HookTN.c',
-    'Logger.c',
-    'Config.c',
-    'Il2CppHelper.c',
-    'TimeString.c'
-]
-
 fs = import('fs')
 semba_nimble = fs.copyfile('semba.nimble')
 sqlite3_c = fs.copyfile('sqlite3.c')
@@ -59,6 +41,34 @@ semba_db = custom_target(
     feed : true,
     build_by_default : true
 )
+
+python3 = find_program('python3', required : true)
+
+func_ptrs = custom_target(
+    'il2cppFuncPtrs',
+    input : ['scripts/genIl2CppFuncPtrs.py', 'dumper_out/script.json', 'gameFuncs.txt'],
+    output : 'funcPtrs.c.h',
+    command : [python3, '@INPUT@', '@OUTPUT@']
+)
+
+zero_src = [
+    'mylib.c',
+    'load_library_hook.c',
+    'NtQueryDirectoryFileHook.c',
+    'RemapMem.c',
+    'MetadataDump.c',
+    'Recons.cpp',
+    'Section.c',
+    'create_file_hook.c',
+    'utils.c',
+    'HookIl2Cpp.c',
+    'HookTN.c',
+    'Logger.c',
+    'Config.c',
+    'Il2CppHelper.c',
+    'TimeString.c',
+    func_ptrs
+]
 
 semba_dep = declare_dependency(
     link_with : libsemba
