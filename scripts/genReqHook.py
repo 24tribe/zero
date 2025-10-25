@@ -126,6 +126,7 @@ void {hookName}(void) {{
 def appendDetourFunction(impl_code, funcPtrType, fpVar, req, lastReq, newSignature, args):
     impl_code.append(f"""
 {funcPtrType} {fpVar} = NULL;
+typedef struct Neon_Model_Api_Rpc_{req}_o Neon_Model_Api_Rpc_{req}_o;
 Neon_Model_Api_Rpc_{req}_o *{lastReq} = NULL;
 {newSignature}
     {lastReq} = data;
