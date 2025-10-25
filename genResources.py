@@ -17,6 +17,42 @@ def main():
 
 def write_sql(f, data):
     printf = partial(print, file=f)
+
+    gen_tension_cards(printf, f, data)
+    gen_challenge_progresses(printf, f, data)
+    gen_tips(printf, f, data)
+    
+def gen_tips(printf, f, data):
+    printf("INSERT INTO tips (tipId, releasedAt)")
+    printf("VALUES")
+
+    first = True
+    for tip in data["resources"]['tips']:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        printf(f"({tip["tipId"]}, '{tip["releasedAt"]}')")
+    
+    printf(";")
+
+def gen_challenge_progresses(printf, f, data):
+    printf("INSERT INTO challengeProgresses (challengeProgressId, clearedAt, state)")
+    printf("VALUES")
+
+    first = True
+    for prog in data["resources"]['challengeProgresses']:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        printf(f"({prog["challengeProgressId"]}, '{prog["clearedAt"] if "clearedAt" in prog else ""}', {prog["state"]})")
+    
+    printf(";")
+
+def gen_tension_cards(printf, f, data):
     printf("INSERT INTO tensionCards (tensionCardId, receivedAt, maxLevel, abilityEfficacies, trainingScoreLevelScore, entityId, isLocked)") 
     printf("VALUES")
 
@@ -29,21 +65,6 @@ def write_sql(f, data):
 
         printf(f"({tc["tensionCardId"]}, '{tc["receivedAt"]}', {tc["maxLevel"]}, '{json.dumps(tc["abilityEfficacies"])}', {tc["trainingScoreLevelScore"]}, {tc["entityId"]}, {"true" if tc["isLocked"] else "false"})")
 
-    printf(";")
-
-    printf("INSERT INTO challengeProgresses (challengeProgressId, clearedAt, state)")
-    printf("VALUES")
-
-    first = True
-    for prog in data["resources"]['challengeProgresses']:
-        if first:
-            first = False
-        else:
-            f.write(",")
-
-        print(prog)
-        printf(f"({prog["challengeProgressId"]}, '{prog["clearedAt"] if "clearedAt" in prog else ""}', {prog["state"]})")
-    
     printf(";")
 
 if __name__ == "__main__":

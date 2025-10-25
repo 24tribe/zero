@@ -473,6 +473,21 @@ proc getNineSequences(): seq[JsonNode] =
       "lastReadAt": lastReadAt
     })
 
+proc getTips(): seq[JsonNode] =
+  let tipsRows = db.getAllRows(sql"""
+    SELECT tipId, releasedAt
+    FROM tips
+  """)
+
+  for tipRow in tipsRows:
+    let tipId = parseInt(tipRow[0])
+    let releasedAt = tipRow[1]
+
+    result.add(%*{
+      "tipId": tipId,
+      "releasedAt": releasedAt
+    })
+
 proc user_LogIn(): JsonNode =
   return %*{
     "resources": {
@@ -486,7 +501,8 @@ proc user_LogIn(): JsonNode =
       "challenges": [{"challengeId": 100, "state": 8}],
       "challengeProgresses": getChallengeProgresses(),
       "areas": [{"areaId": 300401}, {"areaId": 300402}],
-      "nineSequences": getNineSequences()
+      "nineSequences": getNineSequences(),
+      "tips": getTips()
     }
   }
 
