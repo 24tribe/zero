@@ -14,6 +14,7 @@ References:
 #include "utils.h"
 #include "Logger.h"
 #include "Il2CppHelper.h"
+#include "Config.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -274,15 +275,17 @@ Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
     Google_Protobuf_MessageParser_TResponse__o* PNICKJFPBHH,
     const MethodInfo_F6CAF0* method
 ) {
-    Il2CppClass *uniTaskClass = il2cpp_type_get_class_or_element_class(method->return_type);
-    Il2CppObject *xResponse = GetMockResponse(PNICKJFPBHH);
-
     printf("DetourNeonApiGetResponse called!!\n");
+
+    if (ZERO_CONFIG.offlineMode) {
+        Il2CppClass *uniTaskClass = il2cpp_type_get_class_or_element_class(method->return_type);
+        Il2CppObject *xResponse = GetMockResponse(PNICKJFPBHH);
     
-    if (xResponse) {
-        Cysharp_Threading_Tasks_UniTask_TResponse__o *res;
-        res = (Cysharp_Threading_Tasks_UniTask_TResponse__o *)CreateUniTask(uniTaskClass, xResponse);
-        return *res;
+        if (xResponse) {
+            Cysharp_Threading_Tasks_UniTask_TResponse__o *res;
+            res = (Cysharp_Threading_Tasks_UniTask_TResponse__o *)CreateUniTask(uniTaskClass, xResponse);
+            return *res;
+        }
     }
       
     return fpNeonApiGetResponse(__this, EFCDPGBOIHC, EAGJONBIADJ, JLCCEAFOLOE, PNICKJFPBHH, method);
