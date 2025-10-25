@@ -47,9 +47,6 @@ executable(
 )
 
 executable('RegenSections', 'RegenSections.c', 'Section.c')
-executable(
-    'Bruteforce', 'Bruteforce.c', 'Recons.cpp', 'MetadataDump.c', 'Section.c',
-    dependencies : [libpeconv_dep, ntdll_lib])
 
 executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, dependencies : zero_deps)
 
