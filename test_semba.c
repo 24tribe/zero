@@ -56,4 +56,9 @@ int main(void) {
     printf("calling /battle/start with '%s'...\n\n", r);
     res = SembaCall("/battle/start", r);
     printf("%s\n\n", res);
+
+    r = "{\"characterUpdates\": [{\"characterId\": 100201, \"hp\": 370}, {\"characterId\": 100101, \"hp\": 511}], \"battleTaskTopics\": [{\"type\": \"qte\", \"count\": 4}, {\"type\": \"special_attack\", \"count\": 2}], \"encounteredEnemyIds\": [224303], \"battleTimeSecond\": 55, \"taskConditionResult\": {\"usedSkills\": [{\"characterSkillId\": 1002016, \"count\": 2}, {\"characterSkillId\": 1001016, \"count\": 2}, {\"characterSkillId\": 1001014, \"count\": 1}, {\"characterSkillId\": 1002014, \"count\": 1}], \"enemyStabilityBreaks\": [{\"enemyId\": 224303, \"count\": 2}]}}";
+    printf("calling /battle/finish with '%s'...\n\n", r);
+    res = SembaCall("/battle/finish", r);
+    printf("%s\n\n", res);
 }

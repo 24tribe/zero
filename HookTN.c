@@ -490,6 +490,13 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
         printf("[GetMockResponse] resJson=%s\n", resJson);
         res = CallParseJson(messageParser, resJson);
         sdsfree(reqJson);
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.BattleFinishResponse")) {
+        System_String_o *s = ConvertObjectToString((Il2CppObject *)lastBattleFinishRequest);
+        sds reqJson = System_String_toSds(s);
+        const char *resJson = SembaCall("/battle/finish", reqJson);
+        printf("[GetMockResponse] resJson=%s\n", resJson);
+        res = CallParseJson(messageParser, resJson);
+        sdsfree(reqJson);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.ChangedResourcesResponse")) {
         if (lastUpdateCharacterStatusRequest != NULL) {
             sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastUpdateCharacterStatusRequest));

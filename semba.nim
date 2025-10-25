@@ -288,7 +288,7 @@ proc getBattleParameters(battleEntryIds: JsonNode): seq[JsonNode] =
     result.add(%*{
       "id": id,
       "enemies": parseJson(battleParameterRow[0])
-    }) 
+    })
 
 proc battle_Start(jsonReq: JsonNode): JsonNode =
   var characters = newSeq[JsonNode]()
@@ -325,8 +325,49 @@ proc battle_Start(jsonReq: JsonNode): JsonNode =
     "battleTriggers": jsonReq["battleTriggers"]
   }
 
+proc setCharacterHp(characterId: int, hp: int) =
+  db.exec(sql"UPDATE characters SET hp = ? WHERE characterId = ?", hp, characterId)
+
+proc getCharacters(): seq[JsonNode] =
+  let charactersRows = db.getAllRows(sql("SELECT " & dbCharacterFields & " FROM characters"))
+
+  for characterRow in charactersRows:   
+    result.add(parseCharacterRow(characterRow))
+
 proc battle_Finish(jsonReq: JsonNode): JsonNode =
-  discard
+  var characterExps = newSeq[JsonNode]()
+
+  for characterUpdate in jsonReq["characterUpdates"]:
+    let characterId = characterUpdate["characterId"].getInt()
+    let hp = characterUpdate["hp"].getInt()
+
+    setCharacterHp(characterId, hp)
+
+    characterExps.add(%*{
+      "characterId": characterId,
+      # FIXME: calculate exp
+      "exp": 154,
+      "dropExp": 154
+    })
+   
+  return %*{
+    "characterExps": characterExps,
+    "rewards": {
+      "type": 6,
+      "contents": [
+        {
+          "type": 7,
+          "id": 50021,
+          "quantity": 1,
+          "isNew": true
+        }
+      ]
+    },
+    "changedResources": {
+      "status": getUserStatus(),
+      "characters": getCharacters()
+    }
+  }
 
 proc getNotifications(): JsonNode =
   return %*{
@@ -359,7 +400,7 @@ proc adventure_UpdateCharacterStatus(jsonReq: JsonNode): JsonNode =
     let characterId = characterUpdate["characterId"].getInt()
     let hp = characterUpdate["hp"].getInt()
 
-    db.exec(sql"UPDATE characters SET hp = ? WHERE characterId = ?", hp, characterId)
+    setCharacterHp(characterId, hp)
     
     let characterRow = db.getRow(sql(
       "SELECT " & dbCharacterFields & " FROM characters WHERE characterId = ?"
@@ -437,13 +478,6 @@ proc getChallengeProgresses(): seq[JsonNode] =
         "challengeProgressId": challengeProgressId,
         "state": state
       })
-
-
-proc getCharacters(): seq[JsonNode] =
-  let charactersRows = db.getAllRows(sql("SELECT " & dbCharacterFields & " FROM characters"))
-
-  for characterRow in charactersRows:   
-    result.add(parseCharacterRow(characterRow))
 
 proc getNineSequences(): seq[JsonNode] =
   let nineSequencesRows = db.getAllRows(sql"""
@@ -523,13 +557,15 @@ proc getShopProducts(): seq[JsonNode] =
     result.add(parseJson(shopProductRow[0]))
 
 proc user_LogIn(): JsonNode =
+  let formations = getFormations()
+
   return %*{
     "resources": {
       "wallet": {},
       "characters": getCharacters(),
       "status": getUserStatus(),
       "tensionCards": getTensionCards(),
-      "formations": getFormations(),
+      "formations": formations,
       "characterMountingPowerCommon": {},
       "notifications": getNotifications(),
       "challenges": [{"challengeId": 100, "state": 8}],
@@ -561,6 +597,7 @@ proc formation_Update(jsonReq: JsonNode): JsonNode =
       ]
     }
   }
+
 
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
