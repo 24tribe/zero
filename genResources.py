@@ -31,5 +31,20 @@ def write_sql(f, data):
 
     printf(";")
 
+    printf("INSERT INTO challengeProgresses (challengeProgressId, clearedAt, state)")
+    printf("VALUES")
+
+    first = True
+    for prog in data["resources"]['challengeProgresses']:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        print(prog)
+        printf(f"({prog["challengeProgressId"]}, '{prog["clearedAt"] if "clearedAt" in prog else ""}', {prog["state"]})")
+    
+    printf(";")
+
 if __name__ == "__main__":
     main()

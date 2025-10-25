@@ -103,6 +103,30 @@ CREATE TABLE challengeProgresses (
     state INTEGER
 );
 
+INSERT INTO challengeProgresses (challengeProgressId, clearedAt, state)
+VALUES
+(1000011, '2025-09-10T02:22:53Z', 3)
+,(1000021, '2025-09-10T02:22:53Z', 3)
+,(1000031, '2025-09-10T02:22:53Z', 3)
+,(1000041, '2025-09-10T02:22:53Z', 3)
+,(1000051, '2025-09-10T02:22:53Z', 3)
+,(1000061, '2025-09-10T02:22:53Z', 3)
+,(1000071, '2025-09-10T02:22:53Z', 3)
+,(1000081, '2025-09-10T02:22:53Z', 3)
+,(1000091, '2025-09-10T02:22:53Z', 3)
+,(1000101, '2025-09-10T02:22:53Z', 3)
+,(1000111, '2025-09-10T02:22:53Z', 3)
+,(1000112, '2025-09-10T02:22:53Z', 3)
+,(1000121, '2025-09-10T02:22:53Z', 3)
+,(1000122, '2025-09-10T02:22:53Z', 3)
+,(1000141, '2025-09-10T02:22:53Z', 3)
+,(1000151, '2025-09-10T02:22:53Z', 3)
+,(1000152, '2025-09-10T02:22:53Z', 3)
+,(1000153, '2025-09-10T02:22:53Z', 3)
+,(1000161, '2025-09-10T02:22:53Z', 3)
+,(1000162, '', 2)
+;
+
 INSERT INTO tensionCards (tensionCardId, receivedAt, maxLevel, abilityEfficacies, trainingScoreLevelScore, entityId, isLocked)
 VALUES
 (40006, '2025-09-10T02:22:53Z', 10, '[{"id": 100400060, "coolTimeMillisecond": 25000, "effectCoolTimeMillisecond": -1, "activeTimeMillisecond": -1, "efficacyType": 53, "probability": 100, "activateConditions": "100400061&!100400060&!100400062", "fValues": [0, 0.9], "values": [1, 0], "targetType": 1}, {"id": 100400061, "coolTimeMillisecond": 25000, "effectCoolTimeMillisecond": -1, "activeTimeMillisecond": 25000, "efficacyType": 24, "probability": 100, "activateConditions": "100400061&!100400062", "fValues": [30], "targetType": 2}]', 2, 1, true)

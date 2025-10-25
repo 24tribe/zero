@@ -369,6 +369,29 @@ proc getFormationsStr(): string =
   # FIXME: proper implementation
   result = """[{"members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 1, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {"tensionCard1Id": 5, "tensionCard2Id": 4, "tensionCard3Id": 3, "tensionCard4Id": 2, "tensionCard5Id": 1}}, {"number": 2, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 3, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 4, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 5, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 6, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 7, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 8, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 9, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 10, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}]"""
 
+proc getChallengeProgresses(): seq[JsonNode] =
+  let challengeProgressesRows = db.getAllRows(sql"""
+    SELECT challengeProgressId, clearedAt, state
+    FROM challengeProgresses
+  """)
+
+  for challengeProgressRow in challengeProgressesRows:
+    let challengeProgressId = parseInt(challengeProgressRow[0])
+    let clearedAt = challengeProgressRow[1]
+    let state = parseInt(challengeProgressRow[2])
+
+    if clearedAt != "":
+      result.add(%*{
+        "challengeProgressId": challengeProgressId,
+        "clearedAt": clearedAt,
+        "state": state
+      })
+    else:
+      result.add(%*{
+        "challengeProgressId": challengeProgressId,
+        "state": state
+      })
+
 proc getCharacters(): seq[JsonNode] =
   let charactersRows = db.getAllRows(sql"""
     SELECT characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
@@ -441,7 +464,8 @@ proc user_LogIn(): JsonNode =
       "formations": parseJson(getFormationsStr()),
       "characterMountingPowerCommon": {},
       "notifications": getNotifications(),
-      "challenges": [{"challengeId": 100, "state": 8}]
+      "challenges": [{"challengeId": 100, "state": 8}],
+      "challengeProgresses": getChallengeProgresses()
     }
   }
 
