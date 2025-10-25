@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS areaObjects;
 CREATE TABLE areaObjects (
     areaId INTEGER,
     areaObjectId INTEGER,
@@ -6,6 +7,7 @@ CREATE TABLE areaObjects (
     action STRING
 );
 
+DROP TABLE IF EXISTS tipRelease;
 CREATE TABLE tipRelease (
     tipId INTEGER,
     areaId INTEGER,
@@ -15,6 +17,7 @@ CREATE TABLE tipRelease (
     newAction STRING
 );
 
+DROP TABLE IF EXISTS areaEnemies;
 CREATE TABLE areaEnemies (
     areaId INTEGER,
     areaPointId INTEGER,
@@ -22,16 +25,36 @@ CREATE TABLE areaEnemies (
     action STRING
 );
 
+DROP TABLE IF EXISTS areaItems;
 CREATE TABLE areaItems (
     areaId INTEGER,
     areaItemId INTEGER
 );
 
+DROP TABLE IF EXISTS areaBgm;
 CREATE TABLE areaBgm (
     areaId INTEGER,
     id INTEGER,
     eventName STRING
 );
+
+DROP TABLE IF EXISTS userStatus;
+CREATE TABLE userStatus (
+    keyName STRING,
+    val STRING
+);
+
+INSERT INTO userStatus (keyName, val)
+VALUES
+("rank", "1")
+,("staminaUpdatedAt", "2025-09-10T02:22:51Z")
+,("formationNumber", "1")
+,("currentAreaKeyId", "300402")
+,("currentDirection", "5")
+,("loggedInAt", "2025-09-17T00:18:05Z")
+,("currentPositionCoordinates", '{"x": -8.824188, "y": 53.59764, "z": -16.63609}')
+,("currentAreaType", "1")
+;
 
 INSERT INTO areaBgm (areaId, id, eventName)
 VALUES
