@@ -49,8 +49,14 @@ def main():
 
     code += impl_code
 
+    req_and_empty_res_hooks = get_req_and_empty_res_hooks(req_hooks)
+
+    impl_code, yetMoreHookNames = createAutohookReqAndEmptyRes(req_and_empty_res_hooks, script)
+
+    code += impl_code
+
     code.append("void AutoHookTN(void) {")
-    for hookName in itertools.chain(hookNames, moreHookNames):
+    for hookName in itertools.chain(hookNames, moreHookNames, yetMoreHookNames):
         code.append(f"    {hookName}();")
 
     code.append("}")
@@ -89,6 +95,17 @@ def get_empty_req_res_hooks(req_hooks):
     empty_req_res_hooks = set(empty_req_res_hooks)
 
     return empty_req_res_hooks
+
+def get_req_and_empty_res_hooks(req_hooks):
+    req_and_empty_res_hooks = filter(
+        lambda x: req_hooks[x][0] != "None" and req_hooks[x][1] == "None", req_hooks
+    )
+
+    req_and_empty_res_hooks = map(lambda x: f"Neon.Model.Api.ApiService$${x}", req_and_empty_res_hooks)
+
+    req_and_empty_res_hooks = set(req_and_empty_res_hooks)
+
+    return req_and_empty_res_hooks    
 
 def get_api_funcs_with_res_only(req_hooks):
     api_funcs_with_res_only = filter(
@@ -154,6 +171,34 @@ Neon_Model_Api_Rpc_{req}_o *{lastReq} = NULL;
 }}
 """)
 
+def appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, path, funcPtrType):
+    impl_code.append(f"""
+{funcPtrType} {fpVar} = NULL;
+
+{newSignature}
+    RunNimMainOnce();
+
+    const char *path = "{path}";
+    sds jsonReq = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
+
+    if (ZERO_CONFIG.offlineMode) {{
+        SembaCall(path, jsonReq);
+
+        sdsfree(jsonReq);
+
+        return (Cysharp_Threading_Tasks_UniTask_o){{
+            .fields = {{.source = NULL, .token = 0}}
+        }};
+    }} else {{
+        SembaLogFlow(path, jsonReq, "");
+
+        sdsfree(jsonReq);
+
+        return {fpVar}({", ".join(args)});
+    }}
+}}
+""")
+
 def appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, funcPtrType):
     impl_code.append(f"""
 {funcPtrType} {fpVar} = NULL;
@@ -203,6 +248,43 @@ def createAutohookHEmptyReqRes(empty_req_res_hooks, script):
 
             appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, funcPtrType)
             appendCreateHookFunction(impl_code, hookName, var, detourName, fpVar)
+
+    if empty_req_res_hooks != set():
+        print(f"Couldn't find {empty_req_res_hooks}")
+        sys.exit(1)
+    
+    return impl_code, hookNames
+
+def createAutohookReqAndEmptyRes(req_and_empty_res_hooks, script):
+    hookNames = []
+    impl_code = []
+
+    for script_method in script["ScriptMethod"]:
+        if script_method["Name"] in req_and_empty_res_hooks:
+            req_and_empty_res_hooks.remove(script_method["Name"])
+
+            var = getFuncVar(script_method["Name"])
+            funcPtrType = getFuncPtrType(var)
+            hookName = getHookName(var)
+
+            hookNames.append(hookName)
+            fpVar = getFpVar(var)
+            detourName = getDetourName(var)
+
+            newSignature = getNewSignature(var, detourName, script_method["Signature"])
+            args = getArgs(newSignature)
+
+            match = re.search(r"Neon\.Model\.Api\.ApiService\$\$([^\n]+)", script_method["Name"])
+            assert match
+            name = match.group(1)
+            path = nameToPath(name)
+
+            appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, path, funcPtrType)
+            appendCreateHookFunction(impl_code, hookName, var, detourName, fpVar)
+
+    if req_and_empty_res_hooks != set():
+        print(f"Couldn't find {req_and_empty_res_hooks}")
+        sys.exit(1)
     
     return impl_code, hookNames
 
