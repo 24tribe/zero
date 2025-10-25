@@ -10,5 +10,6 @@ void SaveStackTrace(sds url);
 void LogResponse(Il2CppObject *obj);
 System_String_o *ConvertObjectToString(Il2CppObject *obj);
 System_String_o *GetStackTrace(void);
+void GetNameAndNamespaze(Il2CppObject *obj, const char **name, const char **namespaze);
 
 #endif

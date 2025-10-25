@@ -319,6 +319,24 @@ void HookKbjlheaohmd__Kpffclmemeg(void) {
 typedef void (*HTTPRequestCtor)(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method);
 HTTPRequestCtor fpHTTPRequestCtor = NULL;
 
+sds neonApiPath = NULL;
+
+void SaveNeonApiPath(sds url) {
+    if (!strstr(url, "https://game.tribenine-game.com")) {
+        return;
+    }
+
+    int baseUrlSize = 31; // len("https://game.tribenine-game.com") == 31
+
+    neonApiPath = sdsnew(url + baseUrlSize);
+}
+
+System_Uri_o *CreateSystemUri(char *s) {
+    System_Uri_o *uri = (System_Uri_o *)il2cpp_object_new(*System_Uri_TypeInfo);
+    System_Uri___ctor(uri, il2cpp_string_new(s), NULL);
+    return uri;
+}
+
 System_Uri_o *ChangeUrl(char *url) {
     printf("url: %s\n", url);
 
@@ -340,17 +358,15 @@ System_Uri_o *ChangeUrl(char *url) {
 
     printf("new_url: %s\n", new_url);
     
-    System_Uri_o *uri = (System_Uri_o *)il2cpp_object_new(*System_Uri_TypeInfo);
-    System_String_o *proxy = il2cpp_string_new(new_url);
-    System_Uri___ctor(uri, proxy, NULL);
-
-    return uri;
+    return CreateSystemUri(new_url);
 }
 #undef NEW_URL_SIZE
 #undef BASE_URL_SIZE
 
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
     sds url = System_String_toSds(uri->fields.m_String);
+    SaveNeonApiPath(url);
+    printf("neonApiPath: '%s'\n", neonApiPath ? neonApiPath : "(null)");
     SaveStackTrace(url);
     sdsfree(url);
     fpHTTPRequestCtor(__this, uri, methodType, method);
@@ -373,7 +389,38 @@ Il2CppObject *DetourSourceCore_GetResult(
     int16_t token,
     const MethodInfo_20B62E0* method
 ) {
+    NimMain();
+
     Il2CppObject *res = fpSourceCore_GetResult(__this, token, method);
+
+    const char *name;
+    const char *namespaze;
+
+    GetNameAndNamespaze(res, &name, &namespaze);
+
+    if (neonApiPath) {
+        if (!strcmp(namespaze, "Neon.Model.Api.Rpc")) {
+            if (!strcmp(name, "AdventureMoveToAreaResponse")) {
+                sds jsonReq = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureMoveToAreaRequest));
+                sds jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
+                SembaLogFlow(neonApiPath, jsonReq, jsonRes);
+                sdsfree(neonApiPath);
+                sdsfree(jsonRes);
+                sdsfree(jsonReq);
+                neonApiPath = NULL;
+                lastAdventureMoveToAreaRequest = NULL;
+            } else if (!strcmp(name, "AdventureAreaObjectResponse")) {
+                sds jsonReq = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectRequest));
+                sds jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
+                SembaLogFlow(neonApiPath, jsonReq, jsonRes);
+                sdsfree(neonApiPath);
+                sdsfree(jsonRes);
+                sdsfree(jsonReq);
+                neonApiPath = NULL;
+                lastAdventureAreaObjectRequest = NULL;
+            }
+        }
+    }
     
     LogResponse(res);
 

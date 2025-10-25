@@ -22,6 +22,9 @@ proc logFlow(uri: string, req: string, res: string) =
     sql"INSERT INTO debugLogs (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
     getDateNow(), uri, req, res
   )
+
+proc SembaLogFlow(uri: cstring, req: cstring, res: cstring) {.exportc.} =
+  logFlow($uri, $req, $res)
   
 proc adventure_AreaObject(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
