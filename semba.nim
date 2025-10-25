@@ -49,10 +49,41 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     result = DupString($res)
   elif uri == "/tip/release":
     var tips = newSeq[JsonNode]()
-    for node in jsonReq["tipIds"]:
-      tips.add(%*{"tipId": node.num, "releasedAt": "2025-09-10T02:17:06Z"})
+    var areaObjects = newSeq[JsonNode]()
 
-    let res = %*{"changedResources": {"tips": tips}}
+    for node in jsonReq["tipIds"]:
+      let tipId = node.num
+      tips.add(%*{"tipId": tipId, "releasedAt": "2025-09-10T02:17:06Z"})
+
+      let newAreaObjects = db.getAllRows(sql"""
+        SELECT areaObjectId, newAreaPointId, newAreaObjectBehaviorId, newAction
+        FROM tipRelease
+        WHERE tipId = ?
+      """, tipId)
+
+      for areaObject in newAreaObjects:
+        areaObjects.add(%*{
+          "areaObjectId": parseInt(areaObject[0]),
+          "areaPointId": parseInt(areaObject[1]),
+          "areaObjectBehaviorId": parseInt(areaObject[2]),
+          "action": parseJson(areaObject[3])
+        })
+
+      db.exec(sql"""
+        UPDATE areaObjects
+        SET areaPointId = t.newAreaPointId,
+            areaObjectBehaviorId = t.newAreaObjectBehaviorId,
+            action = t.newAction
+        FROM tipRelease as t
+        WHERE t.tipId = ? AND areaObjects.areaId = t.areaId AND areaObjects.areaObjectId = t.areaObjectId
+      """, tipId)
+
+
+    let res = %*{
+      "changedResources": {"tips": tips},
+      "areaObjects": areaObjects
+    }
+
     result = DupString($res)
   else:
     result = nil

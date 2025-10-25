@@ -60,6 +60,9 @@ Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o DetourTipRelease(
     const MethodInfo* method
 ) {
     lastTipReleaseRequest = data;
+    sds req = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
+    printf("[DetourTipRelease] %s\n", req);
+    sdsfree(req);
     return fpNeon_Model_Api_ApiService__Tip_Release(
         __this, data, requestHandler, cancellationToken, method
     );
@@ -81,7 +84,7 @@ void HookTipRelease(void) {
     }
 }
 
-Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* lastAdventureAreaObjectResponse = NULL;
+Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* lastAdventureAreaObjectRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o DetourAdventureAreaObject(
     Neon_Model_Api_ApiService_o* __this,
@@ -90,7 +93,10 @@ Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o DetourAdventureAr
     System_Threading_CancellationToken_o cancellationToken,
     const MethodInfo* method
 ) {
-    lastAdventureAreaObjectResponse = data;
+    lastAdventureAreaObjectRequest = data;
+    sds req = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
+    printf("[DetourAdventureAreaObject] %s\n", req);
+    sdsfree(req);
     return fpNeon_Model_Api_ApiService__Adventure_AreaObject(
         __this, data, requestHandler, cancellationToken, method
     );
@@ -300,7 +306,7 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
         sdsfree(userCrossDateResponseText);
         free(newResponse);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureAreaObjectResponse")) {
-        System_String_o *req = ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectResponse);
+        System_String_o *req = ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectRequest);
         sds reqJson = System_String_toSds(req);
         res = CallParseJson(messageParser, SembaCall("/adventure/area_object", reqJson));
         sdsfree(reqJson);

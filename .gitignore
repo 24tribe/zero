@@ -15,3 +15,5 @@ stacktraces/*.txt
 responses/*.txt
 config.ini
 *.db
+nimble.develop
+nimble.paths
