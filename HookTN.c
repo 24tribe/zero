@@ -13,6 +13,7 @@ References:
 #include "il2cpp_lean.h"
 #include "utils.h"
 #include "Logger.h"
+#include "Il2CppHelper.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -36,6 +37,10 @@ Il2CppClass **Neon_Model_Api_Rpc_AuthSteamUserResponse_TypeInfo = NULL;
 
 typedef void (*AUTH_STEAM_USER_RESPONSE_CTOR)(Neon_Model_Api_Rpc_AuthSteamUserResponse_o* __this, const MethodInfo* method);
 AUTH_STEAM_USER_RESPONSE_CTOR Neon_Model_Api_Rpc_AuthSteamUserResponse___ctor = NULL;
+
+typedef Cysharp_Threading_Tasks_UniTask_TResponse__o (*NEON_API_GET_RESPONSE)(CDGPJELFAMK_o* __this, BJAFDMJIDMJ_o* EFCDPGBOIHC, LPCOHPIGHIN_o* EAGJONBIADJ, System_Threading_CancellationToken_o JLCCEAFOLOE, Google_Protobuf_MessageParser_TResponse__o* PNICKJFPBHH, const MethodInfo_F6CAF0* method);
+NEON_API_GET_RESPONSE NeonApiGetResponse = NULL; // CDGPJELFAMK__NOCKJHKDMGF_object_
+NEON_API_GET_RESPONSE fpNeonApiGetResponse = NULL;
 
 typedef Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o (*APISERVICEAUTHSTEAMUSER)(
     Neon_Model_Api_ApiService_o* __this,
@@ -149,8 +154,7 @@ Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o DetourApiServiceAuthSte
 ) {
     Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o res = fpApiServiceAuthSteamUser(
         __this, data, requestHandler, cancellationToken, method
-    );
-
+    );   
     char sessionTicket[REASONABLE_STRING_SIZE] = {0};
     CopyUnicodeToByteArray(sessionTicket, data->fields.sessionTicket_);
     printf("AuthSteamUserRequest(sessionTicket='%s')\n", sessionTicket);    
@@ -169,6 +173,137 @@ void HookApiServiceAuthSteamUser(void *GameAssembly) {
     }
 }
 
+Neon_Model_Api_Rpc_AuthSteamUserResponse_o *CreateAuthSteamUserResponse(int64_t userId) {
+    Il2CppImage *neonModelDll = HelperGetImage("Neon.Model.dll");
+    const Il2CppClass *AuthSteamUserResponse = HelperGetClass(neonModelDll, "AuthSteamUserResponse", "Neon.Model.Api.Rpc");
+
+    if (!AuthSteamUserResponse) {
+        printf("AuthSteamUserResponse class not found!\n");
+    } else {
+        Neon_Model_Api_Rpc_AuthSteamUserResponse_o *resp;
+        resp = (Neon_Model_Api_Rpc_AuthSteamUserResponse_o *)il2cpp_object_new(AuthSteamUserResponse);
+        Neon_Model_Api_Rpc_AuthSteamUserResponse___ctor(resp, NULL);
+        resp->fields.userId_ = userId;
+        printf("AuthSteamUserResponse created!!!!\n");
+        return resp;
+    }
+
+    return NULL;
+}
+
+Il2CppObject *CreateUniTask(Il2CppClass *concreteClass, Il2CppObject *result) {
+    Il2CppObject *uniTask = il2cpp_object_new(concreteClass);
+    
+    const MethodInfo *ctor = il2cpp_class_get_method_from_name(
+        concreteClass, ".ctor", 1
+    );
+
+    if (!ctor) {
+        printf("Failed to get UniTask ctor!\n");
+        return NULL;
+    }
+
+    il2cpp_runtime_invoke(ctor, uniTask, (void *[]){result}, NULL);
+
+    return uniTask;
+}
+
+Il2CppObject *CallParseJson(
+    Google_Protobuf_MessageParser_TResponse__o *messageParser,
+    const char *s
+) {
+    const MethodInfo *ParseJson = il2cpp_class_get_method_from_name(
+        (Il2CppClass *)(messageParser->klass),
+        "ParseJson", 1
+    );
+
+    if (!ParseJson) {
+        printf("ParseJson not found!!!\n");
+        return NULL;
+    } else {
+        System_String_o *text = il2cpp_string_new((char *)s);
+        void *args[] = {text};
+        Il2CppObject *another = il2cpp_runtime_invoke(ParseJson, messageParser, args, NULL);
+        return another;
+    }
+}
+    
+Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
+    Il2CppObject *res = NULL;
+    System_String_o *s = ConvertObjectToString((Il2CppObject *)messageParser);
+    sds sUtf8 = sds16to8(&(s->fields._firstChar), s->fields._stringLength);
+
+    if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSteamUserResponse")) {
+        res = CallParseJson(
+            messageParser,
+            "{\"userId\": \"696969696969\"}"
+        );
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthNonceResponse")) {
+        res = CallParseJson(
+            messageParser,
+            "{\"nonce\": \"6969696969696969\"}"
+        );
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSignInResponse")) {
+        res = CallParseJson(
+            messageParser,
+            "{\"sessionToken\": \"69696969-6969-6969-6969-696969696969\",\"language\": 2}"
+        );
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserLogInResponse")) {
+        sds userLogInResponseText = SlurpFile("responses\\2025_9_13_14_8_59_UserLogInResponse.txt");
+
+        res = CallParseJson(messageParser, userLogInResponseText);
+
+        sdsfree(userLogInResponseText);
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserCrossDateResponse")) {
+        sds userCrossDateResponseText = SlurpFile("responses\\2025_9_13_14_9_1_UserCrossDateResponse.txt");
+
+        res = CallParseJson(messageParser, userCrossDateResponseText);
+
+        sdsfree(userCrossDateResponseText);
+    }
+
+    sdsfree(sUtf8);
+    return res;
+}
+
+Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
+    CDGPJELFAMK_o* __this,
+    BJAFDMJIDMJ_o* EFCDPGBOIHC,
+    LPCOHPIGHIN_o* EAGJONBIADJ,
+    System_Threading_CancellationToken_o JLCCEAFOLOE,
+    Google_Protobuf_MessageParser_TResponse__o* PNICKJFPBHH,
+    const MethodInfo_F6CAF0* method
+) {
+    Il2CppClass *uniTaskClass = il2cpp_type_get_class_or_element_class(method->return_type);
+    Il2CppObject *xResponse = GetMockResponse(PNICKJFPBHH);
+
+    printf("DetourNeonApiGetResponse called!!\n");
+    
+    if (xResponse) {
+        Cysharp_Threading_Tasks_UniTask_TResponse__o *res;
+        res = (Cysharp_Threading_Tasks_UniTask_TResponse__o *)CreateUniTask(uniTaskClass, xResponse);
+        return *res;
+    }
+      
+    return fpNeonApiGetResponse(__this, EFCDPGBOIHC, EAGJONBIADJ, JLCCEAFOLOE, PNICKJFPBHH, method);
+}
+
+void HookNeonApiGetResponse(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)NeonApiGetResponse,
+        (LPVOID)(uintptr_t)&DetourNeonApiGetResponse,
+        (LPVOID *)&fpNeonApiGetResponse
+    ) != MH_OK) {
+        printf("Failed to create NeonApiGetResponse hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)NeonApiGetResponse, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable NeonApiGetResponse hook\n");
+        return;
+    }
+}
+
 void HookTN(void *GameAssembly) {
     System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
@@ -178,9 +313,12 @@ void HookTN(void *GameAssembly) {
 
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = (SOURCE_CORE_GETRESULT)((unsigned long long)GameAssembly + 34300640ull);
 
+    NeonApiGetResponse = (NEON_API_GET_RESPONSE)((unsigned long long)GameAssembly + 16173808ull);
+
     HookHTTPRequestCtor(GameAssembly);
     HookApiServiceAuthSteamUser(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
+    HookNeonApiGetResponse();
 
     InitLogger(GameAssembly);
 }

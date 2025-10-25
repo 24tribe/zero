@@ -13,5 +13,9 @@ int main(void) {
         printf("%02x", (unsigned int)(unsigned char)*s++);
     }
     printf("\n");
-    sdsfree(s);
+    // sdsfree(s); // crash?
+
+    char *res = SlurpFile("responses\\2025_9_13_14_8_59_UserLogInResponse.txt");
+
+    puts(res);
 }
