@@ -31,7 +31,6 @@ zero_src = [
     'utils.c',
     'HookIl2Cpp.c',
     'HookTN.c',
-    'HookExample.cpp',
     'Logger.c',
     'Config.c',
     'Il2CppHelper.c',

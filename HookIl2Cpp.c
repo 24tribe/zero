@@ -6,7 +6,6 @@ https://code.apowo.com/opensource/il2cpp_plus
 
 #include "il2cpp_shared.h"
 #include "HookTN.h"
-#include "HookExample.h"
 
 #include <windows.h>
 
@@ -103,9 +102,7 @@ void HookIl2Cpp(void *GameAssembly, const char *gameName) {
     il2cpp_type_get_class_or_element_class = (IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_type_get_class_or_element_class");
     printf("il2cpp_type_get_class_or_element_class: 0x%llx\n", (unsigned long long)il2cpp_type_get_class_or_element_class);
 
-    if (!strcmp(gameName, "Build")) {
-        HookExample(GameAssembly);
-    } else if (!strcmp(gameName, "TRIBENINE")) {
+    if (!strcmp(gameName, "TRIBENINE")) {
         HookTN(GameAssembly);
     } else {
         printf("Unknown name '%s', HookIl2Cpp not applied!\n", gameName);
