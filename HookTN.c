@@ -515,6 +515,11 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
             res = CallParseJson(messageParser, SembaCall("/adventure/update_character_status", reqJson));
             sdsfree(reqJson);
             lastUpdateCharacterStatusRequest = NULL;
+        } else if (lastFormationUpdateRequest != NULL) {
+            sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastFormationUpdateRequest));
+            res = CallParseJson(messageParser, SembaCall("/formation/update", reqJson));
+            sdsfree(reqJson);
+            lastFormationUpdateRequest = NULL;
         }
     }
 

@@ -145,6 +145,28 @@ CREATE TABLE battleParameters (
     enemies STRING
 );
 
+DROP TABLE IF EXISTS formations;
+CREATE TABLE formations (
+    number INTEGER,
+    members STRING,
+    cards STRING
+);
+
+INSERT INTO formations (number, members, cards)
+VALUES
+(0, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(1, '{"character1Id": 100101, "character1OwnershipType": 1}', '{"tensionCard1Id": 5, "tensionCard2Id": 4, "tensionCard3Id": 3, "tensionCard4Id": 2, "tensionCard5Id": 1}')
+,(2, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(3, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(4, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(5, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(6, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(7, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(8, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(9, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+,(10, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
+;
+
 INSERT INTO battleParameters (id, enemies)
 VALUES
 (2000042, '[{"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "hpStackCount": 1}, {"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "hpStackCount": 1}]')

@@ -499,9 +499,23 @@ proc adventure_UpdateCharacterStatus(jsonReq: JsonNode): JsonNode =
     }
   }
 
-proc getFormationsStr(): string =
-  # FIXME: proper implementation
-  result = """[{"members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 1, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {"tensionCard1Id": 5, "tensionCard2Id": 4, "tensionCard3Id": 3, "tensionCard4Id": 2, "tensionCard5Id": 1}}, {"number": 2, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 3, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 4, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 5, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 6, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 7, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 8, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 9, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 10, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}]"""
+proc getFormations(): seq[JsonNode] =
+  let formationsRows = db.getAllRows(sql"""
+    SELECT number, members, cards FROM formations
+  """)
+
+  for formationRow in formationsRows:
+    var formation = %*{
+      "members": parseJson(formationRow[1]),
+      "cards": parseJson(formationRow[2])
+    }
+
+    let number = parseInt(formationRow[0])
+
+    if number != 0:
+      formation["number"] = %*number
+
+    result.add(formation)
 
 proc getChallengeProgresses(): seq[JsonNode] =
   let challengeProgressesRows = db.getAllRows(sql"""
@@ -617,7 +631,7 @@ proc user_LogIn(): JsonNode =
       "characters": getCharacters(),
       "status": getUserStatus(),
       "tensionCards": getTensionCards(),
-      "formations": parseJson(getFormationsStr()),
+      "formations": getFormations(),
       "characterMountingPowerCommon": {},
       "notifications": getNotifications(),
       "challenges": [{"challengeId": 100, "state": 8}],
@@ -633,6 +647,21 @@ proc user_LogIn(): JsonNode =
       "tutorialStates": getTutorialStates()
     },
     "masterData": {"shopProducts": getShopProducts()}
+  }
+
+proc formation_Update(jsonReq: JsonNode): JsonNode =
+  let number = jsonReq["number"].getInt()
+
+  db.exec(sql"""
+    UPDATE formations SET members = ?, cards = ? WHERE number = ?
+  """, jsonReq["members"].getStr(), jsonReq["cards"].getStr(), number)
+
+  return %*{
+    "changedResources": {
+      "formations": [
+        jsonReq
+      ]
+    }
   }
 
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
@@ -664,6 +693,8 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     jsonRes = adventure_UpdateCharacterStatus(jsonReq)
   elif uri == "/user/log_in":
     jsonRes = user_LogIn()
+  elif uri == "/formation/update":
+    jsonRes = formation_Update(jsonReq)
   else:
     jsonRes = nil
 
