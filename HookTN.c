@@ -25,7 +25,7 @@ References:
 #include <string.h>
 #include <inttypes.h>
 
-#include "funcPtrs.c.h"
+#include "funcPtrs.h"
 
 Neon_Model_Api_ApiService__Adventure_AreaObject_FuncPtr fpNeon_Model_Api_ApiService__Adventure_AreaObject = NULL;
 
