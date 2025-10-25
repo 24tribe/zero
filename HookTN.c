@@ -16,6 +16,7 @@ References:
 
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 
 #define REASONABLE_STRING_SIZE 4096
 
@@ -85,35 +86,22 @@ void PutString(System_String_o *s) {
     putchar('\n');
 }
 
-bool stackTraceDone = false;
+void PrintStackTrace() {
+    System_Diagnostics_StackTrace_o *stackTrace;
+    stackTrace = (System_Diagnostics_StackTrace_o *)il2cpp_object_new(*System_Diagnostics_StackTrace_TypeInfo);
+    System_Diagnostics_StackTrace_ctor(stackTrace, NULL);
+
+    VirtualInvokeData *toString = &(stackTrace->klass->vtable._3_ToString);
+    System_Diagnostics_StackTrace_toString toStringFunc;
+    toStringFunc = (System_Diagnostics_StackTrace_toString)(uintptr_t)(toString->methodPtr);
+    System_String_o *stackTraceStr = toStringFunc(stackTrace, toString->method);
+
+    PutString(stackTraceStr);
+}
 
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
-    il2cpp_thread_attach(il2cpp_domain_get());
-
-    printf("DetourHTTPRequestCtor called\n");
-
-    if (0 && !stackTraceDone) {
-        System_Diagnostics_StackTrace_o *stackTrace;
-        stackTrace = (System_Diagnostics_StackTrace_o *)il2cpp_object_new(*System_Diagnostics_StackTrace_TypeInfo);
-        System_Diagnostics_StackTrace_ctor(stackTrace, NULL);
-
-        VirtualInvokeData *toString = &(stackTrace->klass->vtable._3_ToString);
-        System_Diagnostics_StackTrace_toString toStringFunc;
-        toStringFunc = (System_Diagnostics_StackTrace_toString)(uintptr_t)(toString->methodPtr);
-        System_String_o *stackTraceStr = toStringFunc(stackTrace, toString->method);
-
-        PutString(stackTraceStr);
-
-        stackTraceDone = true;
-    }
-
-    // PutString(uri->fields.m_String);
-    char url[4096] = {0};
-    CopyUnicodeToByteArray(url, uri->fields.m_String);
-
-    System_Uri_o *newUri = ChangeUrl(url);
-
-    fpHTTPRequestCtor(__this, newUri ? newUri : uri, methodType, method);
+    PutString(uri->fields.m_String);
+    fpHTTPRequestCtor(__this, uri, methodType, method);
 }
 
 void HookHTTPRequestCtor(void *GameAssembly) {
@@ -135,15 +123,26 @@ Il2CppObject *DetourSourceCore_GetResult(
 ) {
     Il2CppObject *res = fpSourceCore_GetResult(__this, token, method);
     const char *name = "unknown";
+    const char *namespaze = "unknown";
     if (res) {
         Il2CppClass *klass = res->klass;
     
         if (klass) {
             name = klass->_1.name;
+            namespaze = klass->_1.namespaze;
         }
     }
-    
-    printf("DetourSourceCore_GetResult(%s)\n", name);
+
+    if (!strcmp(namespaze, "Neon.Model.Api.Rpc")) {
+        if (!strcmp(name, "AuthSteamUserResponse")) {
+            Neon_Model_Api_Rpc_AuthSteamUserResponse_o *authSteamUserRes;
+            authSteamUserRes = (Neon_Model_Api_Rpc_AuthSteamUserResponse_o *)res;
+            printf("AuthSteamUserResponse(userId_=%" PRIu64 ")\n", authSteamUserRes->fields.userId_);
+        } else {
+            printf("Name='%s', Namespace='%s'\n", name, namespaze);
+        }
+    }
+
     return res;
 }
 
@@ -175,18 +174,13 @@ Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o DetourApiServiceAuthSte
     System_Threading_CancellationToken_o cancellationToken,
     const MethodInfo* method
 ) {
-    printf(
-        "DetourApiServiceAuthSteamUser(requestHandler=0x%llx, )\n",
-        (unsigned long long)requestHandler
-    );
-
     Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o res = fpApiServiceAuthSteamUser(
         __this, data, requestHandler, cancellationToken, method
     );
 
     char sessionTicket[REASONABLE_STRING_SIZE] = {0};
     CopyUnicodeToByteArray(sessionTicket, data->fields.sessionTicket_);
-    printf("SessionTicket: %s\n", sessionTicket);    
+    printf("AuthSteamUserRequest(sessionTicket='%s')\n", sessionTicket);    
     return res;
 }
 
@@ -211,7 +205,7 @@ void HookTN(void *GameAssembly) {
     
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = (SOURCE_CORE_GETRESULT)((unsigned long long)GameAssembly + 34300640ull);
    
-    // HookHTTPRequestCtor(GameAssembly);
+    HookHTTPRequestCtor(GameAssembly);
     HookApiServiceAuthSteamUser(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
 }
