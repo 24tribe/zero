@@ -27,9 +27,11 @@ IL2CPPSTRINGNEW il2cpp_string_new = NULL;
 typedef void (*HTTPRequestCtor)(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method);
 HTTPRequestCtor fpHTTPRequestCtor = NULL;
 
-typedef void (*HTTPPROXYCONSTRUCTOR)(Best_HTTP_Proxies_HTTPProxy_o* __this, System_Uri_o* address, const MethodInfo* method);
 typedef void (*URICONSTRUCTOR)(System_Uri_o* __this, System_String_o* uriString, const MethodInfo* method);
 URICONSTRUCTOR System_Uri_ctor = NULL;
+
+typedef void (*STACKTRACECONSTRUCTOR)(System_Diagnostics_StackTrace_o* __this, const MethodInfo* method);
+STACKTRACECONSTRUCTOR System_Diagnostics_StackTrace_ctor = NULL;
 
 typedef void (*ONFGHC)(
     ONFKFJKNECJ_o* __this,
@@ -86,6 +88,7 @@ void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, i
 
     System_Diagnostics_StackTrace_o *stackTrace;
     stackTrace = (System_Diagnostics_StackTrace_o *)il2cpp_object_new(*System_Diagnostics_StackTrace_TypeInfo);
+    System_Diagnostics_StackTrace_ctor(stackTrace, NULL);
 
     // PutString(uri->fields.m_String);
     char url[4096] = {0};
@@ -148,6 +151,7 @@ void HookIl2Cpp(void *GameAssembly) {
     printf("il2cpp_string_new: 0x%llx\n", (unsigned long long)il2cpp_string_new);
 
     System_Diagnostics_StackTrace_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129545976ull);
+    System_Diagnostics_StackTrace_ctor = (STACKTRACECONSTRUCTOR)((unsigned long long)GameAssembly + 55774032ull);
 
     System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
