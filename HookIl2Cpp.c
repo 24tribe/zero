@@ -5,6 +5,21 @@
 #include <stdio.h>
 #include <string.h>
 
+Il2CppClass **System_Diagnostics_StackTrace_TypeInfo = NULL;
+Il2CppClass **System_Uri_TypeInfo = NULL;
+
+typedef Il2CppDomain *(*IL2CPPDOMAINGET)(void);
+IL2CPPDOMAINGET il2cpp_domain_get = NULL;
+
+typedef void (*IL2CPPTHREADATTACH)(Il2CppDomain *);
+IL2CPPTHREADATTACH il2cpp_thread_attach = NULL;
+
+typedef Il2CppObject *(*IL2CPPOBJECTNEW)(const Il2CppClass *klass);
+IL2CPPOBJECTNEW il2cpp_object_new = NULL;
+
+typedef System_String_o *(*IL2CPPSTRINGNEW)(char *s);
+IL2CPPSTRINGNEW il2cpp_string_new = NULL;
+
 static void *GAMEASSEMBLY_PTR;
 
 typedef void (*HTTPRequestCtor)(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method);
@@ -12,6 +27,7 @@ HTTPRequestCtor fpHTTPRequestCtor = NULL;
 
 typedef void (*HTTPPROXYCONSTRUCTOR)(Best_HTTP_Proxies_HTTPProxy_o* __this, System_Uri_o* address, const MethodInfo* method);
 typedef void (*URICONSTRUCTOR)(System_Uri_o* __this, System_String_o* uriString, const MethodInfo* method);
+URICONSTRUCTOR System_Uri_ctor = NULL;
 
 typedef void (*ONFGHC)(
     ONFKFJKNECJ_o* __this,
@@ -23,8 +39,9 @@ typedef void (*ONFGHC)(
 
 ONFGHC fpOnfGhc = NULL;
 
-System_Uri_o *ChangeUrl(char *url, void *GameAssembly) {
+System_Uri_o *ChangeUrl(char *url) {
     printf("url: %s\n", url);
+
     if (!strstr(url, "https://game.tribenine-game.com")) {
         return NULL;
     }
@@ -43,16 +60,11 @@ System_Uri_o *ChangeUrl(char *url, void *GameAssembly) {
 
     printf("new_url: %s\n", new_url);
 
-    my_il2cpp_thread_attach(my_il2cpp_domain_get());
-
-    // System.Uri_TypeInfo
-    Il2CppClass **uriTypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
+    il2cpp_thread_attach(il2cpp_domain_get());
     
-    Il2CppClass *uriClass = *uriTypeInfo;
-    URICONSTRUCTOR uriCtor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
-    System_Uri_o *uri = (System_Uri_o *)my_il2cpp_object_new(uriClass);
-    System_String_o *proxy = my_il2cpp_string_new(new_url);
-    uriCtor(uri, proxy, NULL);
+    System_Uri_o *uri = (System_Uri_o *)il2cpp_object_new(*System_Uri_TypeInfo);
+    System_String_o *proxy = il2cpp_string_new(new_url);
+    System_Uri_ctor(uri, proxy, NULL);
 
     return uri;
 }
@@ -69,11 +81,15 @@ void copy_url(char *url, System_String_o *s) {
 
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
     printf("DetourHTTPRequestCtor called\n");
+
+    System_Diagnostics_StackTrace_o *stackTrace;
+    stackTrace = (System_Diagnostics_StackTrace_o *)il2cpp_object_new(*System_Diagnostics_StackTrace_TypeInfo);
+
     // PutString(uri->fields.m_String);
     char url[4096] = {0};
     copy_url(url, uri->fields.m_String);
 
-    System_Uri_o *newUri = ChangeUrl(url, GAMEASSEMBLY_PTR);
+    System_Uri_o *newUri = ChangeUrl(url);
 
     fpHTTPRequestCtor(__this, newUri ? newUri : uri, methodType, method);
     // ChangeProxy(__this, GAMEASSEMBLY_PTR);
@@ -120,48 +136,25 @@ void HookHTTPRequestCtor(void *GameAssembly) {
 void HookIl2Cpp(void *GameAssembly) {
     GAMEASSEMBLY_PTR = GameAssembly;
 
+    il2cpp_domain_get = (IL2CPPDOMAINGET)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_domain_get");
+    printf("il2cpp_domain_get: 0x%llx\n", (unsigned long long)il2cpp_domain_get);
+
+    il2cpp_thread_attach = (IL2CPPTHREADATTACH)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_thread_attach");
+    printf("il2cpp_thread_attach: 0x%llx\n", (unsigned long long)il2cpp_thread_attach);
+
+    il2cpp_object_new = (IL2CPPOBJECTNEW)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_object_new");
+    printf("il2cpp_object_new: 0x%llx\n", (unsigned long long)il2cpp_object_new);
+
+    il2cpp_string_new = (IL2CPPSTRINGNEW)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_string_new");
+    printf("il2cpp_string_new: 0x%llx\n", (unsigned long long)il2cpp_string_new);
+
+    System_Diagnostics_StackTrace_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129545976ull);
+
+    System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
+    System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
+
     HookHTTPRequestCtor(GameAssembly);
     HookOnfGhc(GameAssembly);
-}
-
-Il2CppDomain *my_il2cpp_domain_get() {
-    IL2CPPDOMAINGET fp = (IL2CPPDOMAINGET)(uintptr_t)GetProcAddress(
-        GAMEASSEMBLY_PTR, "il2cpp_domain_get"
-    );
-
-    printf("il2cpp_domain_get: %llx\n", (unsigned long long)fp);
-
-    return fp();
-}
-
-void my_il2cpp_thread_attach(Il2CppDomain *dom) {
-    IL2CPPTHREADATTACH fp = (IL2CPPTHREADATTACH)(uintptr_t)GetProcAddress(
-        GAMEASSEMBLY_PTR, "il2cpp_thread_attach"
-    );
-
-    printf("il2cpp_thread_attach: 0x%llx\n", (unsigned long long)fp);
-
-    fp(dom);
-}
-
-Il2CppObject *my_il2cpp_object_new(const Il2CppClass *klass) {
-    IL2CPPOBJECTNEW fp = (IL2CPPOBJECTNEW)(uintptr_t)GetProcAddress(
-        GAMEASSEMBLY_PTR, "il2cpp_object_new"
-    );
-
-    printf("il2cpp_object_new: 0x%llx\n", (unsigned long long)fp);
-
-    return fp(klass);
-}
-
-System_String_o *my_il2cpp_string_new(char *s) {
-    IL2CPPSTRINGNEW fp = (IL2CPPSTRINGNEW)(uintptr_t)GetProcAddress(
-        GAMEASSEMBLY_PTR, "il2cpp_string_new"
-    );
-
-    printf("il2cpp_string_new: 0x%llx\n", (unsigned long long)fp);
-
-    return fp(s);
 }
 
 void PutString(System_String_o *s) {
@@ -176,13 +169,13 @@ void PutString(System_String_o *s) {
 /*
 // https://katyscode.wordpress.com/2021/01/14/il2cppinspector-tutorial-working-with-code-in-il2cpp-dll-injection-projects/
 void ChangeProxy(Best_HTTP_HTTPRequest_o *__this, void *GameAssembly) {
-    my_il2cpp_thread_attach(my_il2cpp_domain_get());
+    il2cpp_thread_attach(il2cpp_domain_get());
 
     Il2CppClass **uriTypeInfo = (char *)GameAssembly + 129866520; // System.Uri_TypeInfo
     Il2CppClass *uriClass = *uriTypeInfo;
     URICONSTRUCTOR uriCtor = (char *)GameAssembly + 94439536;
-    System_Uri_o *uri = (System_Uri_o *)my_il2cpp_object_new(uriClass);
-    System_String_o *proxy = my_il2cpp_string_new("http://127.0.0.1:8080");
+    System_Uri_o *uri = (System_Uri_o *)il2cpp_object_new(uriClass);
+    System_String_o *proxy = il2cpp_string_new("http://127.0.0.1:8080");
     PutString(proxy);
     uriCtor(uri, proxy, NULL);
 
@@ -199,7 +192,7 @@ void ChangeProxy(Best_HTTP_HTTPRequest_o *__this, void *GameAssembly) {
 
     HTTPPROXYCONSTRUCTOR httpProxyCtor = (char *)GameAssembly + 10937280;   
     
-    Best_HTTP_Proxies_HTTPProxy_o *httpProxy = (Best_HTTP_Proxies_HTTPProxy_o *)my_il2cpp_object_new(*httpProxyTypeInfo);
+    Best_HTTP_Proxies_HTTPProxy_o *httpProxy = (Best_HTTP_Proxies_HTTPProxy_o *)il2cpp_object_new(*httpProxyTypeInfo);
     httpProxyCtor(httpProxy, uri, NULL);
     
     

@@ -448,14 +448,39 @@ typedef struct ONFKFJKNECJ_StaticFields {
 	struct System_Security_Cryptography_Aes_o* PPBNDDBMFJM;
 } ONFKFJKNECJ_StaticFields;
 
-typedef Il2CppObject *(*IL2CPPOBJECTNEW)(const Il2CppClass *klass);
-typedef System_String_o *(*IL2CPPSTRINGNEW)(char *s);
-typedef Il2CppDomain *(*IL2CPPDOMAINGET)(void);
-typedef void (*IL2CPPTHREADATTACH)(Il2CppDomain *);
+typedef struct System_Diagnostics_StackTrace_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_get_FrameCount;
+	VirtualInvokeData _5_GetFrame;
+	VirtualInvokeData _6_GetFrames;
+} System_Diagnostics_StackTrace_VTable;
 
-Il2CppObject *my_il2cpp_object_new(const Il2CppClass *klass);
-System_String_o *my_il2cpp_string_new(char *s);
-Il2CppDomain *my_il2cpp_domain_get(void);
-void my_il2cpp_thread_attach(Il2CppDomain *);
+typedef struct System_Diagnostics_StackTrace_c {
+	Il2CppClass_1 _1;
+	struct System_Diagnostics_StackTrace_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	System_Diagnostics_StackTrace_VTable vtable;
+} System_Diagnostics_StackTrace_c;
+
+typedef struct System_Diagnostics_StackTrace_Fields {
+	struct System_Diagnostics_StackFrame_array* frames;
+	struct System_Diagnostics_StackTrace_array* captured_traces;
+	bool debug_info;
+} System_Diagnostics_StackTrace_Fields;
+
+typedef struct System_Diagnostics_StackTrace_o {
+	System_Diagnostics_StackTrace_c *klass;
+	void *monitor;
+	System_Diagnostics_StackTrace_Fields fields;
+} System_Diagnostics_StackTrace_o;
+
+typedef struct System_Diagnostics_StackTrace_StaticFields {
+	bool isAotidSet;
+	struct System_String_o* aotid;
+} System_Diagnostics_StackTrace_StaticFields;
 
 #endif
