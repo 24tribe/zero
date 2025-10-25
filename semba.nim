@@ -2,6 +2,7 @@ import std/json
 import std/strutils
 import system/ansi_c
 import std/math
+import std/times
 
 import db_connector/db_sqlite
 
@@ -95,6 +96,9 @@ proc getUserStatus(): JsonNode =
   let statusRow = db.getRow(sql"SELECT val FROM userData WHERE keyName = ?", "status")
   return parseJson(statusRow[0])
 
+proc setUserStatus(status: JsonNode) =
+  db.exec(sql"UPDATE userData SET val = ? WHERE keyName = ?", $status, "status")
+
 proc updatePos(status: var JsonNode, fromAreaId: int, toAreaId: int) =
   let gatesRows = db.getAllRows(sql"""
     SELECT fromPosX, fromPosY, fromPosZ, toPosX, toPosY, toPosZ, toDirection
@@ -153,7 +157,7 @@ proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
     updatePos(status, fromAreaId, areaId)
     status["currentAreaKeyId"] = %*areaId
 
-  db.exec(sql"UPDATE userData SET val = ? WHERE keyName = ?", $status, "status")
+  setUserStatus(status)
 
   return %*{
     "areaBgm": {"id": parseInt(areaBgmRow[0]), "eventName": areaBgmRow[1]},
@@ -305,7 +309,11 @@ proc battle_Finish(jsonReq: JsonNode): JsonNode =
   discard
 
 proc user_CrossDate(jsonReq: JsonNode): JsonNode =
+  # FIXME: move status loggedInAt update to user_LogIn
   let status = getUserStatus()
+  let loggedInAt = $(now().utc)
+  status["loggedInAt"] = %*loggedInAt
+  setUserStatus(status)
   return %*{
     "changedResources": {
       "status": status,
