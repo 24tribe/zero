@@ -4,12 +4,8 @@ import re
 import json
 import sys
 
-def main():
-    parser = ArgumentParser()
-    parser.add_argument("semba_db")
-    args = parser.parse_args()
-
-    con = sqlite3.connect(args.semba_db)
+def get_debug_logs(semba_db):
+    con = sqlite3.connect(semba_db)
 
     cur = con.cursor()
 
@@ -22,11 +18,19 @@ def main():
         result.append({
             "receivedAt": receivedAt,
             "uri": uri,
-            "req": req,
-            "res": res
+            "req": json.loads(req) if req != "" else None,
+            "res": json.loads(res) if res != "" else None
         })
 
-    json.dump(result, sys.stdout)
+    return result
+
+def main():
+    parser = ArgumentParser()
+    parser.add_argument("semba_db")
+    args = parser.parse_args()
+
+    debug_logs = get_debug_logs(args.semba_db)
+    json.dump(debug_logs, sys.stdout)
              
 if __name__ == "__main__":
     main()
