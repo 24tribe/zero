@@ -308,6 +308,17 @@ proc battle_Start(jsonReq: JsonNode): JsonNode =
 proc battle_Finish(jsonReq: JsonNode): JsonNode =
   discard
 
+proc getNotifications(): JsonNode =
+  return %*{
+    "gacha": {
+      "executableGachaIds": [
+        1
+      ]
+    },
+    "mail": true,
+    "itemRequest": false
+  }
+
 proc user_CrossDate(jsonReq: JsonNode): JsonNode =
   # FIXME: move status loggedInAt update to user_LogIn
   let status = getUserStatus()
@@ -317,15 +328,7 @@ proc user_CrossDate(jsonReq: JsonNode): JsonNode =
   return %*{
     "changedResources": {
       "status": status,
-      "notifications": {
-        "gacha": {
-          "executableGachaIds": [
-            1
-          ]
-        },
-        "mail": true,
-        "itemRequest": false
-      }
+      "notifications": getNotifications()
     }
   }
 
@@ -336,6 +339,35 @@ proc adventure_UpdateCharacterStatus(jsonReq: JsonNode): JsonNode =
     "changedResources": {
     }
   }
+
+proc getTensionCards(): seq[JsonNode] =
+  let tensionCardsRows = db.getAllRows(sql"""
+    SELECT tensionCardId, receivedAt, maxLevel, abilityEfficacies, trainingScoreLevelScore,
+      entityId, isLocked FROM tensionCards
+  """)
+
+  for tensionCardRow in tensionCardsRows:
+    let tensionCardId = parseInt(tensionCardRow[0])
+    let receivedAt = tensionCardRow[1]
+    let maxLevel = parseInt(tensionCardRow[2])
+    let abilityEfficacies = parseJson(tensionCardRow[3])
+    let trainingScoreLevelScore = parseInt(tensionCardRow[4])
+    let entityId = parseInt(tensionCardRow[5])
+    let isLocked = if parseInt(tensionCardRow[6]) == 1: true else: false
+
+    result.add(%*{
+      "tensionCardId": tensionCardId,
+      "receivedAt": receivedAt,
+      "maxLevel": maxLevel,
+      "abilityEfficacies": abilityEfficacies,
+      "trainingScoreLevelScore": trainingScoreLevelScore,
+      "entityId": entityId,
+      "isLocked": isLocked
+    })
+
+proc getFormationsStr(): string =
+  # FIXME: proper implementation
+  result = """[{"members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 1, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {"tensionCard1Id": 5, "tensionCard2Id": 4, "tensionCard3Id": 3, "tensionCard4Id": 2, "tensionCard5Id": 1}}, {"number": 2, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 3, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 4, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 5, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 6, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 7, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 8, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 9, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}, {"number": 10, "members": {"character1Id": 100101, "character1OwnershipType": 1}, "cards": {}}]"""
 
 proc getCharacters(): seq[JsonNode] =
   let charactersRows = db.getAllRows(sql"""
@@ -405,6 +437,11 @@ proc user_LogIn(): JsonNode =
       "wallet": {},
       "characters": getCharacters(),
       "status": getUserStatus(),
+      "tensionCards": getTensionCards(),
+      "formations": parseJson(getFormationsStr()),
+      "characterMountingPowerCommon": {},
+      "notifications": getNotifications(),
+      "challenges": [{"challengeId": 100, "state": 8}]
     }
   }
 
@@ -441,10 +478,6 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     jsonRes = nil
 
   result = if jsonRes != nil: dupString($jsonRes) else: nil
-
-  echo "[SembaCall] uri: ", uri
-  echo "[SembaCall] request: ", request
-  echo "[SembaCall] response: ", result
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
