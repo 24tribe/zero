@@ -571,6 +571,41 @@ void HookNeonApiGetResponse(void) {
 
 #include "funcPtrs.c.h"
 
+Neon_Model_Api_ApiService__Character_CostumeUpdate_FuncPtr fpCharacter_CostumeUpdate = NULL;
+Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
+
+Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourCharacter_CostumeUpdate(
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    lastCharacterCostumeUpdateRequest = data;
+    sds req = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
+    printf("[DetourCharacter_CostumeUpdate] %s\n", req);
+    sdsfree(req);
+    return fpCharacter_CostumeUpdate(
+        __this, data, requestHandler, cancellationToken, method
+    );
+}
+
+void HookCharacter_CostumeUpdate(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Character_CostumeUpdate,
+        (LPVOID)(uintptr_t)&DetourCharacter_CostumeUpdate,
+        (LPVOID *)&fpCharacter_CostumeUpdate
+    ) != MH_OK) {
+        printf("Failed to create Neon_Model_Api_ApiService__Character_CostumeUpdate hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Character_CostumeUpdate, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable Neon_Model_Api_ApiService__Character_CostumeUpdate hook\n");
+        return;
+    }
+}
+
 void HookTN(void *GameAssembly) {
     System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
@@ -608,6 +643,8 @@ void HookTN(void *GameAssembly) {
     HookFormationUpdate();
 
     InitGameFuncPtrs(GameAssembly);
+    
+    HookCharacter_CostumeUpdate();
 
     InitLogger(GameAssembly);
 }
