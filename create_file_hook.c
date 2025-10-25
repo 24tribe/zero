@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "sds.h"
 
 #include <MinHook.h>
 
@@ -6,6 +7,7 @@
 #include <fileapi.h>
 
 #include <stdio.h>
+#include <wchar.h>
 
 typedef HANDLE (WINAPI *CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
 
@@ -15,17 +17,11 @@ HANDLE WINAPI DetourCreateFileW(
     LPCWSTR filenameW,  DWORD access, DWORD shareMode,
     LPSECURITY_ATTRIBUTES attrs, DWORD creationDisp, DWORD flags, HANDLE template) {
 
-    char filename[MY_LINE_SIZE];
-    WideToUtf8(filename, filenameW);
+    sds filename = sds16to8(filenameW, wcslen(filenameW));
 
-    // printf("CreateFileW: %s\n", filename);
+    printf("CreateFileW: %s\n", filename);
 
-    /*
-    if (strstr(filename, "global-metadata.dat")) {
-        puts("GLOBAL METADATA");
-        press_enter_to_continue();
-    }
-    */
+    sdsfree(filename);
     
     return fpCreateFileW(filenameW, access, shareMode, attrs, creationDisp, flags, template);
 }
