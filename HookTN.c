@@ -344,19 +344,13 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
         sdsfree(userCrossDateResponseText);
         free(newResponse);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureAreaObjectResponse")) {
-        System_String_o *req = ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectRequest);
-        sds reqJson = System_String_toSds(req);
+        sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectRequest));
         res = CallParseJson(messageParser, SembaCall("/adventure/area_object", reqJson));
         sdsfree(reqJson);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureMoveToAreaResponse")) {
-        // Should return current login date
-        sds adventureMoveToAreaResponse = SlurpFile("responses\\2025_9_14_12_58_12_AdventureMoveToAreaResponse.txt");
-        char *newResponse = ChangeLoggedInAtStr(adventureMoveToAreaResponse, LOGIN_TIME);
-
-        res = CallParseJson(messageParser, newResponse);
-
-        sdsfree(adventureMoveToAreaResponse);
-        free(newResponse);
+        sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureMoveToAreaRequest));
+        res = CallParseJson(messageParser, SembaCall("/adventure/move_to_area", reqJson));
+        sdsfree(reqJson);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.TipReleaseResponse")) {
         System_String_o *s = ConvertObjectToString((Il2CppObject *)lastTipReleaseRequest);
         sds reqJson = System_String_toSds(s);

@@ -1,6 +1,7 @@
 import std/json
 import std/strutils
 import system/ansi_c
+import std/math
 
 import db_connector/db_sqlite
 
@@ -87,12 +88,78 @@ proc tip_Release(jsonReq: JsonNode): JsonNode =
     "areaObjects": areaObjects
   }
 
+proc getDistance(x1: float, y1: float, z1: float, x2: float, y2: float, z2: float): float =
+  return sqrt(pow(x2-x1, 2) + pow(y2-y1, 2) + pow(z2-z1, 2))
+
+proc getUserStatus(): JsonNode =
+  let statusRow = db.getRow(sql"SELECT val FROM userData WHERE keyName = ?", "status")
+  return parseJson(statusRow[0])
+
+proc updatePos(status: var JsonNode, fromAreaId: int, toAreaId: int) =
+  let gatesRows = db.getAllRows(sql"""
+    SELECT fromPosX, fromPosY, fromPosZ, toPosX, toPosY, toPosZ, toDirection
+    FROM gates
+    WHERE fromAreaId = ? AND toAreaId = ?
+  """, fromAreaId, toAreaId)
+
+  let currentPosX = parseFloat(status["currentPositionCoordinates"]["x"].getStr())
+  let currentPosY = parseFloat(status["currentPositionCoordinates"]["y"].getStr())
+  let currentPosZ = parseFloat(status["currentPositionCoordinates"]["z"].getStr())
+
+  var hasDist = false
+  var smallestDist = 0.0
+  var foundToPosX = 0.0
+  var foundToPosY = 0.0
+  var foundToPosZ = 0.0
+  var foundToDirection = 0
+
+  for gateRow in gatesRows:
+    let fromPosX = parseFloat(gateRow[0])
+    let fromPosY = parseFloat(gateRow[1])
+    let fromPosZ = parseFloat(gateRow[2])
+
+    let dist = getDistance(fromPosX, fromPosY, fromPosZ, currentPosX, currentPosY, currentPosZ)
+
+    if not hasDist or dist < smallestDist:
+      hasDist = true
+      smallestDist = dist
+      foundToPosX = parseFloat(gateRow[3])
+      foundToPosX = parseFloat(gateRow[4])
+      foundToPosX = parseFloat(gateRow[5])
+      foundToDirection = parseInt(gateRow[6])
+
+  if not hasDist:
+    echo "[SembaCall] Warning: updatePos couldn't find a gate..."
+  else:
+    status["currentPositionCoordinates"] = %*{"x": foundToPosX, "y": foundToPosY, "z": foundToPosZ}
+
 proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
   let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
 
+  let currentLocation = jsonReq["currentLocation"]
+
+  var status = getUserStatus()
+
+  let fromAreaId = currentLocation["areaKeyId"].getInt()
+
+  if fromAreaId == areaId:
+    status["currentAreaType"] = currentLocation["areaType"]
+    status["currentDirection"] = currentLocation["direction"]
+    status["currentPositionCoordinates"] = currentLocation["positionCoordinates"]
+    status["currentAreaKeyId"] = currentLocation["areaKeyId"]
+  else:
+    # FIXME: should update status["currentAreaType"] here
+    updatePos(status, fromAreaId, areaId)
+    status["currentAreaKeyId"] = %*areaId
+
+  db.exec(sql"UPDATE userData SET val = ? WHERE keyName = ?", $status, "status")
+
   return %*{
-    "areaBgm": {"id": parseInt(areaBgmRow[0]), "eventName": areaBgmRow[1]}
+    "areaBgm": {"id": parseInt(areaBgmRow[0]), "eventName": areaBgmRow[1]},
+    "changedResources": {
+      "status": status
+    }
   }
 
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =

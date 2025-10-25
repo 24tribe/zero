@@ -38,22 +38,33 @@ CREATE TABLE areaBgm (
     eventName STRING
 );
 
-DROP TABLE IF EXISTS userStatus;
-CREATE TABLE userStatus (
+DROP TABLE IF EXISTS userData;
+CREATE TABLE userData (
     keyName STRING,
     val STRING
 );
 
-INSERT INTO userStatus (keyName, val)
+DROP TABLE IF EXISTS gates;
+CREATE TABLE gates (
+    fromAreaId INTEGER,
+    fromPosX REAL,
+    fromPosY REAL,
+    fromPosZ REAL,
+    toAreaId INTEGER,
+    toPosX REAL,
+    toPosY REAL,
+    toPosZ REAL,
+    toDirection INTEGER
+);
+
+INSERT INTO gates (fromAreaId, fromPosX, fromPosY, fromPosZ, toAreaId, toPosX, toPosY, toPosZ, toDirection)
 VALUES
-("rank", "1")
-,("staminaUpdatedAt", "2025-09-10T02:22:51Z")
-,("formationNumber", "1")
-,("currentAreaKeyId", "300402")
-,("currentDirection", "5")
-,("loggedInAt", "2025-09-17T00:18:05Z")
-,("currentPositionCoordinates", '{"x": -8.824188, "y": 53.59764, "z": -16.63609}')
-,("currentAreaType", "1")
+(300402, -11.2500019, 53.5918961, -15.75, 300401, -4.15, 53.61689, -17.95, 3)
+;
+
+INSERT INTO userData (keyName, val)
+VALUES
+("status", '{"rank": 1, "staminaUpdatedAt": "2025-09-10T02:22:51Z", "formationNumber": 1, "currentAreaKeyId": 300402, "currentDirection": 3, "loggedInAt": "2025-09-17T00:18:05Z", "currentPositionCoordinates": {"x": -4.15, "y": 53.61689, "z": -17.95}, "currentAreaType": 1}')
 ;
 
 INSERT INTO areaBgm (areaId, id, eventName)
