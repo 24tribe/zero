@@ -45,6 +45,19 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
         "action": parseJson(row[3])
       })
 
+    let enemies = db.getAllRows(sql"""
+      SELECT areaPointId, areaEnemyRateSetId, action
+      FROM areaEnemies
+      WHERE areaId = ?
+    """, areaId)
+
+    for enemy in enemies:
+      areaObjects.add(%*{
+        "areaPointId": parseInt(enemy[0]),
+        "areaEnemyRateSetId": parseInt(enemy[1]),
+        "action": parseJson(enemy[2])
+      })
+
     let res = %*{"areaObjects": areaObjects}
     result = DupString($res)
   elif uri == "/tip/release":
@@ -66,7 +79,7 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
           "areaObjectId": parseInt(areaObject[0]),
           "areaPointId": parseInt(areaObject[1]),
           "areaObjectBehaviorId": parseInt(areaObject[2]),
-          "action": parseJson(areaObject[3])
+          "action": parseJson(areaObject[3]),
         })
 
       db.exec(sql"""
