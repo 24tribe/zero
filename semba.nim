@@ -6,6 +6,8 @@ import std/times
 
 import db_connector/db_sqlite
 
+type SembaError = object of CatchableError
+
 var db = open("build/semba.db", "", "", "")
 
 proc dupString(str: string): cstring =
@@ -297,9 +299,11 @@ proc getBattleParameters(battleEntryIds: JsonNode): seq[JsonNode] =
       SELECT enemies FROM battleParameters WHERE id = ?
     """, id)
 
+    let enemies = parseJson(battleParameterRow[0])
+
     result.add(%*{
       "id": id,
-      "enemies": parseJson(battleParameterRow[0])
+      "enemies": enemies
     })
 
 var lastBattleStartReq: JsonNode = nil
@@ -330,16 +334,20 @@ proc battle_Start(jsonReq: JsonNode): JsonNode =
 
   let battleParameters = getBattleParameters(jsonReq["battleEntryIds"])
 
-  return %*{
+  let advantageType = jsonReq.getOrDefault("advantageType")
+
+  result = %*{
     "characters": characters,
     "tensionCards": getEquippedTensionCards(),
-    "advantageType": jsonReq["advantageType"],
     "changedResources": {
       "status": status
     },
     "battleParameters": battleParameters,
     "battleTriggers": jsonReq["battleTriggers"]
   }
+
+  if advantageType != nil:
+    result["advantageType"] = advantageType
 
 proc setCharacterHp(characterId: int, hp: int) =
   db.exec(sql"UPDATE characters SET hp = ? WHERE characterId = ?", hp, characterId)
@@ -654,7 +662,7 @@ proc updateNineSequences(nineSequences: JsonNode) =
 
     db.exec(sql"""
       INSERT INTO nineSequences (nineSequenceId, content) VALUES (?, ?)
-      ON CONFLICT (nineSequenceId) DO UPDATE content = ?
+      ON CONFLICT (nineSequenceId) DO UPDATE SET content = ?
     """, nineSequenceId, seqCopyStr, seqCopyStr)
 
 proc updateAdventureVariables(adventureVariables: JsonNode) =
@@ -677,7 +685,7 @@ proc updateChallengeProgresses(challengeProgresses: JsonNode) =
     let clearedAtStr = if clearedAt != nil: clearedAt.getStr() else: ""
 
     db.exec(sql"""
-      INSERT INTO (challengeProgressId, clearedAt, state)
+      INSERT INTO challengeProgresses (challengeProgressId, clearedAt, state)
       VALUES (?, ?, ?)
       ON CONFLICT (challengeProgressId) DO UPDATE SET clearedAt = ?, state = ?
     """, challengeProgressId, clearedAtStr, state, clearedAtStr, state)

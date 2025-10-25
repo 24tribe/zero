@@ -113,7 +113,7 @@ CREATE TABLE challengeProgresses (
 
 DROP TABLE IF EXISTS nineSequences;
 CREATE TABLE nineSequences (
-    nineSequenceId INTEGER,
+    nineSequenceId INTEGER PRIMARY KEY,
     content STRING
 );
 
@@ -193,11 +193,16 @@ VALUES
 ,(10, '{"character1Id": 100101, "character1OwnershipType": 1}', '{}')
 ;
 
-INSERT INTO battleParameters (id, enemies)
-VALUES
-(2000042, '[{"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "hpStackCount": 1}, {"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "hpStackCount": 1}]')
-,(2000016, '[{"id": 224105, "attack": 228, "defense": 100, "hp": 6864, "hpStackCount": 0}, {"id": 224105, "attack": 228, "defense": 100, "hp": 6864, "hpStackCount": 0}]')
-,(2000015, '[{"id": 250108, "attack": 228, "defense": 100, "hp": 3432, "hpStackCount": 0}, {"id": 250108, "attack": 228, "defense": 100, "hp": 3432, "hpStackCount": 0}]')
+INSERT INTO battleParameters (id, enemies) VALUES 
+(2000016, '[{"id": 224105, "attack": 228, "defense": 100, "hp": 6864, "isSkipEncounterAnimation": true, "hpStackCount": 0}, {"id": 224105, "attack": 228, "defense": 100, "hp": 6864, "isSkipEncounterAnimation": true, "hpStackCount": 0}]')
+, (2000015, '[{"id": 250108, "attack": 228, "defense": 100, "hp": 3432, "isSkipEncounterAnimation": true, "hpStackCount": 0}, {"id": 250108, "attack": 228, "defense": 100, "hp": 3432, "isSkipEncounterAnimation": true, "hpStackCount": 0}]')
+, (2000042, '[{"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "hpStackCount": 1}, {"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "hpStackCount": 1}]')
+, (2000039, '[{"id": 224207, "attack": 245, "defense": 100, "hp": 5703, "hpStackCount": 0}, {"id": 224207, "attack": 245, "defense": 100, "hp": 5703, "hpStackCount": 0}]')
+, (2000033, '[{"id": 224107, "attack": 245, "defense": 100, "hp": 6416, "hpStackCount": 0}, {"id": 224105, "attack": 245, "defense": 100, "hp": 7128, "isSkipEncounterAnimation": true, "hpStackCount": 0}, {"id": 224107, "attack": 245, "defense": 100, "hp": 6416, "hpStackCount": 0}]')
+, (2000041, '[{"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "isSkipEncounterAnimation": true, "hpStackCount": 1}]')
+, (2000037, '[{"id": 250106, "attack": 245, "defense": 100, "hp": 4277, "hpStackCount": 0}, {"id": 250106, "attack": 245, "defense": 100, "hp": 4277, "hpStackCount": 0}]')
+, (2000031, '[{"id": 250108, "attack": 245, "defense": 100, "hp": 3564, "isSkipEncounterAnimation": true, "hpStackCount": 0}, {"id": 250106, "attack": 245, "defense": 100, "hp": 4277, "isSkipEncounterAnimation": true, "hpStackCount": 0}, {"id": 250108, "attack": 245, "defense": 100, "hp": 3564, "isSkipEncounterAnimation": true, "hpStackCount": 0}]')
+, (1000004, '[{"id": 257101, "attack": 210, "defense": 100, "hp": 85536, "hpStackCount": 3}]')
 ;
 
 INSERT INTO shopProducts (val)

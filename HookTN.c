@@ -633,8 +633,10 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
 
     if (resTypeToReqPtr) {
         char *resJson = SembaCall(resTypeToReqPtr->uriPath, reqJson);
-        res = CallParseJson(messageParser, resJson);
-        free(resJson);
+        if (resJson) {
+            res = CallParseJson(messageParser, resJson);
+            free(resJson);
+        }
     }
 
     sdsfree(reqJson);
