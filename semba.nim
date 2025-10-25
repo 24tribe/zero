@@ -364,6 +364,29 @@ proc removeAreaObject(areaKeyId: int, triggerId: int) =
 proc removeAreaEnemy(areaKeyId: int, triggerId: int) =
   db.exec(sql"DELETE FROM areaEnemies WHERE areaId=? AND areaPointId=?", areaKeyId, triggerId);
 
+proc getBattleFinishAreaObjects(battleEntryId: int): JsonNode =
+  let row = db.getRow(
+    sql"SELECT areaObjects FROM battleFinishAreaObjects WHERE battleEntryId = ?", battleEntryId
+  )
+
+  return if row[0] != "": parseJson(row[0]) else: nil
+
+proc updateAreaObjects(areaId: int, areaObjects: JsonNode) =
+  for areaObject in areaObjects:
+    let areaObjectId = areaObject["areaObjectId"].getInt()
+    let areaPointId = areaObject["areaPointId"].getInt()
+    let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
+    let action = $(areaObject["action"])
+
+    db.exec(sql"""
+      INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT (areaObjectId) DO
+      UPDATE SET areaPointId = excluded.areaPointId,
+                 areaObjectBehaviorId = excluded.areaObjectBehaviorId,
+                 action = excluded.action
+    """, areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+
 proc battle_Finish(jsonReq: JsonNode): JsonNode =
   var characterExps = newSeq[JsonNode]()
 
@@ -380,6 +403,8 @@ proc battle_Finish(jsonReq: JsonNode): JsonNode =
       "dropExp": 154
     })
 
+  var areaObjects: JsonNode = nil
+
   if lastBattleStartReq != nil:
     let areaKeyId = lastBattleStartReq["currentLocation"]["areaKeyId"].getInt()
 
@@ -394,10 +419,14 @@ proc battle_Finish(jsonReq: JsonNode): JsonNode =
             removeAreaObject(areaKeyId, triggerId.getInt())
           else:
             removeAreaEnemy(areaKeyId, triggerId.getInt())
+    
+    areaObjects = getBattleFinishAreaObjects(lastBattleStartReq["battleEntryIds"][0].getInt())
 
     lastBattleStartReq = nil
+
+  let status = getUserStatus()
    
-  return %*{
+  result = %*{
     "characterExps": characterExps,
     "rewards": [
       {
@@ -413,10 +442,14 @@ proc battle_Finish(jsonReq: JsonNode): JsonNode =
       }
     ],
     "changedResources": {
-      "status": getUserStatus(),
+      "status": status,
       "characters": getCharacters()
     }
   }
+
+  if areaObjects != nil:
+    result["areaObjects"] = areaObjects
+    updateAreaObjects(status["currentAreaKeyId"].getInt(), areaObjects)
 
 proc getNotifications(): JsonNode =
   return %*{
@@ -668,22 +701,6 @@ proc formation_Update(jsonReq: JsonNode): JsonNode =
       ]
     }
   }
-
-proc updateAreaObjects(areaId: int, areaObjects: JsonNode) =
-  for areaObject in areaObjects:
-    let areaObjectId = areaObject["areaObjectId"].getInt()
-    let areaPointId = areaObject["areaPointId"].getInt()
-    let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
-    let action = $(areaObject["action"])
-
-    db.exec(sql"""
-      INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
-      VALUES (?, ?, ?, ?, ?)
-      ON CONFLICT (areaObjectId) DO
-      UPDATE SET areaPointId = excluded.areaPointId,
-                 areaObjectBehaviorId = excluded.areaObjectBehaviorId,
-                 action = excluded.action
-    """, areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
 
 proc updateNineSequences(nineSequences: JsonNode) =
   for nineSequence in nineSequences:
