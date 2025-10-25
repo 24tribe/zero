@@ -2469,4 +2469,65 @@ typedef struct Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__o 
 	Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__Fields fields;
 } Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__o;
 
+typedef struct Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_AdventureAcquireAreaItemResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__o {
+	Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__o;
+
+typedef struct Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	int32_t areaItemId_;
+	struct Neon_Model_Api_Model_CurrentLocation_o* currentLocation_;
+} Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_Fields;
+
+typedef struct Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_MergeFrom;
+	VirtualInvokeData _5_MergeFrom;
+	VirtualInvokeData _6_WriteTo;
+	VirtualInvokeData _7_CalculateSize;
+	VirtualInvokeData _8_pb__Google_Protobuf_IMessage_get_Descriptor;
+	VirtualInvokeData _9_Equals;
+	VirtualInvokeData _10_Clone;
+	VirtualInvokeData _11_pb__Google_Protobuf_IBufferMessage_InternalMergeFrom;
+	VirtualInvokeData _12_pb__Google_Protobuf_IBufferMessage_InternalWriteTo;
+} Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_VTable;
+
+typedef struct Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_c {
+	Il2CppClass_1 _1;
+	struct Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_VTable vtable;
+} Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_c;
+
+typedef struct Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o {
+	Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_c *klass;
+	void *monitor;
+	Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_Fields fields;
+} Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o;
+
 #endif
