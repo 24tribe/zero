@@ -132,11 +132,7 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
             loggedGoldberg = true;
         }
 
-        uint16_t *s = sds_utf8_to_utf16(ZERO_CONFIG.goldbergPath);
-        
-        res = fpLoadLibraryW(s);
-
-        free(s);
+        res = fpLoadLibraryW(ZERO_CONFIG.goldbergPath);
     } else {
         bool isGameAssembly = strstr(libName, "GameAssembly.dll");
 

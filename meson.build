@@ -3,6 +3,7 @@ project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'])
 cc = meson.get_compiler('c')
 
 ntdll_lib = cc.find_library('ntdll')
+shlwapi_lib = cc.find_library('shlwapi')
 
 libpeconv_proj = subproject('libpeconv')
 libpeconv_dep = libpeconv_proj.get_variable('libpeconv_dep')
@@ -102,7 +103,8 @@ zero_deps = [
     sds_dep,
     jansson_dep,
     inih_dep,
-    semba_dep
+    semba_dep,
+    shlwapi_lib
 ]
 
 shared_library('zero', zero_src, dependencies : zero_deps)

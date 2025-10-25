@@ -2,12 +2,13 @@
 #define CONFIG_H_2025_09_11_08_45
 
 #include <stdbool.h>
+#include <stdint.h>
 
 struct Config {
     bool offlineMode;
     char *saveFile;
     char *onlineLogsPath;
-    char *goldbergPath;
+    uint16_t *goldbergPath;
 };
 
 extern struct Config ZERO_CONFIG;
