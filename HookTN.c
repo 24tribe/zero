@@ -45,7 +45,6 @@ struct ResponseTypeToRequestPtr_List {
 
 #define STATIC_ARRAY_LEN(a) (sizeof a/sizeof *a)
 
-Neon_Model_Api_Rpc_AdventureMoveToAreaRequest_o *lastAdventureMoveToAreaRequest = NULL;
 Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o *lastUpdateCharacterStatusRequest = NULL;
 Neon_Model_Api_Rpc_BattleFinishRequest_o *lastBattleFinishRequest = NULL;
 Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
@@ -61,7 +60,6 @@ struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
     {"Neon.Model.Api.Rpc.UserLogInResponse", NULL, "/user/log_in"},
     {"Neon.Model.Api.Rpc.UserCrossDateResponse", NULL, "/user/cross_date"},
     {"Neon.Model.Api.Rpc.GachaListResponse", NULL, "/gacha/list"},
-    {"Neon.Model.Api.Rpc.AdventureMoveToAreaResponse", (Il2CppObject **)&lastAdventureMoveToAreaRequest, "/adventure/move_to_area"},
     {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastUpdateCharacterStatusRequest, "/adventure/update_character_status"},
     {"Neon.Model.Api.Rpc.BattleFinishResponse", (Il2CppObject **)&lastBattleFinishRequest, "/battle/finish"},
     {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastCharacterCostumeUpdateRequest, "/character/costume_update"},
@@ -80,8 +78,6 @@ Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult_FuncPtr f
 CDGPJELFAMK__NOCKJHKDMGF_object__FuncPtr fpNeonApiGetResponse = NULL;
 
 KBJLHEAOHMD__KPFFCLMEMEG_FuncPtr fpKbjlheaohmd__Kpffclmemeg = NULL;
-
-Neon_Model_Api_ApiService__Adventure_MoveToArea_FuncPtr fpNeon_Model_Api_ApiService__Adventure_MoveToArea = NULL;
 
 Neon_Model_Api_ApiService__Battle_Finish_FuncPtr fpNeon_Model_Api_ApiService__Battle_Finish = NULL;
 
@@ -181,37 +177,6 @@ void HookBattleFinish(void) {
 
     if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Battle_Finish, /* changePermissions = */ FALSE) != MH_OK) {
         fputs("Failed to enable Neon_Model_Api_ApiService__Battle_Finish hook\n", stdout);
-        return;
-    }
-}
-
-
-
-Cysharp_Threading_Tasks_UniTask_AdventureMoveToAreaResponse__o DetourAdventureMoveToArea(
-    Neon_Model_Api_ApiService_o* __this,
-    Neon_Model_Api_Rpc_AdventureMoveToAreaRequest_o* data,
-    LPCOHPIGHIN_o* requestHandler,
-    System_Threading_CancellationToken_o cancellationToken,
-    const MethodInfo* method
-) {
-    lastAdventureMoveToAreaRequest = data;
-    return fpNeon_Model_Api_ApiService__Adventure_MoveToArea(
-        __this, data, requestHandler, cancellationToken, method
-    );
-}
-
-void HookAdventureMoveToArea(void) {
-    if (MH_CreateHook(
-        (void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_MoveToArea,
-        (LPVOID)(uintptr_t)&DetourAdventureMoveToArea,
-        (LPVOID *)(&fpNeon_Model_Api_ApiService__Adventure_MoveToArea)
-    ) != MH_OK) {
-        fputs("Failed to create Neon_Model_Api_ApiService__Adventure_MoveToArea hook\n", stdout);
-        return;
-    }
-
-    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_MoveToArea, /* changePermissions = */ FALSE) != MH_OK) {
-        fputs("Failed to enable Neon_Model_Api_ApiService__Adventure_MoveToArea hook\n", stdout);
         return;
     }
 }
@@ -641,7 +606,6 @@ void HookTN(void *GameAssembly) {
     HookSourceCore_GetResult(GameAssembly);
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
-    HookAdventureMoveToArea();
     HookBattleFinish();
     HookUpdateCharacterStatus();
     HookFormationUpdate();

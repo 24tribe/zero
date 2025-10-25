@@ -1,4 +1,5 @@
 Neon.Model.Api.ApiService$$Xb_Formation
 Neon.Model.Api.ApiService$$Tip_Release
 Neon.Model.Api.ApiService$$Adventure_AreaObject
+Neon.Model.Api.ApiService$$Adventure_MoveToArea
 Neon.Model.Api.ApiService$$Battle_Start
