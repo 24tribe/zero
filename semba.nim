@@ -354,6 +354,8 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     jsonRes = battle_Finish(jsonReq)
   elif uri == "/user/cross_date":
     jsonRes = user_CrossDate(jsonReq)
+  elif uri == "/adventure/update_character_status":
+    jsonRes = nil
   else:
     jsonRes = nil
 

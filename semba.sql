@@ -57,6 +57,11 @@ CREATE TABLE gates (
     toDirection INTEGER
 );
 
+DROP TABLE IF EXISTS characters;
+-- CREATE TABLE characters (
+-- 
+--);
+
 INSERT INTO gates (fromAreaId, fromPosX, fromPosY, fromPosZ, toAreaId, toPosX, toPosY, toPosZ, toDirection)
 VALUES
 (300402, -11.2500019, 53.5918961, -15.75, 300401, -4.15, 53.61689, -17.95, 3)
