@@ -2,6 +2,7 @@
 #include "utils.h"
 
 #include <sds.h>
+#include <jansson.h>
 
 #include <sysinfoapi.h>
 
@@ -10,6 +11,7 @@
 #include <inttypes.h>
 
 #define STACKTRACES_PATH "stacktraces"
+#define RESPONSES_PATH "responses"
 
 typedef System_String_o *(*System_Diagnostics_StackTrace_toString)(System_Diagnostics_StackTrace_o *, const MethodInfo *);
 typedef void (*STACKTRACECONSTRUCTOR)(System_Diagnostics_StackTrace_o* __this, const MethodInfo* method);
@@ -76,7 +78,23 @@ sds CreateStackTracePath(const char *url) {
     return res;
 }
 
+sds CreateResponsePath(const char *className) {
+    sds myClassName = sdsnew(className);
+
+    sds timeNow = GetTime();
+    
+    sds res = sdscatprintf(sdsempty(), "%s/%s_%s.txt", RESPONSES_PATH, timeNow, myClassName);
+
+    sdsfree(timeNow);
+
+    sdsfree(myClassName);
+
+    return res;
+}
+
 void SaveStackTrace(sds url) {
+    printf("[SaveStackTrace] %s\n", url);
+
     sds path = CreateStackTracePath(url);
 
     FILE *fpRead = fopen(path, "rb");
@@ -91,13 +109,16 @@ void SaveStackTrace(sds url) {
     sds stackTraceUtf8 = sds16to8(&(stackTrace->fields._firstChar), stackTrace->fields._stringLength);
 
     FILE *fp = fopen(path, "wb");
-    if (!fp) {
+
+    if (fp) {
+        fwrite(stackTraceUtf8, 1, sdslen(stackTraceUtf8), fp);
+        fflush(fp);
+        fclose(fp);
+    } else {
         printf("Failed to open stacktrace file: %s\n", path);
-        return;
     }
-    fwrite(stackTraceUtf8, 1, sdslen(stackTraceUtf8), fp);
-    fflush(fp);
-    fclose(fp);
+
+    sdsfree(stackTraceUtf8);
 }
 
 void GetNameAndNamespaze(Il2CppObject *obj, const char **name, const char **namespaze) {
@@ -114,15 +135,6 @@ void GetNameAndNamespaze(Il2CppObject *obj, const char **name, const char **name
     }
 }
 
-/*
-{
-  "firstName": "John",
-  "lastName": "Doe",
-  "age": 30,
-  "isStudent": false
-}
-*/
-
 System_String_o *ConvertObjectToString(Il2CppObject *obj) {
     object_toString toString = (object_toString)(uintptr_t)(obj->klass->vtable[3 /* _3_toString*/].methodPtr);
     return toString(obj, obj->klass->vtable[3 /* _3_toString*/].method);
@@ -135,15 +147,43 @@ void LogResponse(Il2CppObject *obj) {
     GetNameAndNamespaze(obj, &name, &namespaze);
 
     if (!strcmp(namespaze, "Neon.Model.Api.Rpc")) {
-        if (!strcmp(name, "AuthSteamUserResponse")) {
-            Neon_Model_Api_Rpc_AuthSteamUserResponse_o *authSteamUserRes;
-            authSteamUserRes = (Neon_Model_Api_Rpc_AuthSteamUserResponse_o *)obj;
-            printf("AuthSteamUserResponse(userId_=%" PRIu64 ")\n", authSteamUserRes->fields.userId_);
-        } else {
-            printf("Name='%s', Namespace='%s'\n", name, namespaze);
-            
-            System_String_o *resStr = ConvertObjectToString(obj);
-            (void)resStr;
+        printf("[LogResponse] Name='%s', Namespace='%s'\n", name, namespaze);
+        
+        System_String_o *objStr = ConvertObjectToString(obj);
+        sds objJson = sds16to8(&(objStr->fields._firstChar), objStr->fields._stringLength);
+        
+        json_t *data = json_loads(objJson, 0, NULL);
+        
+        if (!data) {
+            printf("json_loads failed!\n");
+            return;
         }
+
+        sdsfree(objJson);
+
+        char *dataPretty = json_dumps(data, JSON_INDENT(2));
+
+        json_decref(data);
+
+        if (!dataPretty) {
+            printf("jansson_dumps failed\n");
+            return;
+        }
+
+        sds responsePath = CreateResponsePath(name);
+
+        FILE *fp = fopen(responsePath, "wb");
+
+        sdsfree(responsePath);
+
+        if (fp) {
+            fputs(dataPretty, fp);
+            fflush(fp);
+            fclose(fp);
+        } else {
+            printf("fopen failed!\n");
+        }
+
+        free(dataPretty);        
     }
 }

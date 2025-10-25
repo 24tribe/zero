@@ -13,6 +13,9 @@ libminhook_dep = minhook_proj.get_variable('libminhook_dep')
 sds_proj = subproject('sds')
 sds_dep = sds_proj.get_variable('libsds_dep')
 
+jansson_proj = subproject('jansson')
+jansson_dep = jansson_proj.get_variable('libjansson_dep')
+
 zero_src = [
     'mylib.c',
     'load_library_hook.c',
@@ -29,7 +32,7 @@ zero_src = [
     'Logger.c'
 ]
 
-zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep]
+zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep, jansson_dep]
 
 shared_library('zero', zero_src, dependencies : zero_deps)
 
@@ -49,3 +52,5 @@ executable(
     dependencies : [libpeconv_dep, ntdll_lib])
 
 executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, dependencies : zero_deps)
+
+executable('test_jansson', 'test_jansson.c', dependencies : [sds_dep, jansson_dep])

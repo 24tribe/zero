@@ -12,3 +12,4 @@ example_dumper_out
 *Dummy
 dumper_out
 stacktraces/*.txt
+responses/*.txt

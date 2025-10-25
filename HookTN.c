@@ -85,7 +85,6 @@ void PutString(System_String_o *s) {
 
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
     sds url = sds16to8(&(uri->fields.m_String->fields._firstChar), uri->fields.m_String->fields._stringLength);
-    printf("Url: %s\n", url);
     SaveStackTrace(url);
     sdsfree(url);
     fpHTTPRequestCtor(__this, uri, methodType, method);
@@ -173,7 +172,7 @@ void HookTN(void *GameAssembly) {
    
     HookHTTPRequestCtor(GameAssembly);
     // HookApiServiceAuthSteamUser(GameAssembly);
-    // HookSourceCore_GetResult(GameAssembly);
+    HookSourceCore_GetResult(GameAssembly);
 
     InitLogger(GameAssembly);
 }
