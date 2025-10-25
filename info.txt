@@ -84,3 +84,7 @@ dotnet build -f net8.0
 Call mitmproxy
 --------------
 mitmproxy --mode reverse:https://game.tribenine-game.com
+
+Sus method
+----------
+CDGPJELFAMK.CEADHNKAJJH is probably the method that download assets
