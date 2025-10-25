@@ -44,7 +44,16 @@ zero_src = [
     'TimeString.c'
 ]
 
-zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep, jansson_dep, inih_dep, sqlite3_dep]
+zero_deps = [
+    libminhook_dep,
+    ntdll_lib,
+    libpeconv_dep,
+    sds_dep,
+    jansson_dep,
+    inih_dep,
+    sqlite3_dep,
+    semba_dep
+]
 
 shared_library('zero', zero_src, dependencies : zero_deps)
 

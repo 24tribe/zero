@@ -19,6 +19,7 @@ References:
 
 #include <MinHook.h>
 #include <sds.h>
+#include <semba.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -261,16 +262,18 @@ Il2CppObject *CallParseJson(
 sds LOGIN_TIME = NULL;
     
 Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
+    NimMain();
+
     Il2CppObject *res = NULL;
     System_String_o *s = ConvertObjectToString((Il2CppObject *)messageParser);
     sds sUtf8 = sds16to8(&(s->fields._firstChar), s->fields._stringLength);
 
     printf("[GetMockResponse] %s\n", sUtf8);
 
-    if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSteamUserResponse")) {        
+    if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSteamUserResponse")) {    
         res = CallParseJson(
             messageParser,
-            "{\"userId\": \"696969696969\"}"
+            SembaCall("/auth/steam_user", "")
         );
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthNonceResponse")) {
         res = CallParseJson(
