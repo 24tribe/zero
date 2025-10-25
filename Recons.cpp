@@ -61,6 +61,7 @@ extern "C" int DumpGameAssembly(
     const char *outpath, BYTE *buf, unsigned long smallSize, unsigned long long start_address,
     unsigned long DataSectionSizeOfRawData
 ) {
+    (void)DataSectionSizeOfRawData;
     /*
     if (ChangeSections(buf, DataSectionSizeOfRawData) < 0) {
         std::cout << "Failed to change sections\n";
