@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 struct Config {
-    bool enableGoldbergSteam;
+    bool offlineMode;
 };
 
 extern struct Config ZERO_CONFIG;
