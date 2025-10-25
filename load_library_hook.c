@@ -51,6 +51,7 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
 
     // E:\TRIBENINE\GameAssembly.dll
     // E:\SteamLibrary\steamapps\common\Ratatan Demo\GameAssembly.dll
+    // D:\unity\example\Build\GameAssembly.dll
     if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
         gameName = GetParentDir(path);
     }
@@ -94,7 +95,7 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
         return;
     }
 
-    HookIl2Cpp(GameAssembly);
+    HookIl2Cpp(GameAssembly, gameName);
 }
 
 HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {

@@ -20,7 +20,8 @@ zero_src = [
     'Section.c',
     'create_file_hook.c',
     'utils.c',
-    'HookIl2Cpp.c'
+    'HookIl2Cpp.c',
+    'HookTN.c'
 ]
 
 shared_library('zero', zero_src, dependencies : [libminhook_dep, ntdll_lib, libpeconv_dep])
