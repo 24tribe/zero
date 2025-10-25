@@ -181,8 +181,12 @@ Il2CppObject *DetourSourceCore_GetResult(
         struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtrFromUri(neonApiPath);
         sds jsonReq;
         if (resTypeToReqPtr) {
-            jsonReq = System_String_toSds(ConvertObjectToString(*resTypeToReqPtr->requestPtr));
-            *resTypeToReqPtr->requestPtr = NULL;
+            if (resTypeToReqPtr->requestPtr) {
+                jsonReq = System_String_toSds(ConvertObjectToString(*resTypeToReqPtr->requestPtr));
+                *resTypeToReqPtr->requestPtr = NULL;
+            } else {
+                jsonReq = sdsempty();
+            }
         } else {
             printf("WARNING: %s not found in resTypeToReq list!\n", neonApiPath);
             jsonReq = sdsempty();
