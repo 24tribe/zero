@@ -24,6 +24,9 @@ fs = import('fs')
 semba_nimble = fs.copyfile('semba.nimble')
 sqlite3_c = fs.copyfile('sqlite3.c')
 
+dumper_out_proj = subproject('dumper_out')
+script_json = dumper_out_proj.get_variable('script_json')
+
 libsemba = custom_target(
     'libsemba',
     depends : [semba_nimble, sqlite3_c],
@@ -56,14 +59,14 @@ python3 = find_program('python3', required : true)
 
 func_ptrs = custom_target(
     'il2cppFuncPtrs',
-    input : ['scripts/genIl2CppPtrs.py', 'dumper_out/script.json', 'gameFuncs.txt', 'typeInfos.txt'],
+    input : ['scripts/genIl2CppPtrs.py', script_json, 'gameFuncs.txt', 'typeInfos.txt'],
     output : 'funcPtrs.h',
     command : [python3, '@INPUT@', '@OUTPUT@']
 )
 
 autohook_tn = custom_target(
     'autohookTN',
-    input: ['scripts/genReqHook.py', 'dumper_out/script.json', 'reqHooks.csv'],
+    input: ['scripts/genReqHook.py', script_json, 'reqHooks.csv'],
     output : 'autohookTN.h',
     command : [python3, '@INPUT@', '@OUTPUT@']
 )

@@ -10,7 +10,7 @@ __pycache__
 example_dumper_out
 
 *Dummy
-dumper_out
+subprojects/dumper_out
 stacktraces/*.txt
 responses/*.txt
 config.ini
@@ -18,3 +18,4 @@ config.ini
 nimble.develop
 nimble.paths
 saves
+subprojects/packagecache

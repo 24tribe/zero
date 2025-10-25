@@ -1,0 +1,7 @@
+[wrap-file]
+
+source_url=https://www.dropbox.com/scl/fi/qe7ezmjuvr7lr6nma9klv/dumper_out.zip?rlkey=o8o3lv9890fwj7q8lenq7ps1w&st=nh1mqdod&dl=1
+source_filename=dumper_out.zip
+source_hash=672702874faf4ddaa931e2e2c179f083d4ab95be43fdba63a8853b69e9c78d01
+
+patch_directory=dumper_out
