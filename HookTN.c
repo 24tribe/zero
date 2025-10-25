@@ -31,9 +31,6 @@ Il2CppClass **System_Uri_TypeInfo = NULL;
 
 Neon_Model_Api_ApiService__Adventure_AreaObject_FuncPtr fpNeon_Model_Api_ApiService__Adventure_AreaObject = NULL;
 
-typedef void (*URICONSTRUCTOR)(System_Uri_o* __this, System_String_o* uriString, const MethodInfo* method);
-URICONSTRUCTOR System_Uri_ctor = NULL;
-
 Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult_FuncPtr fpSourceCore_GetResult = NULL;
 
 CDGPJELFAMK__NOCKJHKDMGF_object__FuncPtr fpNeonApiGetResponse = NULL;
@@ -347,7 +344,7 @@ System_Uri_o *ChangeUrl(char *url) {
     
     System_Uri_o *uri = (System_Uri_o *)il2cpp_object_new(*System_Uri_TypeInfo);
     System_String_o *proxy = il2cpp_string_new(new_url);
-    System_Uri_ctor(uri, proxy, NULL);
+    System_Uri___ctor(uri, proxy, NULL);
 
     return uri;
 }
@@ -594,7 +591,6 @@ void HookCharacter_CostumeUpdate(void) {
 
 void HookTN(void *GameAssembly) {
     System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
-    System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
 
     InitGameFuncPtrs(GameAssembly);
 
