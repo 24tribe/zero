@@ -21,7 +21,7 @@ void MyMain() {
 
     HookNtQueryDirectoryFile();
     HookLoadLibrary();
-    HookCreateFile();
+    // HookCreateFile();
 
     puts("OK");
 }

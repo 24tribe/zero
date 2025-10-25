@@ -25,10 +25,13 @@ zero_src = [
     'utils.c',
     'HookIl2Cpp.c',
     'HookTN.c',
-    'HookExample.cpp'
+    'HookExample.cpp',
+    'StackTraceLogger.c'
 ]
 
-shared_library('zero', zero_src, dependencies : [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep])
+zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep]
+
+shared_library('zero', zero_src, dependencies : zero_deps)
 
 executable('loader', 'loader.c')
 executable('metadata_test', 'metadata_test.c', 'MetadataDump.c')
@@ -44,3 +47,5 @@ executable('RegenSections', 'RegenSections.c', 'Section.c')
 executable(
     'Bruteforce', 'Bruteforce.c', 'Recons.cpp', 'MetadataDump.c', 'Section.c',
     dependencies : [libpeconv_dep, ntdll_lib])
+
+executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, dependencies : zero_deps)

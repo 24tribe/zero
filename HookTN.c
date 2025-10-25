@@ -11,8 +11,11 @@ References:
 
 #include "HookTN.h"
 #include "il2cpp_lean.h"
+#include "utils.h"
+#include "StackTraceLogger.h"
 
 #include <MinHook.h>
+#include <sds.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -20,20 +23,15 @@ References:
 
 #define REASONABLE_STRING_SIZE 4096
 
-Il2CppClass **System_Diagnostics_StackTrace_TypeInfo = NULL;
 Il2CppClass **System_Uri_TypeInfo = NULL;
 
 typedef void (*URICONSTRUCTOR)(System_Uri_o* __this, System_String_o* uriString, const MethodInfo* method);
 URICONSTRUCTOR System_Uri_ctor = NULL;
 
-typedef void (*STACKTRACECONSTRUCTOR)(System_Diagnostics_StackTrace_o* __this, const MethodInfo* method);
-STACKTRACECONSTRUCTOR System_Diagnostics_StackTrace_ctor = NULL;
-
 typedef Il2CppObject *(*SOURCE_CORE_GETRESULT)(Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o __this, int16_t token, const MethodInfo_20B62E0* method);
 SOURCE_CORE_GETRESULT Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = NULL;
 SOURCE_CORE_GETRESULT fpSourceCore_GetResult = NULL;
 
-typedef System_String_o *(*System_Diagnostics_StackTrace_toString)(System_Diagnostics_StackTrace_o *, const MethodInfo *);
 typedef System_String_o *(*object_toString)(Il2CppObject *, const MethodInfo *);
 
 typedef Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o (*APISERVICEAUTHSTEAMUSER)(
@@ -98,21 +96,11 @@ void WriteToLog(System_String_o *s) {
     }
 }
 
-void PrintStackTrace() {
-    System_Diagnostics_StackTrace_o *stackTrace;
-    stackTrace = (System_Diagnostics_StackTrace_o *)il2cpp_object_new(*System_Diagnostics_StackTrace_TypeInfo);
-    System_Diagnostics_StackTrace_ctor(stackTrace, NULL);
-
-    VirtualInvokeData *toString = &(stackTrace->klass->vtable._3_ToString);
-    System_Diagnostics_StackTrace_toString toStringFunc;
-    toStringFunc = (System_Diagnostics_StackTrace_toString)(uintptr_t)(toString->methodPtr);
-    System_String_o *stackTraceStr = toStringFunc(stackTrace, toString->method);
-
-    PutString(stackTraceStr);
-}
-
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
-    PutString(uri->fields.m_String);
+    sds url = sds16to8(&(uri->fields.m_String->fields._firstChar), uri->fields.m_String->fields._stringLength);
+    printf("Url: %s\n", url);
+    SaveStackTrace(url);
+    sdsfree(url);
     fpHTTPRequestCtor(__this, uri, methodType, method);
 }
 
@@ -214,17 +202,16 @@ void HookApiServiceAuthSteamUser(void *GameAssembly) {
 }
 
 void HookTN(void *GameAssembly) {
-    System_Diagnostics_StackTrace_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129545976ull);
-    System_Diagnostics_StackTrace_ctor = (STACKTRACECONSTRUCTOR)((unsigned long long)GameAssembly + 55774032ull);
-
     System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
     
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = (SOURCE_CORE_GETRESULT)((unsigned long long)GameAssembly + 34300640ull);
    
     HookHTTPRequestCtor(GameAssembly);
-    HookApiServiceAuthSteamUser(GameAssembly);
-    HookSourceCore_GetResult(GameAssembly);
+    // HookApiServiceAuthSteamUser(GameAssembly);
+    // HookSourceCore_GetResult(GameAssembly);
+
+    InitStackTraceLogger(GameAssembly);
 
     logFile = fopen("Zero.log", "wb");
     if (!logFile) {
