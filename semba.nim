@@ -166,7 +166,6 @@ proc updateStatusFromStatusLocation(status: var JsonNode, otherStatus: JsonNode)
 
 proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
-  let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
 
   let currentLocation = jsonReq["currentLocation"]
 
@@ -183,8 +182,16 @@ proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
 
   setUserStatus(status)
 
+  let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
+
+  if areaBgmRow[0] == "":
+    raise newException(SembaError, "Couldn't find areaBgm for areaId=" & $areaId)
+
+  let areaBgmId = parseInt(areaBgmRow[0])
+  let eventName = areaBgmRow[1]
+
   return %*{
-    "areaBgm": {"id": parseInt(areaBgmRow[0]), "eventName": areaBgmRow[1]},
+    "areaBgm": {"id": areaBgmId, "eventName": eventName},
     "changedResources": {
       "status": status
     }
