@@ -166,6 +166,46 @@ proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
     }
   }
 
+let dbTensionCardsFields = """
+  tensionCardId, receivedAt, maxLevel, abilityEfficacies,
+  trainingScoreLevelScore, entityId, isLocked
+"""
+
+proc parseTensionCardRow(tensionCardRow: Row): JsonNode =
+  let tensionCardId = parseInt(tensionCardRow[0])
+  let receivedAt = tensionCardRow[1]
+  let maxLevel = parseInt(tensionCardRow[2])
+  let abilityEfficacies = parseJson(tensionCardRow[3])
+  let trainingScoreLevelScore = parseInt(tensionCardRow[4])
+  let entityId = parseInt(tensionCardRow[5])
+  let isLocked = if parseInt(tensionCardRow[6]) == 1: true else: false
+
+  return %*{
+    "tensionCardId": tensionCardId,
+    "receivedAt": receivedAt,
+    "maxLevel": maxLevel,
+    "abilityEfficacies": abilityEfficacies,
+    "trainingScoreLevelScore": trainingScoreLevelScore,
+    "entityId": entityId,
+    "isLocked": isLocked
+  }
+
+proc getTensionCards(): seq[JsonNode] =
+  let tensionCardsRows = db.getAllRows(sql("SELECT " & dbTensionCardsFields & " FROM tensionCards"))
+
+  for tensionCardRow in tensionCardsRows:
+    result.add(parseTensionCardRow(tensionCardRow))
+
+proc getEquippedTensionCards(): seq[JsonNode] =
+  # FIXME: should return current formation tension cards
+
+  let tensionCardsRows = db.getAllRows(sql(
+    "SELECT " & dbTensionCardsFields & " FROM tensionCards LIMIT 5"
+  ))
+
+  for tensionCardRow in tensionCardsRows:
+    result.add(parseTensionCardRow(tensionCardRow))
+
 let dbCharacterFields = """
   characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
   criticalRate, criticalDamageRate, movementSpeed, damageInflictedRate, tensionIncreaseRate,
@@ -321,7 +361,8 @@ proc battle_Start(jsonReq: JsonNode): JsonNode =
     characters.add(parseCharacterRow(characterRow))
 
   return %*{
-    "characters": characters
+    "characters": characters,
+    "tensionCards": getEquippedTensionCards()
   }
 
 #[
@@ -425,33 +466,6 @@ proc adventure_UpdateCharacterStatus(jsonReq: JsonNode): JsonNode =
       "characters": changedCharacters
     }
   }
-
-let dbTensionCardsFields = """
-  tensionCardId, receivedAt, maxLevel, abilityEfficacies,
-  trainingScoreLevelScore, entityId, isLocked
-"""
-
-proc getTensionCards(): seq[JsonNode] =
-  let tensionCardsRows = db.getAllRows(sql("SELECT " & dbTensionCardsFields & " FROM tensionCards"))
-
-  for tensionCardRow in tensionCardsRows:
-    let tensionCardId = parseInt(tensionCardRow[0])
-    let receivedAt = tensionCardRow[1]
-    let maxLevel = parseInt(tensionCardRow[2])
-    let abilityEfficacies = parseJson(tensionCardRow[3])
-    let trainingScoreLevelScore = parseInt(tensionCardRow[4])
-    let entityId = parseInt(tensionCardRow[5])
-    let isLocked = if parseInt(tensionCardRow[6]) == 1: true else: false
-
-    result.add(%*{
-      "tensionCardId": tensionCardId,
-      "receivedAt": receivedAt,
-      "maxLevel": maxLevel,
-      "abilityEfficacies": abilityEfficacies,
-      "trainingScoreLevelScore": trainingScoreLevelScore,
-      "entityId": entityId,
-      "isLocked": isLocked
-    })
 
 proc getFormationsStr(): string =
   # FIXME: proper implementation
