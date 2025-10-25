@@ -35,11 +35,14 @@ def main():
 
     for name in req_hooks:
         req, res = req_hooks[name]
-        fullReq = getReqFullName(req)
-        struct_names |= getStructNames(fullReq)
 
-        fullRes = getResFullName(res)
-        struct_names |= getStructNames(fullRes)
+        if req != "None":
+            fullReq = getReqFullName(req)
+            struct_names |= getStructNames(fullReq)
+
+        if res != "None":
+            fullRes = getResFullName(res)
+            struct_names |= getStructNames(fullRes)
 
     for s in get_structs(il2cpp_h):
         if s.group(1) in struct_names:
