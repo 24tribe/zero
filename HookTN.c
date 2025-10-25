@@ -422,12 +422,12 @@ sds GetFqn(Il2CppObject *obj) {
     return res;
 }
 
-Il2CppObject **findRequestPtr(char *responseType) {
+struct ResponseTypeToRequestPtr *findResTypeToReqPtr(char *responseType) {
     struct ResponseTypeToRequestPtr *end = RES_TYPE_TO_REQ_PTR_LIST.data + RES_TYPE_TO_REQ_PTR_LIST.len;
     struct ResponseTypeToRequestPtr *it;
     for (it = RES_TYPE_TO_REQ_PTR_LIST.data; it != end; ++it) {
         if (!strcmp(responseType, it->responseType) && it->requestPtr && *it->requestPtr) {
-            return it->requestPtr;
+            return it;
         }
     }
 
@@ -446,13 +446,13 @@ Il2CppObject *DetourSourceCore_GetResult(
     sds fqn = GetFqn(res);
 
     if (neonApiPath && fqn && strstr(fqn, "Neon.Model.Api.Rpc")) {
-        printf("fqn: '%s'\n", fqn);
+        printf("[DetourSourceCore_GetResult] %s\n", fqn);
         sds jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
-        Il2CppObject **reqPtr = findRequestPtr(fqn);
+        struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtr(fqn);
         sds jsonReq;
-        if (reqPtr) {
-            jsonReq = System_String_toSds(ConvertObjectToString(*reqPtr));
-            *reqPtr = NULL;
+        if (resTypeToReqPtr) {
+            jsonReq = System_String_toSds(ConvertObjectToString(*resTypeToReqPtr->requestPtr));
+            *resTypeToReqPtr->requestPtr = NULL;
         } else {
             jsonReq = sdsempty();
         }
