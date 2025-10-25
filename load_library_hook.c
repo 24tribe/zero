@@ -15,8 +15,6 @@
 #include <stdio.h>
 #include <wchar.h>
 
-#define GOLDBERG_STEAM u"D:\\tribenine\\Goldberg_Lan_Steam_Emu\\steam_api64.dll"
-
 typedef HMODULE (WINAPI *LOADLIBRARYW)(LPCWSTR);
 
 LOADLIBRARYW fpLoadLibraryW = NULL;
@@ -133,8 +131,12 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
             printf("[DetourLoadLibraryW] Changed steam_api64.dll to Goldberg\n");
             loggedGoldberg = true;
         }
+
+        uint16_t *s = sds_utf8_to_utf16(ZERO_CONFIG.goldbergPath);
         
-        res = fpLoadLibraryW(GOLDBERG_STEAM);
+        res = fpLoadLibraryW(s);
+
+        free(s);
     } else {
         bool isGameAssembly = strstr(libName, "GameAssembly.dll");
 

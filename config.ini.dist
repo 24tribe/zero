@@ -13,3 +13,6 @@ offlineMode=false
 
 # path to a sqlite3 db used to save api call flows in online mode
 #onlineLogsPath=
+
+# path to the goldberg steam api emulator dll
+#goldbergPath=

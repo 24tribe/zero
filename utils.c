@@ -15,6 +15,13 @@ sds sds16to8(const uint16_t *s, uint32_t size) {
     return res;
 }
 
+uint16_t *sds_utf8_to_utf16(sds s) {
+    int nLenWide = MultiByteToWideChar(CP_UTF8, 0, s, sdslen(s), NULL, 0);
+    uint16_t *res = calloc(nLenWide + 1, 2);
+    MultiByteToWideChar(CP_UTF8, 0, s, sdslen(s), res, nLenWide);
+    return res;
+}
+
 void press_enter_to_continue() {
     printf("Press enter to continue...\n");
     char line[MY_LINE_SIZE];
