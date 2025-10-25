@@ -483,4 +483,322 @@ typedef struct System_Diagnostics_StackTrace_StaticFields {
 	struct System_String_o* aotid;
 } System_Diagnostics_StackTrace_StaticFields;
 
+typedef struct Neon_Model_Api_ApiService_Fields Neon_Model_Api_ApiService_Fields; /* : CDGPJELFAMK_Fields */
+
+typedef struct Neon_Model_Api_ApiService_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_ONIFJDGBNFE;
+	VirtualInvokeData _5_KGFOAKGJBOL;
+	VirtualInvokeData _6_unknown;
+	VirtualInvokeData _7_LKHAOCKIOPL;
+	VirtualInvokeData _8_PIJBCEBGIOH;
+	VirtualInvokeData _9_unknown;
+	VirtualInvokeData _10_BPCKJFKOKOM;
+	VirtualInvokeData _11_NDHHPKBFJBA;
+	VirtualInvokeData _12_DAOEJIDKBPB;
+	VirtualInvokeData _13_unknown;
+	VirtualInvokeData _14_unknown;
+	VirtualInvokeData _15_EIJFILJLCCN;
+	VirtualInvokeData _16_unknown;
+	VirtualInvokeData _17_unknown;
+	VirtualInvokeData _18_unknown;
+	VirtualInvokeData _19_unknown;
+	VirtualInvokeData _20_AKFPCAOAKKF;
+	VirtualInvokeData _21_IDKDCHPAICO;
+	VirtualInvokeData _22_unknown;
+	VirtualInvokeData _23_Adventure_AreaObject;
+	VirtualInvokeData _24_Adventure_ReadSequence;
+	VirtualInvokeData _25_Adventure_AccessWarpPoint;
+	VirtualInvokeData _26_Adventure_ReleaseEventLift;
+	VirtualInvokeData _27_Adventure_WarpAreaLocator;
+	VirtualInvokeData _28_Adventure_AcquireAreaItem;
+	VirtualInvokeData _29_Adventure_FindGraffiti;
+	VirtualInvokeData _30_Adventure_MoveToArea;
+	VirtualInvokeData _31_Adventure_Hospital;
+	VirtualInvokeData _32_Adventure_TrackTarget;
+	VirtualInvokeData _33_Adventure_UpdateCharacterStatus;
+	VirtualInvokeData _34_Auth_SignIn;
+	VirtualInvokeData _35_Auth_SignUp;
+	VirtualInvokeData _36_Auth_SignUpApple;
+	VirtualInvokeData _37_Auth_SignUpGoogle;
+	VirtualInvokeData _38_Auth_SignUpPasscode;
+	VirtualInvokeData _39_Auth_SteamUser;
+	VirtualInvokeData _40_Auth_Nonce;
+	VirtualInvokeData _41_Battle_Start;
+	VirtualInvokeData _42_Battle_Finish;
+	VirtualInvokeData _43_Battle_Skip;
+	VirtualInvokeData _44_Battle_Restart;
+	VirtualInvokeData _45_Character_Enhance;
+	VirtualInvokeData _46_Character_RankEnhance;
+	VirtualInvokeData _47_Character_LimitBreak;
+	VirtualInvokeData _48_Character_Equip;
+	VirtualInvokeData _49_Character_SkillPanelEnhance;
+	VirtualInvokeData _50_Character_SkillPanelReset;
+	VirtualInvokeData _51_Character_CostumeUpdate;
+	VirtualInvokeData _52_Character_ItemPresent;
+	VirtualInvokeData _53_City_ReleaseGearShop;
+	VirtualInvokeData _54_Debug_ClientError;
+	VirtualInvokeData _55_Debug_ServerError;
+	VirtualInvokeData _56_Debug_UserError;
+	VirtualInvokeData _57_Debug_JiraToken;
+	VirtualInvokeData _58_Debug_ChallengeClear;
+	VirtualInvokeData _59_Debug_MailSend;
+	VirtualInvokeData _60_Debug_UserBulkResource;
+	VirtualInvokeData _61_Debug_ShopPurchase;
+	VirtualInvokeData _62_Debug_XbPvpSpecifyEnemy;
+	VirtualInvokeData _63_Dish_Order;
+	VirtualInvokeData _64_Dungeon_Entry;
+	VirtualInvokeData _65_Dungeon_Start;
+	VirtualInvokeData _66_Dungeon_Finish;
+	VirtualInvokeData _67_Dungeon_Resume;
+	VirtualInvokeData _68_Dungeon_AcquireAreaItem;
+	VirtualInvokeData _69_Dungeon_BattleStart;
+	VirtualInvokeData _70_Dungeon_BattleSkip;
+	VirtualInvokeData _71_Event_ListNode;
+	VirtualInvokeData _72_Event_FinishNode;
+	VirtualInvokeData _73_FieldBoss_Entry;
+	VirtualInvokeData _74_Follow_List;
+	VirtualInvokeData _75_Follow_Detail;
+	VirtualInvokeData _76_Follow_Search;
+	VirtualInvokeData _77_Follow_Add;
+	VirtualInvokeData _78_Follow_Remove;
+	VirtualInvokeData _79_Formation_Update;
+	VirtualInvokeData _80_Formation_Switch;
+	VirtualInvokeData _81_FractalVise_RewardsTop;
+	VirtualInvokeData _82_FractalVise_RewardsReceive;
+	VirtualInvokeData _83_FractalVise_Start;
+	VirtualInvokeData _84_FractalVise_NextArea;
+	VirtualInvokeData _85_FractalVise_Resume;
+	VirtualInvokeData _86_FractalVise_Clear;
+	VirtualInvokeData _87_FractalVise_Retire;
+	VirtualInvokeData _88_FractalVise_AcquireAreaItem;
+	VirtualInvokeData _89_FractalVise_BattleStart;
+	VirtualInvokeData _90_FractalVise_BossDifficulty;
+	VirtualInvokeData _91_FractalVise_BattleStartBossBattle;
+	VirtualInvokeData _92_Gacha_List;
+	VirtualInvokeData _93_Gacha_Execute;
+	VirtualInvokeData _94_Gacha_Select;
+	VirtualInvokeData _95_Gear_Lock;
+	VirtualInvokeData _96_Gear_Unlock;
+	VirtualInvokeData _97_Gear_Compress;
+	VirtualInvokeData _98_HappyWorker_List;
+	VirtualInvokeData _99_HappyWorker_Start;
+	VirtualInvokeData _100_HappyWorker_Cancel;
+	VirtualInvokeData _101_Item_Synthesize;
+	VirtualInvokeData _102_Item_Exchange;
+	VirtualInvokeData _103_Item_UseSupply;
+	VirtualInvokeData _104_Item_UseSupplyGearEffect;
+	VirtualInvokeData _105_Item_Sell;
+	VirtualInvokeData _106_Item_OpenSelectBox;
+	VirtualInvokeData _107_ItemRequest_List;
+	VirtualInvokeData _108_ItemRequest_Get;
+	VirtualInvokeData _109_ItemRequest_Publish;
+	VirtualInvokeData _110_ItemRequest_Cancel;
+	VirtualInvokeData _111_ItemRequest_Fulfill;
+	VirtualInvokeData _112_ItemRequest_Collect;
+	VirtualInvokeData _113_LoginBonus_List;
+	VirtualInvokeData _114_LoginBonus_Receive;
+	VirtualInvokeData _115_Mail_List;
+	VirtualInvokeData _116_Mail_Open;
+	VirtualInvokeData _117_Mail_Delete;
+	VirtualInvokeData _118_Mission_Receive;
+	VirtualInvokeData _119_Mission_CountRewardReceive;
+	VirtualInvokeData _120_News_List;
+	VirtualInvokeData _121_News_UserList;
+	VirtualInvokeData _122_Profile_UpdateName;
+	VirtualInvokeData _123_Profile_UpdateBanner;
+	VirtualInvokeData _124_Profile_UpdateBadges;
+	VirtualInvokeData _125_Profile_UpdateCharacterLikabilityScale;
+	VirtualInvokeData _126_Purchase_SessionStart;
+	VirtualInvokeData _127_Purchase_SessionPublish;
+	VirtualInvokeData _128_Purchase_Verify;
+	VirtualInvokeData _129_Purchase_History;
+	VirtualInvokeData _130_RecipeShop_Purchase;
+	VirtualInvokeData _131_RefundApplication_Get;
+	VirtualInvokeData _132_RefundApplication_UpdateEmailId;
+	VirtualInvokeData _133_RefundApplication_SendVerificationCode;
+	VirtualInvokeData _134_RefundApplication_VerifyEmailId;
+	VirtualInvokeData _135_RefundApplication_RequestRefund;
+	VirtualInvokeData _136_RuledBattle_Start;
+	VirtualInvokeData _137_SeasonPass_Receive;
+	VirtualInvokeData _138_SeasonPass_ReceiveAll;
+	VirtualInvokeData _139_SeasonPass_TierPurchase;
+	VirtualInvokeData _140_SeasonPass_PurchasePaidPass;
+	VirtualInvokeData _141_Shop_GemList;
+	VirtualInvokeData _142_Shop_Purchase;
+	VirtualInvokeData _143_Shop_GearShopList;
+	VirtualInvokeData _144_Shop_GearShopPurchase;
+	VirtualInvokeData _145_Shop_CycleUpdateShopRelease;
+	VirtualInvokeData _146_Shop_CycleUpdateShopPurchase;
+	VirtualInvokeData _147_Shop_RandomCostumeList;
+	VirtualInvokeData _148_Shop_RandomCostumePurchase;
+	VirtualInvokeData _149_Stamina_Purchase;
+	VirtualInvokeData _150_Stamina_UseItem;
+	VirtualInvokeData _151_Subsystem_Status;
+	VirtualInvokeData _152_TensionCard_Enhance;
+	VirtualInvokeData _153_TensionCard_LevelLimitEnhance;
+	VirtualInvokeData _154_TensionCard_LimitBreakEnhance;
+	VirtualInvokeData _155_TensionCard_Lock;
+	VirtualInvokeData _156_TensionCard_Disassemble;
+	VirtualInvokeData _157_Tip_Release;
+	VirtualInvokeData _158_Tip_ReleaseByBattle;
+	VirtualInvokeData _159_TrialBattle_Start;
+	VirtualInvokeData _160_TrialBattle_RewardReceive;
+	VirtualInvokeData _161_Tutorial_Skip;
+	VirtualInvokeData _162_User_LogIn;
+	VirtualInvokeData _163_User_CrossDate;
+	VirtualInvokeData _164_User_LinksList;
+	VirtualInvokeData _165_User_LinkApple;
+	VirtualInvokeData _166_User_UnlinkApple;
+	VirtualInvokeData _167_User_LinkGoogle;
+	VirtualInvokeData _168_User_UnlinkGoogle;
+	VirtualInvokeData _169_User_UnlinkSteam;
+	VirtualInvokeData _170_User_UpdateBirthdate;
+	VirtualInvokeData _171_User_UpdateLanguage;
+	VirtualInvokeData _172_User_Delete;
+	VirtualInvokeData _173_User_Notification;
+	VirtualInvokeData _174_WebSession_Token;
+	VirtualInvokeData _175_Xb_Formation;
+	VirtualInvokeData _176_Xb_FormationUpdate;
+	VirtualInvokeData _177_Xb_Start;
+	VirtualInvokeData _178_Xb_Play;
+	VirtualInvokeData _179_Xb_UpdateTension;
+	VirtualInvokeData _180_Xb_AddCommandUnlockItem;
+	VirtualInvokeData _181_Xb_UpdateSkillOrbStatus;
+	VirtualInvokeData _182_Xb_Status;
+	VirtualInvokeData _183_Xb_Retire;
+	VirtualInvokeData _184_Xb_ForceRetire;
+	VirtualInvokeData _185_XbPvp_Formation;
+	VirtualInvokeData _186_XbPvp_FormationUpdate;
+	VirtualInvokeData _187_XbPvp_Entry;
+	VirtualInvokeData _188_XbPvp_QuickMatching;
+	VirtualInvokeData _189_XbPvp_RankMatching;
+	VirtualInvokeData _190_XbPvp_CasualMatching;
+	VirtualInvokeData _191_XbPvp_RankMatchHistoryList;
+} Neon_Model_Api_ApiService_VTable;
+
+typedef struct Neon_Model_Api_ApiService_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_Api_ApiService_VTable vtable;
+} Neon_Model_Api_ApiService_c;
+
+typedef struct Neon_Model_Api_ApiService_o {
+	Neon_Model_Api_ApiService_c *klass;
+	void *monitor;
+	/* Neon_Model_Api_ApiService_Fields fields; */
+} Neon_Model_Api_ApiService_o;
+
+typedef struct System_Threading_CancellationToken_Fields {
+	struct System_Threading_CancellationTokenSource_o* _source;
+} System_Threading_CancellationToken_Fields;
+
+typedef struct System_Threading_CancellationToken_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} System_Threading_CancellationToken_VTable;
+
+typedef struct System_Threading_CancellationToken_c {
+	Il2CppClass_1 _1;
+	struct System_Threading_CancellationToken_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	System_Threading_CancellationToken_VTable vtable;
+} System_Threading_CancellationToken_c;
+
+typedef struct System_Threading_CancellationToken_o {
+	System_Threading_CancellationToken_Fields fields;
+} System_Threading_CancellationToken_o;
+
+typedef struct System_Threading_CancellationToken_StaticFields {
+	struct System_Action_object__o* s_actionToActionObjShunt;
+} System_Threading_CancellationToken_StaticFields;
+
+typedef struct LPCOHPIGHIN_Fields LPCOHPIGHIN_Fields;
+
+typedef struct LPCOHPIGHIN_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	VirtualInvokeData vtable[32];
+} LPCOHPIGHIN_c;
+
+typedef struct LPCOHPIGHIN_o {
+	LPCOHPIGHIN_c *klass;
+	void *monitor;
+	/* LPCOHPIGHIN_Fields fields; */
+} LPCOHPIGHIN_o;
+
+typedef struct Neon_Model_Api_Rpc_AuthSteamUserRequest_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_MergeFrom;
+	VirtualInvokeData _5_MergeFrom;
+	VirtualInvokeData _6_WriteTo;
+	VirtualInvokeData _7_CalculateSize;
+	VirtualInvokeData _8_pb__Google_Protobuf_IMessage_get_Descriptor;
+	VirtualInvokeData _9_Equals;
+	VirtualInvokeData _10_Clone;
+	VirtualInvokeData _11_pb__Google_Protobuf_IBufferMessage_InternalMergeFrom;
+	VirtualInvokeData _12_pb__Google_Protobuf_IBufferMessage_InternalWriteTo;
+} Neon_Model_Api_Rpc_AuthSteamUserRequest_VTable;
+
+typedef struct Neon_Model_Api_Rpc_AuthSteamUserRequest_c {
+	Il2CppClass_1 _1;
+	struct Neon_Model_Api_Rpc_AuthSteamUserRequest_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_Api_Rpc_AuthSteamUserRequest_VTable vtable;
+} Neon_Model_Api_Rpc_AuthSteamUserRequest_c;
+
+typedef struct Neon_Model_Api_Rpc_AuthSteamUserRequest_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	struct System_String_o* sessionTicket_;
+} Neon_Model_Api_Rpc_AuthSteamUserRequest_Fields;
+
+typedef struct Neon_Model_Api_Rpc_AuthSteamUserRequest_o {
+	Neon_Model_Api_Rpc_AuthSteamUserRequest_c *klass;
+	void *monitor;
+	Neon_Model_Api_Rpc_AuthSteamUserRequest_Fields fields;
+} Neon_Model_Api_Rpc_AuthSteamUserRequest_o;
+
+typedef struct Neon_Model_Api_Rpc_AuthSteamUserRequest_StaticFields {
+	struct Google_Protobuf_MessageParser_AuthSteamUserRequest__o* _parser;
+} Neon_Model_Api_Rpc_AuthSteamUserRequest_StaticFields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_AuthSteamUserResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o {
+	Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o;
+
 #endif
