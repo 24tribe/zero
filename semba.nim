@@ -433,9 +433,12 @@ proc getFormations(): seq[JsonNode] =
   """)
 
   for formationRow in formationsRows:
+    let members = parseJson(formationRow[1])
+    let cards = parseJson(formationRow[2])
+
     var formation = %*{
-      "members": parseJson(formationRow[1]),
-      "cards": parseJson(formationRow[2])
+      "members": members,
+      "cards": cards
     }
 
     let number = parseInt(formationRow[0])
