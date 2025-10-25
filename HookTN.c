@@ -32,6 +32,11 @@ typedef Il2CppObject *(*SOURCE_CORE_GETRESULT)(Cysharp_Threading_Tasks_UniTaskCo
 SOURCE_CORE_GETRESULT Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = NULL;
 SOURCE_CORE_GETRESULT fpSourceCore_GetResult = NULL;
 
+Il2CppClass **Neon_Model_Api_Rpc_AuthSteamUserResponse_TypeInfo = NULL;
+
+typedef void (*AUTH_STEAM_USER_RESPONSE_CTOR)(Neon_Model_Api_Rpc_AuthSteamUserResponse_o* __this, const MethodInfo* method);
+AUTH_STEAM_USER_RESPONSE_CTOR Neon_Model_Api_Rpc_AuthSteamUserResponse___ctor = NULL;
+
 typedef Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o (*APISERVICEAUTHSTEAMUSER)(
     Neon_Model_Api_ApiService_o* __this,
     Neon_Model_Api_Rpc_AuthSteamUserRequest_o* data,
@@ -167,7 +172,10 @@ void HookApiServiceAuthSteamUser(void *GameAssembly) {
 void HookTN(void *GameAssembly) {
     System_Uri_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129866520ull);
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
-    
+
+    Neon_Model_Api_Rpc_AuthSteamUserResponse_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129188032ull);
+    Neon_Model_Api_Rpc_AuthSteamUserResponse___ctor = (AUTH_STEAM_USER_RESPONSE_CTOR)((unsigned long long)GameAssembly + 7797904ull);
+
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = (SOURCE_CORE_GETRESULT)((unsigned long long)GameAssembly + 34300640ull);
 
     HookHTTPRequestCtor(GameAssembly);
