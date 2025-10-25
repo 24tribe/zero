@@ -117,6 +117,19 @@ CREATE TABLE tips (
     releasedAt STRING
 );
 
+DROP TABLE IF EXISTS characterCostumes;
+CREATE TABLE characterCostumes (
+    characterCostumeId INTEGER,
+    receivedAt STRING
+);
+
+INSERT INTO characterCostumes
+VALUES
+(1001001, '2025-09-10T02:22:51Z')
+,(1002001, '2025-09-10T02:22:53Z')
+,(1005001, '2025-09-10T02:22:53Z')
+;
+
 INSERT INTO tips (tipId, releasedAt)
 VALUES
 (1002, '2025-09-10T02:22:53Z')

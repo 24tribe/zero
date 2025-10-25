@@ -488,6 +488,21 @@ proc getTips(): seq[JsonNode] =
       "releasedAt": releasedAt
     })
 
+proc getCharacterCostumes(): seq[JsonNode] =
+  let characterCostumesRows = db.getAllRows(sql"""
+    SELECT characterCostumeId, receivedAt
+    FROM characterCostumes
+  """)
+
+  for characterCostumeRow in characterCostumesRows:
+    let characterCostumeId = parseInt(characterCostumeRow[0])
+    let receivedAt = characterCostumeRow[1]
+
+    result.add(%*{
+      "characterCostumeId": characterCostumeId,
+      "receivedAt": receivedAt
+    })
+
 proc user_LogIn(): JsonNode =
   return %*{
     "resources": {
@@ -502,7 +517,9 @@ proc user_LogIn(): JsonNode =
       "challengeProgresses": getChallengeProgresses(),
       "areas": [{"areaId": 300401}, {"areaId": 300402}],
       "nineSequences": getNineSequences(),
-      "tips": getTips()
+      "tips": getTips(),
+      "characterCostumes": getCharacterCostumes(),
+      "missions": [{"missionId": 105002, "count": 1, "clearedAt": "2025-09-10T02:22:53Z"}]
     }
   }
 
