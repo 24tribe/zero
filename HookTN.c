@@ -50,6 +50,7 @@ Neon_Model_Api_Rpc_BattleStartRequest_o *lastBattleStartRequest = NULL;
 Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
 Neon_Model_Api_Rpc_FormationUpdateRequest_o *lastFormationUpdateRequest = NULL;
 Neon_Model_Api_Rpc_TipReleaseRequest_o *lastTipReleaseRequest = NULL;
+Neon_Model_Api_Rpc_AdventureReadSequenceRequest_o *lastAdventureReadSequenceRequest = NULL;
 
 struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
     {"Neon.Model.Api.Rpc.AuthSteamUserResponse", NULL, "/auth/steam_user"},
@@ -65,6 +66,7 @@ struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
     {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastCharacterCostumeUpdateRequest, "/character/costume_update"},
     {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastFormationUpdateRequest, "/formation/update"},
     {"Neon.Model.Api.Rpc.TipReleaseResponse", (Il2CppObject **)&lastTipReleaseRequest, "/tip/release"},
+    {"Neon.Model.Api.Rpc.AdventureReadSequenceResponse", (Il2CppObject **)&lastAdventureReadSequenceRequest, "/adventure/read_sequence"},
 };
 
 struct ResponseTypeToRequestPtr_List RES_TYPE_TO_REQ_PTR_LIST = {
@@ -298,6 +300,37 @@ void HookAdventureAreaObject(void) {
 
     if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_AreaObject, /* changePermissions = */ FALSE) != MH_OK) {
         fputs("Failed to enable Neon_Model_Api_ApiService__Adventure_AreaObject hook\n", stdout);
+        return;
+    }
+}
+
+Neon_Model_Api_ApiService__Adventure_ReadSequence_FuncPtr fpNeon_Model_Api_ApiService__Adventure_ReadSequence = NULL;
+
+Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__o DetourAdventure_ReadSequence (
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_AdventureReadSequenceRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    lastAdventureReadSequenceRequest = data;
+    return fpNeon_Model_Api_ApiService__Adventure_ReadSequence(
+        __this, data, requestHandler, cancellationToken, method
+    );
+}
+
+void HookAdventure_ReadSequence(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_ReadSequence,
+        (LPVOID)(uintptr_t)&DetourAdventure_ReadSequence,
+        (LPVOID *)(&fpNeon_Model_Api_ApiService__Adventure_ReadSequence)
+    ) != MH_OK) {
+        fputs("Failed to create Neon_Model_Api_ApiService__Adventure_ReadSequence hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_ReadSequence, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Neon_Model_Api_ApiService__Adventure_ReadSequence hook\n", stdout);
         return;
     }
 }

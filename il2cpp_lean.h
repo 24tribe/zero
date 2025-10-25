@@ -2380,4 +2380,93 @@ typedef struct Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o {
 	Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_Fields fields;
 } Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o;
 
+typedef struct System_Nullable_int__Fields {
+	bool hasValue;
+	int32_t value;
+} System_Nullable_int__Fields;
+
+typedef struct System_Nullable_int__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} System_Nullable_int__VTable;
+
+typedef struct System_Nullable_int__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	System_Nullable_int__VTable vtable;
+} System_Nullable_int__c;
+
+typedef struct System_Nullable_int__o {
+	System_Nullable_int__Fields fields;
+} System_Nullable_int__o;
+
+typedef struct Neon_Model_Api_Rpc_AdventureReadSequenceRequest_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	struct Google_Protobuf_Collections_RepeatedField_int__o* sequenceRequestIds_;
+	struct Google_Protobuf_Collections_RepeatedField_NineSequenceRequest__o* nineSequences_;
+	struct System_Nullable_int__o miniGameId_;
+	int32_t areaType_;
+	int32_t areaKeyId_;
+	struct Neon_Model_Api_Model_CurrentLocation_o* currentLocation_;
+} Neon_Model_Api_Rpc_AdventureReadSequenceRequest_Fields;
+
+typedef struct Neon_Model_Api_Rpc_AdventureReadSequenceRequest_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_MergeFrom;
+	VirtualInvokeData _5_MergeFrom;
+	VirtualInvokeData _6_WriteTo;
+	VirtualInvokeData _7_CalculateSize;
+	VirtualInvokeData _8_pb__Google_Protobuf_IMessage_get_Descriptor;
+	VirtualInvokeData _9_Equals;
+	VirtualInvokeData _10_Clone;
+	VirtualInvokeData _11_pb__Google_Protobuf_IBufferMessage_InternalMergeFrom;
+	VirtualInvokeData _12_pb__Google_Protobuf_IBufferMessage_InternalWriteTo;
+} Neon_Model_Api_Rpc_AdventureReadSequenceRequest_VTable;
+
+typedef struct Neon_Model_Api_Rpc_AdventureReadSequenceRequest_c {
+	Il2CppClass_1 _1;
+	struct Neon_Model_Api_Rpc_AdventureReadSequenceRequest_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_Api_Rpc_AdventureReadSequenceRequest_VTable vtable;
+} Neon_Model_Api_Rpc_AdventureReadSequenceRequest_c;
+
+typedef struct Neon_Model_Api_Rpc_AdventureReadSequenceRequest_o {
+	Neon_Model_Api_Rpc_AdventureReadSequenceRequest_c *klass;
+	void *monitor;
+	Neon_Model_Api_Rpc_AdventureReadSequenceRequest_Fields fields;
+} Neon_Model_Api_Rpc_AdventureReadSequenceRequest_o;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_AdventureReadSequenceResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__o {
+	Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_AdventureReadSequenceResponse__o;
+
 #endif

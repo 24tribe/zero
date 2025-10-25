@@ -5,6 +5,7 @@ Neon.Model.Api.ApiService$$Battle_Finish
 Neon.Model.Api.ApiService$$Battle_Start
 Neon.Model.Api.ApiService$$Adventure_MoveToArea
 Neon.Model.Api.ApiService$$Adventure_AreaObject
+Neon.Model.Api.ApiService$$Adventure_ReadSequence
 KBJLHEAOHMD$$KPFFCLMEMEG
 CDGPJELFAMK$$NOCKJHKDMGF<object>
 Cysharp.Threading.Tasks.UniTaskCompletionSourceCore<object>$$GetResult
