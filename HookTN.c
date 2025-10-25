@@ -267,7 +267,7 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
 
     printf("[GetMockResponse] %s\n", sUtf8);
 
-    if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSteamUserResponse")) {
+    if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSteamUserResponse")) {        
         res = CallParseJson(
             messageParser,
             "{\"userId\": \"696969696969\"}"

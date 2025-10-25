@@ -24,7 +24,7 @@ void InitLogger(void *GameAssembly) {
     System_Diagnostics_StackTrace_ctor = (STACKTRACECONSTRUCTOR)((unsigned long long)GameAssembly + 55774032ull);
 }
 
-System_String_o *GetStackTrace() {
+System_String_o *GetStackTrace(void) {
     System_Diagnostics_StackTrace_o *stackTrace;
     stackTrace = (System_Diagnostics_StackTrace_o *)il2cpp_object_new(*System_Diagnostics_StackTrace_TypeInfo);
     System_Diagnostics_StackTrace_ctor(stackTrace, NULL);
