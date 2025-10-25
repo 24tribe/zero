@@ -42,5 +42,13 @@ int main(void) {
 
     printf("calling /user/log_in ...\n");
     res = SembaCall("/user/log_in", "");
+    if (!res) {
+        printf("res is null!!!\n\n");
+    } else {
+        printf("res is probably too big to show\n\n");
+    }
+
+    printf("calling /adventure/update_character_status with {\"characterUpdates\": [{\"characterId\": 100101, \"hp\": 511 }]}...\n");
+    res = SembaCall("/adventure/update_character_status", "{\"characterUpdates\": [{\"characterId\": 100101, \"hp\": 511 }]}");
     printf("%s\n\n", res);
 }

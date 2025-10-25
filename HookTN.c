@@ -417,9 +417,7 @@ Il2CppObject *CallParseJson(
         return another;
     }
 }
-
-sds LOGIN_TIME = NULL;
-    
+  
 Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
     NimMain();
 
