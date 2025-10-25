@@ -59,6 +59,7 @@ struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
     {"Neon.Model.Api.Rpc.AuthSignInResponse", NULL, "/auth/sign_in"},
     {"Neon.Model.Api.Rpc.UserLogInResponse", NULL, "/user/log_in"},
     {"Neon.Model.Api.Rpc.UserCrossDateResponse", NULL, "/user/cross_date"},
+    {"Neon.Model.Api.Rpc.GachaListResponse", NULL, "/gacha/list"},
     {"Neon.Model.Api.Rpc.AdventureAreaObjectResponse", (Il2CppObject **)&lastAdventureAreaObjectRequest, "/adventure/area_object"},
     {"Neon.Model.Api.Rpc.AdventureMoveToAreaResponse", (Il2CppObject **)&lastAdventureMoveToAreaRequest, "/adventure/move_to_area"},
     {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastUpdateCharacterStatusRequest, "/adventure/update_character_status"},
