@@ -504,6 +504,7 @@ void HookTN(void *GameAssembly) {
     HookTipRelease();
     HookAdventureMoveToArea();
     HookBattleStart();
+    HookBattleFinish();
 
     InitLogger(GameAssembly);
 }
