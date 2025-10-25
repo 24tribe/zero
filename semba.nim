@@ -293,7 +293,11 @@ proc getBattleParameters(battleEntryIds: JsonNode): seq[JsonNode] =
       "enemies": parseJson(battleParameterRow[0])
     })
 
+var lastBattleStartReq: JsonNode = nil
+
 proc battle_Start(jsonReq: JsonNode): JsonNode =
+  lastBattleStartReq = jsonReq
+
   var characters = newSeq[JsonNode]()
 
   # FIXME: fix this n+1 problem
@@ -337,6 +341,12 @@ proc getCharacters(): seq[JsonNode] =
   for characterRow in charactersRows:   
     result.add(parseCharacterRow(characterRow))
 
+proc removeAreaObject(areaKeyId: int, triggerId: int) =
+  db.exec(sql"DELETE FROM areaObjects WHERE areaId=? AND areaObjectBehaviorId=?", areaKeyId, triggerId);
+
+proc removeAreaEnemy(areaKeyId: int, triggerId: int) =
+  db.exec(sql"DELETE FROM areaEnemies WHERE areaId=? AND areaPointId=?", areaKeyId, triggerId);
+
 proc battle_Finish(jsonReq: JsonNode): JsonNode =
   var characterExps = newSeq[JsonNode]()
 
@@ -352,6 +362,23 @@ proc battle_Finish(jsonReq: JsonNode): JsonNode =
       "exp": 154,
       "dropExp": 154
     })
+
+  if lastBattleStartReq != nil:
+    let areaKeyId = lastBattleStartReq["currentLocation"]["areaKeyId"].getInt()
+
+    for battleTrigger in lastBattleStartReq["battleTriggers"]:
+      let triggerType = battleTrigger.getOrDefault("triggerType")
+      var isAreaObject = triggerType != nil and triggerType.getStr() == "area_object"
+      var isActionSequence = triggerType != nil and triggerType.getStr() == "action_sequence"
+
+      if not isActionSequence:
+        for triggerId in battleTrigger["triggerIds"]:
+          if isAreaObject:
+            removeAreaObject(areaKeyId, triggerId.getInt())
+          else:
+            removeAreaEnemy(areaKeyId, triggerId.getInt())
+
+    lastBattleStartReq = nil
    
   return %*{
     "characterExps": characterExps,

@@ -69,6 +69,7 @@ zero_src = [
     'TimeString.c',
     'FuncPtrs.c',
     'md5sum.c',
+    'NimInit.c',
     func_ptrs
 ]
 

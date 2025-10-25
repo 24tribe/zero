@@ -16,6 +16,7 @@ References:
 #include "Il2CppHelper.h"
 #include "Config.h"
 #include "TimeString.h"
+#include "NimInit.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -389,7 +390,7 @@ Il2CppObject *DetourSourceCore_GetResult(
     int16_t token,
     const MethodInfo_20B62E0* method
 ) {
-    NimMain();
+    RunNimMainOnce();
 
     Il2CppObject *res = fpSourceCore_GetResult(__this, token, method);
 
@@ -500,7 +501,7 @@ Il2CppObject *CallParseJson(
 Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
   
 Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
-    NimMain();
+    RunNimMainOnce();
 
     Il2CppObject *res = NULL;
     System_String_o *s = ConvertObjectToString((Il2CppObject *)messageParser);
