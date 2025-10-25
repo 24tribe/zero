@@ -19,3 +19,4 @@ nimble.develop
 nimble.paths
 saves
 subprojects/packagecache
+onlineLogs
