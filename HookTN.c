@@ -347,7 +347,7 @@ Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o DetourAuth_SteamUser(
     System_Threading_CancellationToken_o cancellationToken,
     const MethodInfo* method
 ) {
-    if (ZERO_CONFIG.saveFile) {
+    if (ZERO_CONFIG.offlineMode && ZERO_CONFIG.saveFile) {
         RunNimMainOnce();
         SembaLoadSave(ZERO_CONFIG.saveFile);
     }
