@@ -16,6 +16,7 @@ def main():
         write_sql(f, data, args.area_id)
 
 def write_sql(f, data, area_id):
+    print(f"-- Area {area_id}", file=f)
     # enemies
     print("INSERT INTO areaEnemies (areaId, areaPointId, areaEnemyRateSetId, action)", file=f)
     print("VALUES", file=f)
@@ -42,6 +43,20 @@ def write_sql(f, data, area_id):
                 f.write(",")
 
             print(f"({area_id}, {obj["areaObjectId"]}, {obj["areaPointId"]}, {obj["areaObjectBehaviorId"]}, '{json.dumps(obj["action"])}')", file=f)
+    print(";", file=f)
+
+    # area items
+    print("INSERT INTO areaItems (areaId, areaItemId)", file=f)
+    print("VALUES", file=f)
+
+    first = True
+    for obj in data["areaItems"]:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        print(f"({area_id}, {obj["areaItemId"]})", file=f)
     print(";", file=f)
     
 

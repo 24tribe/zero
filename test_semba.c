@@ -26,4 +26,8 @@ int main(void) {
     printf("calling /tip/release ...\n");
     res = SembaCall("/tip/release", "{ \"tipIds\": [ 3012 ] }");
     printf("%s\n\n", res);
+
+    printf("calling /adventure/area_object areaId=300401 ...\n");
+    res = SembaCall("/adventure/area_object", "{\"areaId\": 300401}");
+    printf("%s\n\n", res);
 }

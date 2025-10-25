@@ -58,7 +58,14 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
         "action": parseJson(enemy[2])
       })
 
-    let res = %*{"areaObjects": areaObjects}
+    var areaItemsRes = newSeq[JsonNode]()
+
+    let areaItems = db.getAllRows(sql"SELECT areaItemId FROM areaItems WHERE areaId = ?", areaId)
+
+    for areaItem in areaItems:
+      areaItemsRes.add(%*{"areaItemId": parseInt(areaItem[0])})
+
+    let res = %*{"areaObjects": areaObjects, "areaItems": areaItemsRes}
     result = DupString($res)
   elif uri == "/tip/release":
     var tips = newSeq[JsonNode]()

@@ -22,6 +22,11 @@ CREATE TABLE areaEnemies (
     action STRING
 );
 
+CREATE TABLE areaItems (
+    areaId INTEGER,
+    areaItemId INTEGER
+);
+
 -- Area 300402
 
 INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
@@ -35,7 +40,6 @@ VALUES (3012, 300402, 309901, 300402991, 30990102, '{"type": 7, "id": 1}')
 ;
 
 -- Area 300401
-
 INSERT INTO areaEnemies (areaId, areaPointId, areaEnemyRateSetId, action)
 VALUES
 (300401, 300401701, 300401701, '{"type": 5, "areaEnemyId": 300401701, "battleEntryId": 2000016}')
@@ -72,4 +76,26 @@ VALUES
 ,(300401, 305007, 300401505, 30500702, '{"type": 4, "areaItemId": 30500702, "id": 1, "label": "Valuable Chest"}')
 ,(300401, 305008, 300401506, 30500801, '{"type": 4, "areaItemId": 30500801, "id": 1, "label": "Regular Chest"}')
 ,(300401, 307013, 300401707, 30701301, '{"type": 5, "id": 1, "areaEnemyId": 300401708, "battleEntryId": 2000042}')
+;
+INSERT INTO areaItems (areaId, areaItemId)
+VALUES
+(300401, 30500301)
+,(300401, 30500601)
+,(300401, 30500702)
+,(300401, 30500801)
+,(300401, 30600501)
+,(300401, 30600601)
+,(300401, 30600701)
+,(300401, 30600801)
+,(300401, 30600901)
+,(300401, 30601001)
+,(300401, 30601101)
+,(300401, 30601201)
+,(300401, 30601301)
+,(300401, 30601401)
+,(300401, 300401611)
+,(300401, 300401612)
+,(300401, 300401613)
+,(300401, 300401614)
+,(300401, 300401615)
 ;
