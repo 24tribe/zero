@@ -1,3 +1,7 @@
+/*
+https://katyscode.wordpress.com/2021/01/14/il2cppinspector-tutorial-working-with-code-in-il2cpp-dll-injection-projects/
+*/
+
 #include "il2cpp_lean.h"
 
 #include <MinHook.h>
@@ -19,8 +23,6 @@ IL2CPPOBJECTNEW il2cpp_object_new = NULL;
 
 typedef System_String_o *(*IL2CPPSTRINGNEW)(char *s);
 IL2CPPSTRINGNEW il2cpp_string_new = NULL;
-
-static void *GAMEASSEMBLY_PTR;
 
 typedef void (*HTTPRequestCtor)(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method);
 HTTPRequestCtor fpHTTPRequestCtor = NULL;
@@ -92,7 +94,6 @@ void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, i
     System_Uri_o *newUri = ChangeUrl(url);
 
     fpHTTPRequestCtor(__this, newUri ? newUri : uri, methodType, method);
-    // ChangeProxy(__this, GAMEASSEMBLY_PTR);
     printf("Afetr ChangeProxy\n");
 }
 
@@ -134,8 +135,6 @@ void HookHTTPRequestCtor(void *GameAssembly) {
 }
 
 void HookIl2Cpp(void *GameAssembly) {
-    GAMEASSEMBLY_PTR = GameAssembly;
-
     il2cpp_domain_get = (IL2CPPDOMAINGET)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_domain_get");
     printf("il2cpp_domain_get: 0x%llx\n", (unsigned long long)il2cpp_domain_get);
 
@@ -165,38 +164,3 @@ void PutString(System_String_o *s) {
     }
     putchar('\n');
 }
-
-/*
-// https://katyscode.wordpress.com/2021/01/14/il2cppinspector-tutorial-working-with-code-in-il2cpp-dll-injection-projects/
-void ChangeProxy(Best_HTTP_HTTPRequest_o *__this, void *GameAssembly) {
-    il2cpp_thread_attach(il2cpp_domain_get());
-
-    Il2CppClass **uriTypeInfo = (char *)GameAssembly + 129866520; // System.Uri_TypeInfo
-    Il2CppClass *uriClass = *uriTypeInfo;
-    URICONSTRUCTOR uriCtor = (char *)GameAssembly + 94439536;
-    System_Uri_o *uri = (System_Uri_o *)il2cpp_object_new(uriClass);
-    System_String_o *proxy = il2cpp_string_new("http://127.0.0.1:8080");
-    PutString(proxy);
-    uriCtor(uri, proxy, NULL);
-
-    // printf("uri name addr: %p\n", uriClass->_1.name);
-    
-    Il2CppClass **httpProxyTypeInfo = (char *)GameAssembly + 129579368;
-    Il2CppClass *httpProxyClass = *httpProxyTypeInfo;
-
-    // This doesn't work, IDK why but the TypeInfo of HTTPProxy is missing in memory
-    // I think I messed up in with the relocations, or was deleted by the packer...
-    printf("httpProxyTypeInfo: %p\n", httpProxyTypeInfo);
-    printf("httpProxyClass addr: %p\n", httpProxyClass);
-    // printf("httpProxyClass name addr: %p\n", httpProxyClass->_1.name); // Crash here
-
-    HTTPPROXYCONSTRUCTOR httpProxyCtor = (char *)GameAssembly + 10937280;   
-    
-    Best_HTTP_Proxies_HTTPProxy_o *httpProxy = (Best_HTTP_Proxies_HTTPProxy_o *)il2cpp_object_new(*httpProxyTypeInfo);
-    httpProxyCtor(httpProxy, uri, NULL);
-    
-    
-    // Set __this.fields.ProxySettings to that http proxy
-    __this->fields.ProxySettings->fields._Proxy_k__BackingField = httpProxy;
-}
-*/
