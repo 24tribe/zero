@@ -410,13 +410,7 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
 
         sdsfree(userLogInResponseText);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserCrossDateResponse")) {
-        sds userCrossDateResponseText = SlurpFile("responses\\2025_9_14_12_57_57_UserCrossDateResponse.txt");
-        char *newResponse = ChangeLoggedInAtStr(userCrossDateResponseText, LOGIN_TIME);
-
-        res = CallParseJson(messageParser, newResponse);
-
-        sdsfree(userCrossDateResponseText);
-        free(newResponse);
+        res = CallParseJson(messageParser, SembaCall("/user/cross_date", ""));
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureAreaObjectResponse")) {
         sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectRequest));
         res = CallParseJson(messageParser, SembaCall("/adventure/area_object", reqJson));

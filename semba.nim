@@ -304,6 +304,23 @@ proc battle_Start(jsonReq: JsonNode): JsonNode =
 proc battle_Finish(jsonReq: JsonNode): JsonNode =
   discard
 
+proc user_CrossDate(jsonReq: JsonNode): JsonNode =
+  let status = getUserStatus()
+  return %*{
+    "changedResources": {
+      "status": status,
+      "notifications": {
+        "gacha": {
+          "executableGachaIds": [
+            1
+          ]
+        },
+        "mail": true,
+        "itemRequest": false
+      }
+    }
+  }
+
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
   var jsonRes: JsonNode
@@ -327,6 +344,8 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     jsonRes = battle_Start(jsonReq)
   elif uri == "/battle/finish":
     jsonRes = battle_Finish(jsonReq)
+  elif uri == "/user/cross_date":
+    jsonRes = user_CrossDate(jsonReq)
   else:
     jsonRes = nil
 
