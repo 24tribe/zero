@@ -87,9 +87,15 @@ def genTypeDefinitions(type_info, script_metadata):
     decl = f"extern Il2CppClass **{varname};"
     return definition, init, decl
 
+def getFuncVar(game_func):
+    return re.sub(r"[^a-zA-Z]", "_", game_func)
+
+def getFuncPtrType(funcVar):
+    return f"{funcVar}_FuncPtr"
+
 def genDefinitions(game_func, script_method):
-    funcVar = re.sub(r"[^a-zA-Z]", "_", game_func)
-    funcPtrType = f"{funcVar}_FuncPtr"
+    funcVar = getFuncVar(game_func)
+    funcPtrType = getFuncPtrType(funcVar)
 
     signature = "typedef " + script_method["Signature"].replace(funcVar, f"(*{funcPtrType})")
     definition = f"{funcPtrType} {funcVar} = NULL;"

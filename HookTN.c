@@ -29,6 +29,9 @@ References:
 
 #include "funcPtrs.h"
 
+#define AUTOHOOK_TN_IMPL
+#include "autohookTN.h"
+
 struct ResponseTypeToRequestPtr {
     char *responseType;
     Il2CppObject **requestPtr;
@@ -54,6 +57,7 @@ Neon_Model_Api_Rpc_AdventureReadSequenceRequest_o *lastAdventureReadSequenceRequ
 Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o* lastAdventureAcquireAreaItemRequest = NULL;
 
 struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
+    AUTOHOOK_TN_LIST_DATA
     {"Neon.Model.Api.Rpc.AuthSteamUserResponse", NULL, "/auth/steam_user"},
     {"Neon.Model.Api.Rpc.AuthNonceResponse", NULL, "/auth/nonce"},
     {"Neon.Model.Api.Rpc.AuthSignInResponse", NULL, "/auth/sign_in"},
@@ -743,4 +747,6 @@ void HookTN(void *GameAssembly) {
     HookAdventure_ReadSequence();
     HookAdventure_AcquireAreaItem();
     HookAuth_SteamUser();
+
+    AutoHookTN();
 }

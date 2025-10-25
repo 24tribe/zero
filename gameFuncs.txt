@@ -8,6 +8,7 @@ Neon.Model.Api.ApiService$$Adventure_AreaObject
 Neon.Model.Api.ApiService$$Adventure_ReadSequence
 Neon.Model.Api.ApiService$$Adventure_AcquireAreaItem
 Neon.Model.Api.ApiService$$Auth_SteamUser
+Neon.Model.Api.ApiService$$Xb_Formation
 KBJLHEAOHMD$$KPFFCLMEMEG
 CDGPJELFAMK$$NOCKJHKDMGF<object>
 Cysharp.Threading.Tasks.UniTaskCompletionSourceCore<object>$$GetResult

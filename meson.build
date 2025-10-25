@@ -51,6 +51,13 @@ func_ptrs = custom_target(
     command : [python3, '@INPUT@', '@OUTPUT@']
 )
 
+autohook_tn = custom_target(
+    'autohookTN',
+    input: ['scripts/genReqHook.py', 'dumper_out/script.json', 'reqHooks.txt'],
+    output : 'autohookTN.h',
+    command : [python3, '@INPUT@', '@OUTPUT@']
+)
+
 zero_src = [
     'mylib.c',
     'load_library_hook.c',
@@ -71,6 +78,7 @@ zero_src = [
     'md5sum.c',
     'NimInit.c',
     func_ptrs,
+    autohook_tn,
     're.c'
 ]
 

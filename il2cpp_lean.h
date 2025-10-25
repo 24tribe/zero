@@ -2530,4 +2530,90 @@ typedef struct Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o {
 	Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_Fields fields;
 } Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o;
 
+typedef struct System_Nullable_long__Fields {
+	bool hasValue;
+	int64_t value;
+} System_Nullable_long__Fields;
+
+typedef struct System_Nullable_long__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} System_Nullable_long__VTable;
+
+typedef struct System_Nullable_long__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	System_Nullable_long__VTable vtable;
+} System_Nullable_long__c;
+
+typedef struct System_Nullable_long__o {
+	System_Nullable_long__Fields fields;
+} System_Nullable_long__o;
+
+typedef struct Neon_Model_Api_Rpc_XbFormationRequest_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	int32_t xbId_;
+	struct System_Nullable_long__o enemyUserId_;
+	struct System_Nullable_int__o enemyCpuUserId_;
+} Neon_Model_Api_Rpc_XbFormationRequest_Fields;
+
+typedef struct Neon_Model_Api_Rpc_XbFormationRequest_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_MergeFrom;
+	VirtualInvokeData _5_MergeFrom;
+	VirtualInvokeData _6_WriteTo;
+	VirtualInvokeData _7_CalculateSize;
+	VirtualInvokeData _8_pb__Google_Protobuf_IMessage_get_Descriptor;
+	VirtualInvokeData _9_Equals;
+	VirtualInvokeData _10_Clone;
+	VirtualInvokeData _11_pb__Google_Protobuf_IBufferMessage_InternalMergeFrom;
+	VirtualInvokeData _12_pb__Google_Protobuf_IBufferMessage_InternalWriteTo;
+} Neon_Model_Api_Rpc_XbFormationRequest_VTable;
+
+typedef struct Neon_Model_Api_Rpc_XbFormationRequest_c {
+	Il2CppClass_1 _1;
+	struct Neon_Model_Api_Rpc_XbFormationRequest_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_Api_Rpc_XbFormationRequest_VTable vtable;
+} Neon_Model_Api_Rpc_XbFormationRequest_c;
+
+typedef struct Neon_Model_Api_Rpc_XbFormationRequest_o {
+	Neon_Model_Api_Rpc_XbFormationRequest_c *klass;
+	void *monitor;
+	Neon_Model_Api_Rpc_XbFormationRequest_Fields fields;
+} Neon_Model_Api_Rpc_XbFormationRequest_o;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_XbFormationResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_XbFormationResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_XbFormationResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_XbFormationResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_XbFormationResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_XbFormationResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_XbFormationResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_XbFormationResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_XbFormationResponse__o {
+	Cysharp_Threading_Tasks_UniTask_XbFormationResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_XbFormationResponse__o;
+
 #endif
