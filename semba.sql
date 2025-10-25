@@ -171,6 +171,13 @@ CREATE TABLE adventureVariables (
     value INTEGER
 );
 
+DROP TABLE IF EXISTS challengeTasks;
+CREATE TABLE challengeTasks (
+    challengeTaskId INTEGER PRIMARY KEY,
+    clearedAt STRING,
+    count INTEGER
+);
+
 INSERT INTO readSequence (sequenceRequestId, areaObjects, changedResources) VALUES 
 (70012711, '[{"areaObjectId": 700127, "areaPointId": 300401163, "areaObjectBehaviorId": 7001272, "action": {"type": 7, "id": 1}}]', '{"status": {"rank": 1, "gold": 1000, "staminaUpdatedAt": "2025-09-27T00:22:01Z", "formationNumber": 1, "currentAreaKeyId": 300401, "currentDirection": 7, "loggedInAt": "2025-09-27T14:30:17Z", "currentPositionCoordinates": {"x": 43.07095, "y": 21.6710052, "z": -22.2361259}, "currentAreaType": 1}, "nineSequences": [{"nineSequenceId": 95001001, "choices": "{\"Selections\":[]}", "lastReadAt": "2025-09-27T14:33:55Z"}], "adventureVariables": [{"adventureVariableId": 800027, "value": 1}]}')
 , (308002021, '[{"areaObjectId": 308003, "areaPointId": 300401804, "areaObjectBehaviorId": 30800302, "action": {"type": 1, "id": 1}}, {"areaObjectId": 308002, "areaPointId": 300401802, "areaObjectBehaviorId": 30800202, "action": {"type": 3, "id": 1, "sequenceId": 30800201}}, {"areaObjectId": 308001, "areaPointId": 300401801, "areaObjectBehaviorId": 30800102, "action": {"type": 1, "id": 1}}, {"areaObjectId": 305009, "areaPointId": 300401507, "areaObjectBehaviorId": 30500902, "action": {"type": 4, "areaItemId": 30500902, "id": 1, "label": "Valuable Chest"}}]', '{"status": {"rank": 1, "gold": 1100, "staminaUpdatedAt": "2025-09-27T00:22:01Z", "formationNumber": 1, "currentAreaKeyId": 300401, "currentDirection": 1, "loggedInAt": "2025-09-27T14:30:17Z", "currentPositionCoordinates": {"x": 71.98047, "y": 19.6710052, "z": -35.25}, "currentAreaType": 1}}')

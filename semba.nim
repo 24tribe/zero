@@ -597,11 +597,40 @@ proc getShopProducts(): seq[JsonNode] =
   for shopProductRow in shopProductsRows:
     result.add(parseJson(shopProductRow[0]))
 
+proc getAdventureVariables(): seq[JsonNode] =
+  let adventureVariablesRows = db.getAllRows(sql"SELECT adventureVariableId, value FROM adventureVariables")
+
+  for row in adventureVariablesRows:
+    let adventureVariableId = parseInt(row[0])
+    let value = parseInt(row[1])
+
+    result.add(%*{
+      "adventureVariableId": adventureVariableId,
+      "value": value
+    })
+
+proc getChallengeTasks(): seq[JsonNode] =
+  for row in db.getAllRows(sql"SELECT challengeTaskId, clearedAt, count FROM challengeTasks"):
+    let challengeTaskId = parseInt(row[0])
+    let clearedAt = row[1]
+    
+    let challengeTask = %*{"challengeTaskId": challengeTaskId, "clearedAt": clearedAt}
+
+    if row[2] != "":
+      let count = parseInt(row[2])
+      challengeTask["count"] = %*count
+
+    result.add(challengeTask)
+
 proc user_LogIn(): JsonNode =
   let formations = getFormations()
+  let adventureVariables = getAdventureVariables()
+  let challengeTasks = getChallengeTasks()
 
   return %*{
     "resources": {
+      "challengeTasks": challengeTasks,
+      "adventureVariables": adventureVariables,
       "wallet": {},
       "characters": getCharacters(),
       "status": getUserStatus(),
@@ -619,7 +648,8 @@ proc user_LogIn(): JsonNode =
       "totalTasks": getTotalTasks(),
       "profile": {"name": "Yo Kuronaka3", "profileBannerId": 2010011, "characterLikabilityScale": 500},
       "profileBanners": [{"profileBannerId": 2010011, "receivedAt": "2025-09-10T02:22:51Z"}],
-      "tutorialStates": getTutorialStates()
+      "tutorialStates": getTutorialStates(),
+
     },
     "masterData": {"shopProducts": getShopProducts()}
   }
@@ -690,9 +720,17 @@ proc updateChallengeProgresses(challengeProgresses: JsonNode) =
       ON CONFLICT (challengeProgressId) DO UPDATE SET clearedAt = ?, state = ?
     """, challengeProgressId, clearedAtStr, state, clearedAtStr, state)
 
-# FIXME: implement this
 proc updateChallengeTasks(challengeTasks: JsonNode) =
-  discard
+  for challengeTask in challengeTasks:
+    let challengeTaskId = challengeTask["challengeTaskId"].getInt()
+    let clearedAt = challengeTask["clearedAt"].getStr()
+    let count = challengeTask["count"].getInt()
+
+    db.exec(sql"""
+      INSERT INTO challengeTasks (challengeTaskId, clearedAt, count)
+      VALUES (?, ?, ?)
+      ON CONFLICT (challengeTaskId) DO UPDATE SET clearedAt = ?, count = ?
+    """, challengeTaskId, clearedAt, count, clearedAt, count)
 
 proc updateResources(changedResources: var JsonNode) =
   var status = getUserStatus()
