@@ -28,6 +28,48 @@ References:
 
 #include "funcPtrs.h"
 
+struct ResponseTypeToRequestPtr {
+    char *responseType;
+    Il2CppObject **requestPtr;
+};
+
+struct ResponseTypeToRequestPtr_List {
+    int64_t len;
+    struct ResponseTypeToRequestPtr *data;
+};
+
+#define STATIC_ARRAY_LEN(a) (sizeof a/sizeof *a)
+
+Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* lastAdventureAreaObjectRequest = NULL;
+Neon_Model_Api_Rpc_AdventureMoveToAreaRequest_o *lastAdventureMoveToAreaRequest = NULL;
+Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o *lastUpdateCharacterStatusRequest = NULL;
+Neon_Model_Api_Rpc_BattleFinishRequest_o *lastBattleFinishRequest = NULL;
+Neon_Model_Api_Rpc_BattleStartRequest_o *lastBattleStartRequest = NULL;
+Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
+Neon_Model_Api_Rpc_FormationUpdateRequest_o *lastFormationUpdateRequest = NULL;
+Neon_Model_Api_Rpc_TipReleaseRequest_o *lastTipReleaseRequest = NULL;
+
+struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
+    {"Neon.Model.Api.Rpc.AuthSteamUserResponse", NULL},
+    {"Neon.Model.Api.Rpc.AuthNonceResponse", NULL},
+    {"Neon.Model.Api.Rpc.AuthSignInResponse", NULL},
+    {"Neon.Model.Api.Rpc.UserLogInResponse", NULL},
+    {"Neon.Model.Api.Rpc.UserCrossDateResponse", NULL},
+    {"Neon.Model.Api.Rpc.AdventureAreaObjectResponse", (Il2CppObject **)&lastAdventureAreaObjectRequest},
+    {"Neon.Model.Api.Rpc.AdventureMoveToAreaResponse", (Il2CppObject **)&lastAdventureMoveToAreaRequest},
+    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastUpdateCharacterStatusRequest},
+    {"Neon.Model.Api.Rpc.BattleFinishResponse", (Il2CppObject **)&lastBattleFinishRequest},
+    {"Neon.Model.Api.Rpc.BattleStartResponse", (Il2CppObject **)&lastBattleStartRequest},
+    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastCharacterCostumeUpdateRequest},
+    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastFormationUpdateRequest},
+    {"Neon.Model.Api.Rpc.TipReleaseResponse", (Il2CppObject **)&lastTipReleaseRequest},
+};
+
+struct ResponseTypeToRequestPtr_List RES_TYPE_TO_REQ_PTR_LIST = {
+    .len = STATIC_ARRAY_LEN(RES_TYPE_TO_REQ_PTR_LIST_DATA),
+    .data = RES_TYPE_TO_REQ_PTR_LIST_DATA
+};
+
 Neon_Model_Api_ApiService__Adventure_AreaObject_FuncPtr fpNeon_Model_Api_ApiService__Adventure_AreaObject = NULL;
 
 Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult_FuncPtr fpSourceCore_GetResult = NULL;
@@ -47,8 +89,6 @@ Neon_Model_Api_ApiService__Battle_Finish_FuncPtr fpNeon_Model_Api_ApiService__Ba
 Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus_FuncPtr fpNeon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = NULL;
 
 Neon_Model_Api_ApiService__Formation_Update_FuncPtr fpNeon_Model_Api_ApiService__Formation_Update = NULL;
-
-Neon_Model_Api_Rpc_FormationUpdateRequest_o *lastFormationUpdateRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourFormationUpdate(
     Neon_Model_Api_ApiService_o* __this,
@@ -87,8 +127,6 @@ void HookFormationUpdate(void) {
     }
 }
 
-Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o *lastUpdateCharacterStatusRequest = NULL;
-
 Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourUpdateCharacterStatus(
     Neon_Model_Api_ApiService_o* __this,
     Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o* data,
@@ -125,8 +163,6 @@ void HookUpdateCharacterStatus(void) {
     }
 }
 
-Neon_Model_Api_Rpc_BattleFinishRequest_o *lastBattleFinishRequest = NULL;
-
 Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o DetourBattleFinish(
     Neon_Model_Api_ApiService_o* __this,
     Neon_Model_Api_Rpc_BattleFinishRequest_o* data,
@@ -159,8 +195,6 @@ void HookBattleFinish(void) {
     }
 }
 
-Neon_Model_Api_Rpc_BattleStartRequest_o *lastBattleStartRequest = NULL;
-
 Cysharp_Threading_Tasks_UniTask_BattleStartResponse__o DetourBattleStart(
     Neon_Model_Api_ApiService_o* __this,
     Neon_Model_Api_Rpc_BattleStartRequest_o* data,
@@ -190,8 +224,6 @@ void HookBattleStart(void) {
         return;
     }
 }
-
-Neon_Model_Api_Rpc_AdventureMoveToAreaRequest_o *lastAdventureMoveToAreaRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_AdventureMoveToAreaResponse__o DetourAdventureMoveToArea(
     Neon_Model_Api_ApiService_o* __this,
@@ -225,8 +257,6 @@ void HookAdventureMoveToArea(void) {
     }
 }
 
-Neon_Model_Api_Rpc_TipReleaseRequest_o *lastTipReleaseRequest = NULL;
-
 Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o DetourTipRelease(
     Neon_Model_Api_ApiService_o* __this,
     Neon_Model_Api_Rpc_TipReleaseRequest_o* data,
@@ -258,8 +288,6 @@ void HookTipRelease(void) {
         return;
     }
 }
-
-Neon_Model_Api_Rpc_AdventureAreaObjectRequest_o* lastAdventureAreaObjectRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o DetourAdventureAreaObject(
     Neon_Model_Api_ApiService_o* __this,
@@ -385,6 +413,27 @@ void HookHTTPRequestCtor(void *GameAssembly) {
     }
 }
 
+sds GetFqn(Il2CppObject *obj) {
+    Il2CppClass *klass = obj ? obj->klass : NULL;
+    sds res = NULL;
+    if (klass) {
+        res = sdscatprintf(sdsempty(), "%s.%s", klass->_1.namespaze, klass->_1.name);
+    }
+    return res;
+}
+
+Il2CppObject **findRequestPtr(char *responseType) {
+    struct ResponseTypeToRequestPtr *end = RES_TYPE_TO_REQ_PTR_LIST.data + RES_TYPE_TO_REQ_PTR_LIST.len;
+    struct ResponseTypeToRequestPtr *it;
+    for (it = RES_TYPE_TO_REQ_PTR_LIST.data; it != end; ++it) {
+        if (!strcmp(responseType, it->responseType) && it->requestPtr && *it->requestPtr) {
+            return it->requestPtr;
+        }
+    }
+
+    return NULL;
+}
+
 Il2CppObject *DetourSourceCore_GetResult(
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o __this,
     int16_t token,
@@ -394,46 +443,26 @@ Il2CppObject *DetourSourceCore_GetResult(
 
     Il2CppObject *res = fpSourceCore_GetResult(__this, token, method);
 
-    const char *name = "";
-    const char *namespaze = "";
+    sds fqn = GetFqn(res);
 
-    if (res) {  
-        GetNameAndNamespaze(res, &name, &namespaze);
-    }
-
-    if (neonApiPath && !strcmp(namespaze, "Neon.Model.Api.Rpc")) {
-        sds jsonRes = res ? System_String_toSds(ConvertObjectToString((Il2CppObject *)res)) : sdsempty();
-        Il2CppObject *req = NULL;
-
-        if (!strcmp(name, "AdventureMoveToAreaResponse")) {
-            req = (Il2CppObject *)lastAdventureMoveToAreaRequest;
-            lastAdventureMoveToAreaRequest = NULL;
-        } else if (!strcmp(name, "AdventureAreaObjectResponse")) {
-            req = (Il2CppObject *)lastAdventureAreaObjectRequest;
-            lastAdventureAreaObjectRequest = NULL;
-        } else if (!strcmp(name, "BattleStartResponse")) {
-            req = (Il2CppObject *)lastBattleStartRequest;
-            lastBattleStartRequest = NULL;
-        } else if (!strcmp(name, "BattleFinishResponse")) {
-            req = (Il2CppObject *)lastBattleFinishRequest;
-            lastBattleFinishRequest = NULL;
+    if (neonApiPath && fqn && strstr(fqn, "Neon.Model.Api.Rpc")) {
+        printf("fqn: '%s'\n", fqn);
+        sds jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
+        Il2CppObject **reqPtr = findRequestPtr(fqn);
+        sds jsonReq;
+        if (reqPtr) {
+            jsonReq = System_String_toSds(ConvertObjectToString(*reqPtr));
+            *reqPtr = NULL;
+        } else {
+            jsonReq = sdsempty();
         }
 
-        sds jsonReq = req ? System_String_toSds(ConvertObjectToString(req)) : sdsempty();
-
-        SembaLogFlow(neonApiPath, jsonReq, jsonRes);
-
-        if (jsonReq) {
-            sdsfree(jsonReq);
-        }
-
-        if (jsonRes) {
-            sdsfree(jsonRes);
-        }
-        
+        SembaLogFlow(neonApiPath, jsonReq, jsonRes);    
         sdsfree(neonApiPath);
         neonApiPath = NULL;
-    }  
+        sdsfree(jsonReq);
+        sdsfree(jsonRes);
+    }
     
     LogResponse(res);
 
@@ -497,9 +526,7 @@ Il2CppObject *CallParseJson(
         return another;
     }
 }
-
-Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
-  
+ 
 Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
     RunNimMainOnce();
 
