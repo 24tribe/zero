@@ -349,6 +349,19 @@ proc parseCharacterRow(characterRow: Row): JsonNode =
 }
 ]#
 
+proc getBattleParameters(battleEntryIds: JsonNode): seq[JsonNode] =
+  # FIXME: fix n+1
+  for battleEntryId in battleEntryIds:
+    let id = battleEntryId.getInt()
+    let battleParameterRow = db.getRow(sql"""
+      SELECT enemies FROM battleParameters WHERE id = ?
+    """, id)
+
+    result.add(%*{
+      "id": id,
+      "enemies": parseJson(battleParameterRow[0])
+    }) 
+
 proc battle_Start(jsonReq: JsonNode): JsonNode =
   var characters = newSeq[JsonNode]()
 
@@ -360,9 +373,28 @@ proc battle_Start(jsonReq: JsonNode): JsonNode =
 
     characters.add(parseCharacterRow(characterRow))
 
+  let status = getUserStatus()
+
+  let currentLocation = jsonReq["currentLocation"]
+  
+  status["currentAreaKeyId"] = currentLocation["areaKeyId"]
+  status["currentAreaType"] = currentLocation["areaType"]
+  status["currentDirection"] = currentLocation["direction"]
+  status["currentPositionCoordinates"] = currentLocation["positionCoordinates"]
+
+  setUserStatus(status)
+
+  let battleParameters = getBattleParameters(jsonReq["battleEntryIds"])
+
   return %*{
     "characters": characters,
-    "tensionCards": getEquippedTensionCards()
+    "tensionCards": getEquippedTensionCards(),
+    "advantageType": jsonReq["advantageType"],
+    "changedResources": {
+      "status": status
+    },
+    "battleParameters": battleParameters,
+    "battleTriggers": jsonReq["battleTriggers"]
   }
 
 #[

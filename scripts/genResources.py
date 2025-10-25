@@ -24,6 +24,34 @@ def write_sql(f, data):
     gen_total_tasks(printf, f, data)
     gen_tutorial_states(printf, f, data)
     gen_shop_products(printf, f, data)
+    gen_characters(printf, f, data)
+
+def gen_characters(printf, f, data):
+    printf("""
+INSERT INTO characters
+(characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
+criticalRate, criticalDamageRate, movementSpeed, damageInflictedRate, tensionIncreaseRate,
+cpRecastRate, spGaugeIncreaseRate, attackSpeed, characterCostumeId, abnormalityParamSet,
+trainingScoreLevelScore, trainingScoreRankScore, actionPointMax,
+actionPointRate, actionPointConsumption, damageTakenRate)
+VALUES
+""")
+    first = True
+    for c in data["resources"]['characters']:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        f.write("(")
+        f.write(f"{c["characterId"]}, ")
+        printf("""240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)""")
+    
+    printf(";")
 
 def gen_shop_products(printf, f, data):
     printf("INSERT INTO shopProducts (val)")
@@ -119,7 +147,7 @@ def gen_tension_cards(printf, f, data):
         else:
             f.write(",")
 
-        printf(f"({tc["tensionCardId"]}, '{tc["receivedAt"]}', {tc["maxLevel"]}, '{json.dumps(tc["abilityEfficacies"])}', {tc["trainingScoreLevelScore"]}, {tc["entityId"]}, {"true" if tc["isLocked"] else "false"})")
+        printf(f"({tc["tensionCardId"]}, '{tc["receivedAt"]}', {tc["maxLevel"]}, '{json.dumps(tc["abilityEfficacies"])}', {tc["trainingScoreLevelScore"]}, {tc["entityId"]}, {"true" if "isLocked" in tc and tc["isLocked"] else "false"})")
 
     printf(";")
 

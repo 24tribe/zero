@@ -139,6 +139,19 @@ CREATE TABLE shopProducts (
     val STRING
 );
 
+DROP TABLE IF EXISTS battleParameters;
+CREATE TABLE battleParameters (
+    id INTEGER,
+    enemies STRING
+);
+
+INSERT INTO battleParameters (id, enemies)
+VALUES
+(2000042, '[{"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "hpStackCount": 1}, {"id": 224303, "attack": 270, "defense": 100, "hp": 17108, "hpStackCount": 1}]')
+,(2000016, '[{"id": 224105, "attack": 228, "defense": 100, "hp": 6864, "hpStackCount": 0}, {"id": 224105, "attack": 228, "defense": 100, "hp": 6864, "hpStackCount": 0}]')
+,(2000015, '[{"id": 250108, "attack": 228, "defense": 100, "hp": 3432, "hpStackCount": 0}, {"id": 250108, "attack": 228, "defense": 100, "hp": 3432, "hpStackCount": 0}]')
+;
+
 INSERT INTO shopProducts (val)
 VALUES
 ('{"id": 101, "imagePath": "ui_shop_item_icon_eniguma_01", "priority": 87, "endAt": "2025-05-15T06:00:00Z", "purchaseSteps": [{"storeProductId": 101, "name": "Paid Enigma Entity x68"}, {"storeProductId": 1001, "name": "Paid Enigma Entity x68"}], "shopId": 1}')
@@ -822,7 +835,28 @@ cpRecastRate, spGaugeIncreaseRate, attackSpeed, characterCostumeId, abnormalityP
 trainingScoreLevelScore, trainingScoreRankScore, actionPointMax,
 actionPointRate, actionPointConsumption, damageTakenRate)
 VALUES
+
 (100101, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)
+,(100201, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)
+,(100501, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)
+,(100601, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
+5, 50, 6, 100, 100,
+100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+2, 1, 1000,
+3000, 160, 1)
+,(101301, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
 100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
