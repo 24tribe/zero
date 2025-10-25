@@ -9219,4 +9219,168 @@ typedef struct Cysharp_Threading_Tasks_UniTask_XbPvpRankMatchHistoryListResponse
 	Cysharp_Threading_Tasks_UniTask_XbPvpRankMatchHistoryListResponse__Fields fields;
 } Cysharp_Threading_Tasks_UniTask_XbPvpRankMatchHistoryListResponse__o;
 
+typedef struct Neon_Model_Api_Rpc_AuthSignInRequest_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	struct System_String_o* deviceSecret_;
+	struct System_String_o* deviceUniqueId_;
+	struct System_String_o* deviceToken_;
+	struct System_String_o* deviceModel_;
+	struct System_String_o* clientDigest_;
+} Neon_Model_Api_Rpc_AuthSignInRequest_Fields;
+
+typedef struct Neon_Model_Api_Rpc_AuthSignInRequest_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_MergeFrom;
+	VirtualInvokeData _5_MergeFrom;
+	VirtualInvokeData _6_WriteTo;
+	VirtualInvokeData _7_CalculateSize;
+	VirtualInvokeData _8_pb__Google_Protobuf_IMessage_get_Descriptor;
+	VirtualInvokeData _9_Equals;
+	VirtualInvokeData _10_Clone;
+	VirtualInvokeData _11_pb__Google_Protobuf_IBufferMessage_InternalMergeFrom;
+	VirtualInvokeData _12_pb__Google_Protobuf_IBufferMessage_InternalWriteTo;
+} Neon_Model_Api_Rpc_AuthSignInRequest_VTable;
+
+typedef struct Neon_Model_Api_Rpc_AuthSignInRequest_c {
+	Il2CppClass_1 _1;
+	struct Neon_Model_Api_Rpc_AuthSignInRequest_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_Api_Rpc_AuthSignInRequest_VTable vtable;
+} Neon_Model_Api_Rpc_AuthSignInRequest_c;
+
+typedef struct Neon_Model_Api_Rpc_AuthSignInRequest_o {
+	Neon_Model_Api_Rpc_AuthSignInRequest_c *klass;
+	void *monitor;
+	Neon_Model_Api_Rpc_AuthSignInRequest_Fields fields;
+} Neon_Model_Api_Rpc_AuthSignInRequest_o;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_AuthSignInResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__o {
+	Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_AuthSignInResponse__o;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_UserCrossDateResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__o {
+	Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_UserCrossDateResponse__o;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_GachaListResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_GachaListResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_GachaListResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_GachaListResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_GachaListResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_GachaListResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_GachaListResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_GachaListResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_GachaListResponse__o {
+	Cysharp_Threading_Tasks_UniTask_GachaListResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_GachaListResponse__o;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_UserLogInResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_UserLogInResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_UserLogInResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_UserLogInResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_UserLogInResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_UserLogInResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_UserLogInResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_UserLogInResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_UserLogInResponse__o {
+	Cysharp_Threading_Tasks_UniTask_UserLogInResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_UserLogInResponse__o;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_AuthNonceResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__o {
+	Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__o;
+
 #endif

@@ -33,15 +33,16 @@ def main():
 
     api_funcs_with_res_only = get_api_funcs_with_res_only(req_hooks)
 
-    for name, res in api_funcs_with_res_only:
-        path = nameToPath(name)
-        list_data.append(f"""{{"Neon.Model.Api.Rpc.{res}", NULL, "{path}"}}, """)
+    more_impl_code, more_list_data, more_hook_names = createAutohookHResOnly(api_funcs_with_res_only, script)
+
+    list_data += more_list_data
 
     code = [
         "#ifdef AUTOHOOK_TN_IMPL"
     ]
 
     code += impl_code
+    code += more_impl_code
 
     empty_req_res_hooks = get_empty_req_res_hooks(req_hooks)
 
@@ -56,7 +57,7 @@ def main():
     code += impl_code
 
     code.append("void AutoHookTN(void) {")
-    for hookName in itertools.chain(hookNames, moreHookNames, yetMoreHookNames):
+    for hookName in itertools.chain(hookNames, moreHookNames, yetMoreHookNames, more_hook_names):
         code.append(f"    {hookName}();")
 
     code.append("}")
@@ -73,6 +74,51 @@ def main():
 
     with open(args.out_h, "w", encoding="utf-8") as f:
         f.write("\n".join(code))
+
+def createAutohookHResOnly(api_funcs_with_res_only, script):
+    hookNames = []
+
+    list_data = []
+
+    impl_code = []
+
+    for script_method in script["ScriptMethod"]:
+        if script_method["Name"] in api_funcs_with_res_only:
+            api_funcs_with_res_only.remove(script_method["Name"])
+
+            var = getFuncVar(script_method["Name"])
+            funcPtrType = getFuncPtrType(var)
+            hookName = getHookName(var)
+
+            hookNames.append(hookName)
+
+            fpVar = getFpVar(var)
+            detourName = getDetourName(var)
+
+            responses = re.findall(r"Cysharp_Threading_Tasks_UniTask_(.+Response)__o", script_method["Signature"])
+            assert len(responses) == 1
+            res = responses[0]
+
+            newSignature = getNewSignature(var, detourName, script_method["Signature"])
+
+            args = getArgs(newSignature)
+
+            match = re.search(r"Neon\.Model\.Api\.ApiService\$\$([^\n]+)", script_method["Name"])
+            assert match
+            name = match.group(1)
+            path = nameToPath(name)
+
+            list_data.append(f"""{{"Neon.Model.Api.Rpc.{res}", NULL, "{path}"}}, """)
+
+            appendDetourFunctionResOnly(impl_code, funcPtrType, fpVar, newSignature, args, path)
+
+            appendCreateHookFunction(impl_code, hookName, var, detourName, fpVar)
+
+    if api_funcs_with_res_only != set():
+        print(f"Couldn't find {api_funcs_with_res_only}")
+        sys.exit(1)
+
+    return impl_code, list_data, hookNames
 
 def get_api_funcs_with_req_and_res(req_hooks):
     api_funcs_with_req_and_res = filter(
@@ -112,9 +158,9 @@ def get_api_funcs_with_res_only(req_hooks):
         lambda x: req_hooks[x][0] == "None" and req_hooks[x][1] != "None", req_hooks
     )
 
-    api_funcs_with_res_only = [(x, req_hooks[x][1]) for x in api_funcs_with_res_only]
+    api_funcs_with_res_only = map(lambda x: f"Neon.Model.Api.ApiService$${x}", api_funcs_with_res_only)
 
-    return api_funcs_with_res_only
+    return set(api_funcs_with_res_only)
 
 def nameToPath(methodName):
     path = re.findall(r"[A-Z][a-z]+", methodName)
@@ -160,12 +206,27 @@ void {hookName}(void) {{
 }}
             """)
 
-def appendDetourFunction(impl_code, funcPtrType, fpVar, req, lastReq, newSignature, args):
+def appendDetourFunctionResOnly(impl_code, funcPtrType, fpVar, newSignature, args, uri):
+    impl_code.append(f"""
+{funcPtrType} {fpVar} = NULL;
+
+{newSignature}
+    if (ZERO_CONFIG.offlineMode) {{
+        neonApiPath = sdsnew("{uri}");
+    }}
+    return {fpVar}({", ".join(args)});
+}}
+""")
+
+def appendDetourFunction(impl_code, funcPtrType, fpVar, req, lastReq, newSignature, args, uri):
     impl_code.append(f"""
 {funcPtrType} {fpVar} = NULL;
 typedef struct Neon_Model_Api_Rpc_{req}_o Neon_Model_Api_Rpc_{req}_o;
 Neon_Model_Api_Rpc_{req}_o *{lastReq} = NULL;
 {newSignature}
+    if (ZERO_CONFIG.offlineMode) {{
+        neonApiPath = sdsnew("{uri}");
+    }}
     {lastReq} = data;
     return {fpVar}({", ".join(args)});
 }}
@@ -326,7 +387,7 @@ def createAutohookH(req_hooks, script):
 
             list_data.append(f"""{{"Neon.Model.Api.Rpc.{res}", (Il2CppObject **)&{lastReq}, "{path}"}}, """)
 
-            appendDetourFunction(impl_code, funcPtrType, fpVar, req, lastReq, newSignature, args)
+            appendDetourFunction(impl_code, funcPtrType, fpVar, req, lastReq, newSignature, args, path)
 
             appendCreateHookFunction(impl_code, hookName, var, detourName, fpVar)
 

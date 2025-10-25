@@ -29,6 +29,8 @@ References:
 
 #include "funcPtrs.h"
 
+sds neonApiPath = NULL;
+
 #define AUTOHOOK_TN_IMPL
 #include "autohookTN.h"
 
@@ -53,41 +55,6 @@ struct ResponseTypeToRequestPtr_List RES_TYPE_TO_REQ_PTR_LIST = {
     .len = STATIC_ARRAY_LEN(RES_TYPE_TO_REQ_PTR_LIST_DATA),
     .data = RES_TYPE_TO_REQ_PTR_LIST_DATA
 };
-
-Neon_Model_Api_ApiService__Auth_SteamUser_FuncPtr fpNeon_Model_Api_ApiService__Auth_SteamUser = NULL;
-
-Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o DetourAuth_SteamUser(
-    Neon_Model_Api_ApiService_o* __this,
-    Neon_Model_Api_Rpc_AuthSteamUserRequest_o* data,
-    LPCOHPIGHIN_o* requestHandler,
-    System_Threading_CancellationToken_o cancellationToken,
-    const MethodInfo* method
-) {
-    if (ZERO_CONFIG.offlineMode && ZERO_CONFIG.saveFile) {
-        RunNimMainOnce();
-        SembaLoadSave(ZERO_CONFIG.saveFile);
-    }
-    
-    return fpNeon_Model_Api_ApiService__Auth_SteamUser(
-        __this, data, requestHandler, cancellationToken, method
-    );
-}
-
-void HookAuth_SteamUser(void) {
-    if (MH_CreateHook(
-        (void *)(uintptr_t)Neon_Model_Api_ApiService__Auth_SteamUser,
-        (LPVOID)(uintptr_t)&DetourAuth_SteamUser,
-        (LPVOID *)(&fpNeon_Model_Api_ApiService__Auth_SteamUser)
-    ) != MH_OK) {
-        fputs("Failed to create Neon_Model_Api_ApiService__Auth_SteamUser hook\n", stdout);
-        return;
-    }
-
-    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Auth_SteamUser, /* changePermissions = */ FALSE) != MH_OK) {
-        fputs("Failed to enable Neon_Model_Api_ApiService__Auth_SteamUser hook\n", stdout);
-        return;
-    }
-}
 
 KBJLHEAOHMD__KPFFCLMEMEG_FuncPtr fpKbjlheaohmd__Kpffclmemeg = NULL;
 
@@ -114,8 +81,6 @@ void HookKbjlheaohmd__Kpffclmemeg(void) {
         return;
     }
 }
-
-sds neonApiPath = NULL;
 
 void SaveNeonApiPath(sds url) {
     if (!strstr(url, "https://game.tribenine-game.com")) {
@@ -176,23 +141,11 @@ sds GetFqnFromClass(Il2CppClass *klass) {
     return res;
 }
 
-struct ResponseTypeToRequestPtr *findResTypeToReqPtrWithReq(char *responseType) {
+struct ResponseTypeToRequestPtr *findResTypeToReqPtrFromUri(char *uri) {
     struct ResponseTypeToRequestPtr *end = RES_TYPE_TO_REQ_PTR_LIST.data + RES_TYPE_TO_REQ_PTR_LIST.len;
     struct ResponseTypeToRequestPtr *it;
     for (it = RES_TYPE_TO_REQ_PTR_LIST.data; it != end; ++it) {
-        if (!strcmp(responseType, it->responseType) && it->requestPtr && *it->requestPtr) {
-            return it;
-        }
-    }
-
-    return NULL;
-}
-
-struct ResponseTypeToRequestPtr *findResTypeToReqPtrWithoutReq(char *responseType) {
-    struct ResponseTypeToRequestPtr *end = RES_TYPE_TO_REQ_PTR_LIST.data + RES_TYPE_TO_REQ_PTR_LIST.len;
-    struct ResponseTypeToRequestPtr *it;
-    for (it = RES_TYPE_TO_REQ_PTR_LIST.data; it != end; ++it) {
-        if (!strcmp(responseType, it->responseType) && !it->requestPtr) {
+        if (!strcmp(uri, it->uriPath)) {
             return it;
         }
     }
@@ -225,12 +178,13 @@ Il2CppObject *DetourSourceCore_GetResult(
             jsonRes = sdsempty();
         }
 
-        struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtrWithReq(fqn);
+        struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtrFromUri(neonApiPath);
         sds jsonReq;
         if (resTypeToReqPtr) {
             jsonReq = System_String_toSds(ConvertObjectToString(*resTypeToReqPtr->requestPtr));
             *resTypeToReqPtr->requestPtr = NULL;
         } else {
+            printf("WARNING: %s not found in resTypeToReq list!\n", neonApiPath);
             jsonReq = sdsempty();
         }
 
@@ -333,15 +287,25 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
     
     sds reqJson = sdsempty();
 
-    struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtrWithoutReq(resType);
+    struct ResponseTypeToRequestPtr *resTypeToReqPtr = NULL;
 
-    if (!resTypeToReqPtr) {
-        resTypeToReqPtr = findResTypeToReqPtrWithReq(resType);
+    if (neonApiPath) {
+        resTypeToReqPtr = findResTypeToReqPtrFromUri(neonApiPath);
+
         if (resTypeToReqPtr) {
-            sdsfree(reqJson);
-            reqJson = System_String_toSds(ConvertObjectToString(*resTypeToReqPtr->requestPtr));
-            *resTypeToReqPtr->requestPtr = NULL;
+            if (resTypeToReqPtr->requestPtr) {
+                sdsfree(reqJson);
+                reqJson = System_String_toSds(ConvertObjectToString(*resTypeToReqPtr->requestPtr));
+                *resTypeToReqPtr->requestPtr = NULL;
+            }
+        } else {
+            printf("WARNING: %s not found in resTypeToReq list!\n", neonApiPath);
         }
+
+        sdsfree(neonApiPath);
+        neonApiPath = NULL;
+    } else {
+        printf("WARNING: neonApiPath not set, so we don't know how to call semba!\n");
     }
 
     Il2CppObject *res = NULL;
@@ -406,10 +370,15 @@ void HookTN(void *GameAssembly) {
     HookSourceCore_GetResult();
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
-    HookAuth_SteamUser();
+
+    RunNimMainOnce();
 
     if (ZERO_CONFIG.onlineLogsPath) {
         SembaInitOnlineDb(ZERO_CONFIG.onlineLogsPath);
+    }
+
+    if (ZERO_CONFIG.offlineMode && ZERO_CONFIG.saveFile) {
+        SembaLoadSave(ZERO_CONFIG.saveFile);
     }
 
     AutoHookTN();
