@@ -459,6 +459,13 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
         sds reqJson = System_String_toSds(s);
         res = CallParseJson(messageParser, SembaCall("/tip/release", reqJson));
         sdsfree(reqJson);
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.ChangedResourcesResponse")) {
+        if (lastUpdateCharacterStatusRequest != NULL) {
+            sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastUpdateCharacterStatusRequest));
+            res = CallParseJson(messageParser, SembaCall("/adventure/update_character_status", reqJson));
+            sdsfree(reqJson);
+            lastUpdateCharacterStatusRequest = NULL;
+        }
     }
 
     sdsfree(sUtf8);
