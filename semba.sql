@@ -16,10 +16,9 @@ CREATE TABLE tipRelease (
 );
 
 INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
-VALUES (300402, 309001, 300402901, 30900101, '{"type": 3, "id": 1, "sequenceId": 30900101, "label": "Hoimi"}'); 
-
-INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
-VALUES (300402, 309901, 300402991, 30990101, '{"type": 3, "id": 1, "sequenceId": 30990101}');
+VALUES
+(300402, 309001, 300402901, 30900101, '{"type": 3, "id": 1, "sequenceId": 30900101, "label": "Hoimi"}'),
+(300402, 309901, 300402991, 30990101, '{"type": 3, "id": 1, "sequenceId": 30990101}');
 
 INSERT INTO tipRelease (tipId, areaId, areaObjectId, newAreaPointId, newAreaObjectBehaviorId, newAction)
 VALUES (3012, 300402, 309901, 300402991, 30990102, '{"type": 7, "id": 1}');
