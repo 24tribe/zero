@@ -25,6 +25,26 @@ CONTINUEWITH Cysharp_Threading_Tasks_UniTaskExtensions__ContinueWith_object_ = N
 typedef void (*UCS_OBJECT_CTOR)(Cysharp_Threading_Tasks_UniTaskCompletionSource_o *__this, const MethodInfo *);
 UCS_OBJECT_CTOR UniTaskCompletionSource_object_ctor = NULL;
 
+typedef bool (*TRYSETRESULT)(Cysharp_Threading_Tasks_UniTaskCompletionSource_T__o* __this, Il2CppObject* result, const MethodInfo_2352A00* method);
+TRYSETRESULT Cysharp_Threading_Tasks_UniTaskCompletionSource_object___TrySetResult = NULL;
+TRYSETRESULT fpTrySetResult = NULL;
+
+typedef bool (*SYSTEMTRYSETRESULT)(System_Threading_Tasks_TaskCompletionSource_object__o* __this, Il2CppObject* result, const MethodInfo_223E1D0* method);
+SYSTEMTRYSETRESULT System_Threading_Tasks_TaskCompletionSource_object___TrySetResult = NULL;
+SYSTEMTRYSETRESULT fpSystemTrySetResult = NULL;
+
+typedef Il2CppObject *(*GETRESULT)(Cysharp_Threading_Tasks_UniTask_Awaiter_object__o __this, const MethodInfo_2ED6660* method);
+GETRESULT fpGetResult = NULL;
+GETRESULT Cysharp_Threading_Tasks_UniTask_Awaiter_object___GetResult = NULL;
+
+typedef Il2CppObject *(*IUNITASKSOURCE_GETRESULT)(Cysharp_Threading_Tasks_Triggers_AsyncTriggerHandler_T__o* __this, int16_t token, const MethodInfo_21C8770* method);
+IUNITASKSOURCE_GETRESULT fpIUniTaskSource_GetResult = NULL;
+IUNITASKSOURCE_GETRESULT Cysharp_Threading_Tasks_Triggers_AsyncTriggerHandler_object___Cysharp_Threading_Tasks_IUniTaskSource_T__GetResult = NULL;
+
+typedef Il2CppObject *(*SOURCE_CORE_GETRESULT)(Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o __this, int16_t token, const MethodInfo_20B62E0* method);
+SOURCE_CORE_GETRESULT Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = NULL;
+SOURCE_CORE_GETRESULT fpSourceCore_GetResult = NULL;
+
 /*
 typedef void (*UNITASK_CTOR)(Cysharp_Threading_Tasks_UniTask_o __this, Cysharp_Threading_Tasks_IUniTaskSource_o* source, int16_t token, const MethodInfo* method);
 UNITASK_CTOR UniTask_ctor = NULL;
@@ -124,6 +144,170 @@ void HookHTTPRequestCtor(void *GameAssembly) {
     }
     if (MH_EnableHook(addr, /* changePermissions = */ FALSE) != MH_OK) {
         fputs("Failed to enable HTTPRequestCtor hook\n", stdout);
+        return;
+    }
+}
+
+bool DetourSystemTrySetResult(
+    System_Threading_Tasks_TaskCompletionSource_object__o* __this,
+    Il2CppObject* result,
+    const MethodInfo_223E1D0* method
+) {
+    printf("name: %s\n", result->klass->_1.name);
+    printf("DetourSystemTrySetResult called!\n");
+    return fpSystemTrySetResult(__this, result, method);
+}
+
+void HookSystemTrySetResult(void *GameAssembly) {
+    (void)GameAssembly;
+
+    if (MH_CreateHook(
+        (void *)(uintptr_t)System_Threading_Tasks_TaskCompletionSource_object___TrySetResult,
+        (LPVOID)(uintptr_t)&DetourSystemTrySetResult,
+        (LPVOID *)(&fpSystemTrySetResult)
+    ) != MH_OK) {
+        fputs("Failed to create SystemTrySetResult hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook(
+        (void *)(uintptr_t)System_Threading_Tasks_TaskCompletionSource_object___TrySetResult,
+        /* changePermissions = */ FALSE
+    ) != MH_OK) {
+        fputs("Failed to enable SystemTrySetResult hook\n", stdout);
+        return;
+    }
+}
+
+Il2CppObject *DetourIUniTaskSource_GetResult(
+    Cysharp_Threading_Tasks_Triggers_AsyncTriggerHandler_T__o* __this,
+    int16_t token,
+    const MethodInfo_21C8770* method
+) {
+    printf("DetourIUniTaskSource_GetResult called!!!\n");
+    return fpIUniTaskSource_GetResult(__this, token, method);
+}
+
+void HookIUniTaskSource_GetResult(void *GameAssembly) {
+    (void)GameAssembly;
+
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Cysharp_Threading_Tasks_Triggers_AsyncTriggerHandler_object___Cysharp_Threading_Tasks_IUniTaskSource_T__GetResult,
+        (LPVOID)(uintptr_t)&DetourIUniTaskSource_GetResult,
+        (LPVOID *)(&fpIUniTaskSource_GetResult)
+    ) != MH_OK) {
+        fputs("Failed to create SystemTrySetResult hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook(
+        (void *)(uintptr_t)Cysharp_Threading_Tasks_Triggers_AsyncTriggerHandler_object___Cysharp_Threading_Tasks_IUniTaskSource_T__GetResult,
+        /* changePermissions = */ FALSE
+    ) != MH_OK) {
+        fputs("Failed to enable SystemTrySetResult hook\n", stdout);
+        return;
+    }
+}
+
+Il2CppObject * DetourGetResult(
+    Cysharp_Threading_Tasks_UniTask_Awaiter_object__o __this,
+    const MethodInfo_2ED6660* method
+) {
+    Il2CppObject *res = fpGetResult(__this, method);
+
+    printf("DetourGetResult name: %s\n", res->klass->_1.name);
+    return res;
+}
+
+void HookGetResult(void *GameAssembly) {
+    (void)GameAssembly;
+
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Cysharp_Threading_Tasks_UniTask_Awaiter_object___GetResult,
+        (LPVOID)(uintptr_t)&DetourGetResult,
+        (LPVOID *)(&fpGetResult)
+    ) != MH_OK) {
+        fputs("Failed to create TrySetResult hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook(
+        (void *)(uintptr_t)Cysharp_Threading_Tasks_UniTask_Awaiter_object___GetResult,
+        /* changePermissions = */ FALSE
+    ) != MH_OK) {
+        fputs("Failed to enable TrySetResult hook\n", stdout);
+        return;
+    }
+}
+
+bool DetourTrySetResult(
+    Cysharp_Threading_Tasks_UniTaskCompletionSource_T__o* __this,
+    Il2CppObject* result,
+    const MethodInfo_2352A00* method
+) {
+    printf("name: %s\n", result->klass->_1.name);
+    printf("DetourTrySetResult called!\n");
+    return fpTrySetResult(__this, result, method);
+}
+
+void HookTrySetResult(void *GameAssembly) {
+    (void)GameAssembly;
+
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Cysharp_Threading_Tasks_UniTaskCompletionSource_object___TrySetResult,
+        (LPVOID)(uintptr_t)&DetourTrySetResult,
+        (LPVOID *)(&fpTrySetResult)
+    ) != MH_OK) {
+        fputs("Failed to create TrySetResult hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook(
+        (void *)(uintptr_t)Cysharp_Threading_Tasks_UniTaskCompletionSource_object___TrySetResult,
+        /* changePermissions = */ FALSE
+    ) != MH_OK) {
+        fputs("Failed to enable TrySetResult hook\n", stdout);
+        return;
+    }
+}
+
+// [How Async and Await Work](https://www.jacksondunstan.com/articles/4918)
+Il2CppObject *DetourSourceCore_GetResult(
+    Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o __this,
+    int16_t token,
+    const MethodInfo_20B62E0* method
+) {
+    Il2CppObject *res = fpSourceCore_GetResult(__this, token, method);
+    const char *name = "unknown";
+    if (res) {
+        Il2CppClass *klass = res->klass;
+    
+        if (klass) {
+            name = klass->_1.name;
+        }
+    }
+    
+    printf("DetourSourceCore_GetResult(%s)\n", name);
+    return res;
+}
+
+void HookSourceCore_GetResult(void *GameAssembly) {
+    (void)GameAssembly;
+
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult,
+        (LPVOID)(uintptr_t)&DetourSourceCore_GetResult,
+        (LPVOID *)(&fpSourceCore_GetResult)
+    ) != MH_OK) {
+        fputs("Failed to create SourceCore_GetResult hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook(
+        (void *)(uintptr_t)Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult,
+        /* changePermissions = */ FALSE
+    ) != MH_OK) {
+        fputs("Failed to enable SourceCore_GetResult hook\n", stdout);
         return;
     }
 }
@@ -235,6 +419,16 @@ void HookTN(void *GameAssembly) {
     
     Cysharp_Threading_Tasks_UniTaskExtensions__ContinueWith_object_ = (CONTINUEWITH)((unsigned long long)GameAssembly + 17875856ull);
     
+    Cysharp_Threading_Tasks_UniTaskCompletionSource_object___TrySetResult = (TRYSETRESULT)((unsigned long long)GameAssembly + 37038592ull);
+
+    System_Threading_Tasks_TaskCompletionSource_object___TrySetResult = (SYSTEMTRYSETRESULT)((unsigned long long)GameAssembly + 35906000ull);
+
+    Cysharp_Threading_Tasks_UniTask_Awaiter_object___GetResult = (GETRESULT)((unsigned long long)GameAssembly + 49112672ull);
+
+    Cysharp_Threading_Tasks_Triggers_AsyncTriggerHandler_object___Cysharp_Threading_Tasks_IUniTaskSource_T__GetResult = (IUNITASKSOURCE_GETRESULT)((unsigned long long)GameAssembly + 35424112ull);
+    
+    
+    Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = (SOURCE_CORE_GETRESULT)((unsigned long long)GameAssembly + 34300640ull);
     /*
     UniTask_TypeInfo = (Il2CppClass **)((unsigned long long)GameAssembly + 129829232ull);
     UniTask_ctor = (UNITASK_CTOR)((unsigned long long)GameAssembly + 29172256ull);
@@ -242,4 +436,9 @@ void HookTN(void *GameAssembly) {
     
     // HookHTTPRequestCtor(GameAssembly);
     HookApiServiceAuthSteamUser(GameAssembly);
+    HookTrySetResult(GameAssembly);
+    HookGetResult(GameAssembly);
+    HookSystemTrySetResult(GameAssembly);
+    HookIUniTaskSource_GetResult(GameAssembly);
+    HookSourceCore_GetResult(GameAssembly);
 }
