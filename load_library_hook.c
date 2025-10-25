@@ -1,6 +1,4 @@
 #include "utils.h"
-#include "hook_mapviewofsection.h"
-#include "hook_ntcreatesection.h"
 #include "RemapMem.h"
 #include "MetadataDump.h"
 
@@ -16,6 +14,7 @@ typedef HMODULE (WINAPI *LOADLIBRARYW)(LPCWSTR);
 LOADLIBRARYW fpLoadLibraryW = NULL;
 bool alreadyDumped = false;
 
+// editbin /REBASE:BASE=0x180000000 GA.dll
 void DumpGameAssembly(HMODULE GameAssembly) {
     unsigned long long GameAssemblySize = CalcDLLSize(GameAssembly);
 
@@ -49,12 +48,9 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
     HMODULE res = fpLoadLibraryW(s);
 
     if (isGameAssembly) {
-        printf("GameAssembly location: %p\n", (void *)res);
         if (!alreadyDumped) {
             alreadyDumped = true;
-            //press_enter_to_continue();
             DumpGameAssembly(res);
-            // press_enter_to_continue();
             // fpLoadLibraryW(L"D:\\tribenine\\version.dll");
         }
     }

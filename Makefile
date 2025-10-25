@@ -1,7 +1,7 @@
 CFLAGS = -Wall -Wextra -Iminhook/include -g -Ilibpeconv/libpeconv/include
 LDFLAGS = -luser32 -lMinHook -Llib -Llibpeconv/build/libpeconv -ladvapi32 -lntdll  -llibpeconv -lm
 
-HOOKS_SRC = create_file_hook.c load_library_hook.c hook_mapviewofsection.c hook_ntcreatesection.c NtQueryDirectoryFileHook.c
+HOOKS_SRC = create_file_hook.c load_library_hook.c NtQueryDirectoryFileHook.c
 
 all: hello mylib.dll loadlibrarytest.exe testprog.exe testhook.dll unprotectdll.dll
 
@@ -14,7 +14,7 @@ metadata_test.exe: metadata_test.c MetadataDump.c
 mylib.dll: mylib.c $(HOOKS_SRC) utils.c RemapMem.c MetadataDump.c
 	$(CC) -o $@ -shared $^ $(CFLAGS) $(LDFLAGS)
 
-loadlibrarytest.exe: loadlibrarytest.c utils.c hook_mapviewofsection.c hook_ntcreatesection.c
+loadlibrarytest.exe: loadlibrarytest.c utils.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 testhook.dll: testhook.c

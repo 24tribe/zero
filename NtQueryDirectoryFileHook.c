@@ -214,7 +214,7 @@ NTAPI NTSTATUS DetourNtQueryDirectoryFile(
 }
 
 void HookNtQueryDirectoryFile() {
-    NTQUERYDIRECTORYFILE NtQueryDirectoryFile = GetProcAddress(
+    NTQUERYDIRECTORYFILE NtQueryDirectoryFile = (void *)GetProcAddress(
         GetModuleHandle("NTDLL.dll"), "NtQueryDirectoryFile"
     );
 
