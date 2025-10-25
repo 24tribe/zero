@@ -217,7 +217,14 @@ Il2CppObject *DetourSourceCore_GetResult(
 
     if (neonApiPath && fqn && strstr(fqn, "Neon.Model.Api.Rpc")) {
         printf("[DetourSourceCore_GetResult] %s\n", fqn);
-        sds jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
+
+        sds jsonRes;
+        if (res) {
+            jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
+        } else {
+            jsonRes = sdsempty();
+        }
+
         struct ResponseTypeToRequestPtr *resTypeToReqPtr = findResTypeToReqPtrWithReq(fqn);
         sds jsonReq;
         if (resTypeToReqPtr) {
