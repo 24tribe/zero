@@ -41,6 +41,8 @@ void PrintSections(void *data) {
         printf(" Characteristics: 0x%lx\n", section->Characteristics);
     }
 
+    printf("ImageBase: 0x%llx\n", headers->OptionalHeader.ImageBase);
+
 }
 
 int main(int argc, char *argv[]) {

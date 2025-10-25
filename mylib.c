@@ -1,12 +1,7 @@
-#if 0
-Cosas para probar
-- Ver si VirtualProtect fue hookeado por GameAssembly
-- Ver si NtCreateSection o NtMapViewOfSection fue hookeado por GameAssembly
-#endif
-
 #include "create_file_hook.h"
 #include "load_library_hook.h"
 #include "utils.h"
+#include "NtQueryDirectoryFileHook.h"
 
 #include <MinHook.h>
 
@@ -25,8 +20,9 @@ void MyMain() {
         return;
     }
 
+    HookNtQueryDirectoryFile();
     HookLoadLibrary();
-    HookCreateFile();
+    // HookCreateFile();
 
     puts("OK");
 }

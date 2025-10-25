@@ -1,7 +1,7 @@
 CFLAGS = -Wall -Wextra -Iminhook/include -g -Ilibpeconv/libpeconv/include
 LDFLAGS = -luser32 -lMinHook -Llib -Llibpeconv/build/libpeconv -ladvapi32 -lntdll  -llibpeconv -lm
 
-HOOKS_SRC = create_file_hook.c load_library_hook.c hook_mapviewofsection.c hook_ntcreatesection.c
+HOOKS_SRC = create_file_hook.c load_library_hook.c hook_mapviewofsection.c hook_ntcreatesection.c NtQueryDirectoryFileHook.c
 
 all: hello mylib.dll loadlibrarytest.exe testprog.exe testhook.dll unprotectdll.dll
 

@@ -19,11 +19,14 @@ bool alreadyDumped = false;
 void DumpGameAssembly(HMODULE GameAssembly) {
     unsigned long long GameAssemblySize = CalcDLLSize(GameAssembly);
 
-    if (SaveMetadata("ga.dump", (void *)GameAssembly, GameAssemblySize)) {
-        fputs("Saved ga.dump\n", stdout);
+    printf("GameAssembly: addr: %p, size: 0x%llx\n", (void *)GameAssembly, GameAssemblySize);
+
+    if (SaveMetadata("GA.dump", (void *)GameAssembly, GameAssemblySize)) {
+        fputs("Saved GA.dump\n", stdout);
     } else {
         fputs("Failed to save ga.dump\n", stdout);
     }
+
         
     InitRemapMem();
 
@@ -39,7 +42,7 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
     char news[MY_LINE_SIZE];
     int len = WideCharToMultiByte(CP_UTF8, 0, s, -1, 0, 0, 0, 0);
     WideCharToMultiByte(CP_UTF8, 0, s, -1, news, len, 0, 0);
-    printf("LoadLibraryW: %s\n", news);
+    // printf("LoadLibraryW: %s\n", news);
 
     BOOL isGameAssembly = strstr(news, "GameAssembly.dll") ? TRUE : FALSE;
 
@@ -49,9 +52,10 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
         printf("GameAssembly location: %p\n", (void *)res);
         if (!alreadyDumped) {
             alreadyDumped = true;
-            press_enter_to_continue();
+            //press_enter_to_continue();
             DumpGameAssembly(res);
-            press_enter_to_continue();
+            // press_enter_to_continue();
+            // fpLoadLibraryW(L"D:\\tribenine\\version.dll");
         }
     }
     
