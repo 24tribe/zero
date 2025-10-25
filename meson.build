@@ -49,6 +49,17 @@ libsemba = custom_target(
     command : ['nimble', 'c', '-d:staticSqlite', '--verbose', '--app:staticlib', '--noMain:on', '-o:@OUTPUT@', '@INPUT@']
 )
 
+sqlite3 = find_program('sqlite3', required : true)
+
+semba_db = custom_target(
+    'semba_db',
+    input : 'semba.sql',
+    output : 'semba.db',
+    command : [sqlite3, '@OUTPUT@'],
+    feed : true,
+    build_by_default : true
+)
+
 semba_dep = declare_dependency(
     link_with : libsemba
 )
@@ -81,4 +92,4 @@ executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, depen
 
 executable('test_jansson', 'test_jansson.c', zero_src, dependencies : zero_deps)
 
-executable('test_semba', 'test_semba.c', dependencies : semba_dep)
+executable('test_semba', 'test_semba.c', dependencies : [semba_dep])

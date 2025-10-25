@@ -30,4 +30,8 @@ int main(void) {
     printf("calling /adventure/area_object areaId=300401 ...\n");
     res = SembaCall("/adventure/area_object", "{\"areaId\": 300401}");
     printf("%s\n\n", res);
+
+    printf("calling /adventure/move_to_area areaId=300401 ...\n");
+    res = SembaCall("/adventure/move_to_area", "{\"areaId\": 300401}");
+    printf("%s\n\n", res);
 }

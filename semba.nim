@@ -4,7 +4,7 @@ import system/ansi_c
 
 import db_connector/db_sqlite
 
-var db = open("semba.db", "", "", "")
+var db = open("build/semba.db", "", "", "")
 
 proc DupString(str: string): cstring =
   let s = str.cstring
@@ -102,6 +102,15 @@ proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     let res = %*{
       "changedResources": {"tips": tips},
       "areaObjects": areaObjects
+    }
+
+    result = DupString($res)
+  elif uri == "/adventure/move_to_area":
+    let areaId = jsonReq["areaId"].getInt()
+    let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
+
+    let res = %*{
+      "areaBgm": {"id": parseInt(areaBgmRow[0]), "eventName": areaBgmRow[1]}
     }
 
     result = DupString($res)

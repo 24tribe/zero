@@ -27,6 +27,18 @@ CREATE TABLE areaItems (
     areaItemId INTEGER
 );
 
+CREATE TABLE areaBgm (
+    areaId INTEGER,
+    id INTEGER,
+    eventName STRING
+);
+
+INSERT INTO areaBgm (areaId, id, eventName)
+VALUES
+(300402, 3101, 'bgm_story_serious_02')
+,(300401, 1002, 'bgm_adv_00_basic_01')
+;
+
 -- Area 300402
 
 INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
