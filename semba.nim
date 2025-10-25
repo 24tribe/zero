@@ -162,6 +162,148 @@ proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
     }
   }
 
+#[
+{
+  "battleEntryIds": [
+    2000042
+  ],
+  "lineCharacterIds": [
+    100201,
+    100101
+  ],
+  "battleTriggers": [
+    {
+      "triggerType": "area_object",
+      "triggerIds": [
+        30701301
+      ]
+    }
+  ],
+  "advantageType": "advantage",
+  "isAttackHit": true,
+  "currentLocation": {
+    "areaType": 1,
+    "direction": 5,
+    "positionCoordinates": {
+      "x": 9.360747,
+      "y": 46.2933769,
+      "z": -19.6981583
+    },
+    "areaKeyId": 300401
+  },
+  "bloodStainLocation": {
+    "areaKeyId": 300401,
+    "areaType": 1,
+    "positionCoordinates": {
+      "x": 8.889949,
+      "y": 46.28351,
+      "z": -20.2399845
+    }
+  }
+}
+]#
+
+#[
+{
+  "battleEntryIds": [
+    2000016,
+    2000015
+  ],
+  "lineCharacterIds": [
+    100101
+  ],
+  "battleTriggers": [
+    {
+      "triggerIds": [
+        300401701,
+        300401702
+      ]
+    }
+  ],
+  "advantageType": "advantage",
+  "isAttackHit": true,
+  "currentLocation": {
+    "areaType": 1,
+    "direction": 7,
+    "positionCoordinates": {
+      "x": -4.79455566,
+      "y": 53.6070023,
+      "z": -8.03439
+    },
+    "areaKeyId": 300401
+  },
+  "bloodStainLocation": {
+    "areaKeyId": 300401,
+    "areaType": 1,
+    "positionCoordinates": {
+      "x": -1.59099984,
+      "y": 53.6070023,
+      "z": -7.590285
+    }
+  }
+}
+]#
+
+proc battle_Start(jsonReq: JsonNode): JsonNode =
+  discard
+
+#[
+{
+  "characterUpdates": [
+    {
+      "characterId": 100201,
+      "hp": 370
+    },
+    {
+      "characterId": 100101,
+      "hp": 511
+    }
+  ],
+  "battleTaskTopics": [
+    {
+      "type": "qte",
+      "count": 4
+    },
+    {
+      "type": "special_attack",
+      "count": 2
+    }
+  ],
+  "encounteredEnemyIds": [
+    224303
+  ],
+  "battleTimeSecond": 55,
+  "taskConditionResult": {
+    "usedSkills": [
+      {
+        "characterSkillId": 1002016,
+        "count": 2
+      },
+      {
+        "characterSkillId": 1001016,
+        "count": 2
+      },
+      {
+        "characterSkillId": 1001014,
+        "count": 1
+      },
+      {
+        "characterSkillId": 1002014,
+        "count": 1
+      }
+    ],
+    "enemyStabilityBreaks": [
+      {
+        "enemyId": 224303,
+        "count": 2
+      }
+    ]
+  }
+}
+]#
+proc battle_Finish(jsonReq: JsonNode): JsonNode =
+  discard
+
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
   var jsonRes: JsonNode
@@ -181,6 +323,10 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     jsonRes = tip_Release(jsonReq)
   elif uri == "/adventure/move_to_area":
     jsonRes = adventure_MoveToArea(jsonReq)
+  elif uri == "/battle/start":
+    jsonRes = battle_Start(jsonReq)
+  elif uri == "/battle/finish":
+    jsonRes = battle_Finish(jsonReq)
   else:
     jsonRes = nil
 
