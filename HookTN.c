@@ -50,6 +50,44 @@ typedef Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o (*NEON_MODEL_API_A
 NEON_MODEL_API_APISERVICE__TIP_RELEASE Neon_Model_Api_ApiService__Tip_Release = NULL;
 NEON_MODEL_API_APISERVICE__TIP_RELEASE fpNeon_Model_Api_ApiService__Tip_Release = NULL;
 
+typedef Cysharp_Threading_Tasks_UniTask_AdventureMoveToAreaResponse__o (*NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_AdventureMoveToAreaRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
+NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA Neon_Model_Api_ApiService__Adventure_MoveToArea = NULL;
+NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA fpNeon_Model_Api_ApiService__Adventure_MoveToArea = NULL;
+
+Neon_Model_Api_Rpc_AdventureMoveToAreaRequest_o *lastAdventureMoveToAreaRequest = NULL;
+
+Cysharp_Threading_Tasks_UniTask_AdventureMoveToAreaResponse__o DetourAdventureMoveToArea(
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_AdventureMoveToAreaRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    lastAdventureMoveToAreaRequest = data;
+    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
+    printf("[DetourAdventureMoveToArea] %s\n", reqJson);
+    sdsfree(reqJson);
+    return fpNeon_Model_Api_ApiService__Adventure_MoveToArea(
+        __this, data, requestHandler, cancellationToken, method
+    );
+}
+
+void HookAdventureMoveToArea(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_MoveToArea,
+        (LPVOID)(uintptr_t)&DetourAdventureMoveToArea,
+        (LPVOID *)(&fpNeon_Model_Api_ApiService__Adventure_MoveToArea)
+    ) != MH_OK) {
+        fputs("Failed to create Neon_Model_Api_ApiService__Tip_Release hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_MoveToArea, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Neon_Model_Api_ApiService__Tip_Release hook\n", stdout);
+        return;
+    }
+}
+
 Neon_Model_Api_Rpc_TipReleaseRequest_o *lastTipReleaseRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o DetourTipRelease(
@@ -384,12 +422,15 @@ void HookTN(void *GameAssembly) {
 
     Neon_Model_Api_ApiService__Tip_Release = (NEON_MODEL_API_APISERVICE__TIP_RELEASE)((unsigned long long)GameAssembly + 79451120ull);
 
+    Neon_Model_Api_ApiService__Adventure_MoveToArea = (NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA)((unsigned long long)GameAssembly + 79408528ull);
+
     HookHTTPRequestCtor(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
     HookAdventureAreaObject();
     HookTipRelease();
+    HookAdventureMoveToArea();
 
     InitLogger(GameAssembly);
 }
