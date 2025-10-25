@@ -582,7 +582,7 @@ proc formation_Update(jsonReq: JsonNode): JsonNode =
 
   db.exec(sql"""
     UPDATE formations SET members = ?, cards = ? WHERE number = ?
-  """, jsonReq["members"].getStr(), jsonReq["cards"].getStr(), number)
+  """, $(jsonReq["members"]), $(jsonReq["cards"]), number)
 
   return %*{
     "changedResources": {
