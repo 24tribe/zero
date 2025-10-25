@@ -45,7 +45,6 @@ struct ResponseTypeToRequestPtr_List {
 
 #define STATIC_ARRAY_LEN(a) (sizeof a/sizeof *a)
 
-Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
 Neon_Model_Api_Rpc_FormationUpdateRequest_o *lastFormationUpdateRequest = NULL;
 Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o* lastAdventureAcquireAreaItemRequest = NULL;
 
@@ -57,7 +56,6 @@ struct ResponseTypeToRequestPtr RES_TYPE_TO_REQ_PTR_LIST_DATA[] = {
     {"Neon.Model.Api.Rpc.UserLogInResponse", NULL, "/user/log_in"},
     {"Neon.Model.Api.Rpc.UserCrossDateResponse", NULL, "/user/cross_date"},
     {"Neon.Model.Api.Rpc.GachaListResponse", NULL, "/gacha/list"},
-    {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastCharacterCostumeUpdateRequest, "/character/costume_update"},
     {"Neon.Model.Api.Rpc.ChangedResourcesResponse", (Il2CppObject **)&lastFormationUpdateRequest, "/formation/update"},
     {"Neon.Model.Api.Rpc.AdventureAcquireAreaItemResponse", (Il2CppObject **)&lastAdventureAcquireAreaItemRequest, "/adventure/acquire_area_item"}
 };
@@ -466,37 +464,6 @@ void HookNeonApiGetResponse(void) {
     }
 }
 
-Neon_Model_Api_ApiService__Character_CostumeUpdate_FuncPtr fpCharacter_CostumeUpdate = NULL;
-
-Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourCharacter_CostumeUpdate(
-    Neon_Model_Api_ApiService_o* __this,
-    Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o* data,
-    LPCOHPIGHIN_o* requestHandler,
-    System_Threading_CancellationToken_o cancellationToken,
-    const MethodInfo* method
-) {
-    lastCharacterCostumeUpdateRequest = data;
-    return fpCharacter_CostumeUpdate(
-        __this, data, requestHandler, cancellationToken, method
-    );
-}
-
-void HookCharacter_CostumeUpdate(void) {
-    if (MH_CreateHook(
-        (void *)(uintptr_t)Neon_Model_Api_ApiService__Character_CostumeUpdate,
-        (LPVOID)(uintptr_t)&DetourCharacter_CostumeUpdate,
-        (LPVOID *)&fpCharacter_CostumeUpdate
-    ) != MH_OK) {
-        printf("Failed to create Neon_Model_Api_ApiService__Character_CostumeUpdate hook\n");
-        return;
-    }
-
-    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Character_CostumeUpdate, /* changePermissions = */ FALSE) != MH_OK) {
-        printf("Failed to enable Neon_Model_Api_ApiService__Character_CostumeUpdate hook\n");
-        return;
-    }
-}
-
 void HookTN(void *GameAssembly) {
     InitGamePtrs(GameAssembly);
 
@@ -505,7 +472,6 @@ void HookTN(void *GameAssembly) {
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
     HookFormationUpdate();
-    HookCharacter_CostumeUpdate();
     HookAdventure_AcquireAreaItem();
     HookAuth_SteamUser();
 
