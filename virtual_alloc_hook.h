@@ -1,0 +1,6 @@
+#ifndef VIRTUAL_ALLOC_HOOK_81320242507
+#define VIRTUAL_ALLOC_HOOK_81320242507
+
+void HookVirtualAlloc();
+
+#endif

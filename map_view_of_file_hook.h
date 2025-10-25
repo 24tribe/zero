@@ -1,0 +1,6 @@
+#ifndef MAP_VIEW_OF_FILE_HOOK_H_202506121437
+#define MAP_VIEW_OF_FILE_HOOK_H_202506121437
+
+void HookMapViewOfFile();
+
+#endif

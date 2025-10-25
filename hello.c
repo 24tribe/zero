@@ -4,10 +4,16 @@
 #include <windows.h>
 #include <tlhelp32.h>
 
-char evilDLL[] = "D:\\tribenine\\dllinj\\mylib.dll";
-unsigned int evilLen = sizeof(evilDLL) + 1;
-
 int main(int argc, char* argv[]) {
+    if (argc != 3) {
+        fputs("Usage: hello.exe game_exe_path dll_path\n", stdout);
+        return 1;
+    }
+
+    char *path = argv[1];
+    char *dll_path = argv[2];
+    unsigned int dll_path_len = strlen(dll_path) + 1;
+
     HANDLE ph; // process handle
     HANDLE rt; // remote thread
     LPVOID rb; // remote buffer
@@ -26,13 +32,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    if (argc != 2) {
-        fputs("Usage: hello.exe tribeninepath\n", stdout);
-        return 1;
-    }
-
-    char *path = argv[1];
-
     STARTUPINFOA si = {};
     PROCESS_INFORMATION pi = {};
     si.cb = sizeof(si);
@@ -45,14 +44,14 @@ int main(int argc, char* argv[]) {
     }
 
     ph = pi.hProcess;
-    rb = VirtualAllocEx(ph, NULL, evilLen, (MEM_RESERVE | MEM_COMMIT), PAGE_EXECUTE_READWRITE);
+    rb = VirtualAllocEx(ph, NULL, dll_path_len, (MEM_RESERVE | MEM_COMMIT), PAGE_EXECUTE_READWRITE);
 
     if (!rb) {
         fputs("VirtualAllocEx failed", stderr);
         return 1;
     }
 
-    if (!WriteProcessMemory(ph, rb, evilDLL, evilLen, NULL)) {
+    if (!WriteProcessMemory(ph, rb, dll_path, dll_path_len, NULL)) {
         fputs("WriteProcessMemory failed", stderr);
         return 1;
     }
