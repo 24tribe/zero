@@ -23,6 +23,22 @@ def write_sql(f, data):
     gen_tips(printf, f, data)
     gen_total_tasks(printf, f, data)
     gen_tutorial_states(printf, f, data)
+    gen_shop_products(printf, f, data)
+
+def gen_shop_products(printf, f, data):
+    printf("INSERT INTO shopProducts (val)")
+    printf("VALUES")
+
+    first = True
+    for sp in data["masterData"]['shopProducts']:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        printf(f"('{json.dumps(sp)}')")
+    
+    printf(";")
 
 def gen_tutorial_states(printf, f, data):
     printf("INSERT INTO tutorialStates (tutorialStatusKey, enabled)")

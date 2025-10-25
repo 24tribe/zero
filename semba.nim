@@ -525,6 +525,12 @@ proc getTutorialStates(): seq[JsonNode] =
 
     result.add(tutorialState)
 
+proc getShopProducts(): seq[JsonNode] =
+  let shopProductsRows = db.getAllRows(sql"SELECT val FROM shopProducts")
+
+  for shopProductRow in shopProductsRows:
+    result.add(parseJson(shopProductRow[0]))
+
 proc user_LogIn(): JsonNode =
   return %*{
     "resources": {
@@ -546,7 +552,8 @@ proc user_LogIn(): JsonNode =
       "profile": {"name": "Yo Kuronaka3", "profileBannerId": 2010011, "characterLikabilityScale": 500},
       "profileBanners": [{"profileBannerId": 2010011, "receivedAt": "2025-09-10T02:22:51Z"}],
       "tutorialStates": getTutorialStates()
-    }
+    },
+    "masterData": {"shopProducts": getShopProducts()}
   }
 
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
