@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            html, body {
+                
+                background-color: #333333;
+                color: white;
+                height: 100%;
+            }
+
+            div {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: stretch;
+                /* border: 2px dotted rgb(96 139 168); */
+            }
+
+            textarea {
+                height: 100%;
+            }
+
+            input {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            onlineLogs database path
+            <form id="dbPathForm">
+                <input id="dbPath" type="text"></input>
+                <input type="submit" value="Actualizar"></input>
+            </form>
+            query
+            <input id="query" type="text"></input>
+            <textarea id="result"></textarea>
+        </div>
+    </body>
+    <script>
+        const dbPathElement = document.getElementById("dbPath");
+        const queryElement = document.getElementById("query");
+        const resultElement = document.getElementById("result");
+        const dbPathForm = document.getElementById("dbPathForm");
+
+        let socket;
+
+        dbPathForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            socket.send(JSON.stringify({
+                action: "changeDbPath", value: dbPathElement.value
+            }));
+        });
+
+        queryElement.addEventListener("keyup", () => {
+            socket.send(JSON.stringify({
+                action: "query", value: queryElement.value
+            }));
+        });
+
+        let createWS = () => {
+            socket = new WebSocket("ws://127.0.0.1:8080/ws");
+
+            socket.addEventListener("message", (event) => {
+                result.value = event.data;
+            });
+
+            socket.addEventListener("close", (event) => {
+                setTimeout(() => createWS(), 1000);
+            });
+
+            socket.addEventListener("error", () => {
+                socket.close();
+            });
+        };
+
+        createWS();
+    </script>
+</html>
