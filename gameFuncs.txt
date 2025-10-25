@@ -2,6 +2,7 @@ Best.HTTP.HTTPRequest$$.ctor
 CDGPJELFAMK$$NOCKJHKDMGF<object>
 Cysharp.Threading.Tasks.UniTaskCompletionSourceCore<object>$$GetResult
 KBJLHEAOHMD$$KPFFCLMEMEG
+HNNPFPKEEFE$$KKHPCPHPBMF
 Neon.Model.Api.ApiService$$Adventure_AccessWarpPoint
 Neon.Model.Api.ApiService$$Adventure_AcquireAreaItem
 Neon.Model.Api.ApiService$$Adventure_AreaObject

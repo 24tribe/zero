@@ -9383,4 +9383,143 @@ typedef struct Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__o {
 	Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__Fields fields;
 } Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__o;
 
+typedef struct System_Nullable_DateTime__Fields {
+	bool hasValue;
+	struct System_DateTime_o value;
+} System_Nullable_DateTime__Fields;
+
+typedef struct System_Nullable_DateTime__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} System_Nullable_DateTime__VTable;
+
+typedef struct System_Nullable_DateTime__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	System_Nullable_DateTime__VTable vtable;
+} System_Nullable_DateTime__c;
+
+typedef struct System_Nullable_DateTime__o {
+	System_Nullable_DateTime__Fields fields;
+} System_Nullable_DateTime__o;
+
+typedef struct CEMAAIHMHDA_Fields {
+	int32_t _ACDJAMAIODN_k__BackingField;
+	int32_t _JHLAIKLPDDK_k__BackingField;
+	struct JDGBHFIBACG_o* _MAPCMMFLHMB_k__BackingField;
+	int32_t _DFGNIODGPGN_k__BackingField;
+	int32_t _DMAABMDFMBP_k__BackingField;
+	int32_t _JMLIJJAAICE_k__BackingField;
+	int32_t _OKHGKLPPMJE_k__BackingField;
+	struct System_String_o* _POMMPBLDAOA_k__BackingField;
+	int32_t _KDBMHPCDNMG_k__BackingField;
+	struct System_String_o* _JEJKFJLMHIM_k__BackingField;
+	bool _KIBGBMHEAGN_k__BackingField;
+	bool _CNJLJJOEJFL_k__BackingField;
+	struct System_Collections_Generic_IReadOnlyList_JPHMCEGLIGJ__o* _IFPMOKILKNM_k__BackingField;
+	struct System_Collections_Generic_IReadOnlyList_LIJLAHBHFAG__o* _NCJMNFDBGDL_k__BackingField;
+	struct System_String_o* _NAFCMMBOFJE_k__BackingField;
+	struct System_Nullable_DateTime__o _BAIJLBLIKGN_k__BackingField;
+} CEMAAIHMHDA_Fields;
+
+typedef struct CEMAAIHMHDA_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} CEMAAIHMHDA_VTable;
+
+typedef struct CEMAAIHMHDA_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	CEMAAIHMHDA_VTable vtable;
+} CEMAAIHMHDA_c;
+
+typedef struct CEMAAIHMHDA_o {
+	CEMAAIHMHDA_c *klass;
+	void *monitor;
+	CEMAAIHMHDA_Fields fields;
+} CEMAAIHMHDA_o;
+
+typedef struct CEMAAIHMHDA_array {
+	Il2CppObject obj;
+	Il2CppArrayBounds *bounds;
+	il2cpp_array_size_t max_length;
+	CEMAAIHMHDA_o* m_Items[65535];
+} CEMAAIHMHDA_array;
+
+typedef struct HNNPFPKEEFE_Fields /* : MasterMemory_TableBase_CEMAAIHMHDA__Fields */ {
+	struct CEMAAIHMHDA_array* data; // MasterMemory_TableBase_CEMAAIHMHDA__Fields.data
+	struct System_Func_CEMAAIHMHDA__FCEBPBJCHIM__o* CFCIMCHKDPA;
+	struct CEMAAIHMHDA_array* AGKIMIDFFAI;
+	struct System_Func_CEMAAIHMHDA__JIGJHLOCHGD__o* DMLKCLAFCDK;
+} HNNPFPKEEFE_Fields;
+
+typedef struct HNNPFPKEEFE_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_NEMCFIJNMAN;
+	VirtualInvokeData _5_JJEODNKIDDF;
+} HNNPFPKEEFE_VTable;
+
+typedef struct HNNPFPKEEFE_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	HNNPFPKEEFE_VTable vtable;
+} HNNPFPKEEFE_c;
+
+typedef struct HNNPFPKEEFE_o {
+	HNNPFPKEEFE_c *klass;
+	void *monitor;
+	HNNPFPKEEFE_Fields fields;
+} HNNPFPKEEFE_o;
+
+typedef struct JDGBHFIBACG_Fields {
+	struct System_String_o* _OAFMLPAFFNJ_k__BackingField;
+	struct System_String_o* _BMNNLBFHCNI_k__BackingField;
+	struct System_String_o* _HPDJEPGBKNA_k__BackingField;
+	struct System_String_o* _EIBHFAFHCCJ_k__BackingField;
+	struct System_String_o* _BBENHFIPPAC_k__BackingField;
+} JDGBHFIBACG_Fields;
+
+typedef struct JDGBHFIBACG_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_MCCDMHGBEPG;
+	VirtualInvokeData _5_IAGDCBJIJCL;
+	VirtualInvokeData _6_MBLPIPHLELK;
+	VirtualInvokeData _7_JGHNKLHIOHA;
+	VirtualInvokeData _8_GCPPNPLKPPN;
+	VirtualInvokeData _9_OGLHPLALAMA;
+	VirtualInvokeData _10_FPHDFGMOGDG;
+	VirtualInvokeData _11_AFONOGFAMJP;
+	VirtualInvokeData _12_PMCHLKGPDIG;
+} JDGBHFIBACG_VTable;
+
+typedef struct JDGBHFIBACG_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	JDGBHFIBACG_VTable vtable;
+} JDGBHFIBACG_c;
+
+typedef struct JDGBHFIBACG_o {
+	JDGBHFIBACG_c *klass;
+	void *monitor;
+	JDGBHFIBACG_Fields fields;
+} JDGBHFIBACG_o;
+
 #endif

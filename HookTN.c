@@ -127,6 +127,54 @@ void HookHTTPRequestCtor(void) {
     }
 }
 
+HNNPFPKEEFE__KKHPCPHPBMF_FuncPtr fpHNNPFPKEEFE__KKHPCPHPBMF = NULL;
+bool firstPrint = true;
+
+CEMAAIHMHDA_o* Detour_HNNPFPKEEFE__KKHPCPHPBMF(
+    HNNPFPKEEFE_o* __this,
+    int32_t MHKJPDDEPPM,
+    const MethodInfo* method
+) {
+    if (firstPrint) {
+        printf("Detour_HNNPFPKEEFE__KKHPCPHPBMF called!!\n");
+    
+        firstPrint = false;
+        CEMAAIHMHDA_array *chars = __this->fields.AGKIMIDFFAI;
+        unsigned long long max_length = (unsigned long long)(chars->max_length);
+        printf("max_length: %llu\n", max_length);
+
+        for (CEMAAIHMHDA_o **c = chars->m_Items; c != chars->m_Items + max_length; c++) {
+            printf("id = %lld\n", (long long int)(*c)->fields._ACDJAMAIODN_k__BackingField);
+            printf("characterId = %lld\n", (long long int)(*c)->fields._JHLAIKLPDDK_k__BackingField);
+            JDGBHFIBACG_o* name = (*c)->fields._MAPCMMFLHMB_k__BackingField;
+            System_String_o *en_name = name->fields._BMNNLBFHCNI_k__BackingField;
+            sds n = System_String_toSds(en_name);
+            printf("en name = %s\n", n);
+        }
+    }
+
+    return fpHNNPFPKEEFE__KKHPCPHPBMF(__this, MHKJPDDEPPM, method);
+}
+
+void Hook_HNNPFPKEEFE__KKHPCPHPBMF(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)HNNPFPKEEFE__KKHPCPHPBMF,
+        (LPVOID)(uintptr_t)&Detour_HNNPFPKEEFE__KKHPCPHPBMF,
+        (LPVOID *)(&fpHNNPFPKEEFE__KKHPCPHPBMF)
+    ) != MH_OK) {
+        fputs("Failed to create HNNPFPKEEFE__KKHPCPHPBMF hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook(
+        (void *)(uintptr_t)HNNPFPKEEFE__KKHPCPHPBMF,
+        /* changePermissions = */ FALSE
+    ) != MH_OK) {
+        fputs("Failed to enable HNNPFPKEEFE__KKHPCPHPBMF hook\n", stdout);
+        return;
+    }
+}
+
 sds GetFqnFromClass(Il2CppClass *klass) {
     sds res = NULL;
 
@@ -436,4 +484,5 @@ void HookTN(void *GameAssembly) {
     }
 
     AutoHookTN();
+    // Hook_HNNPFPKEEFE__KKHPCPHPBMF();
 }
