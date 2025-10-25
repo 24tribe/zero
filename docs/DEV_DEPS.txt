@@ -1,0 +1,8 @@
+- INSTALL W64DEVKIT
+- INSTALL GIT
+- INSTALL PYTHON
+- INSTALL MESON 1.7.0 (newer versions aren't compatible with w64devkit's busybox)
+- INSTALL NINJA
+- INSTALL NIM
+- RUN nimble refresh
+- RUN nimble install db_connector
