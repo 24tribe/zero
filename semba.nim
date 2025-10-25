@@ -11,9 +11,6 @@ proc DupString(s: cstring): cstring =
 proc SembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
 
-  let db = open("mytest.db", "", "", "")
-  db.close()
-
   if uri == "echo":
     let dataUpper = jsonReq["data"].getStr().toUpperAscii()
     let resJson = %*{"data": dataUpper}
