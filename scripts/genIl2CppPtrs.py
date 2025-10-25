@@ -21,16 +21,18 @@ def main():
     signatures = []
     definitions = []
     inits = []
+    decls = []
 
     for game_func in game_funcs:
         found = False
         for script_method in script["ScriptMethod"]:
             if script_method["Name"] == game_func:
                 found = True
-                signature, definition, init = genDefinitions(game_func, script_method)
+                signature, definition, init, decl = genDefinitions(game_func, script_method)
                 signatures.append(signature)
                 definitions.append(definition)
                 inits.append(init)
+                decls.append(decl)
                 break
         if not found:
             print(f"Couldn't find definitions for {gameFunc}")
@@ -47,16 +49,24 @@ def main():
         for script_metadata in script["ScriptMetadata"]:
             if script_metadata["Name"] == type_info:
                 found = True
-                definition, init = genTypeDefinitions(type_info, script_metadata)
+                definition, init, decl = genTypeDefinitions(type_info, script_metadata)
                 type_defs.append(definition)
                 type_inits.append(init)
+                decls.append(decl)
         if not found:
             print(f"Couldn't find type definitions for {type_info}")
             sys.exit(1)
 
     with open(args.output_c, "w", encoding="utf-8") as f:
+        f.write("#ifndef FUNCPTRS_H_2025_09_23_04_08\n")
+        f.write("#define FUNCPTRS_H_2025_09_23_04_08\n")
+        f.write("\n#include \"il2cpp_lean.h\"\n")
         f.write("\n".join(signatures))
         f.write("\n")
+        f.write("\n".join(decls))
+        f.write("\nextern void InitGamePtrs(void *GameAssembly);\n")
+        f.write("\n#endif\n")
+        f.write("\n#ifdef FUNCPTRS_IMPL\n")
         f.write("\n".join(definitions))
         f.write("\n")
         f.write("\n".join(type_defs))
@@ -66,6 +76,7 @@ def main():
         f.write("\n  ")
         f.write("\n  ".join(type_inits))
         f.write("\n}\n")
+        f.write("#endif\n")
 
     print("OK")
 
@@ -73,7 +84,8 @@ def genTypeDefinitions(type_info, script_metadata):
     varname = re.sub(r"[^a-zA-Z]", "_", type_info)
     definition = f"Il2CppClass **{varname} = NULL;"
     init = f"{varname} = (Il2CppClass **)((unsigned long long)GameAssembly + {script_metadata["Address"]}ull);"
-    return definition, init
+    decl = f"extern Il2CppClass **{varname};"
+    return definition, init, decl
 
 def genDefinitions(game_func, script_method):
     funcVar = re.sub(r"[^a-zA-Z]", "_", game_func)
@@ -82,7 +94,8 @@ def genDefinitions(game_func, script_method):
     signature = "typedef " + script_method["Signature"].replace(funcVar, f"(*{funcPtrType})")
     definition = f"{funcPtrType} {funcVar} = NULL;"
     init = f"{funcVar} = ({funcPtrType})((unsigned long long)GameAssembly + {script_method['Address']}ull);"
-    return signature, definition, init
+    decl = f"extern {funcPtrType} {funcVar};"
+    return signature, definition, init, decl
 
 if __name__ == "__main__":
     main()

@@ -67,6 +67,7 @@ zero_src = [
     'Config.c',
     'Il2CppHelper.c',
     'TimeString.c',
+    'FuncPtrs.c',
     func_ptrs
 ]
 
