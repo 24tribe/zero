@@ -1,24 +1,33 @@
 from argparse import ArgumentParser
 import json
 import re
+import sys
 
 from genIl2CppPtrs import getFuncVar, getFuncPtrType
+from listUnhookedFuncs import read_hooks
 
 def main():
     parser = ArgumentParser()
     parser.add_argument("script_json")
-    parser.add_argument("req_hooks_txt")
+    parser.add_argument("req_hooks_csv")
     parser.add_argument("out_h")
 
     args = parser.parse_args()
 
-    with open(args.req_hooks_txt, "r", encoding="utf-8") as f:
-        req_hooks = set(re.findall(r"[^\n]+", f.read()))
+    req_hooks = read_hooks(args.req_hooks_csv)
 
     with open(args.script_json, "r", encoding="utf-8") as f:
         script = json.load(f)
 
-    autohook_h = createAutohookH(req_hooks, script)
+    api_funcs_with_req_and_res = filter(
+        lambda x: req_hooks[x][0] != "None" and req_hooks[x][1] != "None", req_hooks
+    )
+
+    api_funcs_with_req_and_res = map(lambda x: f"Neon.Model.Api.ApiService$${x}", api_funcs_with_req_and_res)
+
+    api_funcs_with_req_and_res = set(api_funcs_with_req_and_res)
+     
+    autohook_h = createAutohookH(api_funcs_with_req_and_res, script)
 
     with open(args.out_h, "w", encoding="utf-8") as f:
         f.write(autohook_h)
@@ -34,6 +43,8 @@ def createAutohookH(req_hooks, script):
 
     for script_method in script["ScriptMethod"]:
         if script_method["Name"] in req_hooks:
+            req_hooks.remove(script_method["Name"])
+
             reqs = re.findall(r"Neon_Model_Api_Rpc_(.+Request)_o", script_method["Signature"])
             assert len(reqs) == 1
             req = reqs[0]
@@ -88,6 +99,10 @@ void {hookName}(void) {{
     }}
 }}
             """)
+
+    if req_hooks != set():
+        print(f"Couldn't find {req_hooks}")
+        sys.exit(1)
 
     code.append("void AutoHookTN(void) {")
     for hookName in hookNames:

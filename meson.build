@@ -53,7 +53,7 @@ func_ptrs = custom_target(
 
 autohook_tn = custom_target(
     'autohookTN',
-    input: ['scripts/genReqHook.py', 'dumper_out/script.json', 'reqHooks.txt'],
+    input: ['scripts/genReqHook.py', 'dumper_out/script.json', 'reqHooks.csv'],
     output : 'autohookTN.h',
     command : [python3, '@INPUT@', '@OUTPUT@']
 )
