@@ -637,5 +637,7 @@ proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
     result = sembaCallUnsafe(uri, request)
   except:
-    echo("Nim Exception: " & getCurrentExceptionMsg())
+    let e = getCurrentException()
+    echo "Nim Exception: " & getCurrentExceptionMsg()
+    echo e.getStackTrace()
     result = nil
