@@ -138,6 +138,8 @@ typedef Il2CppObject* (*IL2CPP_RUNTIME_INVOKE)(const MethodInfo * method, void *
 typedef Il2CppObject* (*IL2CPP_TYPE_GET_OBJECT)(const Il2CppType * type);
 typedef Il2CppClass* (*IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS)(const Il2CppType * type);
 
+typedef Il2CppClass* (*IL2CPP_OBJECT_GET_CLASS)(const Il2CppObject *obj);
+
 extern IL2CPP_METHOD_GET_RETURN_TYPE il2cpp_method_get_return_type;
 extern IL2CPP_METHOD_GET_NAME il2cpp_method_get_name;
 extern IL2CPP_CLASS_GET_METHODS il2cpp_class_get_methods;
@@ -147,5 +149,6 @@ extern IL2CPP_CLASS_GET_METHOD_FROM_NAME il2cpp_class_get_method_from_name;
 extern IL2CPP_RUNTIME_INVOKE il2cpp_runtime_invoke;
 extern IL2CPP_TYPE_GET_OBJECT il2cpp_type_get_object;
 extern IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS il2cpp_type_get_class_or_element_class;
+extern IL2CPP_OBJECT_GET_CLASS il2cpp_object_get_class;
 
 #endif

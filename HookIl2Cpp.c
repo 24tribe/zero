@@ -32,6 +32,7 @@ IL2CPP_CLASS_GET_METHOD_FROM_NAME il2cpp_class_get_method_from_name = NULL;
 IL2CPP_RUNTIME_INVOKE il2cpp_runtime_invoke = NULL;
 IL2CPP_TYPE_GET_OBJECT il2cpp_type_get_object = NULL;
 IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS il2cpp_type_get_class_or_element_class = NULL;
+IL2CPP_OBJECT_GET_CLASS il2cpp_object_get_class = NULL;
 
 void CopyUnicodeToByteArray(char *out, System_String_o *s) {
     int32_t sLen = s->fields._stringLength;
@@ -101,6 +102,9 @@ void HookIl2Cpp(void *GameAssembly, const char *gameName) {
 
     il2cpp_type_get_class_or_element_class = (IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_type_get_class_or_element_class");
     printf("il2cpp_type_get_class_or_element_class: 0x%llx\n", (unsigned long long)il2cpp_type_get_class_or_element_class);
+
+    il2cpp_object_get_class = (IL2CPP_OBJECT_GET_CLASS)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_object_get_class");
+    printf("il2cpp_object_get_class: 0x%llx\n", (unsigned long long)il2cpp_object_get_class);
 
     if (!strcmp(gameName, "TRIBENINE")) {
         HookTN(GameAssembly);

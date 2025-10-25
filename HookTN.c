@@ -162,12 +162,17 @@ void HookHTTPRequestCtor(void) {
     }
 }
 
-sds GetFqn(Il2CppObject *obj) {
-    Il2CppClass *klass = obj ? obj->klass : NULL;
+sds GetFqnFromClass(Il2CppClass *klass) {
     sds res = NULL;
+
     if (klass) {
-        res = sdscatprintf(sdsempty(), "%s.%s", klass->_1.namespaze, klass->_1.name);
+        const char *name = il2cpp_class_get_name(klass);
+        const char *namespaze = il2cpp_class_get_namespace(klass);
+        if (name && namespaze) {
+            res = sdscatprintf(sdsempty(), "%s.%s", namespaze, name);
+        }
     }
+
     return res;
 }
 
@@ -204,9 +209,11 @@ Il2CppObject *DetourSourceCore_GetResult(
 ) {
     RunNimMainOnce();
 
+    Il2CppClass *klass = il2cpp_type_get_class_or_element_class(method->return_type);
+
     Il2CppObject *res = fpSourceCore_GetResult(__this, token, method);
 
-    sds fqn = GetFqn(res);
+    sds fqn = GetFqnFromClass(klass);
 
     if (neonApiPath && fqn && strstr(fqn, "Neon.Model.Api.Rpc")) {
         printf("[DetourSourceCore_GetResult] %s\n", fqn);
