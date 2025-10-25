@@ -17,6 +17,7 @@ User_LogIn,None,UserLogInResponse
 Xb_Formation,XbFormationRequest,XbFormationResponse
 Xb_Play,XbPlayRequest,XbPlayResponse
 Xb_Retire,None,XbRetireResponse
+Xb_ForceRetire,None,None
 Xb_Start,XbStartRequest,XbStartResponse
 Xb_Status,XbStatusRequest,XbStatusResponse
 Xb_UpdateTension,XbUpdateTensionRequest,XbUpdateTensionResponse
