@@ -13,6 +13,16 @@ proc dupString(str: string): cstring =
   result = cast[cstring](c_malloc((s.len + 1).csize_t))
   copyMem(result, s, s.len + 1)
 
+proc getDateNow(): string = $(now().utc)
+
+# stdout seems to be unreliable when called by the hook so
+# log to the db
+proc logFlow(uri: string, req: string, res: string) =
+  db.exec(
+    sql"INSERT INTO debugLogs (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
+    getDateNow(), uri, req, res
+  )
+  
 proc adventure_AreaObject(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
   let rows = db.getAllRows(sql"""
@@ -386,7 +396,7 @@ proc getNotifications(): JsonNode =
 proc user_CrossDate(jsonReq: JsonNode): JsonNode =
   # FIXME: move status loggedInAt update to user_LogIn
   let status = getUserStatus()
-  let loggedInAt = $(now().utc)
+  let loggedInAt = getDateNow()
   status["loggedInAt"] = %*loggedInAt
   setUserStatus(status)
   return %*{
@@ -617,6 +627,8 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     jsonRes = nil
 
   result = if jsonRes != nil: dupString($jsonRes) else: nil
+
+  logFlow($uri, $request, if jsonRes != nil: $jsonRes else: "")
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
