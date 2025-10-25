@@ -3,5 +3,9 @@
 #include <stdio.h>
 
 int main(void) {
-    printf("%d\n", semba_add(10, 20));
+    printf("%s\n", SembaCall("echo", "{\"data\":\"Hello World!!!\"}"));
+
+    const char *idk = SembaCall("", "asjdkajsdk");
+
+    printf("idk: %p\n", (void *)idk);
 }
