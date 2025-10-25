@@ -25,6 +25,7 @@ def write_sql(f, data):
     gen_tutorial_states(printf, f, data)
     gen_shop_products(printf, f, data)
     gen_characters(printf, f, data)
+    gen_character_costumes(printf, f, data)
 
 def gen_characters(printf, f, data):
     printf("""
@@ -52,6 +53,21 @@ VALUES
         printf("""'{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)""")
+    
+    printf(";")
+
+def gen_character_costumes(printf, f, data):
+    printf("INSERT INTO characterCostumes (characterCostumeId, receivedAt)")
+    printf("VALUES")
+
+    first = True
+    for cc in data["resources"]['characterCostumes']:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        printf(f"({cc["characterCostumeId"]}, '{cc["receivedAt"]}')")
     
     printf(";")
 
