@@ -51,4 +51,9 @@ int main(void) {
     printf("calling /adventure/update_character_status with {\"characterUpdates\": [{\"characterId\": 100101, \"hp\": 511 }]}...\n");
     res = SembaCall("/adventure/update_character_status", "{\"characterUpdates\": [{\"characterId\": 100101, \"hp\": 511 }]}");
     printf("%s\n\n", res);
+
+    r = "{\"battleEntryIds\": [2000016, 2000015], \"lineCharacterIds\": [100101], \"battleTriggers\": [{\"triggerIds\": [300401701, 300401702]}], \"advantageType\": \"advantage\", \"isAttackHit\": true, \"currentLocation\": {\"areaType\": 1, \"direction\": 7, \"positionCoordinates\": {\"x\": -4.79455566, \"y\": 53.6070023, \"z\": -8.03439}, \"areaKeyId\": 300401}, \"bloodStainLocation\": {\"areaKeyId\": 300401, \"areaType\": 1, \"positionCoordinates\": {\"x\": -1.59099984, \"y\": 53.6070023, \"z\": -7.590285}}}";
+    printf("calling /battle/start with '%s'...\n\n", r);
+    res = SembaCall("/battle/start", r);
+    printf("%s\n\n", res);
 }
