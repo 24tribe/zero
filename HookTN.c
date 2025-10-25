@@ -100,9 +100,6 @@ Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourFormationUpdat
     const MethodInfo* method
 ) {
     lastFormationUpdateRequest = data;
-    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
-    printf("[DetourFormationUpdate] %s\n", reqJson);
-    sdsfree(reqJson);
     return fpNeon_Model_Api_ApiService__Formation_Update(
         __this,
         data,
@@ -137,9 +134,6 @@ Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourUpdateCharacte
     const MethodInfo* method
 ) {
     lastUpdateCharacterStatusRequest = data;
-    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
-    printf("[DetourUpdateCharacterStatus] %s\n", reqJson);
-    sdsfree(reqJson);
     return fpNeon_Model_Api_ApiService__Adventure_UpdateCharacterStatus(
         __this,
         data,
@@ -173,9 +167,6 @@ Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o DetourBattleFinish(
     const MethodInfo* method
 ) {
     lastBattleFinishRequest = data;
-    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
-    printf("[DetourBattleFinish] %s\n", reqJson);
-    sdsfree(reqJson);
     return fpNeon_Model_Api_ApiService__Battle_Finish(
         __this, data, requestHandler, cancellationToken, method
     );
@@ -205,9 +196,6 @@ Cysharp_Threading_Tasks_UniTask_BattleStartResponse__o DetourBattleStart(
     const MethodInfo* method
 ) {
     lastBattleStartRequest = data;
-    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
-    printf("[DetourBattleStart] %s\n", reqJson);
-    sdsfree(reqJson);
     return fpNeon_Model_Api_ApiService__Battle_Start(__this, data, requestHandler, cancellationToken, method);
 }
 
@@ -235,9 +223,6 @@ Cysharp_Threading_Tasks_UniTask_AdventureMoveToAreaResponse__o DetourAdventureMo
     const MethodInfo* method
 ) {
     lastAdventureMoveToAreaRequest = data;
-    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
-    printf("[DetourAdventureMoveToArea] %s\n", reqJson);
-    sdsfree(reqJson);
     return fpNeon_Model_Api_ApiService__Adventure_MoveToArea(
         __this, data, requestHandler, cancellationToken, method
     );
@@ -267,9 +252,6 @@ Cysharp_Threading_Tasks_UniTask_TipReleaseResponse__o DetourTipRelease(
     const MethodInfo* method
 ) {
     lastTipReleaseRequest = data;
-    sds req = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
-    printf("[DetourTipRelease] %s\n", req);
-    sdsfree(req);
     return fpNeon_Model_Api_ApiService__Tip_Release(
         __this, data, requestHandler, cancellationToken, method
     );
@@ -299,9 +281,6 @@ Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__o DetourAdventureAr
     const MethodInfo* method
 ) {
     lastAdventureAreaObjectRequest = data;
-    sds req = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
-    printf("[DetourAdventureAreaObject] %s\n", req);
-    sdsfree(req);
     return fpNeon_Model_Api_ApiService__Adventure_AreaObject(
         __this, data, requestHandler, cancellationToken, method
     );
@@ -644,9 +623,6 @@ Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourCharacter_Cost
     const MethodInfo* method
 ) {
     lastCharacterCostumeUpdateRequest = data;
-    sds req = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
-    printf("[DetourCharacter_CostumeUpdate] %s\n", req);
-    sdsfree(req);
     return fpCharacter_CostumeUpdate(
         __this, data, requestHandler, cancellationToken, method
     );
