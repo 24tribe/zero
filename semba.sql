@@ -106,7 +106,7 @@ CREATE TABLE tensionCards (
 
 DROP TABLE IF EXISTS challengeProgresses;
 CREATE TABLE challengeProgresses (
-    challengeProgressId INTEGER,
+    challengeProgressId INTEGER PRIMARY KEY,
     clearedAt STRING,
     state INTEGER
 );
@@ -114,9 +114,7 @@ CREATE TABLE challengeProgresses (
 DROP TABLE IF EXISTS nineSequences;
 CREATE TABLE nineSequences (
     nineSequenceId INTEGER,
-    expiresAt STRING,
-    lastReceiveAt STRING,
-    lastReadAt STRING
+    content STRING
 );
 
 DROP TABLE IF EXISTS tips;
@@ -165,6 +163,12 @@ CREATE TABLE readSequence (
     sequenceRequestId INTEGER,
     areaObjects STRING,
     changedResources STRING
+);
+
+DROP TABLE IF EXISTS adventureVariables;
+CREATE TABLE adventureVariables (
+    adventureVariableId INTEGER PRIMARY KEY,
+    value INTEGER
 );
 
 INSERT INTO readSequence (sequenceRequestId, areaObjects, changedResources) VALUES 
@@ -866,10 +870,10 @@ VALUES
 ,(3006, '2025-09-10T02:22:53Z')
 ;
 
-INSERT INTO nineSequences (nineSequenceId, expiresAt, lastReceiveAt, lastReadAt)
+INSERT INTO nineSequences (nineSequenceId, content)
 VALUES
-(10000000, "2025-09-10T02:22:53Z", "2025-09-10T02:22:53Z", "2025-09-10T02:22:53Z")
-,(10001002, '2025-09-10T02:22:53Z', '2025-09-10T02:22:53Z', '2025-09-10T02:22:53Z')
+(10000000, '{"expiresAt": "2025-09-10T02:22:53Z", "lastReceiveAt": "2025-09-10T02:22:53Z", "lastReadAt": "2025-09-10T02:22:53Z"}')
+,(10001002, '{"expiresAt": "2025-09-10T02:22:53Z", "lastReceiveAt": "2025-09-10T02:22:53Z", "lastReadAt": "2025-09-10T02:22:53Z"}')
 ;
 
 INSERT INTO challengeProgresses (challengeProgressId, clearedAt, state)

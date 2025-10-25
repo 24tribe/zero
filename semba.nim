@@ -150,6 +150,18 @@ proc updatePos(status: var JsonNode, fromAreaId: int, toAreaId: int) =
   else:
     status["currentPositionCoordinates"] = %*{"x": foundToPosX, "y": foundToPosY, "z": foundToPosZ}
 
+proc updateStatusFromCurrentLocation(status: var JsonNode, currentLocation: JsonNode) =
+  status["currentAreaType"] = currentLocation["areaType"]
+  status["currentDirection"] = currentLocation["direction"]
+  status["currentPositionCoordinates"] = currentLocation["positionCoordinates"]
+  status["currentAreaKeyId"] = currentLocation["areaKeyId"]
+
+proc updateStatusFromStatusLocation(status: var JsonNode, otherStatus: JsonNode) =
+  status["currentAreaType"] = otherStatus["currentAreaType"]
+  status["currentDirection"] = otherStatus["currentDirection"]
+  status["currentPositionCoordinates"] = otherStatus["currentPositionCoordinates"]
+  status["currentAreaKeyId"] = otherStatus["currentAreaKeyId"]
+
 proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
   let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
@@ -161,10 +173,7 @@ proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   let fromAreaId = currentLocation["areaKeyId"].getInt()
 
   if fromAreaId == areaId:
-    status["currentAreaType"] = currentLocation["areaType"]
-    status["currentDirection"] = currentLocation["direction"]
-    status["currentPositionCoordinates"] = currentLocation["positionCoordinates"]
-    status["currentAreaKeyId"] = currentLocation["areaKeyId"]
+    updateStatusFromCurrentLocation(status, currentLocation)
   else:
     # FIXME: should update status["currentAreaType"] here
     updatePos(status, fromAreaId, areaId)
@@ -512,23 +521,15 @@ proc getChallengeProgresses(): seq[JsonNode] =
       })
 
 proc getNineSequences(): seq[JsonNode] =
-  let nineSequencesRows = db.getAllRows(sql"""
-    SELECT nineSequenceId, expiresAt, lastReceiveAt, lastReadAt
-    FROM nineSequences
-  """)
+  let nineSequencesRows = db.getAllRows(sql"SELECT nineSequenceId, content FROM nineSequences")
 
   for nineSequenceRow in nineSequencesRows:
     let nineSequenceId = parseInt(nineSequenceRow[0])
-    let expiresAt = nineSequenceRow[1]
-    let lastReceiveAt = nineSequenceRow[2]
-    let lastReadAt = nineSequenceRow[3]
+    let content = parseJson(nineSequenceRow[1])
 
-    result.add(%*{
-      "nineSequenceId": nineSequenceId,
-      "expiresAt": expiresAt,
-      "lastReceiveAt": lastReceiveAt,
-      "lastReadAt": lastReadAt
-    })
+    content["nineSequenceId"] = %*nineSequenceId
+    
+    result.add(content)
 
 proc getTips(): seq[JsonNode] =
   let tipsRows = db.getAllRows(sql"""
@@ -630,6 +631,104 @@ proc formation_Update(jsonReq: JsonNode): JsonNode =
     }
   }
 
+# FIXME: this assumes that no new area object is created
+proc updateAreaObjects(areaId: int, areaObjects: JsonNode) =
+  for areaObject in areaObjects:
+    let areaObjectId = areaObject["areaObjectId"].getInt()
+    let areaPointId = areaObject["areaPointId"].getInt()
+    let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
+    let action = $(areaObject["action"])
+
+    db.exec(sql"""
+      UPDATE areaObjects
+      SET areaObjectBehaviorId = ?, action = ?
+      WHERE areaId = ? AND areaObjectId = ? AND areaPointId = ?
+    """, areaObjectBehaviorId, action, areaId, areaObjectId, areaPointId)
+
+proc updateNineSequences(nineSequences: JsonNode) =
+  for nineSequence in nineSequences:
+    let nineSequenceId = nineSequence["nineSequenceId"].getInt()
+    let seqCopy = nineSequence.copy()
+    seqCopy.delete("nineSequenceId")
+    let seqCopyStr = $seqCopy
+
+    db.exec(sql"""
+      INSERT INTO nineSequences (nineSequenceId, content) VALUES (?, ?)
+      ON CONFLICT (nineSequenceId) DO UPDATE content = ?
+    """, nineSequenceId, seqCopyStr, seqCopyStr)
+
+proc updateAdventureVariables(adventureVariables: JsonNode) =
+  for adventureVariable in adventureVariables:
+    let adventureVariableId = adventureVariable["adventureVariableId"].getInt()
+    let value = adventureVariable["value"].getInt()
+
+    db.exec(sql"""
+      INSERT INTO adventureVariables (adventureVariableId, value) VALUES (?, ?)
+      ON CONFLICT (adventureVariableId) DO UPDATE SET value = ?
+    """, adventureVariableId, value, value)
+
+# TODO: investigate what does row = db.getRow(...); row[i] does with a null value
+proc updateChallengeProgresses(challengeProgresses: JsonNode) =
+  for challengeProgress in challengeProgresses:
+    let challengeProgressId = challengeProgress["challengeProgressId"].getInt()
+    let clearedAt = challengeProgress.getOrDefault("clearedAt")
+    let state = challengeProgress["state"].getInt()
+
+    let clearedAtStr = if clearedAt != nil: clearedAt.getStr() else: ""
+
+    db.exec(sql"""
+      INSERT INTO (challengeProgressId, clearedAt, state)
+      VALUES (?, ?, ?)
+      ON CONFLICT (challengeProgressId) DO UPDATE SET clearedAt = ?, state = ?
+    """, challengeProgressId, clearedAtStr, state, clearedAtStr, state)
+
+# FIXME: implement this
+proc updateChallengeTasks(challengeTasks: JsonNode) =
+  discard
+
+proc updateResources(changedResources: var JsonNode) =
+  var status = getUserStatus()
+  updateStatusFromStatusLocation(status, changedResources["status"])
+  changedResources["status"] = status
+  setUserStatus(status);
+
+  let nineSequences = changedResources.getOrDefault("nineSequences")
+
+  if nineSequences != nil:
+    updateNineSequences(nineSequences)
+
+  let adventureVariables = changedResources.getOrDefault("adventureVariables")
+
+  if adventureVariables != nil:
+    updateAdventureVariables(adventureVariables)
+
+  let challengeProgresses = changedResources.getOrDefault("challengeProgresses")
+
+  if challengeProgresses != nil:
+    updateChallengeProgresses(challengeProgresses)
+
+  let challengeTasks = changedResources.getOrDefault("challengeTasks")
+
+  if challengeTasks != nil:
+    updateChallengeTasks(challengeTasks)
+
+proc adventure_ReadSequence(jsonReq: JsonNode): JsonNode =
+  let seqReqId = jsonReq["sequenceRequestIds"][0].getInt()
+
+  let row = db.getRow(sql"""
+    SELECT areaObjects, changedResources FROM readSequence WHERE sequenceRequestId=?
+  """, seqReqId);
+
+  let areaObjects = parseJson(row[0])
+  var changedResources = parseJson(row[1])
+
+  updateAreaObjects(jsonReq["areaKeyId"].getInt(), areaObjects)
+  updateResources(changedResources)  
+
+  return %*{
+    "areaObjects": areaObjects,
+    "changedResources": changedResources
+  }
 
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
@@ -664,6 +763,8 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     jsonRes = formation_Update(jsonReq)
   elif uri == "/character/costume_update":
     jsonRes = character_CostumeUpdate(jsonReq)
+  elif uri == "/adventure/read_sequence":
+    jsonRes = adventure_ReadSequence(jsonReq)
   else:
     jsonRes = nil
 
