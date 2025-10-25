@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
     PROCESS_INFORMATION pi = {0};
     si.cb = sizeof(si);
     
-    BOOL ret = CreateProcessA(NULL, path, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+    BOOL ret = CreateProcessA(NULL, path, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &si, &pi);
 
     if (!ret) {
         fputs("CreateProcessA failed\n", stderr);
@@ -62,6 +62,8 @@ int main(int argc, char* argv[]) {
         fputs("CreateRemoteThread failed", stderr);
         return 1;
     }
+
+    ResumeThread(pi.hThread);
 
     CloseHandle(ph);
     return 0;
