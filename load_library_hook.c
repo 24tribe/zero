@@ -103,6 +103,8 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
     HookIl2Cpp(GameAssembly, gameName);
 }
 
+bool loggedGoldberg = false;
+
 HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
     sds libName = sds16to8(s, wcslen(s));
 
@@ -111,7 +113,11 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
     HMODULE res;
 
     if (strstr(libName, "steam_api64.dll") && ZERO_CONFIG.enableGoldbergSteam) {
-        printf("[DetourLoadLibraryW] Changed steam_api64.dll to Goldberg\n");
+        if (!loggedGoldberg) {
+            printf("[DetourLoadLibraryW] Changed steam_api64.dll to Goldberg\n");
+            loggedGoldberg = true;
+        }
+        
         res = fpLoadLibraryW(GOLDBERG_STEAM);
     } else {
         res = fpLoadLibraryW(s);
