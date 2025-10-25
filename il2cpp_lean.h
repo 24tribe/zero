@@ -2183,4 +2183,69 @@ typedef struct Neon_Model_Api_Rpc_BattleStartRequest_o {
 	Neon_Model_Api_Rpc_BattleStartRequest_Fields fields;
 } Neon_Model_Api_Rpc_BattleStartRequest_o;
 
+typedef struct Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	struct Neon_Model_Api_Rpc_BattleFinishResponse_o* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o {
+	Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o;
+
+typedef struct Neon_Model_Api_Rpc_BattleFinishRequest_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	int32_t battleResult_;
+	struct Google_Protobuf_Collections_RepeatedField_CharacterUpdate__o* characterUpdates_;
+	struct Google_Protobuf_Collections_RepeatedField_BattleTaskTopic__o* battleTaskTopics_;
+	struct Google_Protobuf_Collections_RepeatedField_int__o* encounteredEnemyIds_;
+	int32_t battleTimeSecond_;
+	struct Neon_Model_Api_Model_BattleTaskConditionResult_o* taskConditionResult_;
+} Neon_Model_Api_Rpc_BattleFinishRequest_Fields;
+
+typedef struct Neon_Model_Api_Rpc_BattleFinishRequest_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_MergeFrom;
+	VirtualInvokeData _5_MergeFrom;
+	VirtualInvokeData _6_WriteTo;
+	VirtualInvokeData _7_CalculateSize;
+	VirtualInvokeData _8_pb__Google_Protobuf_IMessage_get_Descriptor;
+	VirtualInvokeData _9_Equals;
+	VirtualInvokeData _10_Clone;
+	VirtualInvokeData _11_pb__Google_Protobuf_IBufferMessage_InternalMergeFrom;
+	VirtualInvokeData _12_pb__Google_Protobuf_IBufferMessage_InternalWriteTo;
+} Neon_Model_Api_Rpc_BattleFinishRequest_VTable;
+
+typedef struct Neon_Model_Api_Rpc_BattleFinishRequest_c {
+	Il2CppClass_1 _1;
+	struct Neon_Model_Api_Rpc_BattleFinishRequest_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_Api_Rpc_BattleFinishRequest_VTable vtable;
+} Neon_Model_Api_Rpc_BattleFinishRequest_c;
+
+typedef struct Neon_Model_Api_Rpc_BattleFinishRequest_o {
+	Neon_Model_Api_Rpc_BattleFinishRequest_c *klass;
+	void *monitor;
+	Neon_Model_Api_Rpc_BattleFinishRequest_Fields fields;
+} Neon_Model_Api_Rpc_BattleFinishRequest_o;
+
 #endif

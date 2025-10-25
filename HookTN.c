@@ -58,6 +58,44 @@ typedef Cysharp_Threading_Tasks_UniTask_BattleStartResponse__o (*NEON_MODEL_API_
 NEON_MODEL_API_APISERVICE__BATTLE_START Neon_Model_Api_ApiService__Battle_Start = NULL;
 NEON_MODEL_API_APISERVICE__BATTLE_START fpNeon_Model_Api_ApiService__Battle_Start = NULL;
 
+typedef Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o (*NEON_MODEL_API_APISERVICE__BATTLE_FINISH)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_BattleFinishRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
+NEON_MODEL_API_APISERVICE__BATTLE_FINISH Neon_Model_Api_ApiService__Battle_Finish = NULL;
+NEON_MODEL_API_APISERVICE__BATTLE_FINISH fpNeon_Model_Api_ApiService__Battle_Finish = NULL;
+
+Neon_Model_Api_Rpc_BattleFinishRequest_o *lastBattleFinishRequest = NULL;
+
+Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o DetourBattleFinish(
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_BattleFinishRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    lastBattleFinishRequest = data;
+    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
+    printf("[DetourBattleFinish] %s\n", reqJson);
+    sdsfree(reqJson);
+    return fpNeon_Model_Api_ApiService__Battle_Finish(
+        __this, data, requestHandler, cancellationToken, method
+    );
+}
+
+void HookBattleFinish(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Battle_Finish,
+        (LPVOID)(uintptr_t)&DetourBattleFinish,
+        (LPVOID *)(&fpNeon_Model_Api_ApiService__Battle_Finish)
+    ) != MH_OK) {
+        fputs("Failed to create Neon_Model_Api_ApiService__Battle_Finish hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Battle_Finish, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Neon_Model_Api_ApiService__Battle_Finish hook\n", stdout);
+        return;
+    }
+}
+
 Neon_Model_Api_Rpc_BattleStartRequest_o *lastBattleStartRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_BattleStartResponse__o DetourBattleStart(
@@ -455,6 +493,8 @@ void HookTN(void *GameAssembly) {
     Neon_Model_Api_ApiService__Adventure_MoveToArea = (NEON_MODEL_API_APISERVICE__ADVENTURE_MOVETOAREA)((unsigned long long)GameAssembly + 79408528ull);
 
     Neon_Model_Api_ApiService__Battle_Start = (NEON_MODEL_API_APISERVICE__BATTLE_START)((unsigned long long)GameAssembly + 79413904ull);
+
+    Neon_Model_Api_ApiService__Battle_Finish = (NEON_MODEL_API_APISERVICE__BATTLE_FINISH)((unsigned long long)GameAssembly + 79412896ull);
 
     HookHTTPRequestCtor(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
