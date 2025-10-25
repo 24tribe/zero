@@ -2,6 +2,7 @@
 #include "RemapMem.h"
 #include "MetadataDump.h"
 #include "Recons.h"
+#include "HookIl2Cpp.h"
 
 #include <MinHook.h>
 
@@ -21,13 +22,39 @@ bool SaveAddress(const char *outname, void *GameAssembly) {
         printf("fopen failed\n");
         return false;
     }
-    fprintf(fp, "game_assembly_address=%p\n", GameAssembly);
+    fprintf(fp, "%llu\n", (unsigned long long)GameAssembly);
     fclose(fp);
     return true;
 }
 
-// editbin /REBASE:BASE=0x180000000 GA.dll
+char *GetParentDir(char *path) {
+    const char *delim = "\\";
+    char *first = strtok(path, delim);
+    char *second = strtok(NULL, delim);
+    char *third;
+    
+    do {
+        third = strtok(NULL, delim);
+        if (third) {
+            first = second;
+            second = third;
+        }
+    } while (third);
+
+    return first;
+}
+
 void GameAssemblyCallback(HMODULE GameAssembly) {
+    char path[MAX_PATH];
+
+    char *gameName = "unknown";
+
+    // E:\TRIBENINE\GameAssembly.dll
+    // E:\SteamLibrary\steamapps\common\Ratatan Demo\GameAssembly.dll
+    if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
+        gameName = GetParentDir(path);
+    }
+
     if (alreadyDumped) {
         return;
     }
@@ -38,16 +65,26 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
 
     printf("GameAssembly: addr: %p, size: 0x%llx\n", (void *)GameAssembly, GameAssemblySize);
 
-    if (SaveMetadata("GA.dump", (void *)GameAssembly, GameAssemblySize)) {
-        fputs("Saved GA.dump\n", stdout);
-    } else {
-        fputs("Failed to save ga.dump\n", stdout);
-    }
+    char dumpPath[MAX_PATH];
+    char addressPath[MAX_PATH];
 
-    if (SaveAddress("GA.txt", GameAssembly)) {
-        printf("Saved address to GA.txt\n");
-    }
+    int perr1 = snprintf(dumpPath, MAX_PATH, "%s.dump", gameName);
+    int perr2 = snprintf(addressPath, MAX_PATH, "%s.addr", gameName);
     
+    if (perr1 < 0 || perr2 < 0 || perr1 >= MAX_PATH || perr2 >= MAX_PATH) {
+        fputs("snprintf dumpPath or addressPath failed\n", stdout);
+    } else {
+        if (SaveMetadata(dumpPath, (void *)GameAssembly, GameAssemblySize)) {
+            printf("Saved %s\n", dumpPath);
+        } else {
+            printf("Failed to save %s\n", dumpPath);
+        }
+
+        if (SaveAddress(addressPath, GameAssembly)) {
+            printf("Saved address to %s\n", addressPath);
+        }
+    }
+   
     InitRemapMem();
 
     if (RemapViewOfSection(GetCurrentProcess(), (void*)GameAssembly, GameAssemblySize, PAGE_EXECUTE_READWRITE)) {
@@ -56,6 +93,8 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
         printf("Remap Failed!\n");
         return;
     }
+
+    HookHTTPRequestCtor(GameAssembly);
 }
 
 HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
@@ -70,7 +109,6 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
 
     if (isGameAssembly) {
         GameAssemblyCallback(res);
-        // fpLoadLibraryW(L"D:\\tribenine\\version.dll");
     }
     
     return res;

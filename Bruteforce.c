@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
-        int dumper_res = Il2CppDumper(ga_path, metadata_path, output_path);
+        // int dumper_res = Il2CppDumper(ga_path, metadata_path, output_path);
 
         /*
         if (!dumper_res) {

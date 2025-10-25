@@ -18,13 +18,15 @@ HANDLE WINAPI DetourCreateFileW(
     char filename[MY_LINE_SIZE];
     WideToUtf8(filename, filenameW);
 
-    printf("CreateFileW: %s\n", filename);
+    // printf("CreateFileW: %s\n", filename);
 
+    /*
     if (strstr(filename, "global-metadata.dat")) {
         puts("GLOBAL METADATA");
         press_enter_to_continue();
     }
-
+    */
+    
     return fpCreateFileW(filenameW, access, shareMode, attrs, creationDisp, flags, template);
 }
 

@@ -3,3 +3,10 @@
 *.a
 *.o
 __pycache__
+*.addr
+*.dump
+*.bin
+*.har
+
+*Dummy
+dumper_out

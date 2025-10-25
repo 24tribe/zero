@@ -17,14 +17,20 @@ zero_src = [
     'RemapMem.c',
     'MetadataDump.c',
     'Recons.cpp',
-    'Section.c'
+    'Section.c',
+    'create_file_hook.c',
+    'utils.c',
+    'il2cpptest.c',
+    'HookIl2Cpp.c'
 ]
 
 shared_library('zero', zero_src, dependencies : [libminhook_dep, ntdll_lib, libpeconv_dep])
+relocation_test = shared_library('relocation_test', 'RelocationTest.c')
 
 executable('loader', 'loader.c')
 executable('metadata_test', 'metadata_test.c', 'MetadataDump.c')
 executable('printsections', 'printsections.c', 'MetadataDump.c', dependencies : ntdll_lib)
+executable('hellorld', 'HellorldMain.c', link_with : relocation_test)
 
 executable(
     'reconsdll', 'reconsdll.cpp', 'MetadataDump.c', 'Section.c', 'Recons.cpp',

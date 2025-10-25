@@ -1,5 +1,6 @@
 #include "load_library_hook.h"
 #include "NtQueryDirectoryFileHook.h"
+#include "create_file_hook.h"
 
 #include <MinHook.h>
 
@@ -20,6 +21,7 @@ void MyMain() {
 
     HookNtQueryDirectoryFile();
     HookLoadLibrary();
+    HookCreateFile();
 
     puts("OK");
 }
