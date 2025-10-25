@@ -393,34 +393,46 @@ Il2CppObject *DetourSourceCore_GetResult(
 
     Il2CppObject *res = fpSourceCore_GetResult(__this, token, method);
 
-    const char *name;
-    const char *namespaze;
+    const char *name = "";
+    const char *namespaze = "";
 
-    GetNameAndNamespaze(res, &name, &namespaze);
-
-    if (neonApiPath) {
-        if (!strcmp(namespaze, "Neon.Model.Api.Rpc")) {
-            if (!strcmp(name, "AdventureMoveToAreaResponse")) {
-                sds jsonReq = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureMoveToAreaRequest));
-                sds jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
-                SembaLogFlow(neonApiPath, jsonReq, jsonRes);
-                sdsfree(neonApiPath);
-                sdsfree(jsonRes);
-                sdsfree(jsonReq);
-                neonApiPath = NULL;
-                lastAdventureMoveToAreaRequest = NULL;
-            } else if (!strcmp(name, "AdventureAreaObjectResponse")) {
-                sds jsonReq = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastAdventureAreaObjectRequest));
-                sds jsonRes = System_String_toSds(ConvertObjectToString((Il2CppObject *)res));
-                SembaLogFlow(neonApiPath, jsonReq, jsonRes);
-                sdsfree(neonApiPath);
-                sdsfree(jsonRes);
-                sdsfree(jsonReq);
-                neonApiPath = NULL;
-                lastAdventureAreaObjectRequest = NULL;
-            }
-        }
+    if (res) {  
+        GetNameAndNamespaze(res, &name, &namespaze);
     }
+
+    if (neonApiPath && !strcmp(namespaze, "Neon.Model.Api.Rpc")) {
+        sds jsonRes = res ? System_String_toSds(ConvertObjectToString((Il2CppObject *)res)) : sdsempty();
+        Il2CppObject *req = NULL;
+
+        if (!strcmp(name, "AdventureMoveToAreaResponse")) {
+            req = (Il2CppObject *)lastAdventureMoveToAreaRequest;
+            lastAdventureMoveToAreaRequest = NULL;
+        } else if (!strcmp(name, "AdventureAreaObjectResponse")) {
+            req = (Il2CppObject *)lastAdventureAreaObjectRequest;
+            lastAdventureAreaObjectRequest = NULL;
+        } else if (!strcmp(name, "BattleStartResponse")) {
+            req = (Il2CppObject *)lastBattleStartRequest;
+            lastBattleStartRequest = NULL;
+        } else if (!strcmp(name, "BattleFinishResponse")) {
+            req = (Il2CppObject *)lastBattleFinishRequest;
+            lastBattleFinishRequest = NULL;
+        }
+
+        sds jsonReq = req ? System_String_toSds(ConvertObjectToString(req)) : sdsempty();
+
+        SembaLogFlow(neonApiPath, jsonReq, jsonRes);
+
+        if (jsonReq) {
+            sdsfree(jsonReq);
+        }
+
+        if (jsonRes) {
+            sdsfree(jsonRes);
+        }
+        
+        sdsfree(neonApiPath);
+        neonApiPath = NULL;
+    }  
     
     LogResponse(res);
 
