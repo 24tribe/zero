@@ -1,10 +1,20 @@
 #include "utils.h"
 
+#include "sds.h"
+
 #include <stdio.h>
 
 void WideToUtf8(char *out, LPCWSTR in) {
     int len = WideCharToMultiByte(CP_UTF8, 0, in, -1, 0, 0, 0, 0);
     WideCharToMultiByte(CP_UTF8, 0, in, -1, out, len, 0, 0);
+}
+
+sds sds16to8(const uint16_t *s, uint32_t size) {
+    int len = WideCharToMultiByte(CP_UTF8, 0, s, size, 0, 0, 0, 0);
+    sds res = sdsempty();
+    res = sdsMakeRoomFor(res, len);
+    WideCharToMultiByte(CP_UTF8, 0, s, size, res, len, 0, 0);
+    return res;
 }
 
 void press_enter_to_continue() {

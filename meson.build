@@ -35,6 +35,7 @@ executable('loader', 'loader.c')
 executable('metadata_test', 'metadata_test.c', 'MetadataDump.c')
 executable('printsections', 'printsections.c', 'MetadataDump.c', dependencies : ntdll_lib)
 executable('hellorld', 'HellorldMain.c', link_with : relocation_test)
+executable('test_utf', 'test_utf.c', 'utils.c', dependencies : sds_dep)
 
 executable(
     'reconsdll', 'reconsdll.cpp', 'MetadataDump.c', 'Section.c', 'Recons.cpp',
