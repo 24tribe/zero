@@ -169,9 +169,9 @@ void HookTN(void *GameAssembly) {
     System_Uri_ctor = (URICONSTRUCTOR)((unsigned long long)GameAssembly + 94439536ull);
     
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult = (SOURCE_CORE_GETRESULT)((unsigned long long)GameAssembly + 34300640ull);
-   
+
     HookHTTPRequestCtor(GameAssembly);
-    // HookApiServiceAuthSteamUser(GameAssembly);
+    HookApiServiceAuthSteamUser(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
 
     InitLogger(GameAssembly);

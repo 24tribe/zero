@@ -5,11 +5,15 @@
 #include "HookIl2Cpp.h"
 
 #include <MinHook.h>
+#include <sds.h>
 
 #include <windows.h>
 #include <libloaderapi.h>
 
 #include <stdio.h>
+#include <wchar.h>
+
+#define GOLDBERG_STEAM u"D:\\tribenine\\Goldberg_Lan_Steam_Emu\\steam_api64.dll"
 
 typedef HMODULE (WINAPI *LOADLIBRARYW)(LPCWSTR);
 
@@ -99,18 +103,23 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
 }
 
 HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
-    char news[MY_LINE_SIZE];
-    int len = WideCharToMultiByte(CP_UTF8, 0, s, -1, 0, 0, 0, 0);
-    WideCharToMultiByte(CP_UTF8, 0, s, -1, news, len, 0, 0);
-    // printf("LoadLibraryW: %s\n", news);
+    sds libName = sds16to8(s, wcslen(s));
 
-    BOOL isGameAssembly = strstr(news, "GameAssembly.dll") ? TRUE : FALSE;
+    // printf("LoadLibraryW: %s\n", libName);
 
-    HMODULE res = fpLoadLibraryW(s);
+    HMODULE res;
 
-    if (isGameAssembly) {
-        GameAssemblyCallback(res);
+    if (strstr(libName, "steam_api64.dll")) {
+        printf("[DetourLoadLibraryW] Changed steam_api64.dll to Goldberg\n");
+        res = fpLoadLibraryW(GOLDBERG_STEAM);
+    } else {
+        res = fpLoadLibraryW(s);
+        if (strstr(libName, "GameAssembly.dll")) {
+            GameAssemblyCallback(res);
+        }
     }
+
+    sdsfree(libName);
     
     return res;
 }
