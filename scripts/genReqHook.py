@@ -39,17 +39,15 @@ def main():
 
     code = [
         "#ifdef AUTOHOOK_TN_IMPL"
-    ] 
+    ]
 
-    for c in impl_code:
-        code.append(c)
+    code += impl_code
 
     empty_req_res_hooks = get_empty_req_res_hooks(req_hooks)
 
     impl_code, moreHookNames = createAutohookHEmptyReqRes(empty_req_res_hooks, script)
 
-    for c in impl_code:
-        code.append(c)
+    code += impl_code
 
     code.append("void AutoHookTN(void) {")
     for hookName in itertools.chain(hookNames, moreHookNames):
