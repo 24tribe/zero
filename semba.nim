@@ -329,6 +329,14 @@ proc user_CrossDate(jsonReq: JsonNode): JsonNode =
     }
   }
 
+# jsonReq: { "characterUpdates": [ { "characterId": 100101, "hp": 511 } ] }
+proc adventure_UpdateCharacterStatus(jsonReq: JsonNode): JsonNode =
+  # FIXME: complete this
+  return %*{
+    "changedResources": {
+    }
+  }
+
 proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   let jsonReq = if request != "": parseJson($request) else: nil
   var jsonRes: JsonNode
@@ -355,7 +363,7 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   elif uri == "/user/cross_date":
     jsonRes = user_CrossDate(jsonReq)
   elif uri == "/adventure/update_character_status":
-    jsonRes = nil
+    jsonRes = adventure_UpdateCharacterStatus(jsonReq)
   else:
     jsonRes = nil
 

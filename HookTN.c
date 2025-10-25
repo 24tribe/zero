@@ -62,6 +62,48 @@ typedef Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o (*NEON_MODEL_API
 NEON_MODEL_API_APISERVICE__BATTLE_FINISH Neon_Model_Api_ApiService__Battle_Finish = NULL;
 NEON_MODEL_API_APISERVICE__BATTLE_FINISH fpNeon_Model_Api_ApiService__Battle_Finish = NULL;
 
+typedef Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o (*NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS)(Neon_Model_Api_ApiService_o* __this, Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o* data, LPCOHPIGHIN_o* requestHandler, System_Threading_CancellationToken_o cancellationToken, const MethodInfo* method);
+NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = NULL;
+NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS fpNeon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = NULL;
+
+Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o *lastUpdateCharacterStatusRequest = NULL;
+
+Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourUpdateCharacterStatus(
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_AdventureUpdateCharacterStatusRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    lastUpdateCharacterStatusRequest = data;
+    sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
+    printf("[DetourUpdateCharacterStatus] %s\n", reqJson);
+    sdsfree(reqJson);
+    return fpNeon_Model_Api_ApiService__Adventure_UpdateCharacterStatus(
+        __this,
+        data,
+        requestHandler,
+        cancellationToken,
+        method
+    );
+}
+
+void HookUpdateCharacterStatus(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus,
+        (LPVOID)(uintptr_t)&DetourUpdateCharacterStatus,
+        (LPVOID *)(&fpNeon_Model_Api_ApiService__Adventure_UpdateCharacterStatus)
+    ) != MH_OK) {
+        fputs("Failed to create Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus hook\n", stdout);
+        return;
+    }
+}
+
 Neon_Model_Api_Rpc_BattleFinishRequest_o *lastBattleFinishRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_BattleFinishResponse__o DetourBattleFinish(
@@ -490,6 +532,8 @@ void HookTN(void *GameAssembly) {
 
     Neon_Model_Api_ApiService__Battle_Finish = (NEON_MODEL_API_APISERVICE__BATTLE_FINISH)((unsigned long long)GameAssembly + 79412896ull);
 
+    Neon_Model_Api_ApiService__Adventure_UpdateCharacterStatus = (NEON_MODEL_API_APISERVICE__ADVENTURE_UPDATECHARACTERSTATUS)((unsigned long long)GameAssembly + 79409872ull);
+
     HookHTTPRequestCtor(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
     HookNeonApiGetResponse();
@@ -499,6 +543,7 @@ void HookTN(void *GameAssembly) {
     HookAdventureMoveToArea();
     HookBattleStart();
     HookBattleFinish();
+    HookUpdateCharacterStatus();
 
     InitLogger(GameAssembly);
 }
