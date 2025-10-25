@@ -22,7 +22,31 @@ def write_sql(f, data):
     gen_challenge_progresses(printf, f, data)
     gen_tips(printf, f, data)
     gen_total_tasks(printf, f, data)
+    gen_tutorial_states(printf, f, data)
+
+def gen_tutorial_states(printf, f, data):
+    printf("INSERT INTO tutorialStates (tutorialStatusKey, enabled)")
+    printf("VALUES")
+
+    first = True
+    for ts in data["resources"]['tutorialStates']:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        if "enabled" in ts:
+            if ts["enabled"]:
+                enabled = "true"
+            else:
+                enabled = "false"
+        else:
+            enabled = ""
+
+        printf(f"({ts["tutorialStatusKey"]}, '{enabled}')")
     
+    printf(";")
+
 def gen_tips(printf, f, data):
     printf("INSERT INTO tips (tipId, releasedAt)")
     printf("VALUES")

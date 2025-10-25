@@ -128,6 +128,29 @@ CREATE TABLE totalTasks (
     conditionId INTEGER
 );
 
+DROP TABLE IF EXISTS tutorialStates;
+CREATE TABLE tutorialStates (
+    tutorialStatusKey INTEGER,
+    enabled STRING
+);
+
+INSERT INTO tutorialStates (tutorialStatusKey, enabled)
+VALUES
+(1, 'true')
+,(2, 'true')
+,(4, 'true')
+,(5, 'true')
+,(6, 'true')
+,(7, 'true')
+,(8, 'true')
+,(20, 'true')
+,(22, 'true')
+,(28, 'true')
+,(35, 'true')
+,(36, 'true')
+,(40, '')
+;
+
 INSERT INTO totalTasks (conditionId)
 VALUES
 (104010)

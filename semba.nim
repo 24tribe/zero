@@ -511,6 +511,20 @@ proc getTotalTasks(): seq[JsonNode] =
 
     result.add(%*{"conditionId": conditionId})
 
+proc getTutorialStates(): seq[JsonNode] =
+  let tutorialStatesRows = db.getAllRows(sql"SELECT tutorialStatusKey, enabled FROM tutorialStates")
+
+  for tutorialStateRow in tutorialStatesRows:
+    let tutorialStatusKey = parseInt(tutorialStateRow[0])
+    let enabled = tutorialStateRow[1]
+
+    let tutorialState = %*{"tutorialStatusKey": tutorialStatusKey}
+
+    if enabled == "true" or enabled == "false":
+      tutorialState["enabled"] = %*(if enabled == "true": true else: false)
+
+    result.add(tutorialState)
+
 proc user_LogIn(): JsonNode =
   return %*{
     "resources": {
@@ -528,7 +542,10 @@ proc user_LogIn(): JsonNode =
       "tips": getTips(),
       "characterCostumes": getCharacterCostumes(),
       "missions": [{"missionId": 105002, "count": 1, "clearedAt": "2025-09-10T02:22:53Z"}],
-      "totalTasks": getTotalTasks()
+      "totalTasks": getTotalTasks(),
+      "profile": {"name": "Yo Kuronaka3", "profileBannerId": 2010011, "characterLikabilityScale": 500},
+      "profileBanners": [{"profileBannerId": 2010011, "receivedAt": "2025-09-10T02:22:51Z"}],
+      "tutorialStates": getTutorialStates()
     }
   }
 
