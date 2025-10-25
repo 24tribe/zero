@@ -1,0 +1,947 @@
+[
+  {
+    "id": "1001001",
+    "characterId": "100101",
+    "en name": "Lokapala"
+  },
+  {
+    "id": "1001011",
+    "characterId": "100101",
+    "en name": "Lokapala / W"
+  },
+  {
+    "id": "1001012",
+    "characterId": "100101",
+    "en name": "Lokapala / Y"
+  },
+  {
+    "id": "1001013",
+    "characterId": "100101",
+    "en name": "Lokapala / O"
+  },
+  {
+    "id": "1001014",
+    "characterId": "100101",
+    "en name": "Lokapala / R"
+  },
+  {
+    "id": "1001015",
+    "characterId": "100101",
+    "en name": "Lokapala / P"
+  },
+  {
+    "id": "1001016",
+    "characterId": "100101",
+    "en name": "Lokapala / N"
+  },
+  {
+    "id": "1001017",
+    "characterId": "100101",
+    "en name": "Lokapala / B"
+  },
+  {
+    "id": "1001018",
+    "characterId": "100101",
+    "en name": "Lokapala / G"
+  },
+  {
+    "id": "1001901",
+    "characterId": "100101",
+    "en name": "Hero"
+  },
+  {
+    "id": "1002018",
+    "characterId": "100201",
+    "en name": "Fit and Vivid / G"
+  },
+  {
+    "id": "1002017",
+    "characterId": "100201",
+    "en name": "Fit and Vivid / B"
+  },
+  {
+    "id": "1002016",
+    "characterId": "100201",
+    "en name": "Fit and Vivid / N"
+  },
+  {
+    "id": "1002015",
+    "characterId": "100201",
+    "en name": "Fit and Vivid / P"
+  },
+  {
+    "id": "1002011",
+    "characterId": "100201",
+    "en name": "Fit and Vivid / W"
+  },
+  {
+    "id": "1002013",
+    "characterId": "100201",
+    "en name": "Fit and Vivid / O"
+  },
+  {
+    "id": "1002012",
+    "characterId": "100201",
+    "en name": "Fit and Vivid / Y"
+  },
+  {
+    "id": "1002001",
+    "characterId": "100201",
+    "en name": "Fit and Vivid"
+  },
+  {
+    "id": "1002014",
+    "characterId": "100201",
+    "en name": "Fit and Vivid / R"
+  },
+  {
+    "id": "1003016",
+    "characterId": "100301",
+    "en name": "Afterglow / N"
+  },
+  {
+    "id": "1003019",
+    "characterId": "100301",
+    "en name": "Afterglow / D"
+  },
+  {
+    "id": "1003017",
+    "characterId": "100301",
+    "en name": "Afterglow / B"
+  },
+  {
+    "id": "1003015",
+    "characterId": "100301",
+    "en name": "Afterglow / P"
+  },
+  {
+    "id": "1003012",
+    "characterId": "100301",
+    "en name": "Afterglow / Y"
+  },
+  {
+    "id": "1003013",
+    "characterId": "100301",
+    "en name": "Afterglow / O"
+  },
+  {
+    "id": "1003011",
+    "characterId": "100301",
+    "en name": "Afterglow / W"
+  },
+  {
+    "id": "1003001",
+    "characterId": "100301",
+    "en name": "Afterglow"
+  },
+  {
+    "id": "1003014",
+    "characterId": "100301",
+    "en name": "Afterglow / R"
+  },
+  {
+    "id": "1004019",
+    "characterId": "100401",
+    "en name": "Pale Moon / D"
+  },
+  {
+    "id": "1004018",
+    "characterId": "100401",
+    "en name": "Pale Moon / G"
+  },
+  {
+    "id": "1004017",
+    "characterId": "100401",
+    "en name": "Pale Moon / B"
+  },
+  {
+    "id": "1004015",
+    "characterId": "100401",
+    "en name": "Pale Moon / P"
+  },
+  {
+    "id": "1004016",
+    "characterId": "100401",
+    "en name": "Pale Moon / N"
+  },
+  {
+    "id": "1004013",
+    "characterId": "100401",
+    "en name": "Pale Moon / O"
+  },
+  {
+    "id": "1004012",
+    "characterId": "100401",
+    "en name": "Pale Moon / Y"
+  },
+  {
+    "id": "1004001",
+    "characterId": "100401",
+    "en name": "Pale Moon"
+  },
+  {
+    "id": "1004014",
+    "characterId": "100401",
+    "en name": "Pale Moon / R"
+  },
+  {
+    "id": "1005018",
+    "characterId": "100501",
+    "en name": "Remedy / G"
+  },
+  {
+    "id": "1005105",
+    "characterId": "100501",
+    "en name": "Parallel Cypher / Y"
+  },
+  {
+    "id": "1005104",
+    "characterId": "100501",
+    "en name": "Parallel Cypher / B"
+  },
+  {
+    "id": "1005102",
+    "characterId": "100501",
+    "en name": "Parallel Cypher / W"
+  },
+  {
+    "id": "1005101",
+    "characterId": "100501",
+    "en name": "Parallel Cypher"
+  },
+  {
+    "id": "1005017",
+    "characterId": "100501",
+    "en name": "Remedy / B"
+  },
+  {
+    "id": "1005103",
+    "characterId": "100501",
+    "en name": "Parallel Cypher / D"
+  },
+  {
+    "id": "1005015",
+    "characterId": "100501",
+    "en name": "Remedy / P"
+  },
+  {
+    "id": "1005014",
+    "characterId": "100501",
+    "en name": "Remedy / R"
+  },
+  {
+    "id": "1005013",
+    "characterId": "100501",
+    "en name": "Remedy / O"
+  },
+  {
+    "id": "1005012",
+    "characterId": "100501",
+    "en name": "Remedy / Y"
+  },
+  {
+    "id": "1005016",
+    "characterId": "100501",
+    "en name": "Remedy / N"
+  },
+  {
+    "id": "1005011",
+    "characterId": "100501",
+    "en name": "Remedy / W"
+  },
+  {
+    "id": "1005001",
+    "characterId": "100501",
+    "en name": "Remedy"
+  },
+  {
+    "id": "1006201",
+    "characterId": "100601",
+    "en name": "Her Chronicle"
+  },
+  {
+    "id": "1006018",
+    "characterId": "100601",
+    "en name": "The Founder / G"
+  },
+  {
+    "id": "1006017",
+    "characterId": "100601",
+    "en name": "The Founder / B"
+  },
+  {
+    "id": "1006016",
+    "characterId": "100601",
+    "en name": "The Founder / N"
+  },
+  {
+    "id": "1006019",
+    "characterId": "100601",
+    "en name": "The Founder / D"
+  },
+  {
+    "id": "1006014",
+    "characterId": "100601",
+    "en name": "The Founder / R"
+  },
+  {
+    "id": "1006013",
+    "characterId": "100601",
+    "en name": "The Founder / O"
+  },
+  {
+    "id": "1006012",
+    "characterId": "100601",
+    "en name": "The Founder / Y"
+  },
+  {
+    "id": "1006001",
+    "characterId": "100601",
+    "en name": "The Founder"
+  },
+  {
+    "id": "1006015",
+    "characterId": "100601",
+    "en name": "The Founder / P"
+  },
+  {
+    "id": "1007018",
+    "characterId": "100701",
+    "en name": "First Star / G"
+  },
+  {
+    "id": "1007017",
+    "characterId": "100701",
+    "en name": "First Star / B"
+  },
+  {
+    "id": "1007016",
+    "characterId": "100701",
+    "en name": "First Star / N"
+  },
+  {
+    "id": "1007015",
+    "characterId": "100701",
+    "en name": "First Star / P"
+  },
+  {
+    "id": "1007014",
+    "characterId": "100701",
+    "en name": "First Star / R"
+  },
+  {
+    "id": "1007012",
+    "characterId": "100701",
+    "en name": "First Star / Y"
+  },
+  {
+    "id": "1007011",
+    "characterId": "100701",
+    "en name": "First Star / W"
+  },
+  {
+    "id": "1007001",
+    "characterId": "100701",
+    "en name": "First Star"
+  },
+  {
+    "id": "1007013",
+    "characterId": "100701",
+    "en name": "First Star / O"
+  },
+  {
+    "id": "1008018",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword / G"
+  },
+  {
+    "id": "1008104",
+    "characterId": "100801",
+    "en name": "Transmelt / P"
+  },
+  {
+    "id": "1008103",
+    "characterId": "100801",
+    "en name": "Transmelt / W"
+  },
+  {
+    "id": "1008102",
+    "characterId": "100801",
+    "en name": "Transmelt / R"
+  },
+  {
+    "id": "1008101",
+    "characterId": "100801",
+    "en name": "Transmelt"
+  },
+  {
+    "id": "1008017",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword / B"
+  },
+  {
+    "id": "1008001",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword"
+  },
+  {
+    "id": "1008015",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword / P"
+  },
+  {
+    "id": "1008014",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword / R"
+  },
+  {
+    "id": "1008013",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword / O"
+  },
+  {
+    "id": "1008012",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword / Y"
+  },
+  {
+    "id": "1008011",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword / W"
+  },
+  {
+    "id": "1008016",
+    "characterId": "100801",
+    "en name": "Master of Pen and Sword / N"
+  },
+  {
+    "id": "1009201",
+    "characterId": "100901",
+    "en name": "Dignity"
+  },
+  {
+    "id": "1009019",
+    "characterId": "100901",
+    "en name": "Billion Haze / D"
+  },
+  {
+    "id": "1009018",
+    "characterId": "100901",
+    "en name": "Billion Haze / G"
+  },
+  {
+    "id": "1009017",
+    "characterId": "100901",
+    "en name": "Billion Haze / B"
+  },
+  {
+    "id": "1009016",
+    "characterId": "100901",
+    "en name": "Billion Haze / N"
+  },
+  {
+    "id": "1009015",
+    "characterId": "100901",
+    "en name": "Billion Haze / P"
+  },
+  {
+    "id": "1009013",
+    "characterId": "100901",
+    "en name": "Billion Haze / O"
+  },
+  {
+    "id": "1009011",
+    "characterId": "100901",
+    "en name": "Billion Haze / W"
+  },
+  {
+    "id": "1009001",
+    "characterId": "100901",
+    "en name": "Billion Haze"
+  },
+  {
+    "id": "1009014",
+    "characterId": "100901",
+    "en name": "Billion Haze / R"
+  },
+  {
+    "id": "1010016",
+    "characterId": "101001",
+    "en name": "Special Ops Suit / N"
+  },
+  {
+    "id": "1010201",
+    "characterId": "101001",
+    "en name": "Despoiler"
+  },
+  {
+    "id": "1010018",
+    "characterId": "101001",
+    "en name": "Special Ops Suit / G"
+  },
+  {
+    "id": "1010017",
+    "characterId": "101001",
+    "en name": "Special Ops Suit / B"
+  },
+  {
+    "id": "1010015",
+    "characterId": "101001",
+    "en name": "Special Ops Suit / P"
+  },
+  {
+    "id": "1010011",
+    "characterId": "101001",
+    "en name": "Special Ops Suit / W"
+  },
+  {
+    "id": "1010013",
+    "characterId": "101001",
+    "en name": "Special Ops Suit / O"
+  },
+  {
+    "id": "1010012",
+    "characterId": "101001",
+    "en name": "Special Ops Suit / Y"
+  },
+  {
+    "id": "1010014",
+    "characterId": "101001",
+    "en name": "Special Ops Suit / R"
+  },
+  {
+    "id": "1010001",
+    "characterId": "101001",
+    "en name": "Special Ops Suit"
+  },
+  {
+    "id": "1011201",
+    "characterId": "101101",
+    "en name": "Mayhem"
+  },
+  {
+    "id": "1011019",
+    "characterId": "101101",
+    "en name": "Ash Cover / D"
+  },
+  {
+    "id": "1011018",
+    "characterId": "101101",
+    "en name": "Ash Cover / G"
+  },
+  {
+    "id": "1011017",
+    "characterId": "101101",
+    "en name": "Ash Cover / B"
+  },
+  {
+    "id": "1011016",
+    "characterId": "101101",
+    "en name": "Ash Cover / N"
+  },
+  {
+    "id": "1011014",
+    "characterId": "101101",
+    "en name": "Ash Cover / R"
+  },
+  {
+    "id": "1011013",
+    "characterId": "101101",
+    "en name": "Ash Cover / O"
+  },
+  {
+    "id": "1011012",
+    "characterId": "101101",
+    "en name": "Ash Cover / Y"
+  },
+  {
+    "id": "1011001",
+    "characterId": "101101",
+    "en name": "Ash Cover"
+  },
+  {
+    "id": "1011015",
+    "characterId": "101101",
+    "en name": "Ash Cover / P"
+  },
+  {
+    "id": "1012018",
+    "characterId": "101201",
+    "en name": "The Diligent / G"
+  },
+  {
+    "id": "1012201",
+    "characterId": "101201",
+    "en name": "Team Frontier"
+  },
+  {
+    "id": "1012104",
+    "characterId": "101201",
+    "en name": "Agastus Gear / R"
+  },
+  {
+    "id": "1012103",
+    "characterId": "101201",
+    "en name": "Agastus Gear / P"
+  },
+  {
+    "id": "1012102",
+    "characterId": "101201",
+    "en name": "Agastus Gear / B"
+  },
+  {
+    "id": "1012017",
+    "characterId": "101201",
+    "en name": "The Diligent / B"
+  },
+  {
+    "id": "1012101",
+    "characterId": "101201",
+    "en name": "Agastus Gear"
+  },
+  {
+    "id": "1012015",
+    "characterId": "101201",
+    "en name": "The Diligent / P"
+  },
+  {
+    "id": "1012014",
+    "characterId": "101201",
+    "en name": "The Diligent / R"
+  },
+  {
+    "id": "1012013",
+    "characterId": "101201",
+    "en name": "The Diligent / O"
+  },
+  {
+    "id": "1012012",
+    "characterId": "101201",
+    "en name": "The Diligent / Y"
+  },
+  {
+    "id": "1012011",
+    "characterId": "101201",
+    "en name": "The Diligent / W"
+  },
+  {
+    "id": "1012001",
+    "characterId": "101201",
+    "en name": "The Diligent"
+  },
+  {
+    "id": "1012016",
+    "characterId": "101201",
+    "en name": "The Diligent / N"
+  },
+  {
+    "id": "1013201",
+    "characterId": "101301",
+    "en name": "Dominator"
+  },
+  {
+    "id": "1013114",
+    "characterId": "101301",
+    "en name": "Revenio / G"
+  },
+  {
+    "id": "1013113",
+    "characterId": "101301",
+    "en name": "Revenio / B"
+  },
+  {
+    "id": "1013112",
+    "characterId": "101301",
+    "en name": "Revenio / R"
+  },
+  {
+    "id": "1013111",
+    "characterId": "101301",
+    "en name": "Revenio"
+  },
+  {
+    "id": "1013018",
+    "characterId": "101301",
+    "en name": "Farewell / G"
+  },
+  {
+    "id": "1013017",
+    "characterId": "101301",
+    "en name": "Farewell / B"
+  },
+  {
+    "id": "1013015",
+    "characterId": "101301",
+    "en name": "Farewell / P"
+  },
+  {
+    "id": "1013014",
+    "characterId": "101301",
+    "en name": "Farewell / R"
+  },
+  {
+    "id": "1013013",
+    "characterId": "101301",
+    "en name": "Farewell / O"
+  },
+  {
+    "id": "1013012",
+    "characterId": "101301",
+    "en name": "Farewell / Y"
+  },
+  {
+    "id": "1013011",
+    "characterId": "101301",
+    "en name": "Farewell / W"
+  },
+  {
+    "id": "1013001",
+    "characterId": "101301",
+    "en name": "Farewell"
+  },
+  {
+    "id": "1013016",
+    "characterId": "101301",
+    "en name": "Farewell / N"
+  },
+  {
+    "id": "1014016",
+    "characterId": "101401",
+    "en name": "Pilgrim / N"
+  },
+  {
+    "id": "1014018",
+    "characterId": "101401",
+    "en name": "Pilgrim / G"
+  },
+  {
+    "id": "1014017",
+    "characterId": "101401",
+    "en name": "Pilgrim / B"
+  },
+  {
+    "id": "1014201",
+    "characterId": "101401",
+    "en name": "Vengeance"
+  },
+  {
+    "id": "1014015",
+    "characterId": "101401",
+    "en name": "Pilgrim / P"
+  },
+  {
+    "id": "1014012",
+    "characterId": "101401",
+    "en name": "Pilgrim / Y"
+  },
+  {
+    "id": "1014013",
+    "characterId": "101401",
+    "en name": "Pilgrim / O"
+  },
+  {
+    "id": "1014011",
+    "characterId": "101401",
+    "en name": "Pilgrim / W"
+  },
+  {
+    "id": "1014001",
+    "characterId": "101401",
+    "en name": "Pilgrim"
+  },
+  {
+    "id": "1014014",
+    "characterId": "101401",
+    "en name": "Pilgrim / R"
+  },
+  {
+    "id": "1015201",
+    "characterId": "101501",
+    "en name": "Liber Wish"
+  },
+  {
+    "id": "1015018",
+    "characterId": "101501",
+    "en name": "Struggle / G"
+  },
+  {
+    "id": "1015017",
+    "characterId": "101501",
+    "en name": "Struggle / B"
+  },
+  {
+    "id": "1015015",
+    "characterId": "101501",
+    "en name": "Struggle / P"
+  },
+  {
+    "id": "1015016",
+    "characterId": "101501",
+    "en name": "Struggle / N"
+  },
+  {
+    "id": "1015013",
+    "characterId": "101501",
+    "en name": "Struggle / O"
+  },
+  {
+    "id": "1015012",
+    "characterId": "101501",
+    "en name": "Struggle / Y"
+  },
+  {
+    "id": "1015011",
+    "characterId": "101501",
+    "en name": "Struggle / W"
+  },
+  {
+    "id": "1015001",
+    "characterId": "101501",
+    "en name": "Struggle"
+  },
+  {
+    "id": "1015014",
+    "characterId": "101501",
+    "en name": "Struggle / R"
+  },
+  {
+    "id": "1016902",
+    "characterId": "101701",
+    "en name": "Sui - Meguro Outfit"
+  },
+  {
+    "id": "1029001",
+    "characterId": "102901",
+    "en name": "Odd Umbra"
+  },
+  {
+    "id": "1030114",
+    "characterId": "103001",
+    "en name": "Wrinkle Ridge / P"
+  },
+  {
+    "id": "1030113",
+    "characterId": "103001",
+    "en name": "Wrinkle Ridge / R"
+  },
+  {
+    "id": "1030112",
+    "characterId": "103001",
+    "en name": "Wrinkle Ridge / W"
+  },
+  {
+    "id": "1030111",
+    "characterId": "103001",
+    "en name": "Wrinkle Ridge"
+  },
+  {
+    "id": "1030018",
+    "characterId": "103001",
+    "en name": "Brilliant Prima / G"
+  },
+  {
+    "id": "1030017",
+    "characterId": "103001",
+    "en name": "Brilliant Prima / B"
+  },
+  {
+    "id": "1030014",
+    "characterId": "103001",
+    "en name": "Brilliant Prima / R"
+  },
+  {
+    "id": "1030015",
+    "characterId": "103001",
+    "en name": "Brilliant Prima / P"
+  },
+  {
+    "id": "1030013",
+    "characterId": "103001",
+    "en name": "Brilliant Prima / O"
+  },
+  {
+    "id": "1030012",
+    "characterId": "103001",
+    "en name": "Brilliant Prima / Y"
+  },
+  {
+    "id": "1030011",
+    "characterId": "103001",
+    "en name": "Brilliant Prima / W"
+  },
+  {
+    "id": "1030001",
+    "characterId": "103001",
+    "en name": "Brilliant Prima"
+  },
+  {
+    "id": "1030016",
+    "characterId": "103001",
+    "en name": "Brilliant Prima / N"
+  },
+  {
+    "id": "1031112",
+    "characterId": "103101",
+    "en name": "Retainer / W"
+  },
+  {
+    "id": "1031111",
+    "characterId": "103101",
+    "en name": "Retainer"
+  },
+  {
+    "id": "1031019",
+    "characterId": "103101",
+    "en name": "The Anonymous / D"
+  },
+  {
+    "id": "1031018",
+    "characterId": "103101",
+    "en name": "The Anonymous / G"
+  },
+  {
+    "id": "1031016",
+    "characterId": "103101",
+    "en name": "The Anonymous / N"
+  },
+  {
+    "id": "1031013",
+    "characterId": "103101",
+    "en name": "The Anonymous / O"
+  },
+  {
+    "id": "1031014",
+    "characterId": "103101",
+    "en name": "The Anonymous / R"
+  },
+  {
+    "id": "1031012",
+    "characterId": "103101",
+    "en name": "The Anonymous / Y"
+  },
+  {
+    "id": "1031011",
+    "characterId": "103101",
+    "en name": "The Anonymous / W"
+  },
+  {
+    "id": "1031001",
+    "characterId": "103101",
+    "en name": "The Anonymous"
+  },
+  {
+    "id": "1031113",
+    "characterId": "103101",
+    "en name": "Retainer / D"
+  },
+  {
+    "id": "1031015",
+    "characterId": "103101",
+    "en name": "The Anonymous / P"
+  },
+  {
+    "id": "1031114",
+    "characterId": "103101",
+    "en name": "Retainer / O"
+  }
+]
