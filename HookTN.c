@@ -15,6 +15,7 @@ References:
 #include "Logger.h"
 #include "Il2CppHelper.h"
 #include "Config.h"
+#include "TimeString.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -42,6 +43,34 @@ AUTH_STEAM_USER_RESPONSE_CTOR Neon_Model_Api_Rpc_AuthSteamUserResponse___ctor = 
 typedef Cysharp_Threading_Tasks_UniTask_TResponse__o (*NEON_API_GET_RESPONSE)(CDGPJELFAMK_o* __this, BJAFDMJIDMJ_o* EFCDPGBOIHC, LPCOHPIGHIN_o* EAGJONBIADJ, System_Threading_CancellationToken_o JLCCEAFOLOE, Google_Protobuf_MessageParser_TResponse__o* PNICKJFPBHH, const MethodInfo_F6CAF0* method);
 NEON_API_GET_RESPONSE NeonApiGetResponse = NULL; // CDGPJELFAMK__NOCKJHKDMGF_object_
 NEON_API_GET_RESPONSE fpNeonApiGetResponse = NULL;
+
+typedef bool (*KBJLHEAOHMD__KPFFCLMEMEG)(System_DateTime_o HKIOCIMKCCP, System_DateTime_o CJKBFINFMNP, const MethodInfo* method);
+KBJLHEAOHMD__KPFFCLMEMEG Kbjlheaohmd__Kpffclmemeg = NULL;
+KBJLHEAOHMD__KPFFCLMEMEG fpKbjlheaohmd__Kpffclmemeg = NULL;
+
+bool DetourKbjlheaohmd__Kpffclmemeg(System_DateTime_o HKIOCIMKCCP, System_DateTime_o CJKBFINFMNP, const MethodInfo* method) {
+    if (HKIOCIMKCCP.fields._dateData == 0) {
+        return false;
+    }
+
+    return fpKbjlheaohmd__Kpffclmemeg(HKIOCIMKCCP, CJKBFINFMNP, method);
+}
+
+void HookKbjlheaohmd__Kpffclmemeg(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Kbjlheaohmd__Kpffclmemeg,
+        (LPVOID)(uintptr_t)&DetourKbjlheaohmd__Kpffclmemeg,
+        (LPVOID *)(&fpKbjlheaohmd__Kpffclmemeg)
+    ) != MH_OK) {
+        fputs("Failed to create Kbjlheaohmd__Kpffclmemeg hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Kbjlheaohmd__Kpffclmemeg, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Kbjlheaohmd__Kpffclmemeg hook\n", stdout);
+        return;
+    }
+}
 
 typedef Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o (*APISERVICEAUTHSTEAMUSER)(
     Neon_Model_Api_ApiService_o* __this,
@@ -228,11 +257,15 @@ Il2CppObject *CallParseJson(
         return another;
     }
 }
+
+sds LOGIN_TIME = NULL;
     
 Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
     Il2CppObject *res = NULL;
     System_String_o *s = ConvertObjectToString((Il2CppObject *)messageParser);
     sds sUtf8 = sds16to8(&(s->fields._firstChar), s->fields._stringLength);
+
+    printf("[GetMockResponse] %s\n", sUtf8);
 
     if (strstr(sUtf8, "Neon.Model.Api.Rpc.AuthSteamUserResponse")) {
         res = CallParseJson(
@@ -250,17 +283,35 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
             "{\"sessionToken\": \"69696969-6969-6969-6969-696969696969\",\"language\": 2}"
         );
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserLogInResponse")) {
-        sds userLogInResponseText = SlurpFile("responses\\2025_9_13_14_8_59_UserLogInResponse.txt");
+        LOGIN_TIME = GetDateTime();
+        sds userLogInResponseText = SlurpFile("responses\\2025_9_14_12_57_55_UserLogInResponse.txt");
 
         res = CallParseJson(messageParser, userLogInResponseText);
 
         sdsfree(userLogInResponseText);
     } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.UserCrossDateResponse")) {
-        sds userCrossDateResponseText = SlurpFile("responses\\2025_9_13_14_9_1_UserCrossDateResponse.txt");
+        sds userCrossDateResponseText = SlurpFile("responses\\2025_9_14_12_57_57_UserCrossDateResponse.txt");
+        char *newResponse = ChangeLoggedInAtStr(userCrossDateResponseText, LOGIN_TIME);
 
-        res = CallParseJson(messageParser, userCrossDateResponseText);
+        res = CallParseJson(messageParser, newResponse);
 
         sdsfree(userCrossDateResponseText);
+        free(newResponse);
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureAreaObjectResponse")) {
+        sds adventureAreaObjectResponse = SlurpFile("responses\\2025_9_14_12_58_9_AdventureAreaObjectResponse.txt");
+
+        res = CallParseJson(messageParser, adventureAreaObjectResponse);
+
+        sdsfree(adventureAreaObjectResponse);
+    } else if (strstr(sUtf8, "Neon.Model.Api.Rpc.AdventureMoveToAreaResponse")) {
+        // Should return current login date
+        sds adventureMoveToAreaResponse = SlurpFile("responses\\2025_9_14_12_58_12_AdventureMoveToAreaResponse.txt");
+        char *newResponse = ChangeLoggedInAtStr(adventureMoveToAreaResponse, LOGIN_TIME);
+
+        res = CallParseJson(messageParser, newResponse);
+
+        sdsfree(adventureMoveToAreaResponse);
+        free(newResponse);
     }
 
     sdsfree(sUtf8);
@@ -318,10 +369,13 @@ void HookTN(void *GameAssembly) {
 
     NeonApiGetResponse = (NEON_API_GET_RESPONSE)((unsigned long long)GameAssembly + 16173808ull);
 
+    Kbjlheaohmd__Kpffclmemeg = (KBJLHEAOHMD__KPFFCLMEMEG)((unsigned long long)GameAssembly + 59260912ull);
+
     HookHTTPRequestCtor(GameAssembly);
     HookApiServiceAuthSteamUser(GameAssembly);
     HookSourceCore_GetResult(GameAssembly);
     HookNeonApiGetResponse();
+    HookKbjlheaohmd__Kpffclmemeg();
 
     InitLogger(GameAssembly);
 }

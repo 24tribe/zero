@@ -1927,4 +1927,12 @@ typedef struct MethodInfo_76FC90 {
 	uint8_t bitflags;
 } MethodInfo_76FC90;
 
+typedef struct System_DateTime_Fields {
+	uint64_t _dateData;
+} System_DateTime_Fields;
+
+typedef struct System_DateTime_o {
+	System_DateTime_Fields fields;
+} System_DateTime_o;
+
 #endif

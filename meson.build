@@ -34,7 +34,8 @@ zero_src = [
     'HookExample.cpp',
     'Logger.c',
     'Config.c',
-    'Il2CppHelper.c'
+    'Il2CppHelper.c',
+    'TimeString.c'
 ]
 
 zero_deps = [libminhook_dep, ntdll_lib, libpeconv_dep, sds_dep, jansson_dep, inih_dep]
@@ -44,7 +45,7 @@ shared_library('zero', zero_src, dependencies : zero_deps)
 executable('loader', 'loader.c')
 executable('metadata_test', 'metadata_test.c', 'MetadataDump.c')
 executable('printsections', 'printsections.c', 'MetadataDump.c', dependencies : ntdll_lib)
-executable('test_utf', 'test_utf.c', 'utils.c', dependencies : sds_dep)
+executable('test_utf', 'test_utf.c', zero_src, dependencies : zero_deps)
 
 executable(
     'reconsdll', 'reconsdll.cpp', 'MetadataDump.c', 'Section.c', 'Recons.cpp',
@@ -55,4 +56,4 @@ executable('RegenSections', 'RegenSections.c', 'Section.c')
 
 executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, dependencies : zero_deps)
 
-executable('test_jansson', 'test_jansson.c', dependencies : [sds_dep, jansson_dep])
+executable('test_jansson', 'test_jansson.c', zero_src, dependencies : zero_deps)

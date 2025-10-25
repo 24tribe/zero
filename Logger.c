@@ -1,10 +1,9 @@
 #include "il2cpp_lean.h"
 #include "utils.h"
+#include "TimeString.h"
 
 #include <sds.h>
 #include <jansson.h>
-
-#include <sysinfoapi.h>
 
 #include <wchar.h>
 #include <stdio.h>
@@ -45,21 +44,6 @@ void EscapeSymbols(char *s) {
             s++;
         }
     }
-}
-
-sds GetTime() {
-    SYSTEMTIME systemTime;
-    GetSystemTime(&systemTime);
-    return sdscatprintf(
-        sdsempty(),
-        "%d_%d_%d_%d_%d_%d",
-        (int)systemTime.wYear,
-        (int)systemTime.wMonth,
-        (int)systemTime.wDay,
-        (int)systemTime.wHour,
-        (int)systemTime.wMinute,
-        (int)systemTime.wSecond
-    );
 }
 
 sds CreateStackTracePath(const char *url) {
