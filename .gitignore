@@ -20,3 +20,5 @@ nimble.paths
 saves
 subprojects/packagecache
 onlineLogs
+
+subprojects/goldberg_steam

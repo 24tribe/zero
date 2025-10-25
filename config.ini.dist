@@ -5,14 +5,14 @@
 #
 # when offlineMode is true, the game intercepts the api calls and the game can be
 # played offline
-offlineMode=false
+offlineMode=true
 
 # path to a save file created by createSaveFile.py
 # only used in offline mode
 #saveFile=
 
 # path to a sqlite3 db used to save api call flows in online mode
-#onlineLogsPath=
+#onlineLogsPath=onlineLogs.db
 
 # path to the goldberg steam api emulator dll
-#goldbergPath=
+goldbergPath=steam_api64.dll

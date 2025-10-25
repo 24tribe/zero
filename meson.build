@@ -24,8 +24,15 @@ fs = import('fs')
 semba_nimble = fs.copyfile('semba.nimble')
 sqlite3_c = fs.copyfile('sqlite3.c')
 
+fs.copyfile('config.ini.dist', 'config.ini', install : true, install_dir : '.')
+fs.copyfile('steam_appid.txt', install : true, install_dir : '.')
+fs.copyfile('TRIBENINE.bat', install : true, install_dir : '.')
+
 dumper_out_proj = subproject('dumper_out')
 script_json = dumper_out_proj.get_variable('script_json')
+
+goldberg_steam_proj = subproject('goldberg_steam')
+goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
 libsemba = custom_target(
     'libsemba',
@@ -43,7 +50,9 @@ semba_db = custom_target(
     output : 'semba.db',
     command : [sqlite3, '@OUTPUT@'],
     feed : true,
-    build_by_default : true
+    build_by_default : true,
+    install : true,
+    install_dir : '.'
 )
 
 onlineLogs_db = custom_target(
@@ -52,7 +61,9 @@ onlineLogs_db = custom_target(
     output : 'onlineLogs.db',
     command : [sqlite3, '@OUTPUT@'],
     feed : true,
-    build_by_default : true
+    build_by_default : true,
+    install : true,
+    install_dir : '.'
 )
 
 python3 = find_program('python3', required : true)
@@ -110,9 +121,9 @@ zero_deps = [
     shlwapi_lib
 ]
 
-shared_library('zero', zero_src, dependencies : zero_deps)
+shared_library('zero', zero_src, dependencies : zero_deps, install : true, install_dir : '.')
 
-executable('loader', 'loader.c')
+executable('loader', 'loader.c', install : true, install_dir : '.')
 executable('metadata_test', 'metadata_test.c', 'MetadataDump.c')
 executable('printsections', 'printsections.c', 'MetadataDump.c', dependencies : ntdll_lib)
 executable('test_utf', 'test_utf.c', zero_src, dependencies : zero_deps)

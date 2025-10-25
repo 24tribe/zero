@@ -1,0 +1,7 @@
+[wrap-file]
+
+source_url=https://www.dropbox.com/scl/fi/itxotgr0vlrujeuq5m30a/goldberg_steam.zip?rlkey=l67mgusgtbz3ujhzexr1x1yek&st=i4mq3otw&dl=1
+source_filename=goldberg_steam.zip
+source_hash=6e9deeae07a752fc5b343d874874e55117bacc9f2c75523c76c5c269a2234fb3
+
+patch_directory=goldberg_steam
