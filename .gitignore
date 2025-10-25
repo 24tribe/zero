@@ -13,3 +13,4 @@ example_dumper_out
 dumper_out
 stacktraces/*.txt
 responses/*.txt
+config.ini
