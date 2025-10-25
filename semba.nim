@@ -373,6 +373,27 @@ proc adventure_UpdateCharacterStatus(jsonReq: JsonNode): JsonNode =
     }
   }
 
+proc costumeIdToCharacterId(costumeId: int): int =
+  return (costumeId div 1000)*100 + 1
+
+proc character_CostumeUpdate(jsonReq: JsonNode): JsonNode =
+  let costumeId = jsonReq["characterCostumeId"].getInt()
+  let characterId = costumeIdToCharacterId(costumeId)
+  var characters = newSeq[JsonNode]()
+
+  let characterRow = db.getRow(sql("SELECT " & dbCharacterFields & " FROM characters WHERE characterId = ?"), characterId)
+  let character = parseCharacterRow(characterRow)
+  character["characterCostumeId"] = %*costumeId
+  characters.add(character)
+
+  db.exec(sql"UPDATE characters SET characterCostumeId = ? WHERE characterId = ?", costumeId, characterId)
+
+  return %*{
+    "changedResources": {
+      "characters": characters
+    }
+  }
+
 proc getFormations(): seq[JsonNode] =
   let formationsRows = db.getAllRows(sql"""
     SELECT number, members, cards FROM formations
@@ -572,6 +593,8 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
     jsonRes = user_LogIn()
   elif uri == "/formation/update":
     jsonRes = formation_Update(jsonReq)
+  elif uri == "/character/costume_update":
+    jsonRes = character_CostumeUpdate(jsonReq)
   else:
     jsonRes = nil
 

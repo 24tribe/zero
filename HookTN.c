@@ -460,6 +460,8 @@ Il2CppObject *CallParseJson(
         return another;
     }
 }
+
+Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
   
 Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
     NimMain();
@@ -522,6 +524,11 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
             res = CallParseJson(messageParser, SembaCall("/formation/update", reqJson));
             sdsfree(reqJson);
             lastFormationUpdateRequest = NULL;
+        } else if (lastCharacterCostumeUpdateRequest != NULL) {
+            sds reqJson = System_String_toSds(ConvertObjectToString((Il2CppObject *)lastCharacterCostumeUpdateRequest));
+            res = CallParseJson(messageParser, SembaCall("/character/costume_update", reqJson));
+            sdsfree(reqJson);
+            lastCharacterCostumeUpdateRequest = NULL;
         }
     }
 
@@ -572,7 +579,6 @@ void HookNeonApiGetResponse(void) {
 #include "funcPtrs.c.h"
 
 Neon_Model_Api_ApiService__Character_CostumeUpdate_FuncPtr fpCharacter_CostumeUpdate = NULL;
-Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o *lastCharacterCostumeUpdateRequest = NULL;
 
 Cysharp_Threading_Tasks_UniTask_ChangedResourcesResponse__o DetourCharacter_CostumeUpdate(
     Neon_Model_Api_ApiService_o* __this,
