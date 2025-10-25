@@ -503,6 +503,14 @@ proc getCharacterCostumes(): seq[JsonNode] =
       "receivedAt": receivedAt
     })
 
+proc getTotalTasks(): seq[JsonNode] =
+  let totalTasksRows = db.getAllRows(sql"SELECT conditionId FROM totalTasks")
+  
+  for totalTaskRow in totalTasksRows:
+    let conditionId = parseInt(totalTaskRow[0])
+
+    result.add(%*{"conditionId": conditionId})
+
 proc user_LogIn(): JsonNode =
   return %*{
     "resources": {
@@ -519,7 +527,8 @@ proc user_LogIn(): JsonNode =
       "nineSequences": getNineSequences(),
       "tips": getTips(),
       "characterCostumes": getCharacterCostumes(),
-      "missions": [{"missionId": 105002, "count": 1, "clearedAt": "2025-09-10T02:22:53Z"}]
+      "missions": [{"missionId": 105002, "count": 1, "clearedAt": "2025-09-10T02:22:53Z"}],
+      "totalTasks": getTotalTasks()
     }
   }
 

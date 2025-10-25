@@ -21,6 +21,7 @@ def write_sql(f, data):
     gen_tension_cards(printf, f, data)
     gen_challenge_progresses(printf, f, data)
     gen_tips(printf, f, data)
+    gen_total_tasks(printf, f, data)
     
 def gen_tips(printf, f, data):
     printf("INSERT INTO tips (tipId, releasedAt)")
@@ -34,6 +35,21 @@ def gen_tips(printf, f, data):
             f.write(",")
 
         printf(f"({tip["tipId"]}, '{tip["releasedAt"]}')")
+    
+    printf(";")
+
+def gen_total_tasks(printf, f, data):
+    printf("INSERT INTO totalTasks (conditionId)")
+    printf("VALUES")
+    
+    first = True
+    for total_task in data["resources"]['totalTasks']:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        printf(f"({total_task["conditionId"]})")
     
     printf(";")
 
