@@ -9,6 +9,7 @@ Neon.Model.Api.ApiService$$Adventure_ReadSequence
 Neon.Model.Api.ApiService$$Adventure_AcquireAreaItem
 Neon.Model.Api.ApiService$$Auth_SteamUser
 Neon.Model.Api.ApiService$$Xb_Formation
+Neon.Model.Api.ApiService$$Xb_Status
 KBJLHEAOHMD$$KPFFCLMEMEG
 CDGPJELFAMK$$NOCKJHKDMGF<object>
 Best.HTTP.HTTPRequest$$.ctor
