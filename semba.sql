@@ -884,7 +884,6 @@ INSERT INTO characterCostumes (characterCostumeId, receivedAt) VALUES
 , (1001016, '2025-04-24T03:49:59Z')
 , (1001017, '2025-04-24T03:49:59Z')
 , (1001018, '2025-04-24T03:49:59Z')
-, (1001901, '2025-04-24T03:49:59Z')
 , (1002018, '2025-04-24T03:49:59Z')
 , (1002017, '2025-04-24T03:49:59Z')
 , (1002016, '2025-04-24T03:49:59Z')
@@ -1036,7 +1035,6 @@ INSERT INTO characterCostumes (characterCostumeId, receivedAt) VALUES
 , (1015011, '2025-04-24T03:49:59Z')
 , (1015001, '2025-04-24T03:49:59Z')
 , (1015014, '2025-04-24T03:49:59Z')
-, (1016902, '2025-04-24T03:49:59Z')
 , (1029001, '2025-04-24T03:49:59Z')
 , (1030114, '2025-04-24T03:49:59Z')
 , (1030113, '2025-04-24T03:49:59Z')
@@ -1145,11 +1143,6 @@ trainingScoreLevelScore, trainingScoreRankScore, actionPointMax,
 actionPointRate, actionPointConsumption, damageTakenRate)
 VALUES
 
-
-
-
-
-
 (100101, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
 100, 100, 100, 1001001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
@@ -1157,15 +1150,14 @@ VALUES
 3000, 160, 1)
 ,(100201, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
-100, 100, 100, 1002015, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+100, 100, 100, 1002001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
 ,(100301, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
-100, 100, 100, 1003012, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+100, 100, 100, 1003001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
--- miu?
 ,(100401, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
 100, 100, 100, 1004001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
@@ -1173,7 +1165,7 @@ VALUES
 3000, 160, 1)
 ,(100501, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
-100, 100, 100, 1005105, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+100, 100, 100, 1005001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
 ,(100601, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
@@ -1188,7 +1180,7 @@ VALUES
 3000, 160, 1)
 ,(100801, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
-100, 100, 100, 1008103, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+100, 100, 100, 1008001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
 ,(100901, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
@@ -1216,7 +1208,6 @@ VALUES
 100, 100, 100, 1013001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
--- kazuki?
 ,(101401, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
 100, 100, 100, 1014001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
@@ -1234,7 +1225,7 @@ VALUES
 3000, 160, 1)
 ,(103001, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
 5, 50, 6, 100, 100,
-100, 100, 100, 1030112, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
+100, 100, 100, 1030001, '{"oily": {"burstResistance": 100, "burstResistanceLimit": 100}, "pressure": {"burstResistance": 100, "burstResistanceLimit": 100}, "scared": {"burstResistance": 100, "burstResistanceLimit": 100}, "electric": {"burstResistance": 100, "burstResistanceLimit": 100}, "unfortified": {"burstResistance": 100, "burstResistanceLimit": 100}}',
 2, 1, 1000,
 3000, 160, 1)
 ,(103101, 240, 511, 106, 105, 511, "2025-09-10T02:22:51Z", 1,
