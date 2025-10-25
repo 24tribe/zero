@@ -4,6 +4,7 @@
 #include "Recons.h"
 #include "HookIl2Cpp.h"
 #include "Config.h"
+#include "md5sum.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -58,8 +59,23 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
     // E:\SteamLibrary\steamapps\common\Ratatan Demo\GameAssembly.dll
     // D:\unity\example\Build\GameAssembly.dll
     if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
+        sds GameAssemblyDll = SlurpFile(path);
+        if (GameAssemblyDll) {
+            uint8_t digest[16];
+            md5sum_buffer((const uint8_t*)GameAssemblyDll, sdslen(GameAssemblyDll), digest);
+            char *hex = md5_hex(digest);
+            if (!strcmp(hex, "bf87cdb761f931b8ff806b2bd7a376af")) {
+                printf("Correct md5sum!!!\n");
+            } else {
+                printf("WARNING! Incorrect md5sum (%s), manually update script.json!\n", hex);
+            }
+            free(hex);
+        }
+
         gameName = GetParentDir(path);
     }
+
+    
 
     if (alreadyDumped) {
         return;
@@ -120,8 +136,10 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
         
         res = fpLoadLibraryW(GOLDBERG_STEAM);
     } else {
+        bool isGameAssembly = strstr(libName, "GameAssembly.dll");
+
         res = fpLoadLibraryW(s);
-        if (strstr(libName, "GameAssembly.dll")) {
+        if (isGameAssembly) {
             GameAssemblyCallback(res);
         }
     }

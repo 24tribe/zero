@@ -68,6 +68,7 @@ zero_src = [
     'Il2CppHelper.c',
     'TimeString.c',
     'FuncPtrs.c',
+    'md5sum.c',
     func_ptrs
 ]
 
