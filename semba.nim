@@ -170,6 +170,24 @@ proc updateStatusFromStatusLocation(status: var JsonNode, otherStatus: JsonNode)
   status["currentPositionCoordinates"] = otherStatus["currentPositionCoordinates"]
   status["currentAreaKeyId"] = otherStatus["currentAreaKeyId"]
 
+proc getActionSequenceId(areaId: int): int =
+  let row = db.getRow(sql"SELECT actionSequenceId FROM areaActionSequenceIds WHERE areaId = ?", areaId)
+  result = if row[0] != "": parseInt(row[0]) else: 0
+
+proc getAreaBgm(areaId: int): JsonNode =
+  let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
+
+  if areaBgmRow[0] == "":
+    raise newException(SembaError, "Couldn't find areaBgm for areaId=" & $areaId)
+
+  let areaBgmId = parseInt(areaBgmRow[0])
+  let eventName = areaBgmRow[1]
+
+  result = %*{"id": areaBgmId}
+
+  if eventName != "":
+    result["eventName"] = %*eventName
+
 proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
 
@@ -188,20 +206,19 @@ proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
 
   setUserStatus(status)
 
-  let areaBgmRow = db.getRow(sql"SELECT id, eventName FROM areaBgm WHERE areaId = ?", areaId)
+  let areaBgm = getAreaBgm(areaId)
 
-  if areaBgmRow[0] == "":
-    raise newException(SembaError, "Couldn't find areaBgm for areaId=" & $areaId)
-
-  let areaBgmId = parseInt(areaBgmRow[0])
-  let eventName = areaBgmRow[1]
-
-  return %*{
-    "areaBgm": {"id": areaBgmId, "eventName": eventName},
+  result = %*{
+    "areaBgm": areaBgm,
     "changedResources": {
       "status": status
     }
   }
+
+  let actionSequenceId = getActionSequenceId(areaId)
+
+  if actionSequenceId != 0:
+    result["areaBehavior"] = %*{"actionSequenceId": actionSequenceId}
 
 let dbTensionCardsFields = """
   tensionCardId, receivedAt, maxLevel, abilityEfficacies,
@@ -789,6 +806,44 @@ proc updateResources(changedResources: var JsonNode) =
   if challengeTasks != nil:
     updateChallengeTasks(challengeTasks)
 
+proc updateActionSequenceId(areaId: int, actionSequenceId: int) =
+  db.exec(
+    sql"UPDATE areaActionSequenceIds SET actionSequenceId = ? WHERE areaId = ?",
+    actionSequenceId, areaId
+  )
+
+proc getReadSequenceAreaAction(sequenceRequestId: int): tuple[areaId: int, actionSequenceId: int] =
+  let row = db.getRow(
+    sql"SELECT areaId, actionSequenceId FROM readSequenceAreaAction WHERE sequenceRequestId = ?",
+    sequenceRequestId
+  )
+
+  if row[0] == "":
+    return (0, 0)
+
+  return (parseInt(row[0]), parseInt(row[1]))
+
+proc getReadSequenceAreaBgm(seqReqId: int): tuple[areaId: int, id: int, eventName: string] =
+  let row = db.getRow(
+    sql"SELECT areaId, id, eventName FROM readSequenceAreaBgm WHERE sequenceRequestId = ?",
+    seqReqId
+  )
+
+  if row[0] == "":
+    return (0, 0, "")
+
+  let areaId = parseInt(row[0])
+  let id = parseInt(row[1])
+  let eventName = row[2]
+
+  return (areaId, id, eventName)
+
+proc updateAreaBgm(areaId: int, id: int, eventName: string) =
+  db.exec(
+    sql"UPDATE areaBgm SET id = ?, eventName = ? WHERE areaId = ?",
+    id, eventName, areaId
+  )
+
 proc adventure_ReadSequence(jsonReq: JsonNode): JsonNode =
   let seqReqId = jsonReq["sequenceRequestIds"][0].getInt()
 
@@ -811,6 +866,16 @@ proc adventure_ReadSequence(jsonReq: JsonNode): JsonNode =
 
   if areaObjects != nil:
     result["areaObjects"] = areaObjects
+
+  let readSequenceAreaAction = getReadSequenceAreaAction(seqReqId)
+
+  if readSequenceAreaAction.areaId != 0 and readSequenceAreaAction.actionSequenceId != 0:
+    updateActionSequenceId(readSequenceAreaAction.areaId, readSequenceAreaAction.actionSequenceId)
+
+  let readSequenceAreaBgm = getReadSequenceAreaBgm(seqReqId)
+
+  if readSequenceAreaBgm.areaId != 0:
+    updateAreaBgm(readSequenceAreaBgm.areaId, readSequenceAreaBgm.id, readSequenceAreaBgm.eventName)
 
 proc sembaCallUnsafe(uri: string, request: string): string =
   let jsonReq = if request != "": parseJson(request) else: nil

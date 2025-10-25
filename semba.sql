@@ -193,6 +193,56 @@ CREATE TABLE battleFinishAreaObjects(
     areaObjects STRING
 );
 
+DROP TABLE IF EXISTS areaActionSequenceIds;
+CREATE TABLE areaActionSequenceIds (
+    areaId INTEGER PRIMARY KEY,
+    actionSequenceId INTEGER
+);
+
+DROP TABLE IF EXISTS readSequenceAreaAction;
+CREATE TABLE readSequenceAreaAction (
+    sequenceRequestId INTEGER PRIMARY KEY,
+    areaId INTEGER,
+    actionSequenceId INTEGER
+);
+
+DROP TABLE IF EXISTS readSequenceAreaBgm;
+CREATE TABLE readSequenceAreaBgm (
+    sequenceRequestId INTEGER PRIMARY KEY,
+    areaId INTEGER,
+    id INTEGER,
+    eventName STRING
+);
+
+INSERT INTO readSequenceAreaBgm (sequenceRequestId, areaId, id, eventName) VALUES
+(70012711, 300401, 1002, 'bgm_adv_00_basic_01')
+, (308002021, 300401, 1002, 'bgm_adv_00_basic_01')
+, (80001621, 300401, 1002, 'bgm_adv_00_basic_01')
+, (80001911, 300401, 1003, 'bgm_btl_boss_24city_01')
+, (80004021, 300501, 1005, '')
+, (80002111, 300501, 1006, 'bgm_story_xb_01')
+, (90000006, 300501, 1007, 'bgm_adv_00_basic_01')
+, (80100111, 101381, 1502, '')
+, (80100211, 101381, 1503, 'bgm_adv_01_hotel')
+;
+
+INSERT INTO areaActionSequenceIds (areaId, actionSequenceId) VALUES
+(300501, 8000191)
+, (101381, 8010021)
+;
+
+INSERT INTO readSequenceAreaAction (sequenceRequestId, areaId, actionSequenceId) VALUES
+(70012711, 300401, 0)
+, (308002021, 300401, 0)
+, (80001621, 300401, 0)
+, (80001911, 300401, 0)
+, (80004021, 300501, 8000201)
+, (80002111, 300501, 8000211)
+, (90000006, 300501, 8010011)
+, (80100111, 101381, 8010021)
+, (80100211, 101381, 0)
+;
+
 INSERT INTO battleFinishAreaObjects (battleEntryId, areaObjects) VALUES
 (1000004, '[{"areaObjectId": 800025, "areaPointId": 300401010, "areaObjectBehaviorId": 8000184, "action": {"type": 7, "id": 1}}, {"areaObjectId": 700112, "areaPointId": 300401162, "areaObjectBehaviorId": 7001123, "action": {"type": 3, "id": 1, "sequenceId": 7000981, "label": "Sui Yakumo"}}, {"areaObjectId": 700111, "areaPointId": 300401161, "areaObjectBehaviorId": 7001113, "action": {"type": 3, "id": 1, "sequenceId": 7000971, "label": "Tsuki Iroha"}}, {"areaObjectId": 700037, "areaPointId": 300401140, "areaObjectBehaviorId": 7000751, "action": {"type": 3, "id": 1, "sequenceId": 7000901, "label": "Jio Takinogawa"}}, {"areaObjectId": 700036, "areaPointId": 300401144, "areaObjectBehaviorId": 7000791, "action": {"type": 3, "id": 1, "sequenceId": 7000921, "label": "Q"}}, {"areaObjectId": 700035, "areaPointId": 300401145, "areaObjectBehaviorId": 7000801, "action": {"type": 3, "id": 1, "sequenceId": 7000922, "label": "Kazuki Aoyama"}}, {"areaObjectId": 700034, "areaPointId": 300401142, "areaObjectBehaviorId": 7000771, "action": {"type": 3, "id": 1, "sequenceId": 7000911, "label": "Hyakuichitaro Senju"}}, {"areaObjectId": 700030, "areaPointId": 300401143, "areaObjectBehaviorId": 7000781, "action": {"type": 3, "id": 1, "sequenceId": 7000912, "label": "Koishi Kohinata"}}, {"areaObjectId": 700029, "areaPointId": 300401149, "areaObjectBehaviorId": 7000841, "action": {"type": 3, "id": 1, "sequenceId": 7000942, "label": "Tsuruko Semba"}}, {"areaObjectId": 700028, "areaPointId": 300401141, "areaObjectBehaviorId": 7000761, "action": {"type": 3, "id": 1, "sequenceId": 7000902, "label": "Miu Jujo"}}, {"areaObjectId": 700027, "areaPointId": 300401148, "areaObjectBehaviorId": 7000831, "action": {"type": 3, "id": 1, "sequenceId": 7000941, "label": "Eiji Todoroki"}}, {"areaObjectId": 700014, "areaPointId": 300401147, "areaObjectBehaviorId": 7000821, "action": {"type": 3, "id": 1, "sequenceId": 7000932, "label": "Enoki Yukigaya"}}, {"areaObjectId": 700013, "areaPointId": 300401146, "areaObjectBehaviorId": 7000811, "action": {"type": 3, "id": 1, "sequenceId": 7000931, "label": "Roku Saigo"}}]')
 ;
@@ -1047,10 +1097,11 @@ VALUES
 ("status", '{"rank": 1, "staminaUpdatedAt": "2025-09-10T02:22:51Z", "formationNumber": 1, "currentAreaKeyId": 300402, "currentDirection": 5, "loggedInAt": "2025-09-17T00:18:05Z", "currentPositionCoordinates": {"x": -6, "y": 53.61689, "z": -15.75}, "currentAreaType": 1}')
 ;
 
-INSERT INTO areaBgm (areaId, id, eventName)
-VALUES
+INSERT INTO areaBgm (areaId, id, eventName) VALUES
 (300402, 3101, 'bgm_story_serious_02')
-,(300401, 1002, 'bgm_adv_00_basic_01')
+, (300401, 1002, 'bgm_adv_00_basic_01')
+, (300501, 1005, '')
+, (101381, 1502, '')
 ;
 
 -- Area 300402
