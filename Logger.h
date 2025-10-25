@@ -9,5 +9,6 @@ sds CreateStackTracePath(const char *url);
 void SaveStackTrace(sds url);
 void InitLogger(void *GameAssembly);
 void LogResponse(Il2CppObject *obj);
+System_String_o *ConvertObjectToString(Il2CppObject *obj);
 
 #endif

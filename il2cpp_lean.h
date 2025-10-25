@@ -1622,4 +1622,309 @@ typedef struct MethodInfo_20B62E0 {
 	uint8_t bitflags;
 } MethodInfo_20B62E0;
 
+typedef struct MethodInfo_110E210_RGCTXs {
+	Il2CppClass* _0_T;
+	Il2CppClass* _1_Cysharp_Threading_Tasks_UniTask_T_;
+	MethodInfo* _2_Cysharp_Threading_Tasks_UniTask_T___ctor;
+} MethodInfo_110E210_RGCTXs;
+
+typedef struct MethodInfo_110E210 {
+	Il2CppMethodPointer methodPointer;
+	Il2CppMethodPointer virtualMethodPointer;
+	InvokerMethod invoker_method;
+	const char* name;
+	Cysharp_Threading_Tasks_UniTask_c *klass;
+	const Il2CppType *return_type;
+	const Il2CppType** parameters;
+	const MethodInfo_110E210_RGCTXs* rgctx_data;
+	union
+	{
+		const void* genericMethod;
+		const void* genericContainerHandle;
+	};
+	uint32_t token;
+	uint16_t flags;
+	uint16_t iflags;
+	uint16_t slot;
+	uint8_t parameters_count;
+	uint8_t bitflags;
+} MethodInfo_110E210;
+
+typedef struct Google_Protobuf_MessageParser_TResponse__Fields /* : Google_Protobuf_MessageParser_Fields */ {
+	struct System_Func_T__o* factory;
+} Google_Protobuf_MessageParser_TResponse__Fields;
+
+typedef struct Google_Protobuf_MessageParser_TResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Google_Protobuf_MessageParser_TResponse__VTable;
+
+typedef struct Google_Protobuf_MessageParser_TResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Google_Protobuf_MessageParser_TResponse__VTable vtable;
+} Google_Protobuf_MessageParser_TResponse__c;
+
+typedef struct Google_Protobuf_MessageParser_TResponse__o {
+	Google_Protobuf_MessageParser_TResponse__c *klass;
+	void *monitor;
+	Google_Protobuf_MessageParser_TResponse__Fields fields;
+} Google_Protobuf_MessageParser_TResponse__o;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_TResponse__Fields {
+	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
+	Il2CppObject* result;
+	int16_t token;
+} Cysharp_Threading_Tasks_UniTask_TResponse__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_TResponse__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Cysharp_Threading_Tasks_UniTask_TResponse__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_TResponse__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTask_TResponse__VTable vtable;
+} Cysharp_Threading_Tasks_UniTask_TResponse__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTask_TResponse__o {
+	Cysharp_Threading_Tasks_UniTask_TResponse__Fields fields;
+} Cysharp_Threading_Tasks_UniTask_TResponse__o;
+
+typedef struct CDGPJELFAMK_Fields {
+	struct KCFACGNDKOI_o* FEHDBEMDJLH;
+} CDGPJELFAMK_Fields;
+
+typedef struct CDGPJELFAMK_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_ONIFJDGBNFE;
+	VirtualInvokeData _5_KGFOAKGJBOL;
+	VirtualInvokeData _6_unknown;
+	VirtualInvokeData _7_LKHAOCKIOPL;
+	VirtualInvokeData _8_PIJBCEBGIOH;
+	VirtualInvokeData _9_unknown;
+	VirtualInvokeData _10_BPCKJFKOKOM;
+	VirtualInvokeData _11_NDHHPKBFJBA;
+	VirtualInvokeData _12_DAOEJIDKBPB;
+	VirtualInvokeData _13_unknown;
+	VirtualInvokeData _14_unknown;
+	VirtualInvokeData _15_EIJFILJLCCN;
+	VirtualInvokeData _16_unknown;
+	VirtualInvokeData _17_unknown;
+	VirtualInvokeData _18_unknown;
+	VirtualInvokeData _19_unknown;
+	VirtualInvokeData _20_AKFPCAOAKKF;
+	VirtualInvokeData _21_IDKDCHPAICO;
+} CDGPJELFAMK_VTable;
+
+typedef struct CDGPJELFAMK_c {
+	Il2CppClass_1 _1;
+	struct CDGPJELFAMK_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	CDGPJELFAMK_VTable vtable;
+} CDGPJELFAMK_c;
+
+typedef struct CDGPJELFAMK_o {
+	CDGPJELFAMK_c *klass;
+	void *monitor;
+	CDGPJELFAMK_Fields fields;
+} CDGPJELFAMK_o;
+
+typedef struct MethodInfo_F6CAF0_RGCTXs {
+	MethodInfo* _0_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse__Create;
+	Il2CppClass* _1_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse_;
+	Il2CppClass* _2_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse_;
+	Il2CppClass* _3_CDGPJELFAMK_BGANPNAFBEF_TResponse_;
+	Il2CppClass* _4_Google_Protobuf_MessageParser_TResponse_;
+	MethodInfo* _5_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse__Start_CDGPJELFAMK_BGANPNAFBEF_TResponse__;
+	Il2CppClass* _6_CDGPJELFAMK_BGANPNAFBEF_TResponse_;
+	MethodInfo* _7_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse__get_Task;
+	Il2CppClass* _8_Cysharp_Threading_Tasks_UniTask_TResponse_;
+} MethodInfo_F6CAF0_RGCTXs;
+
+typedef struct MethodInfo_F6CAF0 {
+	Il2CppMethodPointer methodPointer;
+	Il2CppMethodPointer virtualMethodPointer;
+	InvokerMethod invoker_method;
+	const char* name;
+	CDGPJELFAMK_c *klass;
+	const Il2CppType *return_type;
+	const Il2CppType** parameters;
+	const MethodInfo_F6CAF0_RGCTXs* rgctx_data;
+	union
+	{
+		const void* genericMethod;
+		const void* genericContainerHandle;
+	};
+	uint32_t token;
+	uint16_t flags;
+	uint16_t iflags;
+	uint16_t slot;
+	uint8_t parameters_count;
+	uint8_t bitflags;
+} MethodInfo_F6CAF0;
+
+typedef struct BJAFDMJIDMJ_Fields {
+	struct System_String_o* _JDLNGBAIDOD_k__BackingField;
+	struct System_String_o* _BEDACCGOBCH_k__BackingField;
+	bool _LBHKAHENJMJ_k__BackingField;
+	struct System_Byte_array* _KJFLKOOKDHN_k__BackingField;
+	struct Google_Protobuf_IMessage_o* _OCNDCNNHFPM_k__BackingField;
+} BJAFDMJIDMJ_Fields;
+typedef struct BJAFDMJIDMJ_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} BJAFDMJIDMJ_VTable;
+typedef struct BJAFDMJIDMJ_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	BJAFDMJIDMJ_VTable vtable;
+} BJAFDMJIDMJ_c;
+typedef struct BJAFDMJIDMJ_o {
+	BJAFDMJIDMJ_c *klass;
+	void *monitor;
+	BJAFDMJIDMJ_Fields fields;
+} BJAFDMJIDMJ_o;
+
+typedef struct Neon_Model_UserData_DatabaseMember_T__Fields {
+	struct PEAEHFGGOJH_T__o* _subject;
+	bool _isDirty;
+	bool _IsDisposed_k__BackingField;
+} Neon_Model_UserData_DatabaseMember_T__Fields;
+typedef struct Neon_Model_UserData_DatabaseMember_T__RGCTXs {
+	Il2CppClass* _0_Neon_Model_UserData_DatabaseMember_T_;
+	Il2CppClass* _1_PEAEHFGGOJH_T_;
+	MethodInfo* _2_Neon_Model_UserData_DatabaseMember_T__get_Current;
+	Il2CppClass* _3_T;
+	MethodInfo* _4_PEAEHFGGOJH_T__MNGCCHGELDF;
+	MethodInfo* _5_Neon_Model_UserData_DatabaseMember_T__set_IsDisposed;
+	MethodInfo* _6_PEAEHFGGOJH_T__Dispose;
+	Il2CppClass* _7_System_IObserver_T_;
+	MethodInfo* _8_Neon_Model_UserData_DatabaseMember_T__Subscribe;
+	MethodInfo* _9_Neon_Model_UserData_DatabaseMember_T__get_IsDisposed;
+	MethodInfo* _10_System_IObserver_T__OnCompleted;
+	MethodInfo* _11_System_IObserver_T__OnNext;
+	MethodInfo* _12_PEAEHFGGOJH_T___ctor;
+	MethodInfo* _13_PEAEHFGGOJH_T__Subscribe;
+} Neon_Model_UserData_DatabaseMember_T__RGCTXs;
+typedef struct Neon_Model_UserData_DatabaseMember_T__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_Notify;
+	VirtualInvokeData _5_unknown;
+	VirtualInvokeData _6_get_IsDisposed;
+	VirtualInvokeData _7_Subscribe;
+	VirtualInvokeData _8_Subscribe;
+	VirtualInvokeData _9_unknown;
+	VirtualInvokeData _10_Dispose;
+} Neon_Model_UserData_DatabaseMember_T__VTable;
+typedef struct Neon_Model_UserData_DatabaseMember_T__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Neon_Model_UserData_DatabaseMember_T__RGCTXs* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_UserData_DatabaseMember_T__VTable vtable;
+} Neon_Model_UserData_DatabaseMember_T__c;
+typedef struct Neon_Model_UserData_DatabaseMember_T__o {
+	Neon_Model_UserData_DatabaseMember_T__c *klass;
+	void *monitor;
+	Neon_Model_UserData_DatabaseMember_T__Fields fields;
+} Neon_Model_UserData_DatabaseMember_T__o;
+
+typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSource_string__Fields {
+	struct System_Threading_CancellationToken_o cancellationToken;
+	struct System_String_o* result;
+	struct Cysharp_Threading_Tasks_ExceptionHolder_o* exception;
+	Il2CppObject* gate;
+	struct System_Action_object__o* singleContinuation;
+	Il2CppObject* singleState;
+	struct System_Collections_Generic_List_ValueTuple_Action_object___object___o* secondaryContinuationList;
+	int32_t intStatus;
+	bool handled;
+} Cysharp_Threading_Tasks_UniTaskCompletionSource_string__Fields;
+
+typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSource_string__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_System_Threading_Tasks_Sources_IValueTaskSource_T__GetStatus;
+	VirtualInvokeData _4_System_Threading_Tasks_Sources_IValueTaskSource_GetStatus;
+	VirtualInvokeData _5_System_Threading_Tasks_Sources_IValueTaskSource_T__OnCompleted;
+	VirtualInvokeData _6_System_Threading_Tasks_Sources_IValueTaskSource_OnCompleted;
+	VirtualInvokeData _7_unknown;
+	VirtualInvokeData _8_unknown;
+	VirtualInvokeData _9_unknown;
+	VirtualInvokeData _10_GetStatus;
+	VirtualInvokeData _11_OnCompleted;
+	VirtualInvokeData _12_Cysharp_Threading_Tasks_IUniTaskSource_GetResult;
+	VirtualInvokeData _13_UnsafeGetStatus;
+	VirtualInvokeData _14_unknown;
+	VirtualInvokeData _15_unknown;
+	VirtualInvokeData _16_unknown;
+	VirtualInvokeData _17_unknown;
+	VirtualInvokeData _18_unknown;
+	VirtualInvokeData _19_unknown;
+	VirtualInvokeData _20_unknown;
+	VirtualInvokeData _21_unknown;
+	VirtualInvokeData _22_GetResult;
+	VirtualInvokeData _23_TrySetResult;
+	VirtualInvokeData _24_TrySetException;
+	VirtualInvokeData _25_TrySetCanceled;
+} Cysharp_Threading_Tasks_UniTaskCompletionSource_string__VTable;
+
+typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSource_string__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cysharp_Threading_Tasks_UniTaskCompletionSource_string__VTable vtable;
+} Cysharp_Threading_Tasks_UniTaskCompletionSource_string__c;
+
+typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSource_string__o {
+	Cysharp_Threading_Tasks_UniTaskCompletionSource_string__c *klass;
+	void *monitor;
+	Cysharp_Threading_Tasks_UniTaskCompletionSource_string__Fields fields;
+} Cysharp_Threading_Tasks_UniTaskCompletionSource_string__o;
+
+typedef struct MethodInfo_76FC90 {
+	Il2CppMethodPointer methodPointer;
+	Il2CppMethodPointer virtualMethodPointer;
+	InvokerMethod invoker_method;
+	const char* name;
+	Neon_Model_UserData_DatabaseMember_T__c *klass;
+	const Il2CppType *return_type;
+	const Il2CppType** parameters;
+	const Il2CppRGCTXData* rgctx_data;
+	union
+	{
+		const void* genericMethod;
+		const void* genericContainerHandle;
+	};
+	uint32_t token;
+	uint16_t flags;
+	uint16_t iflags;
+	uint16_t slot;
+	uint8_t parameters_count;
+	uint8_t bitflags;
+} MethodInfo_76FC90;
+
 #endif
