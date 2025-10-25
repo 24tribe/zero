@@ -4,5 +4,6 @@
 extern void NimMain(void);
 extern char *SembaCall(const char *uri, const char *request);
 extern void SembaLogFlow(const char *uri, const char *req, const char *res);
+extern void SembaLoadSave(const char *path);
 
 #endif

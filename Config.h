@@ -5,6 +5,7 @@
 
 struct Config {
     bool offlineMode;
+    char *saveFile;
 };
 
 extern struct Config ZERO_CONFIG;

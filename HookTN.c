@@ -338,6 +338,41 @@ void HookAdventure_ReadSequence(void) {
     }
 }
 
+Neon_Model_Api_ApiService__Auth_SteamUser_FuncPtr fpNeon_Model_Api_ApiService__Auth_SteamUser = NULL;
+
+Cysharp_Threading_Tasks_UniTask_AuthSteamUserResponse__o DetourAuth_SteamUser(
+    Neon_Model_Api_ApiService_o* __this,
+    Neon_Model_Api_Rpc_AuthSteamUserRequest_o* data,
+    LPCOHPIGHIN_o* requestHandler,
+    System_Threading_CancellationToken_o cancellationToken,
+    const MethodInfo* method
+) {
+    if (ZERO_CONFIG.saveFile) {
+        RunNimMainOnce();
+        SembaLoadSave(ZERO_CONFIG.saveFile);
+    }
+    
+    return fpNeon_Model_Api_ApiService__Auth_SteamUser(
+        __this, data, requestHandler, cancellationToken, method
+    );
+}
+
+void HookAuth_SteamUser(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Model_Api_ApiService__Auth_SteamUser,
+        (LPVOID)(uintptr_t)&DetourAuth_SteamUser,
+        (LPVOID *)(&fpNeon_Model_Api_ApiService__Auth_SteamUser)
+    ) != MH_OK) {
+        fputs("Failed to create Neon_Model_Api_ApiService__Auth_SteamUser hook\n", stdout);
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Model_Api_ApiService__Auth_SteamUser, /* changePermissions = */ FALSE) != MH_OK) {
+        fputs("Failed to enable Neon_Model_Api_ApiService__Auth_SteamUser hook\n", stdout);
+        return;
+    }
+}
+
 Neon_Model_Api_ApiService__Adventure_AcquireAreaItem_FuncPtr fpNeon_Model_Api_ApiService__Adventure_AcquireAreaItem = NULL;
 
 Cysharp_Threading_Tasks_UniTask_AdventureAcquireAreaItemResponse__o DetourAdventure_AcquireAreaItem(
@@ -707,4 +742,5 @@ void HookTN(void *GameAssembly) {
     HookCharacter_CostumeUpdate();
     HookAdventure_ReadSequence();
     HookAdventure_AcquireAreaItem();
+    HookAuth_SteamUser();
 }

@@ -807,8 +807,8 @@ proc adventure_ReadSequence(jsonReq: JsonNode): JsonNode =
     "changedResources": changedResources
   }
 
-proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
-  let jsonReq = if request != "": parseJson($request) else: nil
+proc sembaCallUnsafe(uri: string, request: string): string =
+  let jsonReq = if request != "": parseJson(request) else: nil
   var jsonRes: JsonNode
 
   if uri == "echo":
@@ -845,15 +845,41 @@ proc sembaCallUnsafe(uri: cstring, request: cstring): cstring {.exportc.} =
   else:
     jsonRes = nil
 
-  result = if jsonRes != nil: dupString($jsonRes) else: nil
+  result = if jsonRes != nil: $jsonRes else: ""
 
-  logFlowOffline($uri, $request, if jsonRes != nil: $jsonRes else: "")
+  logFlowOffline(uri, request, result)
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
-    result = sembaCallUnsafe(uri, request)
-  except:
+    let res = sembaCallUnsafe($uri, $request)
+    result = if res != "": dupString(res) else: nil
+  except Exception:
     let e = getCurrentException()
-    echo "Nim Exception: " & getCurrentExceptionMsg()
+    echo "[SembaCall] Nim Exception: " & getCurrentExceptionMsg()
     echo e.getStackTrace()
     result = nil
+
+proc isPristineDb(): bool = db.getRow(sql"SELECT uri FROM debugLogsOffline")[0] == ""
+
+proc loadSave(path: string) =
+  let saveStr = readFile(path)
+
+  let save = parseJson(saveStr)
+
+  if isPristineDb():
+    for row in save["reqs"]:
+      let uri = row[0].getStr()
+      let req = row[1]
+      let res = sembaCallUnsafe(uri, $req)
+      if res == "":
+        echo "[loadSave][!] '" & uri & "' is not implemented"
+  else:
+    echo "[loadSave] db is not pristine, skipping savefile '" & path & "'"
+
+proc SembaLoadSave(path: cstring) {.exportc.} =
+  try:
+    loadSave($path)
+  except Exception:
+    let e = getCurrentException()
+    echo "[SembaLoadSave] Nim Exception: " & getCurrentExceptionMsg()
+    echo e.getStackTrace()
