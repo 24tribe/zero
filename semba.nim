@@ -669,8 +669,6 @@ proc formation_Update(jsonReq: JsonNode): JsonNode =
     }
   }
 
-# FIXME: this assumes that no new area object is created
-# FIXME: endrone disappears after re-login, probably his area object is not updated properly
 proc updateAreaObjects(areaId: int, areaObjects: JsonNode) =
   for areaObject in areaObjects:
     let areaObjectId = areaObject["areaObjectId"].getInt()
@@ -679,10 +677,13 @@ proc updateAreaObjects(areaId: int, areaObjects: JsonNode) =
     let action = $(areaObject["action"])
 
     db.exec(sql"""
-      UPDATE areaObjects
-      SET areaObjectBehaviorId = ?, action = ?, areaPointId = ?
-      WHERE areaId = ? AND areaObjectId = ?
-    """, areaObjectBehaviorId, action, areaPointId, areaId, areaObjectId)
+      INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT (areaObjectId) DO
+      UPDATE SET areaPointId = excluded.areaPointId,
+                 areaObjectBehaviorId = excluded.areaObjectBehaviorId,
+                 action = excluded.action
+    """, areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
 
 proc updateNineSequences(nineSequences: JsonNode) =
   for nineSequence in nineSequences:

@@ -9,7 +9,7 @@ CREATE TABLE debugLogs (
 DROP TABLE IF EXISTS areaObjects;
 CREATE TABLE areaObjects (
     areaId INTEGER,
-    areaObjectId INTEGER,
+    areaObjectId INTEGER PRIMARY KEY,
     areaPointId INTEGER,
     areaObjectBehaviorId INTEGER,
     action STRING
