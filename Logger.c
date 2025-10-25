@@ -10,7 +10,6 @@
 #include <inttypes.h>
 
 #define STACKTRACES_PATH "stacktraces"
-#define RESPONSES_PATH "responses"
 
 #include "funcPtrs.h"
 
@@ -51,20 +50,6 @@ sds CreateStackTracePath(const char *url) {
     );
 
     sdsfree(myUrl);
-
-    return res;
-}
-
-sds CreateResponsePath(const char *className) {
-    sds myClassName = sdsnew(className);
-
-    sds timeNow = GetTime();
-    
-    sds res = sdscatprintf(sdsempty(), "%s/%s_%s.txt", RESPONSES_PATH, timeNow, myClassName);
-
-    sdsfree(timeNow);
-
-    sdsfree(myClassName);
 
     return res;
 }
@@ -115,52 +100,4 @@ void GetNameAndNamespaze(Il2CppObject *obj, const char **name, const char **name
 System_String_o *ConvertObjectToString(Il2CppObject *obj) {
     object_toString toString = (object_toString)(uintptr_t)(obj->klass->vtable[3 /* _3_toString*/].methodPtr);
     return toString(obj, obj->klass->vtable[3 /* _3_toString*/].method);
-}
-
-void LogResponse(Il2CppObject *obj) {
-    const char *name;
-    const char *namespaze;
-
-    GetNameAndNamespaze(obj, &name, &namespaze);
-
-    if (!strcmp(namespaze, "Neon.Model.Api.Rpc")) {
-        printf("[LogResponse] Name='%s', Namespace='%s'\n", name, namespaze);
-        
-        System_String_o *objStr = ConvertObjectToString(obj);
-        sds objJson = sds16to8(&(objStr->fields._firstChar), objStr->fields._stringLength);
-        
-        json_t *data = json_loads(objJson, 0, NULL);
-        
-        if (!data) {
-            printf("json_loads failed!\n");
-            return;
-        }
-
-        sdsfree(objJson);
-
-        char *dataPretty = json_dumps(data, JSON_INDENT(2));
-
-        json_decref(data);
-
-        if (!dataPretty) {
-            printf("jansson_dumps failed\n");
-            return;
-        }
-
-        sds responsePath = CreateResponsePath(name);
-
-        FILE *fp = fopen(responsePath, "wb");
-
-        sdsfree(responsePath);
-
-        if (fp) {
-            fputs(dataPretty, fp);
-            fflush(fp);
-            fclose(fp);
-        } else {
-            printf("fopen failed!\n");
-        }
-
-        free(dataPretty);        
-    }
 }

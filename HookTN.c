@@ -463,8 +463,6 @@ Il2CppObject *DetourSourceCore_GetResult(
         sdsfree(jsonReq);
         sdsfree(jsonRes);
     }
-    
-    LogResponse(res);
 
     return res;
 }
