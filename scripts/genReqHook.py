@@ -162,13 +162,19 @@ def get_api_funcs_with_res_only(req_hooks):
 
     return set(api_funcs_with_res_only)
 
-def nameToPath(methodName):
-    path = re.findall(r"[A-Z][a-z]+", methodName)
-    return f"/{path[0]}/{"_".join(path[1:])}".lower()
+def splitCamelCase(name):
+    return re.findall(r"[A-Z][a-z]+", name)
 
-def reqNameToPath(req):
-    path = re.findall(r"[A-Z][a-z]+", req)
-    return f"/{path[0]}/{"_".join(path[1:-1])}".lower()
+def camelCaseToSnakeCase(name):
+    parts = splitCamelCase(name)
+    return "_".join(parts)
+
+def nameToPath(methodName):
+    parts = methodName.split("_")
+    assert len(parts) == 2
+    api_group, api_name = map(camelCaseToSnakeCase, parts)
+
+    return f"/{api_group}/{api_name}".lower()
 
 def getHookName(var):
     return f"Hook_{var}"
@@ -383,7 +389,10 @@ def createAutohookH(req_hooks, script):
 
             lastReq = f"last{req}"
 
-            path = reqNameToPath(req)
+            match = re.search(r"Neon\.Model\.Api\.ApiService\$\$([^\n]+)", script_method["Name"])
+            assert match
+            name = match.group(1)
+            path = nameToPath(name)
 
             list_data.append(f"""{{"Neon.Model.Api.Rpc.{res}", (Il2CppObject **)&{lastReq}, "{path}"}}, """)
 
