@@ -427,7 +427,9 @@ static MH_STATUS EnableHookLL(UINT pos, BOOL enable, BOOL changePerm)
             memcpy(pPatchTarget, pHook->backup, sizeof(JMP_REL));
     }
 
-    VirtualProtect(pPatchTarget, patchSize, oldProtect, &oldProtect);
+    if (changePerm) {
+        VirtualProtect(pPatchTarget, patchSize, oldProtect, &oldProtect);
+    }
 
     // Just-in-case measure.
     FlushInstructionCache(GetCurrentProcess(), pPatchTarget, patchSize);
@@ -439,7 +441,7 @@ static MH_STATUS EnableHookLL(UINT pos, BOOL enable, BOOL changePerm)
 }
 
 //-------------------------------------------------------------------------
-static MH_STATUS EnableAllHooksLL(BOOL enable)
+static MH_STATUS EnableAllHooksLL(BOOL enable, BOOL changePerm)
 {
     MH_STATUS status = MH_OK;
     UINT i, first = INVALID_HOOK_POS;
@@ -463,7 +465,7 @@ static MH_STATUS EnableAllHooksLL(BOOL enable)
             {
                 if (g_hooks.pItems[i].isEnabled != enable)
                 {
-                    status = EnableHookLL(i, enable, TRUE);
+                    status = EnableHookLL(i, enable, changePerm);
                     if (status != MH_OK)
                         break;
                 }
@@ -545,7 +547,7 @@ MH_STATUS WINAPI MH_Uninitialize(VOID)
 
     if (g_hHeap != NULL)
     {
-        status = EnableAllHooksLL(FALSE);
+        status = EnableAllHooksLL(FALSE, TRUE);
         if (status == MH_OK)
         {
             // Free the internal function buffer.
@@ -729,7 +731,7 @@ static MH_STATUS EnableHook(LPVOID pTarget, BOOL enable, BOOL changePerm)
     {
         if (pTarget == MH_ALL_HOOKS)
         {
-            status = EnableAllHooksLL(enable);
+            status = EnableAllHooksLL(enable, changePerm);
         }
         else
         {

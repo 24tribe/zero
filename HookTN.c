@@ -465,6 +465,14 @@ void HookNeonApiGetResponse(void) {
     }
 }
 
+ULONGLONG GetFileTimeDiff(FILETIME tim1, FILETIME tim2) {
+    ULARGE_INTEGER res = {
+        .LowPart = tim1.dwLowDateTime - tim2.dwLowDateTime,
+        .HighPart = tim1.dwHighDateTime - tim2.dwHighDateTime
+    };
+    return res.QuadPart;
+}
+
 void HookTN(void *GameAssembly) {
     InitGamePtrs(GameAssembly);
 
@@ -488,7 +496,12 @@ void HookTN(void *GameAssembly) {
     }
 
     printf("Applying autohooks...\n");
+    FILETIME start;
+    GetSystemTimeAsFileTime(&start);
     AutoHookTN();
-    printf("Autohooking done!\n");
+    FILETIME end;
+    GetSystemTimeAsFileTime(&end);
+    ULONGLONG diff = GetFileTimeDiff(end, start);
+    printf("Autohooking done in %llu ms!\n", diff / 10000ull);
     // Hook_HNNPFPKEEFE__KKHPCPHPBMF();
 }

@@ -60,6 +60,13 @@ def main():
     for hookName in itertools.chain(hookNames, moreHookNames, yetMoreHookNames, more_hook_names):
         code.append(f"    {hookName}();")
 
+    code.append("""
+    if (MH_EnableHook(MH_ALL_HOOKS, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("AutoHookTN MH_EnableHook MH_ALL_HOOKS failed!\\n");
+        return;
+    }
+""")
+
     code.append("}")
 
     code.append("#endif")
@@ -202,11 +209,6 @@ void {hookName}(void) {{
         (LPVOID *)&{fpVar}
     ) != MH_OK) {{
         printf("Failed to create {var} hook\\n");
-        return;
-    }}
-
-    if (MH_EnableHook((void *)(uintptr_t){var}, /* changePermissions = */ FALSE) != MH_OK) {{
-        printf("Failed to enable {var} hook\\n");
         return;
     }}
 }}
