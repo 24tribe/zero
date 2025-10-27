@@ -14,8 +14,4 @@ int main(void) {
     }
     printf("\n");
     // sdsfree(s); // crash?
-
-    char *res = SlurpFile("responses\\2025_9_13_14_8_59_UserLogInResponse.txt");
-
-    puts(res);
 }
