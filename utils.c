@@ -22,21 +22,6 @@ uint16_t *sds_utf8_to_utf16(sds s) {
     return res;
 }
 
-void QueryPageInfo(HMODULE GameAssembly, ptrdiff_t offset) {
-    MEMORY_BASIC_INFORMATION info;
-    if (!VirtualQuery(((char *)GameAssembly) + offset, &info, sizeof(info))) {
-        fputs("VirtualQuery failed\n", stdout);
-        return;
-    }
-    printf("BaseAddress: %p\n", info.BaseAddress);
-    printf("AllocationBase: %p\n", info.AllocationBase);
-    printf("AllocationProtect: %lx\n", info.AllocationProtect);
-    printf("RegionSize: %zu\n", info.RegionSize);
-    printf("State: %lx\n", info.State);
-    printf("Protect: %lx\n", info.Protect);
-    printf("Type: %lx\n", info.Type);
-}
-
 sds SlurpFile(const char *path) {    
     HANDLE hFile = CreateFileA(
         path, GENERIC_READ, FILE_SHARE_READ,
