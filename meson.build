@@ -105,6 +105,7 @@ zero_src = [
     're.c',
     'sds_utf_conv.c',
     'stacktrace_path.c',
+    'Patterns.c'
 ]
 
 semba_dep = declare_dependency(
@@ -147,4 +148,4 @@ executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
 
 executable('semba', 'semba.c', dependencies : [semba_dep])
 
-executable('test_re', 'test_re.c', 're.c')
+executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
