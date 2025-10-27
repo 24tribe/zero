@@ -137,8 +137,6 @@ executable('RegenSections', 'RegenSections.c', 'Section.c')
 
 executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, dependencies : zero_deps)
 
-executable('test_jansson', 'test_jansson.c', zero_src, dependencies : zero_deps)
-
 executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
 
 executable('semba', 'semba.c', dependencies : [semba_dep])
