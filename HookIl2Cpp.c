@@ -34,14 +34,6 @@ IL2CPP_TYPE_GET_OBJECT il2cpp_type_get_object = NULL;
 IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS il2cpp_type_get_class_or_element_class = NULL;
 IL2CPP_OBJECT_GET_CLASS il2cpp_object_get_class = NULL;
 
-void CopyUnicodeToByteArray(char *out, System_String_o *s) {
-    int32_t sLen = s->fields._stringLength;
-    uint16_t *firstChar = &(s->fields._firstChar);
-    for (int32_t i = 0; i < sLen; ++i) {
-        out[i] = (uint8_t)(firstChar[i]);
-    }
-}
-
 void HookIl2Cpp(void *GameAssembly, const char *gameName) {
     il2cpp_domain_get = (IL2CPPDOMAINGET)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_domain_get");
     printf("il2cpp_domain_get: 0x%llx\n", (unsigned long long)il2cpp_domain_get);

@@ -44,8 +44,6 @@ extern IL2CPPSTRINGNEW il2cpp_string_new;
 typedef void (*IL2CPPRUNTIMECLASSINIT)(Il2CppClass *klass);
 extern IL2CPPRUNTIMECLASSINIT il2cpp_runtime_class_init;
 
-void CopyUnicodeToByteArray(char *out, System_String_o *s);
-
 struct Il2CppAssembly;
 
 #define PUBLIC_KEY_BYTE_LENGTH 8
