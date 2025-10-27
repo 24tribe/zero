@@ -46,50 +46,6 @@ sds SlurpFile(const char *path) {
     return res;
 }
 
-int ChangeLoggedInAt(json_t *root, const char *newValue) {
-    json_t *changedResources = json_object_get(root, "changedResources");
-
-    if (!changedResources) {
-        printf("Failed to get changedResources\n");
-        return -1;
-    }
-
-    json_t *status = json_object_get(changedResources, "status");
-
-    if (!status) {
-        printf("Failed to get status\n");
-        return -1;
-    }
-
-    if (json_object_set_new(status, "loggedInAt", json_string(newValue)) < 0) {
-        printf("Failed to set new value\n");
-        return -1;
-    }
-
-    return 0;
-}
-
-char *ChangeLoggedInAtStr(sds data, const char *newValue) {
-    json_t *json = json_loads(data, 0, NULL);
-    if (!data) {
-        printf("json_loads failed\n");
-        return NULL;
-    }
-
-    if (ChangeLoggedInAt(json, newValue) < 0) {
-        return NULL;
-    }
-
-    char *res = json_dumps(json, JSON_INDENT(2));
-    
-    if (!res) {
-        printf("json_dumps failed\n");
-        return NULL;
-    }
-
-    return res;
-}
-
 void PutString(System_String_o *s) {
     int32_t sLen = s->fields._stringLength;
     uint16_t *firstChar = &(s->fields._firstChar);
