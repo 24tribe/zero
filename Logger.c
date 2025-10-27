@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "TimeString.h"
 #include "sds_utf_conv.h"
+#include "stacktrace_path.h"
 
 #include <sds.h>
 #include <jansson.h>
@@ -9,8 +10,6 @@
 #include <wchar.h>
 #include <stdio.h>
 #include <inttypes.h>
-
-#define STACKTRACES_PATH "stacktraces"
 
 #include "funcPtrs.h"
 
@@ -27,32 +26,6 @@ System_String_o *GetStackTrace(void) {
     toStringFunc = (System_Diagnostics_StackTrace_toString)(uintptr_t)(toString->methodPtr);
     System_String_o *stackTraceStr = toStringFunc(stackTrace, toString->method);
     return stackTraceStr;
-}
-
-void EscapeSymbols(char *s) {
-    while (*s) {
-        if (!isalpha(*s)) {
-            *s++ = '_';
-        } else {
-            s++;
-        }
-    }
-}
-
-sds CreateStackTracePath(const char *url) {
-    sds myUrl = sdsnew(url);
-    EscapeSymbols(myUrl);
-
-    sds res = sdscatprintf(
-        sdsempty(),
-        "%s/%s.txt",
-        STACKTRACES_PATH,
-        myUrl
-    );
-
-    sdsfree(myUrl);
-
-    return res;
 }
 
 void SaveStackTrace(sds url) {

@@ -103,7 +103,8 @@ zero_src = [
     func_ptrs,
     autohook_tn,
     're.c',
-    'sds_utf_conv.c'
+    'sds_utf_conv.c',
+    'stacktrace_path.c',
 ]
 
 semba_dep = declare_dependency(
@@ -135,7 +136,12 @@ executable(
 
 executable('RegenSections', 'RegenSections.c', 'Section.c')
 
-executable('test_stacktrace_logger', 'test_stacktrace_logger.c', zero_src, dependencies : zero_deps)
+executable(
+    'test_stacktrace_logger',
+    'test_stacktrace_logger.c',
+    'stacktrace_path.c',
+    dependencies : sds_dep
+)
 
 executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
 
