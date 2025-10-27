@@ -32,23 +32,6 @@ bool SaveAddress(const char *outname, void *GameAssembly) {
     return true;
 }
 
-char *GetParentDir(char *path) {
-    const char *delim = "\\";
-    char *first = strtok(path, delim);
-    char *second = strtok(NULL, delim);
-    char *third;
-    
-    do {
-        third = strtok(NULL, delim);
-        if (third) {
-            first = second;
-            second = third;
-        }
-    } while (third);
-
-    return first;
-}
-
 void CalculateMd5Sum(sds path) {
     sds GameAssemblyDll = SlurpFile(path);
 
@@ -92,15 +75,12 @@ void DumpTNGameAssembly(char *gameName, void *GameAssembly, unsigned long long G
 void GameAssemblyCallback(HMODULE GameAssembly) {
     char path[MAX_PATH];
 
-    char *gameName = "unknown";
-
     // E:\TRIBENINE\GameAssembly.dll
     // E:\SteamLibrary\steamapps\common\Ratatan Demo\GameAssembly.dll
     // D:\unity\example\Build\GameAssembly.dll
+    // FIXME: should use GetModuleFileNameW
     if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
-        // CalculateMd5Sum(path);
-
-        gameName = GetParentDir(path);
+        CalculateMd5Sum(path);
     }
 
     if (alreadyCalledGameAssemblyCallback) {
@@ -124,7 +104,7 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
         return;
     }
 
-    HookIl2Cpp(GameAssembly, gameName);
+    HookIl2Cpp(GameAssembly);
 }
 
 bool loggedGoldberg = false;

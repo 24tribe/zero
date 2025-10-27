@@ -34,7 +34,7 @@ IL2CPP_TYPE_GET_OBJECT il2cpp_type_get_object = NULL;
 IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS il2cpp_type_get_class_or_element_class = NULL;
 IL2CPP_OBJECT_GET_CLASS il2cpp_object_get_class = NULL;
 
-void HookIl2Cpp(void *GameAssembly, const char *gameName) {
+void HookIl2Cpp(void *GameAssembly) {
     il2cpp_domain_get = (IL2CPPDOMAINGET)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_domain_get");
     printf("il2cpp_domain_get: 0x%llx\n", (unsigned long long)il2cpp_domain_get);
 
@@ -98,9 +98,5 @@ void HookIl2Cpp(void *GameAssembly, const char *gameName) {
     il2cpp_object_get_class = (IL2CPP_OBJECT_GET_CLASS)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_object_get_class");
     printf("il2cpp_object_get_class: 0x%llx\n", (unsigned long long)il2cpp_object_get_class);
 
-    if (!strcmp(gameName, "TRIBENINE")) {
-        HookTN(GameAssembly);
-    } else {
-        printf("Unknown name '%s', HookIl2Cpp not applied!\n", gameName);
-    }
+    HookTN(GameAssembly);
 }
