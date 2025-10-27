@@ -46,15 +46,6 @@ sds SlurpFile(const char *path) {
     return res;
 }
 
-void PutString(System_String_o *s) {
-    int32_t sLen = s->fields._stringLength;
-    uint16_t *firstChar = &(s->fields._firstChar);
-    for (int32_t i = 0; i < sLen; ++i) {
-        putchar((uint8_t)(firstChar[i]));
-    }
-    putchar('\n');
-}
-
 sds System_String_toSds(System_String_o *s) {
     return sds16to8(&(s->fields._firstChar), s->fields._stringLength);
 }

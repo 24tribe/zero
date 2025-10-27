@@ -11,7 +11,6 @@
 typedef char *sds;
 
 sds SlurpFile(const char *path);
-void PutString(System_String_o *s);
 sds System_String_toSds(System_String_o *s);
 
 #endif
