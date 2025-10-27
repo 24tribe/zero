@@ -90,7 +90,6 @@ zero_src = [
     'MetadataDump.c',
     'Recons.cpp',
     'Section.c',
-    'create_file_hook.c',
     'utils.c',
     'HookIl2Cpp.c',
     'HookTN.c',

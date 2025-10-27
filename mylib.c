@@ -1,6 +1,5 @@
 #include "load_library_hook.h"
 #include "NtQueryDirectoryFileHook.h"
-#include "create_file_hook.h"
 #include "Config.h"
 
 #include <MinHook.h>
