@@ -24,7 +24,6 @@ void MyMain() {
 
     // HookNtQueryDirectoryFile();
     HookLoadLibrary();
-    // HookCreateFile();
 
     printf("OK! Reached end of MyMain!\n");
 }
