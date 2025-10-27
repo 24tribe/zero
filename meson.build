@@ -102,7 +102,8 @@ zero_src = [
     'NimInit.c',
     func_ptrs,
     autohook_tn,
-    're.c'
+    're.c',
+    'sds_utf_conv.c'
 ]
 
 semba_dep = declare_dependency(
@@ -125,7 +126,7 @@ shared_library('zero', zero_src, dependencies : zero_deps, install : true, insta
 executable('loader', 'loader.c', install : true, install_dir : '.')
 executable('metadata_test', 'metadata_test.c', 'MetadataDump.c')
 executable('printsections', 'printsections.c', 'MetadataDump.c', dependencies : ntdll_lib)
-executable('test_utf', 'test_utf.c', zero_src, dependencies : zero_deps)
+executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
 
 executable(
     'reconsdll', 'reconsdll.cpp', 'MetadataDump.c', 'Section.c', 'Recons.cpp',

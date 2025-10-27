@@ -1,6 +1,7 @@
 #include "Config.h"
 
 #include "utils.h"
+#include "sds_utf_conv.h"
 
 #include <ini.h>
 #include <sds.h>

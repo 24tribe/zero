@@ -1,6 +1,7 @@
 #include "il2cpp_lean.h"
 #include "utils.h"
 #include "TimeString.h"
+#include "sds_utf_conv.h"
 
 #include <sds.h>
 #include <jansson.h>

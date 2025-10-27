@@ -5,6 +5,7 @@
 #include "HookIl2Cpp.h"
 #include "Config.h"
 #include "md5sum.h"
+#include "sds_utf_conv.h"
 
 #include <MinHook.h>
 #include <sds.h>
