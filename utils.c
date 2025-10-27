@@ -22,12 +22,6 @@ uint16_t *sds_utf8_to_utf16(sds s) {
     return res;
 }
 
-void press_enter_to_continue() {
-    printf("Press enter to continue...\n");
-    char line[MY_LINE_SIZE];
-    fgets(line, MY_LINE_SIZE, stdin);
-}
-
 void QueryPageInfo(HMODULE GameAssembly, ptrdiff_t offset) {
     MEMORY_BASIC_INFORMATION info;
     if (!VirtualQuery(((char *)GameAssembly) + offset, &info, sizeof(info))) {
