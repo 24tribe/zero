@@ -3,6 +3,7 @@ import std/strutils
 import system/ansi_c
 import std/math
 import std/times
+import std/httpclient
 
 import db_connector/db_sqlite
 
@@ -10,14 +11,21 @@ type SembaError = object of CatchableError
 
 var db: DbConn = nil
 var onlineDb: DbConn = nil
+var remoteUrl = ""
 
 proc SembaInitOnlineDb(path: cstring) {.exportc.} =
   if onlineDb == nil:
     onlineDb = open($path, "", "", "")
 
-proc SembaInitOfflineDb(path: cstring) {.exportc.} = 
+proc SembaInitOfflineDb*(path: cstring) {.exportc.} = 
   if db == nil:
     db = open($path, "", "", "")
+
+proc setRemoteUrl*(remUrl: string) =
+  remoteUrl = remUrl
+
+proc SembaSetRemoteUrl(remUrl: cstring) {.exportc.} =
+  setRemoteUrl($remUrl)
 
 proc dupString(str: string): cstring =
   let s = str.cstring
@@ -228,7 +236,7 @@ proc adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   if actionSequenceId != 0:
     result["areaBehavior"] = %*{"actionSequenceId": actionSequenceId}
 
-let dbTensionCardsFields = """
+const dbTensionCardsFields = """
   tensionCardId, receivedAt, maxLevel, abilityEfficacies,
   trainingScoreLevelScore, entityId, isLocked
 """
@@ -268,7 +276,7 @@ proc getEquippedTensionCards(): seq[JsonNode] =
   for tensionCardRow in tensionCardsRows:
     result.add(parseTensionCardRow(tensionCardRow))
 
-let dbCharacterFields = """
+const dbCharacterFields = """
   characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
   criticalRate, criticalDamageRate, movementSpeed, damageInflictedRate, tensionIncreaseRate,
   cpRecastRate, spGaugeIncreaseRate, attackSpeed, characterCostumeId, abnormalityParamSet,
@@ -885,7 +893,15 @@ proc adventure_ReadSequence(jsonReq: JsonNode): JsonNode =
   if readSequenceAreaBgm.areaId != 0:
     updateAreaBgm(readSequenceAreaBgm.areaId, readSequenceAreaBgm.id, readSequenceAreaBgm.eventName)
 
-proc sembaCallUnsafe(uri: string, request: string): string =
+proc sembaCallRemote(uri: string, request: string): string =
+  var client = newHttpClient()
+  try:
+    let res = client.postContent(remoteUrl & uri, request)
+    return res
+  finally:
+    client.close()
+
+proc sembaCallImpl*(uri: string, request: string): string =
   let jsonReq = if request != "": parseJson(request) else: nil
   var jsonRes: JsonNode
 
@@ -926,6 +942,12 @@ proc sembaCallUnsafe(uri: string, request: string): string =
   result = if jsonRes != nil: $jsonRes else: ""
 
   logFlowOffline(uri, request, result)
+
+proc sembaCallUnsafe*(uri: string, request: string): string =
+  if remoteUrl != "":
+    return sembaCallRemote(uri, request)
+
+  return sembaCallImpl(uri, request)
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:

@@ -7,5 +7,6 @@ extern void SembaLogFlow(const char *uri, const char *req, const char *res);
 extern void SembaLoadSave(const char *path);
 extern void SembaInitOnlineDb(const char *path);
 extern void SembaInitOfflineDb(const char *path);
+extern void SembaSetRemoteUrl(const char *url);
 
 #endif

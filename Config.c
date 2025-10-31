@@ -17,7 +17,8 @@ struct Config ZERO_CONFIG = {
     .saveFile = NULL,
     .onlineLogsPath = NULL,
     .goldbergPath = NULL,
-    .sembaDbPath = NULL
+    .sembaDbPath = NULL,
+    .remoteUrl = NULL,
 };
 
 static void setGoldbergPath(const char *value) {
@@ -57,6 +58,8 @@ static int handler(void *user, const char *section, const char *name, const char
         setGoldbergPath(value);
     } else if (!strcmp(name, "sembaDbPath")) {
         ZERO_CONFIG.sembaDbPath = sdsnew(value);
+    } else if (!strcmp(name, "remoteUrl")) {
+        ZERO_CONFIG.remoteUrl = sdsnew(value);
     } else {
         return 0; /* unknown section/name, error */
     }
@@ -73,6 +76,7 @@ void PrintZeroConfig(void) {
     printf("saveFile=%s\n", string_null_escape(ZERO_CONFIG.saveFile));
     printf("onlineLogsPath=%s\n", string_null_escape(ZERO_CONFIG.onlineLogsPath));
     printf("sembaDbPath=%s\n", string_null_escape(ZERO_CONFIG.sembaDbPath));
+    printf("remoteUrl=%s\n", string_null_escape(ZERO_CONFIG.remoteUrl));
 
     sds goldbergPath;
     if (ZERO_CONFIG.goldbergPath) {

@@ -10,6 +10,7 @@ struct Config {
     char *onlineLogsPath;
     uint16_t *goldbergPath;
     char *sembaDbPath;
+    char *remoteUrl;
 };
 
 extern struct Config ZERO_CONFIG;

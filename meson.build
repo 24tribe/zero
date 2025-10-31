@@ -34,12 +34,23 @@ script_json = dumper_out_proj.get_variable('script_json')
 goldberg_steam_proj = subproject('goldberg_steam')
 goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
+nimble = find_program('nimble', required : true)
+
 libsemba = custom_target(
     'libsemba',
     depends : [semba_nimble, sqlite3_c],
     input : ['semba.nim'],
     output : 'libsemba.a',
-    command : ['nimble', 'c', '-d:staticSqlite', '--verbose', '--app:staticlib', '--noMain:on', '-o:@OUTPUT@', '@INPUT@']
+    command : [nimble, 'c', '-d:staticSqlite', '--verbose', '--app:staticlib', '--noMain:on', '-o:@OUTPUT@', '@INPUT@']
+)
+
+sembaserver = custom_target(
+    'sembaserver',
+    depends : [semba_nimble, sqlite3_c],
+    input : ['semba.nim', 'sembaserver.nim'],
+    output : 'sembaserver.exe',
+    command : [nimble, 'c', '-d:staticSqlite', '--verbose', '--app:console', '--threadAnalysis:off', '-o:@OUTPUT@', '@INPUT@'],
+    build_by_default : true
 )
 
 sqlite3 = find_program('sqlite3', required : true)
