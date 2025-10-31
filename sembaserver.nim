@@ -29,6 +29,8 @@ proc main {.async.} =
     let path = req.url.path
     let body = req.body
     let headers = newHttpHeaders({"Content-type": "text/plain; charset=utf-8"})
+    echo("uri: ", path)
+    echo("req: ", body)
     let res = sembaCallImpl(path, body)
     await req.respond(Http200, res, headers)
 
