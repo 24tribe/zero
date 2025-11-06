@@ -1,3 +1,4 @@
+import std/assertions
 import std/json
 import std/strutils
 import system/ansi_c
@@ -8,6 +9,11 @@ import std/httpclient
 import db_connector/db_sqlite
 
 type SembaError = object of CatchableError
+
+const kaneContentType = 3
+const gearContentType = 6
+const itemContentType = 7
+const charExpContentType = 13
 
 var db: DbConn = nil
 var onlineDb: DbConn = nil
@@ -893,6 +899,43 @@ proc adventure_ReadSequence(jsonReq: JsonNode): JsonNode =
   if readSequenceAreaBgm.areaId != 0:
     updateAreaBgm(readSequenceAreaBgm.areaId, readSequenceAreaBgm.id, readSequenceAreaBgm.eventName)
 
+proc getAreaItemRewards(areaItemId: int): JsonNode =
+  let row = db.getRow(sql"SELECT rewards FROM areaItemRewards WHERE areaItemId = ?", areaItemId);
+
+  if row[0] == "":
+    raise newException(SembaError, "Couldn't find rewards for areaItemId=" & $areaItemId)
+
+  return parseJson(row[0])
+
+proc adventure_AcquireAreaItem(jsonReq: JsonNode): JsonNode =
+  let areaItemId = jsonReq["areaItemId"].getInt()
+
+  let rewards = getAreaItemRewards(areaItemId)
+
+  let changedResources = %*{}
+
+  for reward in rewards:
+    doAssert reward["type"].getInt() == 5
+    for content in reward["contents"]:
+      if content["type"].getInt() == kaneContentType:
+        # TODO: add kane to kane counter and update changedResources
+        doAssert content["id"].getInt() == 1
+      elif content["type"].getInt() == charExpContentType:
+        # TODO: add exp to characters and update changedResources
+        doAssert content["id"].getInt() == 1
+      else:
+        # TODO: add item to inventory and update changedResources
+        doAssert content["type"].getInt() == itemContentType
+
+  return %*{
+    "areaItem": {
+      "areaItemId": areaItemId,
+      "acquired": true
+    },
+    "rewards": rewards,
+    "changedResources": changedResources
+  }
+
 proc sembaCallRemote(uri: string, request: string): string =
   var client = newHttpClient()
   try:
@@ -936,6 +979,8 @@ proc sembaCallImpl*(uri: string, request: string): string =
     jsonRes = character_CostumeUpdate(jsonReq)
   elif uri == "/adventure/read_sequence":
     jsonRes = adventure_ReadSequence(jsonReq)
+  elif uri == "/adventure/acquire_area_item":
+    jsonRes = adventure_AcquireAreaItem(jsonReq)
   else:
     jsonRes = nil
 
