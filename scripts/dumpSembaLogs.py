@@ -26,10 +26,14 @@ def get_debug_logs(semba_db):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("semba_db")
+    parser.add_argument("semba_db", nargs="+")
     args = parser.parse_args()
 
-    debug_logs = get_debug_logs(args.semba_db)
+    debug_logs = []
+
+    for semba_db in args.semba_db:
+        debug_logs += get_debug_logs(semba_db)
+        
     json.dump(debug_logs, sys.stdout)
              
 if __name__ == "__main__":
