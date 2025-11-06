@@ -3,8 +3,12 @@ import sqlite3
 import re
 import json
 import sys
+import os.path
 
 def get_debug_logs(semba_db):
+    if not os.path.isfile(semba_db):
+        raise FileNotFoundError(f"File '{semba_db}' doesn't exists")
+
     con = sqlite3.connect(semba_db)
 
     cur = con.cursor()
