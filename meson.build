@@ -2,6 +2,9 @@ project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'])
 
 cc = meson.get_compiler('c')
 
+d3d11_lib = cc.find_library('d3d11')
+imgui = dependency('imgui', default_options : 'default_library=static')
+
 ntdll_lib = cc.find_library('ntdll')
 shlwapi_lib = cc.find_library('shlwapi')
 
@@ -116,7 +119,8 @@ zero_src = [
     're.c',
     'sds_utf_conv.c',
     'stacktrace_path.c',
-    'Patterns.c'
+    'Patterns.c',
+    'Backend.cpp',
 ]
 
 semba_dep = declare_dependency(
@@ -131,7 +135,8 @@ zero_deps = [
     jansson_dep,
     inih_dep,
     semba_dep,
-    shlwapi_lib
+    shlwapi_lib,
+    imgui
 ]
 
 shared_library('zero', zero_src, dependencies : zero_deps, install : true, install_dir : '.')
@@ -162,3 +167,5 @@ executable('semba', 'semba.c', dependencies : [semba_dep])
 executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 
 executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
+
+executable('imguitest', 'imguitest.cpp', dependencies : [d3d11_lib, imgui])
