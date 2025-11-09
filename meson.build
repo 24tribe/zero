@@ -160,3 +160,5 @@ executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
 executable('semba', 'semba.c', dependencies : [semba_dep])
 
 executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
+
+executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
