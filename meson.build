@@ -122,6 +122,7 @@ zero_src = [
     'Patterns.c',
     'Backend.cpp',
     'UserInterface.cpp',
+    'DrawFunc.cpp',
 ]
 
 semba_dep = declare_dependency(
@@ -169,4 +170,4 @@ executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 
 executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
 
-executable('imguitest', 'imguitest.cpp', dependencies : [d3d11_lib, imgui])
+executable('imguitest', 'imguitest.cpp', 'DrawFunc.cpp', dependencies : [d3d11_lib, imgui])
