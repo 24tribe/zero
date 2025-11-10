@@ -3,7 +3,10 @@
 
 class DrawFunc {
     public:
+
     bool active;
+    bool showDemo;
+
     DrawFunc(bool active);
     void operator()(void);
 };

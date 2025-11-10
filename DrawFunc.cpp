@@ -2,7 +2,7 @@
 
 #include "imgui.h"
 
-DrawFunc::DrawFunc(bool active) : active(active) {
+DrawFunc::DrawFunc(bool active) : active(active), showDemo(false) {
 }
 
 void DrawFunc::operator()(void) {
@@ -13,7 +13,17 @@ void DrawFunc::operator()(void) {
     ImGui::NewFrame();
 
     if (active) {
-        ImGui::ShowDemoWindow(&active);
+        if (ImGui::Begin("Tribe Nine Zero", &active, 0)) {
+            if (ImGui::Button("Toggle demo")) {
+                showDemo = !showDemo;
+            }
+        }
+
+        ImGui::End();
+
+        if (showDemo) {
+            ImGui::ShowDemoWindow(&showDemo);
+        }
     }
 
     ImGui::EndFrame();
