@@ -2,7 +2,11 @@
 
 #include "imgui.h"
 
-DrawFunc::DrawFunc(bool active) : active(active), showDemo(false), runCommand() {
+DrawFunc::DrawFunc(bool active) : active(active),
+                                  showDemo(false),
+                                  gamePtrsReady(false),
+                                  result("..."),
+                                  runCommand() {
 }
 
 void DrawFunc::operator()(void) {
@@ -18,9 +22,12 @@ void DrawFunc::operator()(void) {
                 showDemo = !showDemo;
             }
 
-            if (ImGui::Button("Run command") && runCommand) {
+            if (gamePtrsReady && ImGui::Button("Run command") && runCommand) {
                 runCommand();
             }
+
+            ImGui::Text("gamePtrsReady: %s\n", gamePtrsReady ? "true" : "false");
+            ImGui::Text(result);
         }
 
         ImGui::End();

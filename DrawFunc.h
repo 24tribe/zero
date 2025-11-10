@@ -8,6 +8,8 @@ class DrawFunc {
 
     bool active;
     bool showDemo;
+    bool gamePtrsReady;
+    const char* result;
 
     std::function<void()> runCommand;
 

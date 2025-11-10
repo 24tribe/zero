@@ -375,8 +375,15 @@ ULONGLONG GetFileTimeDiff(FILETIME tim1, FILETIME tim2) {
     return res.QuadPart;
 }
 
+static bool gamePtrsReady = false;
+
+bool areGamePtrsReady(void) {
+    return gamePtrsReady;
+}
+
 void HookTN(void *GameAssembly) {
     InitGamePtrs(GameAssembly);
+    gamePtrsReady = true;
 
     HookHTTPRequestCtor();
     HookSourceCore_GetResult();
