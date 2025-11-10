@@ -22,3 +22,5 @@ subprojects/packagecache
 onlineLogs
 
 subprojects/goldberg_steam
+subprojects/imgui-1.91.6
+imgui.ini
