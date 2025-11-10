@@ -6,6 +6,8 @@
 #include <d3d11.h>
 #include <tchar.h>
 
+#include <iostream>
+
 // Data
 static ID3D11Device*            g_pd3dDevice = nullptr;
 static ID3D11DeviceContext*     g_pd3dDeviceContext = nullptr;
@@ -66,6 +68,10 @@ int main(int, char**)
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
     DrawFunc draw_func{true};
+
+    draw_func.runCommand = [](){
+        std::cout << "Hello World!!\n";
+    };
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
