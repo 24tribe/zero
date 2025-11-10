@@ -35,6 +35,11 @@ WNDPROC m_goriginalWndProc;
 DXGI_SWAP_CHAIN_DESC m_gPresentHookSwapChain;
 D3D11_VIEWPORT m_gViewport;
 HWND m_gWindow = NULL;
+bool gShowDemoWindow = false;
+
+static bool KeyPressed(int vKey) {
+	return (GetAsyncKeyState(vKey) & 1) != 0;
+}
 
 bool DirectXPresentHook()
 {
@@ -65,6 +70,12 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	ImGuiIO& io = ImGui::GetIO();
 
+    if (KeyPressed(VK_INSERT)) {
+        gShowDemoWindow = !gShowDemoWindow;
+    }
+
+    io.MouseDrawCursor = gShowDemoWindow;
+
 	if (io.WantCaptureMouse || io.WantCaptureKeyboard) {
 		return TRUE;
 	}
@@ -75,8 +86,6 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 void LoadImGui(HWND window, ID3D11Device* device, ID3D11DeviceContext* context)
 {
 	ImGui::CreateContext(); // creating the context cus we need imgui
-    ImGuiIO& io = ImGui::GetIO();
-    io.MouseDrawCursor = true;
 	ImGui_ImplWin32_Init(window); // which window u wanna draw your imgui huh???
 	ImGui_ImplDX11_Init(device, context); // u need the device's context since u can't draw with only device, thanx dx11
 } // loading the imgui
@@ -87,8 +96,9 @@ void DrawImGui(ID3D11DeviceContext* context, ID3D11RenderTargetView* targetview)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	bool showDemoWindow = true;
-    ImGui::ShowDemoWindow(&showDemoWindow);
+    if (gShowDemoWindow) {
+        ImGui::ShowDemoWindow(&gShowDemoWindow);
+    }
 
 	ImGui::EndFrame();
 	ImGui::Render();
