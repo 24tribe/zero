@@ -4,6 +4,8 @@ Taken from https://github.com/zzzmate/IL2CPP-DirectX-ImGui-Base
 
 #include "Backend.h"
 
+#include <functional>
+
 #include <MinHook.h>
 
 #include <windows.h>
@@ -35,11 +37,8 @@ WNDPROC m_goriginalWndProc;
 DXGI_SWAP_CHAIN_DESC m_gPresentHookSwapChain;
 D3D11_VIEWPORT m_gViewport;
 HWND m_gWindow = NULL;
-bool gShowDemoWindow = false;
 
-static bool KeyPressed(int vKey) {
-	return (GetAsyncKeyState(vKey) & 1) != 0;
-}
+std::function<void()> gCallback;
 
 bool DirectXPresentHook()
 {
@@ -70,12 +69,6 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	ImGuiIO& io = ImGui::GetIO();
 
-    if (KeyPressed(VK_INSERT)) {
-        gShowDemoWindow = !gShowDemoWindow;
-    }
-
-    io.MouseDrawCursor = gShowDemoWindow;
-
 	if (io.WantCaptureMouse || io.WantCaptureKeyboard) {
 		return TRUE;
 	}
@@ -94,14 +87,9 @@ void DrawImGui(ID3D11DeviceContext* context, ID3D11RenderTargetView* targetview)
 {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
+	
+    gCallback();
 
-    if (gShowDemoWindow) {
-        ImGui::ShowDemoWindow(&gShowDemoWindow);
-    }
-
-	ImGui::EndFrame();
-	ImGui::Render();
 	context->OMSetRenderTargets(1, &targetview, NULL);  // 1 render target, render it to our monitor, no dsv
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData()); // drawing the imgui menu
 }
@@ -137,8 +125,10 @@ static long __stdcall PresentHook(IDXGISwapChain* pointerSwapChain, UINT sync, U
 	return originalPresent(pointerSwapChain, sync, flags); // return the original so no stack corruption
 }
 
-extern "C" int Backend_Load()
+int Backend_Load(std::function<void()> callback)
 {
+    gCallback = callback;
+
 	DirectXPresentHook(); // this always okay if game directx11
 	MH_Initialize(); // aint no error checking cuz if minhook bad then its your problem 
 

@@ -1,27 +1,14 @@
 #include "load_library_hook.h"
 #include "NtQueryDirectoryFileHook.h"
 #include "Config.h"
-#include "Backend.h"
+#include "UserInterface.h"
 
 #include <MinHook.h>
 
 #include <windows.h>
-#include <synchapi.h>
 #include <processthreadsapi.h>
 
 #include <stdio.h>
-
-int MainThread(LPVOID param) {
-    (void)param;
-
-    Backend_Load();
-
-	while (1) {
-        Sleep(420);
-    }
-
-	return 0;
-}
 
 void MyMain(HMODULE hModule) {
     AllocConsole();
@@ -39,7 +26,7 @@ void MyMain(HMODULE hModule) {
     // HookNtQueryDirectoryFile();
     HookLoadLibrary();
 
-    HANDLE hMainThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MainThread, hModule, 0, NULL);
+    HANDLE hMainThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UIMainThread, hModule, 0, NULL);
 
     if (hMainThread) {
         CloseHandle(hMainThread);

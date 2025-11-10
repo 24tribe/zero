@@ -121,6 +121,7 @@ zero_src = [
     'stacktrace_path.c',
     'Patterns.c',
     'Backend.cpp',
+    'UserInterface.cpp',
 ]
 
 semba_dep = declare_dependency(
