@@ -15,7 +15,7 @@ extern "C" int UIMainThread(LPVOID _1) {
 
     DrawFunc draw_func{false};
 
-    Backend_Load(draw_func);
+    Backend_Load([&draw_func]{ draw_func(); });
 
 	while (1) {
         if (KeyPressed(VK_INSERT)) {
