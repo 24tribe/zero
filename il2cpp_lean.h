@@ -9569,5 +9569,61 @@ typedef struct Neon_Common_Utility_CameraFovScaler_o {
 } Neon_Common_Utility_CameraFovScaler_o;
 
 typedef struct DG_Tweening_Tween_o DG_Tweening_Tween_o;
+typedef struct UnityEngine_Transform_o UnityEngine_Transform_o;
+
+typedef struct UnityEngine_Vector3_Fields {
+	float x;
+	float y;
+	float z;
+} UnityEngine_Vector3_Fields;
+
+typedef struct UnityEngine_Vector3_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_Equals;
+	VirtualInvokeData _5_ToString;
+} UnityEngine_Vector3_VTable;
+
+typedef struct UnityEngine_Vector3_c {
+	Il2CppClass_1 _1;
+	struct UnityEngine_Vector3_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	UnityEngine_Vector3_VTable vtable;
+} UnityEngine_Vector3_c;
+
+typedef struct UnityEngine_Vector3_o {
+	UnityEngine_Vector3_Fields fields;
+} UnityEngine_Vector3_o;
+
+typedef struct UnityEngine_Quaternion_Fields {
+	float x;
+	float y;
+	float z;
+	float w;
+} UnityEngine_Quaternion_Fields;
+
+typedef struct UnityEngine_Quaternion_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_Equals;
+	VirtualInvokeData _5_ToString;
+} UnityEngine_Quaternion_VTable;
+
+typedef struct UnityEngine_Quaternion_c {
+	Il2CppClass_1 _1;
+	struct UnityEngine_Quaternion_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	UnityEngine_Quaternion_VTable vtable;
+} UnityEngine_Quaternion_c;
+
+typedef struct UnityEngine_Quaternion_o {
+	UnityEngine_Quaternion_Fields fields;
+} UnityEngine_Quaternion_o;
 
 #endif

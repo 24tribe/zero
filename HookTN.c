@@ -351,6 +351,92 @@ Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
     return fpNeonApiGetResponse(__this, EFCDPGBOIHC, EAGJONBIADJ, JLCCEAFOLOE, PNICKJFPBHH, method);
 }
 
+UnityEngine_Transform__set_position_FuncPtr fpUnityEngine_Transform__set_position = NULL;
+
+static float pos[3] = {0};
+static float rotation[4] = {0};
+
+static bool pausePosition = false;
+
+float *getPosArray(void) {
+    return pos;
+}
+
+float *getRotationArray(void) {
+    return rotation;
+}
+
+void togglePausePosition(void) {
+    pausePosition = !pausePosition;
+}
+
+void Detour_UnityEngine_Transform__set_position (
+    UnityEngine_Transform_o* __this, UnityEngine_Vector3_o value, const MethodInfo* method
+) {
+    if (pausePosition) {
+        value.fields.x = pos[0];
+        value.fields.y = pos[1];
+        value.fields.z = pos[2];
+    } else {
+        pos[0] = value.fields.x;
+        pos[1] = value.fields.y;
+        pos[2] = value.fields.z;
+    }
+
+    fpUnityEngine_Transform__set_position(__this, value, method);
+}
+
+void Hook_UnityEngine_Transform__set_position(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)UnityEngine_Transform__set_position,
+        (LPVOID)(uintptr_t)&Detour_UnityEngine_Transform__set_position,
+        (LPVOID *)&fpUnityEngine_Transform__set_position
+    ) != MH_OK) {
+        printf("Failed to create UnityEngine_Transform__set_position hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)UnityEngine_Transform__set_position, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable UnityEngine_Transform__set_position hook\n");
+        return;
+    }
+}
+
+UnityEngine_Transform__set_rotation_FuncPtr fpUnityEngine_Transform__set_rotation = NULL;
+
+void Detour_UnityEngine_Transform__set_rotation(
+    UnityEngine_Transform_o* __this, UnityEngine_Quaternion_o value, const MethodInfo* method
+) {
+    if (pausePosition) {
+        value.fields.x = rotation[0];
+        value.fields.y = rotation[1];
+        value.fields.z = rotation[2];
+        value.fields.w = rotation[3];
+    } else {
+        rotation[0] = value.fields.x;
+        rotation[1] = value.fields.y;
+        rotation[2] = value.fields.z;
+        rotation[3] = value.fields.w;
+    }
+    fpUnityEngine_Transform__set_rotation(__this, value, method);
+}
+
+void Hook_UnityEngine_Transform__set_rotation(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)UnityEngine_Transform__set_rotation,
+        (LPVOID)(uintptr_t)&Detour_UnityEngine_Transform__set_rotation,
+        (LPVOID *)&fpUnityEngine_Transform__set_rotation
+    ) != MH_OK) {
+        printf("Failed to create UnityEngine_Transform__set_rotation hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)UnityEngine_Transform__set_rotation, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable UnityEngine_Transform__set_rotation hook\n");
+        return;
+    }
+}
+
 void HookNeonApiGetResponse(void) {
     if (MH_CreateHook(
         (void *)(uintptr_t)CDGPJELFAMK__NOCKJHKDMGF_object_,
@@ -389,6 +475,8 @@ void HookTN(void *GameAssembly) {
     HookSourceCore_GetResult();
     HookNeonApiGetResponse();
     HookKbjlheaohmd__Kpffclmemeg();
+    Hook_UnityEngine_Transform__set_position();
+    Hook_UnityEngine_Transform__set_rotation();
 
     RunNimMainOnce();
 

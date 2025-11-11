@@ -11,6 +11,10 @@ class DrawFunc {
     bool gamePtrsReady;
     const char* result;
 
+    float* pos;
+    float* rotation;
+
+    std::function<void()> togglePausePos;
     std::function<void()> runCommand;
 
     DrawFunc(bool active);

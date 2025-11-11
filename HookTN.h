@@ -5,5 +5,8 @@
 
 void HookTN(void *GameAssembly);
 bool areGamePtrsReady(void);
+void togglePausePosition(void);
+float *getPosArray(void);
+float *getRotationArray(void);
 
 #endif

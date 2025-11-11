@@ -6,6 +6,9 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   showDemo(false),
                                   gamePtrsReady(false),
                                   result("..."),
+                                  pos(nullptr),
+                                  rotation(nullptr),
+                                  togglePausePos(),
                                   runCommand() {
 }
 
@@ -26,8 +29,20 @@ void DrawFunc::operator()(void) {
                 runCommand();
             }
 
+            if (ImGui::Button("Toggle pause position") && togglePausePos) {
+                togglePausePos();
+            }
+
             ImGui::Text("gamePtrsReady: %s\n", gamePtrsReady ? "true" : "false");
             ImGui::Text(result);
+
+            if (pos) {
+                ImGui::DragFloat3("pos", pos, 0.1f);
+            }
+
+            if (rotation) {
+                ImGui::DragFloat4("rotation", rotation, 0.1f);
+            }
         }
 
         ImGui::End();

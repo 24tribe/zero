@@ -3,6 +3,8 @@ CDGPJELFAMK$$NOCKJHKDMGF<object>
 Cysharp.Threading.Tasks.UniTaskCompletionSourceCore<object>$$GetResult
 KBJLHEAOHMD$$KPFFCLMEMEG
 HNNPFPKEEFE$$KKHPCPHPBMF
+UnityEngine.Transform$$set_position
+UnityEngine.Transform$$set_rotation
 Neon.Model.Api.ApiService$$Adventure_AccessWarpPoint
 Neon.Model.Api.ApiService$$Adventure_AcquireAreaItem
 Neon.Model.Api.ApiService$$Adventure_AreaObject
