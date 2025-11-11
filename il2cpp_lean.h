@@ -9522,4 +9522,52 @@ typedef struct JDGBHFIBACG_o {
 	JDGBHFIBACG_Fields fields;
 } JDGBHFIBACG_o;
 
+typedef struct UnityEngine_Object_Fields {
+	intptr_t m_CachedPtr;
+} UnityEngine_Object_Fields;
+
+typedef struct UnityEngine_Component_Fields /* : UnityEngine_Object_Fields */ {
+	intptr_t m_CachedPtr;
+} UnityEngine_Component_Fields;
+
+typedef struct UnityEngine_Behaviour_Fields /* : UnityEngine_Component_Fields */ {
+	intptr_t m_CachedPtr;
+} UnityEngine_Behaviour_Fields;
+
+typedef struct UnityEngine_MonoBehaviour_Fields /* : UnityEngine_Behaviour_Fields */ {
+	intptr_t m_CachedPtr;
+	struct System_Threading_CancellationTokenSource_o* m_CancellationTokenSource;
+} UnityEngine_MonoBehaviour_Fields;
+
+typedef struct Neon_Common_Utility_CameraFovScaler_Fields /* : UnityEngine_MonoBehaviour_Fields */ {
+	intptr_t m_CachedPtr;
+	struct System_Threading_CancellationTokenSource_o* m_CancellationTokenSource;
+	int32_t _fovFitMode;
+	float _fov;
+	struct UnityEngine_Camera_o* AFKOPCDEOFF;
+} Neon_Common_Utility_CameraFovScaler_Fields;
+
+typedef struct Neon_Common_Utility_CameraFovScaler_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Neon_Common_Utility_CameraFovScaler_VTable;
+
+typedef struct Neon_Common_Utility_CameraFovScaler_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Common_Utility_CameraFovScaler_VTable vtable;
+} Neon_Common_Utility_CameraFovScaler_c;
+
+typedef struct Neon_Common_Utility_CameraFovScaler_o {
+	Neon_Common_Utility_CameraFovScaler_c *klass;
+	void *monitor;
+	Neon_Common_Utility_CameraFovScaler_Fields fields;
+} Neon_Common_Utility_CameraFovScaler_o;
+
+typedef struct DG_Tweening_Tween_o DG_Tweening_Tween_o;
+
 #endif
