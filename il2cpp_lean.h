@@ -9626,4 +9626,215 @@ typedef struct UnityEngine_Quaternion_o {
 	UnityEngine_Quaternion_Fields fields;
 } UnityEngine_Quaternion_o;
 
+typedef struct System_Type_o System_Type_o;
+typedef struct UnityEngine_Object_o UnityEngine_Object_o;
+
+typedef struct UnityEngine_Vector2_Fields {
+	float x;
+	float y;
+} UnityEngine_Vector2_Fields;
+
+typedef struct UnityEngine_Vector2_o {
+	UnityEngine_Vector2_Fields fields;
+} UnityEngine_Vector2_o;
+
+typedef struct Cinemachine_CameraState_CustomBlendable_Fields {
+	struct UnityEngine_Object_o* m_Custom;
+	float m_Weight;
+} Cinemachine_CameraState_CustomBlendable_Fields;
+
+typedef struct Cinemachine_CameraState_CustomBlendable_o {
+	Cinemachine_CameraState_CustomBlendable_Fields fields;
+} Cinemachine_CameraState_CustomBlendable_o;
+
+typedef struct Cinemachine_LensSettings_Fields {
+	float FieldOfView;
+	float OrthographicSize;
+	float NearClipPlane;
+	float FarClipPlane;
+	float Dutch;
+	int32_t ModeOverride;
+	struct UnityEngine_Vector2_o LensShift;
+	int32_t GateFit;
+	float FocusDistance;
+	struct UnityEngine_Vector2_o m_SensorSize;
+	bool m_OrthoFromCamera;
+	bool m_PhysicalFromCamera;
+} Cinemachine_LensSettings_Fields;
+
+typedef struct Cinemachine_LensSettings_o {
+	Cinemachine_LensSettings_Fields fields;
+} Cinemachine_LensSettings_o;
+
+typedef struct Cinemachine_CameraState_Fields {
+	struct Cinemachine_LensSettings_o Lens;
+	struct UnityEngine_Vector3_o ReferenceUp;
+	struct UnityEngine_Vector3_o ReferenceLookAt;
+	struct UnityEngine_Vector3_o RawPosition;
+	struct UnityEngine_Quaternion_o RawOrientation;
+	struct UnityEngine_Vector3_o PositionDampingBypass;
+	float ShotQuality;
+	struct UnityEngine_Vector3_o PositionCorrection;
+	struct UnityEngine_Quaternion_o OrientationCorrection;
+	int32_t BlendHint;
+	struct Cinemachine_CameraState_CustomBlendable_o mCustom0;
+	struct Cinemachine_CameraState_CustomBlendable_o mCustom1;
+	struct Cinemachine_CameraState_CustomBlendable_o mCustom2;
+	struct Cinemachine_CameraState_CustomBlendable_o mCustom3;
+	struct System_Collections_Generic_List_CameraState_CustomBlendable__o* m_CustomOverflow;
+	int32_t _NumCustomBlendables_k__BackingField;
+} Cinemachine_CameraState_Fields;
+
+typedef struct Cinemachine_CameraState_o {
+	Cinemachine_CameraState_Fields fields;
+} Cinemachine_CameraState_o;
+
+typedef struct Cinemachine_CinemachineVirtualCameraBase_TransitionParams_Fields {
+	int32_t m_BlendHint;
+	bool m_InheritPosition;
+	struct Cinemachine_CinemachineBrain_VcamActivatedEvent_o* m_OnCameraLive;
+} Cinemachine_CinemachineVirtualCameraBase_TransitionParams_Fields;
+
+typedef struct Cinemachine_CinemachineVirtualCameraBase_TransitionParams_o {
+	Cinemachine_CinemachineVirtualCameraBase_TransitionParams_Fields fields;
+} Cinemachine_CinemachineVirtualCameraBase_TransitionParams_o;
+
+typedef struct UnityEngine_Object_array {
+	Il2CppObject obj;
+	Il2CppArrayBounds *bounds;
+	il2cpp_array_size_t max_length;
+	UnityEngine_Object_o* m_Items[65535];
+} UnityEngine_Object_array;
+
+typedef struct Cinemachine_CinemachineVirtualCameraBase_Fields /* : UnityEngine_MonoBehaviour_Fields */ {
+	intptr_t m_CachedPtr;
+	struct System_Threading_CancellationTokenSource_o* m_CancellationTokenSource;
+	struct System_String_array* m_ExcludedPropertiesInInspector;
+	struct Cinemachine_CinemachineCore_Stage_array* m_LockStageInInspector;
+	int32_t m_ValidatingStreamVersion;
+	bool m_OnValidateCalled;
+	int32_t m_StreamingVersion;
+	int32_t m_Priority;
+	int32_t m_ActivationId;
+	float FollowTargetAttachment;
+	float LookAtTargetAttachment;
+	int32_t m_StandbyUpdate;
+	struct System_Collections_Generic_List_CinemachineExtension__o* _mExtensions_k__BackingField;
+	bool _PreviousStateIsValid_k__BackingField;
+	bool m_WasStarted;
+	bool mSlaveStatusUpdated;
+	struct Cinemachine_CinemachineVirtualCameraBase_o* m_parentVcam;
+	int32_t m_QueuePriority;
+	float m_blendStartPosition;
+	struct UnityEngine_Transform_o* m_CachedFollowTarget;
+	struct Cinemachine_CinemachineVirtualCameraBase_o* m_CachedFollowTargetVcam;
+	struct Cinemachine_ICinemachineTargetGroup_o* m_CachedFollowTargetGroup;
+	struct UnityEngine_Transform_o* m_CachedLookAtTarget;
+	struct Cinemachine_CinemachineVirtualCameraBase_o* m_CachedLookAtTargetVcam;
+	struct Cinemachine_ICinemachineTargetGroup_o* m_CachedLookAtTargetGroup;
+	bool _FollowTargetChanged_k__BackingField;
+	bool _LookAtTargetChanged_k__BackingField;
+} Cinemachine_CinemachineVirtualCameraBase_Fields;
+
+typedef struct Cinemachine_CinemachineVirtualCamera_Fields /* : Cinemachine_CinemachineVirtualCameraBase_Fields*/ {
+	intptr_t m_CachedPtr;
+	struct System_Threading_CancellationTokenSource_o* m_CancellationTokenSource;
+	struct System_String_array* m_ExcludedPropertiesInInspector;
+	struct Cinemachine_CinemachineCore_Stage_array* m_LockStageInInspector;
+	int32_t m_ValidatingStreamVersion;
+	bool m_OnValidateCalled;
+	int32_t m_StreamingVersion;
+	int32_t m_Priority;
+	int32_t m_ActivationId;
+	float FollowTargetAttachment;
+	float LookAtTargetAttachment;
+	int32_t m_StandbyUpdate;
+	struct System_Collections_Generic_List_CinemachineExtension__o* _mExtensions_k__BackingField;
+	bool _PreviousStateIsValid_k__BackingField;
+	bool m_WasStarted;
+	bool mSlaveStatusUpdated;
+	struct Cinemachine_CinemachineVirtualCameraBase_o* m_parentVcam;
+	int32_t m_QueuePriority;
+	float m_blendStartPosition;
+	struct UnityEngine_Transform_o* m_CachedFollowTarget;
+	struct Cinemachine_CinemachineVirtualCameraBase_o* m_CachedFollowTargetVcam;
+	struct Cinemachine_ICinemachineTargetGroup_o* m_CachedFollowTargetGroup;
+	struct UnityEngine_Transform_o* m_CachedLookAtTarget;
+	struct Cinemachine_CinemachineVirtualCameraBase_o* m_CachedLookAtTargetVcam;
+	struct Cinemachine_ICinemachineTargetGroup_o* m_CachedLookAtTargetGroup;
+	bool _FollowTargetChanged_k__BackingField;
+	bool _LookAtTargetChanged_k__BackingField;
+	struct UnityEngine_Transform_o* m_LookAt;
+	struct UnityEngine_Transform_o* m_Follow;
+	struct Cinemachine_LensSettings_o m_Lens;
+	struct Cinemachine_CinemachineVirtualCameraBase_TransitionParams_o m_Transitions;
+	int32_t m_LegacyBlendHint;
+	struct Cinemachine_CameraState_o m_State;
+	struct Cinemachine_CinemachineComponentBase_array* m_ComponentPipeline;
+	struct UnityEngine_Transform_o* m_ComponentOwner;
+	struct UnityEngine_Transform_o* mCachedLookAtTarget;
+	struct Cinemachine_CinemachineVirtualCameraBase_o* mCachedLookAtTargetVcam;
+} Cinemachine_CinemachineVirtualCamera_Fields;
+
+typedef struct Cinemachine_CinemachineVirtualCamera_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_get_Name;
+	VirtualInvokeData _5_get_Priority;
+	VirtualInvokeData _6_unknown;
+	VirtualInvokeData _7_unknown;
+	VirtualInvokeData _8_unknown;
+	VirtualInvokeData _9_get_VirtualCameraGameObject;
+	VirtualInvokeData _10_get_IsValid;
+	VirtualInvokeData _11_get_ParentCamera;
+	VirtualInvokeData _12_unknown;
+	VirtualInvokeData _13_UpdateCameraState;
+	VirtualInvokeData _14_unknown;
+	VirtualInvokeData _15_UnityEngine_ISerializationCallbackReceiver_OnBeforeSerialize;
+	VirtualInvokeData _16_UnityEngine_ISerializationCallbackReceiver_OnAfterDeserialize;
+	VirtualInvokeData _17_GetMaxDampTime;
+	VirtualInvokeData _18_AddExtension;
+	VirtualInvokeData _19_RemoveExtension;
+	VirtualInvokeData _20_get_Description;
+	VirtualInvokeData _21_set_Priority;
+	VirtualInvokeData _22_get_State;
+	VirtualInvokeData _23_IsLiveChild;
+	VirtualInvokeData _24_get_LookAt;
+	VirtualInvokeData _25_set_LookAt;
+	VirtualInvokeData _26_get_Follow;
+	VirtualInvokeData _27_set_Follow;
+	VirtualInvokeData _28_get_PreviousStateIsValid;
+	VirtualInvokeData _29_set_PreviousStateIsValid;
+	VirtualInvokeData _30_InternalUpdateCameraState;
+	VirtualInvokeData _31_OnTransitionFromCamera;
+	VirtualInvokeData _32_OnDestroy;
+	VirtualInvokeData _33_OnTransformParentChanged;
+	VirtualInvokeData _34_Start;
+	VirtualInvokeData _35_RequiresUserInput;
+	VirtualInvokeData _36_OnValidate;
+	VirtualInvokeData _37_OnEnable;
+	VirtualInvokeData _38_OnDisable;
+	VirtualInvokeData _39_Update;
+	VirtualInvokeData _40_OnTargetObjectWarped;
+	VirtualInvokeData _41_ForceCameraPosition;
+	VirtualInvokeData _42_LegacyUpgrade;
+	VirtualInvokeData _43_OnBeforeSerialize;
+} Cinemachine_CinemachineVirtualCamera_VTable;
+
+typedef struct Cinemachine_CinemachineVirtualCamera_c {
+	Il2CppClass_1 _1;
+	struct Cinemachine_CinemachineVirtualCamera_StaticFields* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Cinemachine_CinemachineVirtualCamera_VTable vtable;
+} Cinemachine_CinemachineVirtualCamera_c;
+
+typedef struct Cinemachine_CinemachineVirtualCamera_o {
+	Cinemachine_CinemachineVirtualCamera_c *klass;
+	void *monitor;
+	Cinemachine_CinemachineVirtualCamera_Fields fields;
+} Cinemachine_CinemachineVirtualCamera_o;
+
 #endif
