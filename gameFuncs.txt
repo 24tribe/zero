@@ -6,6 +6,7 @@ HNNPFPKEEFE$$KKHPCPHPBMF
 UnityEngine.Transform$$set_position
 UnityEngine.Transform$$set_rotation
 UnityEngine.Object$$FindObjectsByType
+UnityEngine.Camera$$set_fieldOfView
 Neon.Model.Api.ApiService$$Adventure_AccessWarpPoint
 Neon.Model.Api.ApiService$$Adventure_AcquireAreaItem
 Neon.Model.Api.ApiService$$Adventure_AreaObject

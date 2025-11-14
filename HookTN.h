@@ -8,5 +8,7 @@ bool areGamePtrsReady(void);
 void togglePausePosition(void);
 float *getPosArray(void);
 float *getRotationArray(void);
+bool *getCustomFovFlag(void);
+float *getFovScale(void);
 
 #endif

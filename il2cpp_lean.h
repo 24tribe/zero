@@ -9837,4 +9837,6 @@ typedef struct Cinemachine_CinemachineVirtualCamera_o {
 	Cinemachine_CinemachineVirtualCamera_Fields fields;
 } Cinemachine_CinemachineVirtualCamera_o;
 
+typedef struct UnityEngine_Camera_o UnityEngine_Camera_o;
+
 #endif

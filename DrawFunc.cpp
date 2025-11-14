@@ -8,6 +8,8 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   result("..."),
                                   pos(nullptr),
                                   rotation(nullptr),
+                                  fov_scale(nullptr),
+                                  customFovFlag(nullptr),
                                   togglePausePos(),
                                   runCommand() {
 }
@@ -42,6 +44,14 @@ void DrawFunc::operator()(void) {
 
             if (rotation) {
                 ImGui::DragFloat4("rotation", rotation, 0.1f);
+            }
+
+            if (customFovFlag) {
+                ImGui::Checkbox("Enable custom fov", customFovFlag);
+            }
+
+            if (fov_scale) {
+                ImGui::DragFloat("fovScale", fov_scale, 0.1f);
             }
         }
 

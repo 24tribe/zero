@@ -26,6 +26,9 @@ extern "C" int UIMainThread(LPVOID _1) {
     draw_func.runCommand = [&draw_func]() {
     };
 
+    draw_func.fov_scale = getFovScale();
+    draw_func.customFovFlag = getCustomFovFlag();
+
     draw_func.pos = getPosArray();
     draw_func.rotation = getRotationArray();
 

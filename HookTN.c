@@ -402,6 +402,44 @@ void Hook_UnityEngine_Transform__set_position(void) {
     }
 }
 
+UnityEngine_Camera__set_fieldOfView_FuncPtr fpUnityEngine_Camera__set_fieldOfView = NULL;
+
+bool useCustomFov = false;
+float fovScale = 1;
+
+bool *getCustomFovFlag(void) {
+    return &useCustomFov;
+}
+
+float *getFovScale(void) {
+    return &fovScale;
+}
+
+void Detour_UnityEngine_Camera__set_fieldOfView(
+    UnityEngine_Camera_o* __this, float value, const MethodInfo* method
+) {
+    if (useCustomFov) {
+        value *= fovScale;
+    }
+    fpUnityEngine_Camera__set_fieldOfView(__this, value, method);
+}
+
+void Hook_UnityEngine_Camera__set_fieldOfView(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)UnityEngine_Camera__set_fieldOfView,
+        (LPVOID)(uintptr_t)&Detour_UnityEngine_Camera__set_fieldOfView,
+        (LPVOID *)&fpUnityEngine_Camera__set_fieldOfView
+    ) != MH_OK) {
+        printf("Failed to create UnityEngine_Camera__set_fieldOfView hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)UnityEngine_Camera__set_fieldOfView, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable UnityEngine_Camera__set_fieldOfView hook\n");
+        return;
+    }
+}
+
 UnityEngine_Transform__set_rotation_FuncPtr fpUnityEngine_Transform__set_rotation = NULL;
 
 void Detour_UnityEngine_Transform__set_rotation(
@@ -477,6 +515,7 @@ void HookTN(void *GameAssembly) {
     HookKbjlheaohmd__Kpffclmemeg();
     Hook_UnityEngine_Transform__set_position();
     Hook_UnityEngine_Transform__set_rotation();
+    Hook_UnityEngine_Camera__set_fieldOfView();
 
     RunNimMainOnce();
 

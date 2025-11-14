@@ -13,6 +13,8 @@ class DrawFunc {
 
     float* pos;
     float* rotation;
+    float* fov_scale;
+    bool* customFovFlag;
 
     std::function<void()> togglePausePos;
     std::function<void()> runCommand;
