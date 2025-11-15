@@ -67,11 +67,16 @@ proc adventure_AreaObject(jsonReq: JsonNode): JsonNode =
   var areaObjects = newSeq[JsonNode]();
 
   for row in rows:
+    var areaObjectId = parseInt(row[0])
+    var areaPointId = parseInt(row[1])
+    var areaObjectBehaviorId = parseInt(row[2])
+    var action = parseJson(row[3])
+
     areaObjects.add(%*{
-      "areaObjectId": parseInt(row[0]),
-      "areaPointId": parseInt(row[1]),
-      "areaObjectBehaviorId": parseInt(row[2]),
-      "action": parseJson(row[3])
+      "areaObjectId": areaObjectId,
+      "areaPointId": areaPointId,
+      "areaObjectBehaviorId": areaObjectBehaviorId,
+      "action": action
     })
 
   let enemies = db.getAllRows(sql"""
