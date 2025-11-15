@@ -9839,4 +9839,173 @@ typedef struct Cinemachine_CinemachineVirtualCamera_o {
 
 typedef struct UnityEngine_Camera_o UnityEngine_Camera_o;
 
+typedef struct MasterMemory_TableBase_HAMAAANAAKG__Fields {
+	struct HAMAAANAAKG_array* data;
+} MasterMemory_TableBase_HAMAAANAAKG__Fields;
+
+typedef struct MasterMemory_TableBase_HAMAAANAAKG__VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} MasterMemory_TableBase_HAMAAANAAKG__VTable;
+
+typedef struct MasterMemory_TableBase_HAMAAANAAKG__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	MasterMemory_TableBase_HAMAAANAAKG__VTable vtable;
+} MasterMemory_TableBase_HAMAAANAAKG__c;
+
+typedef struct MasterMemory_TableBase_HAMAAANAAKG__o {
+	MasterMemory_TableBase_HAMAAANAAKG__c *klass;
+	void *monitor;
+	MasterMemory_TableBase_HAMAAANAAKG__Fields fields;
+} MasterMemory_TableBase_HAMAAANAAKG__o;
+
+typedef struct JJNFAMALKLM_Fields /* : MasterMemory_TableBase_HAMAAANAAKG__Fields */ {
+	struct HAMAAANAAKG_array* data;
+	struct System_Func_HAMAAANAAKG__FDDCBHIEILM__o* CFCIMCHKDPA;
+} JJNFAMALKLM_Fields;
+
+typedef struct JJNFAMALKLM_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_NEMCFIJNMAN;
+} JJNFAMALKLM_VTable;
+
+typedef struct JJNFAMALKLM_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	JJNFAMALKLM_VTable vtable;
+} JJNFAMALKLM_c;
+
+typedef struct JJNFAMALKLM_o {
+	JJNFAMALKLM_c *klass;
+	void *monitor;
+	JJNFAMALKLM_Fields fields;
+} JJNFAMALKLM_o;
+
+typedef struct System_Nullable_BFKEONBGGFP__Fields {
+	bool hasValue;
+	int32_t value;
+} System_Nullable_BFKEONBGGFP__Fields;
+
+typedef struct System_Nullable_BFKEONBGGFP__o {
+	System_Nullable_BFKEONBGGFP__Fields fields;
+} System_Nullable_BFKEONBGGFP__o;
+
+typedef struct HAMAAANAAKG_Fields {
+	int32_t _ACDJAMAIODN_k__BackingField;
+	struct System_Nullable_BFKEONBGGFP__o _LFGDJMDIDON_k__BackingField;
+	struct System_String_o* _JDCDGFDJNDF_k__BackingField;
+} HAMAAANAAKG_Fields;
+
+typedef struct HAMAAANAAKG_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} HAMAAANAAKG_VTable;
+
+typedef struct HAMAAANAAKG_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	HAMAAANAAKG_VTable vtable;
+} HAMAAANAAKG_c;
+
+typedef struct HAMAAANAAKG_o {
+	HAMAAANAAKG_c *klass;
+	void *monitor;
+	HAMAAANAAKG_Fields fields;
+} HAMAAANAAKG_o;
+
+typedef struct HAMAAANAAKG_array {
+	Il2CppObject obj;
+	Il2CppArrayBounds *bounds;
+	il2cpp_array_size_t max_length;
+	HAMAAANAAKG_o* m_Items[65535];
+} HAMAAANAAKG_array;
+
+typedef struct System_Nullable_OOJEDNBBGBK__Fields {
+	bool hasValue;
+	int32_t value;
+} System_Nullable_OOJEDNBBGBK__Fields;
+
+typedef struct System_Nullable_OOJEDNBBGBK__o {
+	System_Nullable_OOJEDNBBGBK__Fields fields;
+} System_Nullable_OOJEDNBBGBK__o;
+
+typedef struct System_Nullable_LFJELIPKMBM__Fields {
+	bool hasValue;
+	int32_t value;
+} System_Nullable_LFJELIPKMBM__Fields;
+
+typedef struct System_Nullable_LFJELIPKMBM__o {
+	System_Nullable_LFJELIPKMBM__Fields fields;
+} System_Nullable_LFJELIPKMBM__o;
+
+typedef struct System_Nullable_IKAFHEBKEHP__Fields {
+	bool hasValue;
+	int32_t value;
+} System_Nullable_IKAFHEBKEHP__Fields;
+
+typedef struct System_Nullable_IKAFHEBKEHP__o {
+	System_Nullable_IKAFHEBKEHP__Fields fields;
+} System_Nullable_IKAFHEBKEHP__o;
+
+typedef struct System_Collections_Generic_IReadOnlyList_PDIFPHMPPAG__o System_Collections_Generic_IReadOnlyList_PDIFPHMPPAG__o;
+
+typedef struct AKKJOCJPHMD_o AKKJOCJPHMD_o;
+
+typedef struct EMDHIMNBAPC_Fields {
+	int32_t _ACDJAMAIODN_k__BackingField;
+	struct JDGBHFIBACG_o* _MAPCMMFLHMB_k__BackingField;
+	struct JDGBHFIBACG_o* _ONFEJDHIHOI_k__BackingField;
+	int32_t _GNHKAJFOFMD_k__BackingField;
+	struct System_Nullable_OOJEDNBBGBK__o _FJBJBJOHDOD_k__BackingField;
+	struct System_Nullable_DateTime__o _HCNLCGDHEOL_k__BackingField;
+	struct System_Nullable_DateTime__o _EAKCHNBBLNJ_k__BackingField;
+	struct System_Collections_Generic_IReadOnlyList_PDIFPHMPPAG__o* _OGACABAJBOA_k__BackingField;
+	struct System_Nullable_LFJELIPKMBM__o _KKKHDMOPFBJ_k__BackingField;
+	struct System_Nullable_IKAFHEBKEHP__o _IBMDFPDGKHP_k__BackingField;
+	int32_t _KINKAADAPKL_k__BackingField;
+	struct System_String_o* _BODCKIPBBAO_k__BackingField;
+} EMDHIMNBAPC_Fields;
+
+typedef struct EMDHIMNBAPC_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} EMDHIMNBAPC_VTable;
+
+typedef struct EMDHIMNBAPC_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	EMDHIMNBAPC_VTable vtable;
+} EMDHIMNBAPC_c;
+
+typedef struct EMDHIMNBAPC_o {
+	EMDHIMNBAPC_c *klass;
+	void *monitor;
+	EMDHIMNBAPC_Fields fields;
+} EMDHIMNBAPC_o;
+
+typedef struct EMDHIMNBAPC_array {
+	Il2CppObject obj;
+	Il2CppArrayBounds *bounds;
+	il2cpp_array_size_t max_length;
+	EMDHIMNBAPC_o* m_Items[65535];
+} EMDHIMNBAPC_array;
+
 #endif

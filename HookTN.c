@@ -402,6 +402,52 @@ void Hook_UnityEngine_Transform__set_position(void) {
     }
 }
 
+EMDHIMNBAPC___ctor_FuncPtr fpEMDHIMNBAPC___ctor = NULL;
+
+void Detour_EMDHIMNBAPC___ctor(
+    EMDHIMNBAPC_o* __this, int32_t MJFIGOGDOGF, JDGBHFIBACG_o* KOGMPABNAMA,
+    JDGBHFIBACG_o* IKIBKIBBBIL, int32_t AKPAPIBMHKE, System_Nullable_OOJEDNBBGBK__o PIJDPLJBKDK,
+    System_Nullable_DateTime__o DLICIPCDJHN, System_Nullable_DateTime__o LKPAJOFHJFB,
+    System_Collections_Generic_IReadOnlyList_PDIFPHMPPAG__o* DNHEPOBJNOP,
+    System_Nullable_LFJELIPKMBM__o KIOHPMPOKCM, System_Nullable_IKAFHEBKEHP__o AKBPMHCLKCP,
+    int32_t FGANDLGCJDH, System_String_o* GAGHHMOBBMN, const MethodInfo* method
+) {
+    int32_t id = MJFIGOGDOGF;
+    System_Nullable_DateTime__o* start = &DLICIPCDJHN;
+    System_Nullable_DateTime__o* end = &LKPAJOFHJFB;
+
+    if (id == 101) {
+        start->fields.hasValue = false;
+        end->fields.hasValue = false;
+        printf("Made Lux Phantasma permanent!\n");
+    }
+
+    fpEMDHIMNBAPC___ctor(
+        __this, MJFIGOGDOGF, KOGMPABNAMA,
+        IKIBKIBBBIL, AKPAPIBMHKE, PIJDPLJBKDK,
+        DLICIPCDJHN, LKPAJOFHJFB,
+        DNHEPOBJNOP,
+        KIOHPMPOKCM, AKBPMHCLKCP,
+        FGANDLGCJDH, GAGHHMOBBMN, method 
+    );
+}
+
+void Hook_EMDHIMNBAPC___ctor(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)EMDHIMNBAPC___ctor,
+        (LPVOID)(uintptr_t)&Detour_EMDHIMNBAPC___ctor,
+        (LPVOID *)&fpEMDHIMNBAPC___ctor
+    ) != MH_OK) {
+        printf("Failed to create EMDHIMNBAPC___ctor hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)EMDHIMNBAPC___ctor, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable EMDHIMNBAPC___ctor hook\n");
+        return;
+    }
+}
+
 UnityEngine_Camera__set_fieldOfView_FuncPtr fpUnityEngine_Camera__set_fieldOfView = NULL;
 
 bool useCustomFov = false;
@@ -516,6 +562,7 @@ void HookTN(void *GameAssembly) {
     Hook_UnityEngine_Transform__set_position();
     Hook_UnityEngine_Transform__set_rotation();
     Hook_UnityEngine_Camera__set_fieldOfView();
+    Hook_EMDHIMNBAPC___ctor();
 
     RunNimMainOnce();
 
