@@ -55,7 +55,19 @@ proc logFlowOffline(uri: string, req: string, res: string) =
 
 proc SembaLogFlow(uri: cstring, req: cstring, res: cstring) {.exportc.} =
   logFlow($uri, $req, $res)
-  
+
+proc getEventLiftAreaObject(areaPointId: int): JsonNode =
+  return %*{
+    "areaObjectId": 141001,
+    "areaPointId": areaPointId,
+    "areaObjectBehaviorId": 14100101,
+    "action": {
+        "type": 10,
+        "id": 1,
+        "eventLiftId": 14100101
+    }
+  }
+
 proc adventure_AreaObject(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
   let rows = db.getAllRows(sql"""
@@ -72,12 +84,15 @@ proc adventure_AreaObject(jsonReq: JsonNode): JsonNode =
     var areaObjectBehaviorId = parseInt(row[2])
     var action = parseJson(row[3])
 
-    areaObjects.add(%*{
-      "areaObjectId": areaObjectId,
-      "areaPointId": areaPointId,
-      "areaObjectBehaviorId": areaObjectBehaviorId,
-      "action": action
-    })
+    if areaObjectId == 309001: # Hoimi
+      areaObjects.add(getEventLiftAreaObject(areaPointId))
+    else:
+      areaObjects.add(%*{
+        "areaObjectId": areaObjectId,
+        "areaPointId": areaPointId,
+        "areaObjectBehaviorId": areaObjectBehaviorId,
+        "action": action
+      })
 
   let enemies = db.getAllRows(sql"""
     SELECT areaPointId, areaEnemyRateSetId, action
