@@ -56,6 +56,27 @@ proc logFlowOffline(uri: string, req: string, res: string) =
 proc SembaLogFlow(uri: cstring, req: cstring, res: cstring) {.exportc.} =
   logFlow($uri, $req, $res)
 
+proc adventure_ReleaseEventLift(jsonReq: JsonNode): JsonNode =
+  return %*{
+    "changedResources": {}
+  }
+
+proc getEventFloorNodes(): seq[JsonNode] =
+  #for eventFloorNodeId in 113101..113128:
+  for eventFloorNodeId in 113101..113101:
+    result.add(%*{
+      "eventFloorNodeId": eventFloorNodeId,
+      "unlockedAt": "2025-03-20T18:56:05Z"
+    })
+
+proc event_ListNode(): JsonNode =
+  let eventFloorNodes = getEventFloorNodes()
+  return %*{
+    "changedResources": {
+      "eventFloorNodes": eventFloorNodes,
+    }
+  }
+
 proc getEventLiftAreaObject(areaPointId: int): JsonNode =
   return %*{
     "areaObjectId": 141001,
@@ -1001,6 +1022,10 @@ proc sembaCallImpl*(uri: string, request: string): string =
     jsonRes = adventure_ReadSequence(jsonReq)
   elif uri == "/adventure/acquire_area_item":
     jsonRes = adventure_AcquireAreaItem(jsonReq)
+  elif uri == "/adventure/release_event_lift":
+    jsonRes = adventure_ReleaseEventLift(jsonReq)
+  elif uri == "/event/list_node":
+    jsonRes = event_ListNode()
   else:
     jsonRes = nil
 
