@@ -10008,4 +10008,73 @@ typedef struct EMDHIMNBAPC_array {
 	EMDHIMNBAPC_o* m_Items[65535];
 } EMDHIMNBAPC_array;
 
+typedef struct GCHGCKNHMHC_Fields {
+	int32_t _ACDJAMAIODN_k__BackingField;
+	int32_t _CFJHCJCCJIF_k__BackingField;
+	int32_t _DGMECENOBAD_k__BackingField;
+} GCHGCKNHMHC_Fields;
+
+typedef struct GCHGCKNHMHC_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_GCHEPAIOFDB;
+	VirtualInvokeData _5_KACOBCFPPNA;
+} GCHGCKNHMHC_VTable;
+
+typedef struct GCHGCKNHMHC_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	GCHGCKNHMHC_VTable vtable;
+} GCHGCKNHMHC_c;
+
+typedef struct GCHGCKNHMHC_o {
+	GCHGCKNHMHC_c *klass;
+	void *monitor;
+	GCHGCKNHMHC_Fields fields;
+} GCHGCKNHMHC_o;
+
+typedef struct GCHGCKNHMHC_array {
+	Il2CppObject obj;
+	Il2CppArrayBounds *bounds;
+	il2cpp_array_size_t max_length;
+	GCHGCKNHMHC_o* m_Items[65535];
+} GCHGCKNHMHC_array;
+
+typedef struct MasterMemory_TableBase_GCHGCKNHMHC__Fields {
+	struct GCHGCKNHMHC_array* data;
+} MasterMemory_TableBase_GCHGCKNHMHC__Fields;
+
+typedef struct LICGNCFAOFL_Fields /* : MasterMemory_TableBase_GCHGCKNHMHC__Fields */ {
+	struct GCHGCKNHMHC_array* data;
+	struct System_Func_GCHGCKNHMHC__KBMLGOADIND__o* CFCIMCHKDPA;
+	struct GCHGCKNHMHC_array* AGKIMIDFFAI;
+	struct System_Func_GCHGCKNHMHC__BJKJJGFABDO__o* DMLKCLAFCDK;
+} LICGNCFAOFL_Fields;
+
+typedef struct LICGNCFAOFL_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_NEMCFIJNMAN;
+} LICGNCFAOFL_VTable;
+
+typedef struct LICGNCFAOFL_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	LICGNCFAOFL_VTable vtable;
+} LICGNCFAOFL_c;
+
+typedef struct LICGNCFAOFL_o {
+	LICGNCFAOFL_c *klass;
+	void *monitor;
+	LICGNCFAOFL_Fields fields;
+} LICGNCFAOFL_o;
+
 #endif
