@@ -77,6 +77,36 @@ proc event_ListNode(): JsonNode =
     }
   }
 
+proc getUserStatus(): JsonNode =
+  let statusRow = db.getRow(sql"SELECT val FROM userData WHERE keyName = ?", "status")
+  return parseJson(statusRow[0])
+
+proc adventure_WarpAreaLocator(jsonReq: JsonNode): JsonNode =
+  let warpAreaType = jsonReq["warpAreaType"].getInt()
+  let warpAreaId = jsonReq["warpAreaId"].getInt()
+
+  if warpAreaId == 101: # Mita's Hideout
+    return %*{
+      "changedResources": {
+        "status": getUserStatus()
+      }
+    }
+  else:
+    return nil
+
+proc event_FinishNode(jsonReq: JsonNode): JsonNode =
+  let eventFloorNodeId = jsonReq["eventFloorNodeId"].getInt()
+
+  let newEventFloorNodeId = eventFloorNodeId + 1
+
+  return %*{
+    "changedResources": {
+      "eventFloorNodes": [
+        {"eventFloorNodeId": newEventFloorNodeId, "unlockedAt": "2025-03-20T18:56:05Z"}
+      ]
+    }
+  }
+
 proc getEventLiftAreaObject(areaPointId: int): JsonNode =
   return %*{
     "areaObjectId": 141001,
@@ -89,6 +119,12 @@ proc getEventLiftAreaObject(areaPointId: int): JsonNode =
     }
   }
 
+proc getLuxPhantasmaAreaObjects(): seq[JsonNode] =
+  # 130801921: event lift
+  # 130801922: bar counter
+  # 130801923: kazuki first encounter in event
+  result.add(getEventLiftAreaObject(130801921))
+
 proc adventure_AreaObject(jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
   let rows = db.getAllRows(sql"""
@@ -99,21 +135,21 @@ proc adventure_AreaObject(jsonReq: JsonNode): JsonNode =
 
   var areaObjects = newSeq[JsonNode]();
 
+  if areaId == 130801: # Mita's Hideout
+    areaObjects = getLuxPhantasmaAreaObjects()
+
   for row in rows:
     var areaObjectId = parseInt(row[0])
     var areaPointId = parseInt(row[1])
     var areaObjectBehaviorId = parseInt(row[2])
     var action = parseJson(row[3])
 
-    if areaObjectId == 309001: # Hoimi
-      areaObjects.add(getEventLiftAreaObject(areaPointId))
-    else:
-      areaObjects.add(%*{
-        "areaObjectId": areaObjectId,
-        "areaPointId": areaPointId,
-        "areaObjectBehaviorId": areaObjectBehaviorId,
-        "action": action
-      })
+    areaObjects.add(%*{
+      "areaObjectId": areaObjectId,
+      "areaPointId": areaPointId,
+      "areaObjectBehaviorId": areaObjectBehaviorId,
+      "action": action
+    })
 
   let enemies = db.getAllRows(sql"""
     SELECT areaPointId, areaEnemyRateSetId, action
@@ -175,10 +211,6 @@ proc tip_Release(jsonReq: JsonNode): JsonNode =
 
 proc getDistance(x1: float, y1: float, z1: float, x2: float, y2: float, z2: float): float =
   return sqrt(pow(x2-x1, 2) + pow(y2-y1, 2) + pow(z2-z1, 2))
-
-proc getUserStatus(): JsonNode =
-  let statusRow = db.getRow(sql"SELECT val FROM userData WHERE keyName = ?", "status")
-  return parseJson(statusRow[0])
 
 proc setUserStatus(status: JsonNode) =
   db.exec(sql"UPDATE userData SET val = ? WHERE keyName = ?", $status, "status")
@@ -1026,6 +1058,10 @@ proc sembaCallImpl*(uri: string, request: string): string =
     jsonRes = adventure_ReleaseEventLift(jsonReq)
   elif uri == "/event/list_node":
     jsonRes = event_ListNode()
+  elif uri == "/event/finish_node":
+    jsonRes = event_FinishNode(jsonReq)
+  elif uri == "/adventure/warp_area_locator":
+    jsonRes = adventure_WarpAreaLocator(jsonReq)
   else:
     jsonRes = nil
 

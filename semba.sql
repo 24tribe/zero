@@ -41,7 +41,7 @@ CREATE TABLE areaItems (
 
 DROP TABLE IF EXISTS areaBgm;
 CREATE TABLE areaBgm (
-    areaId INTEGER,
+    areaId INTEGER PRIMARY KEY,
     id INTEGER,
     eventName STRING
 );
@@ -2091,6 +2091,7 @@ INSERT INTO areaBgm (areaId, id, eventName) VALUES
 , (300401, 1002, 'bgm_adv_00_basic_01')
 , (300501, 1005, '')
 , (101381, 1502, '')
+, (130801, 201, 'bgm_adv_02_basic')
 ;
 
 -- Area 300402
