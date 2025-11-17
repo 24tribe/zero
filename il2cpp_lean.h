@@ -10077,4 +10077,96 @@ typedef struct LICGNCFAOFL_o {
 	LICGNCFAOFL_Fields fields;
 } LICGNCFAOFL_o;
 
+typedef struct Neon_Model_UserData_IUserDataManager_o Neon_Model_UserData_IUserDataManager_o;
+
+typedef struct System_Nullable_OILFBPIDOLM__Fields {
+	bool hasValue;
+	int32_t value;
+} System_Nullable_OILFBPIDOLM__Fields;
+
+typedef struct System_Nullable_OILFBPIDOLM__o {
+	System_Nullable_OILFBPIDOLM__Fields fields;
+} System_Nullable_OILFBPIDOLM__o;
+
+typedef struct BHMJBFFHHDF_Fields {
+	int32_t _ACDJAMAIODN_k__BackingField;
+	struct JDGBHFIBACG_o* _MAPCMMFLHMB_k__BackingField;
+	struct JDGBHFIBACG_o* _ONFEJDHIHOI_k__BackingField;
+	struct System_String_o* _BCBLDIIPODI_k__BackingField;
+	struct System_String_o* _MNHJCGDJIOD_k__BackingField;
+	struct System_String_o* _EECLNEPNDMH_k__BackingField;
+	int32_t _BDNBGLAPIDC_k__BackingField;
+	int32_t _DMAABMDFMBP_k__BackingField;
+	int32_t _OKLLAMHIFKD_k__BackingField;
+	struct System_Nullable_DateTime__o _HCNLCGDHEOL_k__BackingField;
+	struct System_Collections_Generic_IReadOnlyList_DGDHCLLOGKM__o* _MBPIHOIEHCM_k__BackingField;
+	struct System_Collections_Generic_IReadOnlyList_IKAFHEBKEHP__o* _HGPOJGMBDHL_k__BackingField;
+	struct DCBALGFPAFP_o* _MNMPFFAKGFK_k__BackingField;
+	struct System_Collections_Generic_IReadOnlyList_IKAFHEBKEHP__o* _KKBLHLCJGFM_k__BackingField;
+	struct System_Collections_Generic_IReadOnlyList_BHMJBFFHHDF_JBBEKHPBKLP__o* _GNONBCGGHHP_k__BackingField;
+	struct System_Nullable_OILFBPIDOLM__o _FFHFIFCCIIA_k__BackingField;
+} BHMJBFFHHDF_Fields;
+
+typedef struct BHMJBFFHHDF_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} BHMJBFFHHDF_VTable;
+
+typedef struct BHMJBFFHHDF_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	BHMJBFFHHDF_VTable vtable;
+} BHMJBFFHHDF_c;
+
+typedef struct BHMJBFFHHDF_o {
+	BHMJBFFHHDF_c *klass;
+	void *monitor;
+	BHMJBFFHHDF_Fields fields;
+} BHMJBFFHHDF_o;
+
+typedef struct System_Collections_Generic_IReadOnlyList_BHMJBFFHHDF_JBBEKHPBKLP__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	VirtualInvokeData vtable[32];
+} System_Collections_Generic_IReadOnlyList_BHMJBFFHHDF_JBBEKHPBKLP__c;
+
+typedef struct System_Collections_Generic_IReadOnlyList_BHMJBFFHHDF_JBBEKHPBKLP__o {
+	System_Collections_Generic_IReadOnlyList_BHMJBFFHHDF_JBBEKHPBKLP__c *klass;
+	void *monitor;
+	/* System_Collections_Generic_IReadOnlyList_BHMJBFFHHDF_JBBEKHPBKLP__Fields fields; */
+} System_Collections_Generic_IReadOnlyList_BHMJBFFHHDF_JBBEKHPBKLP__o;
+
+typedef struct BHMJBFFHHDF_JBBEKHPBKLP_Fields {
+	int32_t _DOHHEEOGGIE_k__BackingField;
+	int32_t _GHPPBKDAPNB_k__BackingField;
+	int32_t _CNPHIKPJOJF_k__BackingField;
+} BHMJBFFHHDF_JBBEKHPBKLP_Fields;
+
+typedef struct BHMJBFFHHDF_JBBEKHPBKLP_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} BHMJBFFHHDF_JBBEKHPBKLP_VTable;
+
+typedef struct BHMJBFFHHDF_JBBEKHPBKLP_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	BHMJBFFHHDF_JBBEKHPBKLP_VTable vtable;
+} BHMJBFFHHDF_JBBEKHPBKLP_c;
+
+typedef struct BHMJBFFHHDF_JBBEKHPBKLP_o {
+	BHMJBFFHHDF_JBBEKHPBKLP_c *klass;
+	void *monitor;
+	BHMJBFFHHDF_JBBEKHPBKLP_Fields fields;
+} BHMJBFFHHDF_JBBEKHPBKLP_o;
+
 #endif

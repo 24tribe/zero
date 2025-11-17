@@ -448,6 +448,47 @@ void Hook_EMDHIMNBAPC___ctor(void) {
     }
 }
 
+BHMJBFFHHDF__CDMDMMJMIBJ_FuncPtr fpBHMJBFFHHDF__CDMDMMJMIBJ = NULL;
+
+bool Detour_BHMJBFFHHDF__CDMDMMJMIBJ(
+    BHMJBFFHHDF_o* __this, Neon_Model_UserData_IUserDataManager_o* NBGJFBBJNHI, const MethodInfo* method
+) {
+    int32_t id = __this->fields._ACDJAMAIODN_k__BackingField;
+    printf("id: %lld\n", (long long)id);
+
+    System_Nullable_OILFBPIDOLM__o *prerequisite_quest_id = &__this->fields._FFHFIFCCIIA_k__BackingField;
+    if (prerequisite_quest_id->fields.hasValue) {
+        printf("prerequisite_quest_id: %lld\n", (long long)prerequisite_quest_id->fields.value);
+    }
+
+    int32_t event_floor_id = __this->fields._BDNBGLAPIDC_k__BackingField;
+    printf("event_floor_id: %lld\n", (long long)event_floor_id);
+
+    int32_t priority = __this->fields._DMAABMDFMBP_k__BackingField;
+    printf("priority: %lld\n", (long long)priority);
+
+    int32_t quest_id = __this->fields._OKLLAMHIFKD_k__BackingField;
+    printf("quest_id: %lld\n", (long long)quest_id);
+
+    return fpBHMJBFFHHDF__CDMDMMJMIBJ(__this, NBGJFBBJNHI, method);
+}
+
+void Hook_BHMJBFFHHDF__CDMDMMJMIBJ(void) {
+    if (MH_CreateHook(
+        (void *)(uintptr_t)BHMJBFFHHDF__CDMDMMJMIBJ,
+        (LPVOID)(uintptr_t)&Detour_BHMJBFFHHDF__CDMDMMJMIBJ,
+        (LPVOID *)&fpBHMJBFFHHDF__CDMDMMJMIBJ
+    ) != MH_OK) {
+        printf("Failed to create BHMJBFFHHDF__CDMDMMJMIBJ hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)BHMJBFFHHDF__CDMDMMJMIBJ, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable BHMJBFFHHDF__CDMDMMJMIBJ hook\n");
+        return;
+    }
+}
+
 UnityEngine_Camera__set_fieldOfView_FuncPtr fpUnityEngine_Camera__set_fieldOfView = NULL;
 
 bool useCustomFov = false;
@@ -563,6 +604,7 @@ void HookTN(void *GameAssembly) {
     Hook_UnityEngine_Transform__set_rotation();
     Hook_UnityEngine_Camera__set_fieldOfView();
     Hook_EMDHIMNBAPC___ctor();
+    Hook_BHMJBFFHHDF__CDMDMMJMIBJ();
 
     RunNimMainOnce();
 
