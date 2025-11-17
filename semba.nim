@@ -61,13 +61,17 @@ proc adventure_ReleaseEventLift(jsonReq: JsonNode): JsonNode =
     "changedResources": {}
   }
 
+const minEventFloorNodeId = 113101
+const maxEventFloorNodeId = 113128
+
 proc getEventFloorNodes(): seq[JsonNode] =
-  #for eventFloorNodeId in 113101..113128:
-  for eventFloorNodeId in 113101..113101:
-    result.add(%*{
+  for eventFloorNodeId in minEventFloorNodeId..minEventFloorNodeId:
+    var eventFloorNode = %*{
       "eventFloorNodeId": eventFloorNodeId,
       "unlockedAt": "2025-03-20T18:56:05Z"
-    })
+    }
+
+    result.add(eventFloorNode)
 
 proc event_ListNode(): JsonNode =
   let eventFloorNodes = getEventFloorNodes()
@@ -99,11 +103,17 @@ proc event_FinishNode(jsonReq: JsonNode): JsonNode =
 
   let newEventFloorNodeId = eventFloorNodeId + 1
 
+  var eventFloorNodes = newSeq[JsonNode]()
+
+  if newEventFloorNodeId <= maxEventFloorNodeId:
+    eventFloorNodes.add(%*{
+      "eventFloorNodeId": newEventFloorNodeId,
+      "unlockedAt": "2025-03-20T18:56:05Z"
+    })
+
   return %*{
     "changedResources": {
-      "eventFloorNodes": [
-        {"eventFloorNodeId": newEventFloorNodeId, "unlockedAt": "2025-03-20T18:56:05Z"}
-      ]
+      "eventFloorNodes": eventFloorNodes
     }
   }
 
