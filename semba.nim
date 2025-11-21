@@ -65,13 +65,23 @@ const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
 
 proc getEventFloorNodes(): seq[JsonNode] =
-  for eventFloorNodeId in minEventFloorNodeId..minEventFloorNodeId:
+  for eventFloorNodeId in minEventFloorNodeId..maxEventFloorNodeId:
     var eventFloorNode = %*{
       "eventFloorNodeId": eventFloorNodeId,
       "unlockedAt": "2025-03-20T18:56:05Z"
     }
 
     result.add(eventFloorNode)
+
+proc getQuestStates(): seq[JsonNode] =
+  for eventFloorNodeId in minEventFloorNodeId..maxEventFloorNodeId:
+    let questState = %*{
+      "questId": eventFloorNodeId,
+      "clearCount": 1,
+      "bestScore": 1
+    }
+
+    result.add(questState)
 
 proc event_ListNode(): JsonNode =
   let eventFloorNodes = getEventFloorNodes()
@@ -713,6 +723,12 @@ proc getTips(): seq[JsonNode] =
     FROM tips
   """)
 
+  # Lux Phantasma first tip
+  result.add(%*{
+    "tipId": 3027,
+    "releasedAt": "2025-09-10T02:17:06Z"
+  })
+
   for tipRow in tipsRows:
     let tipId = parseInt(tipRow[0])
     let releasedAt = tipRow[1]
@@ -794,6 +810,7 @@ proc user_LogIn(): JsonNode =
   let formations = getFormations()
   let adventureVariables = getAdventureVariables()
   let challengeTasks = getChallengeTasks()
+  let questStates = getQuestStates()
 
   return %*{
     "resources": {
@@ -817,7 +834,7 @@ proc user_LogIn(): JsonNode =
       "profile": {"name": "Yo Kuronaka3", "profileBannerId": 2010011, "characterLikabilityScale": 500},
       "profileBanners": [{"profileBannerId": 2010011, "receivedAt": "2025-09-10T02:22:51Z"}],
       "tutorialStates": getTutorialStates(),
-
+      "questStates": getQuestStates(),
     },
     "masterData": {"shopProducts": getShopProducts()}
   }
