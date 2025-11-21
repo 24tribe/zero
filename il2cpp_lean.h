@@ -10169,4 +10169,72 @@ typedef struct BHMJBFFHHDF_JBBEKHPBKLP_o {
 	BHMJBFFHHDF_JBBEKHPBKLP_Fields fields;
 } BHMJBFFHHDF_JBBEKHPBKLP_o;
 
+typedef struct Google_Protobuf_Collections_RepeatedField_AreaObject__Fields {
+	struct Neon_Model_Api_Model_AreaObject_array* array;
+	int32_t count;
+} Google_Protobuf_Collections_RepeatedField_AreaObject__Fields;
+
+typedef struct Google_Protobuf_Collections_RepeatedField_AreaObject__o {
+	struct Google_Protobuf_Collections_RepeatedField_AreaObject__c *klass;
+	void *monitor;
+	Google_Protobuf_Collections_RepeatedField_AreaObject__Fields fields;
+} Google_Protobuf_Collections_RepeatedField_AreaObject__o;
+
+typedef struct Neon_Model_Api_Rpc_AdventureAreaObjectResponse_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	struct Google_Protobuf_Collections_RepeatedField_AreaObject__o* areaObjects_;
+	struct Google_Protobuf_Collections_RepeatedField_AreaItem__o* areaItems_;
+	struct Google_Protobuf_Collections_RepeatedField_BloodStain__o* bloodStains_;
+} Neon_Model_Api_Rpc_AdventureAreaObjectResponse_Fields;
+
+typedef struct Neon_Model_Api_Rpc_AdventureAreaObjectResponse_o {
+	struct Neon_Model_Api_Rpc_AdventureAreaObjectResponse_c *klass;
+	void *monitor;
+	Neon_Model_Api_Rpc_AdventureAreaObjectResponse_Fields fields;
+} Neon_Model_Api_Rpc_AdventureAreaObjectResponse_o;
+
+typedef struct Neon_Model_Api_Model_AreaObjectAction_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	int32_t type_;
+	int32_t id_;
+	struct System_String_o* label_;
+	struct System_Nullable_int__o areaItemId_;
+	struct System_Nullable_int__o areaEnemyId_;
+	struct System_Nullable_int__o battleEntryId_;
+	struct System_Nullable_int__o sequenceId_;
+	struct System_Nullable_int__o graffitiArtId_;
+	struct System_Nullable_int__o warpPointId_;
+	struct System_Nullable_int__o fieldBossId_;
+	struct System_Nullable_int__o dungeonId_;
+	struct System_Nullable_int__o eventLiftId_;
+} Neon_Model_Api_Model_AreaObjectAction_Fields;
+
+typedef struct Neon_Model_Api_Model_AreaObjectAction_o {
+	struct Neon_Model_Api_Model_AreaObjectAction_c *klass;
+	void *monitor;
+	Neon_Model_Api_Model_AreaObjectAction_Fields fields;
+} Neon_Model_Api_Model_AreaObjectAction_o;
+
+typedef struct Neon_Model_Api_Model_AreaObject_Fields {
+	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
+	struct System_Nullable_int__o areaObjectId_;
+	int32_t areaPointId_;
+	struct System_Nullable_int__o areaObjectBehaviorId_;
+	struct System_Nullable_int__o areaEnemyRateSetId_;
+	struct Neon_Model_Api_Model_AreaObjectAction_o* action_;
+} Neon_Model_Api_Model_AreaObject_Fields;
+
+typedef struct Neon_Model_Api_Model_AreaObject_o {
+	struct Neon_Model_Api_Model_AreaObject_c *klass;
+	void *monitor;
+	Neon_Model_Api_Model_AreaObject_Fields fields;
+} Neon_Model_Api_Model_AreaObject_o;
+
+typedef struct Neon_Model_Api_Model_AreaObject_array {
+	Il2CppObject obj;
+	Il2CppArrayBounds *bounds;
+	il2cpp_array_size_t max_length;
+	Neon_Model_Api_Model_AreaObject_o* m_Items[65535];
+} Neon_Model_Api_Model_AreaObject_array;
+
 #endif
