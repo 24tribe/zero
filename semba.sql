@@ -218,6 +218,12 @@ CREATE TABLE questStates (
     bestScore INTEGER
 );
 
+DROP TABLE IF EXISTS clearedAchievements;
+CREATE TABLE clearedAchievements (
+    id INTEGER PRIMARY KEY,
+    eventFloorNodeId INTEGER
+);
+
 INSERT INTO questStates (questId, clearCount, bestScore)
 VALUES
 (113101, 1, 1),

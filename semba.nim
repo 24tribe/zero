@@ -5,6 +5,8 @@ import system/ansi_c
 import std/math
 import std/times
 import std/httpclient
+import std/setutils
+import std/sequtils
 
 import db_connector/db_sqlite
 
@@ -64,6 +66,15 @@ proc adventure_ReleaseEventLift(jsonReq: JsonNode): JsonNode =
 const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
 
+proc getClearedAchievementIds(eventFloorNodeId: int): set[uint16] =
+  let rows = db.getAllRows(
+    sql"SELECT id FROM clearedAchievements WHERE eventFloorNodeId = ?", eventFloorNodeId
+  )
+
+  for row in rows:
+    let clearedAchievementId = parseInt(row[0])
+    result.incl(clearedAchievementId.uint16)
+
 proc getEventFloorNodes(): seq[JsonNode] =
   for eventFloorNodeId in minEventFloorNodeId..maxEventFloorNodeId:
     var eventFloorNode = %*{
@@ -71,7 +82,40 @@ proc getEventFloorNodes(): seq[JsonNode] =
       "unlockedAt": "2025-03-20T18:56:05Z"
     }
 
+    let clearedAchievementIds = toSeq(getClearedAchievementIds(eventFloorNodeId))
+
+    if clearedAchievementIds.len > 0:
+      eventFloorNode["clearedAchievementIds"] = %*clearedAchievementIds
+
     result.add(eventFloorNode)
+
+proc updateQuestStates(questId: int, score: int): seq[JsonNode] =
+  let row = db.getRow(sql"SELECT clearCount, bestScore FROM questStates WHERE questId = ?", questId)
+
+  var clearCount = 1
+  var bestScore = score
+
+  if row[0] == "":
+    db.exec(sql"""
+      INSERT INTO questStates (questId, clearCount, bestScore)
+      VALUES (?, 1, ?)
+    """, questId, bestScore)
+  else:
+    clearCount += parseInt(row[0])
+    let lastBestScore = parseInt(row[1])
+    if lastBestScore > bestScore:
+      bestScore = lastBestScore
+    else:
+      db.exec(
+        sql"UPDATE questStates SET clearCount = ?, bestScore = ? WHERE questId = ?",
+        clearCount, bestScore, questId
+      )
+
+  result.add(%*{
+    "questId": questId,
+    "clearCount": clearCount,
+    "bestScore": bestScore
+  })
 
 proc getQuestStates(): seq[JsonNode] =
   let rows = db.getAllRows(sql"SELECT questId, clearCount, bestScore FROM questStates")
@@ -112,24 +156,48 @@ proc adventure_WarpAreaLocator(jsonReq: JsonNode): JsonNode =
   else:
     return nil
 
+proc updateEventFloorNodes(eventFloorNodeId: int, clearedAchievementIds: set[uint16]): seq[JsonNode] =
+  let ids = clearedAchievementIds + getClearedAchievementIds(eventFloorNodeId)
+
+  for id in ids:
+    db.exec(sql"""
+      INSERT INTO clearedAchievements (id, eventFloorNodeId)
+      VALUES (?, ?)
+      ON CONFLICT (id) DO
+      UPDATE SET eventFloorNodeId = excluded.eventFloorNodeId
+    """, id, eventFloorNodeId)
+
+  let res = %*{
+    "eventFloorNodeId": eventFloorNodeId,
+    "unlockedAt": "2025-03-20T18:56:05Z",
+  }
+
+  res["clearedAchievementIds"] = %*toSeq(ids)
+
+  result.add(res)
+
 proc event_FinishNode(jsonReq: JsonNode): JsonNode =
   let eventFloorNodeId = jsonReq["eventFloorNodeId"].getInt()
+  let questResult = jsonReq{"questResult"}.getStr("success")
+  let clearedAchievementIds: JsonNode = jsonReq{"clearedAchievementIds"}
 
-  let newEventFloorNodeId = eventFloorNodeId + 1
-
-  var eventFloorNodes = newSeq[JsonNode]()
-
-  if newEventFloorNodeId <= maxEventFloorNodeId:
-    eventFloorNodes.add(%*{
-      "eventFloorNodeId": newEventFloorNodeId,
-      "unlockedAt": "2025-03-20T18:56:05Z"
-    })
-
-  return %*{
+  result = %*{
     "changedResources": {
-      "eventFloorNodes": eventFloorNodes
     }
   }
+
+  if questResult == "success":
+    let score = jsonReq["result"]["score"].getInt()
+    let questStates = updateQuestStates(eventFloorNodeId, score)
+    result["changedResources"]["questStates"] = %*questStates
+
+    var ids: set[uint16] = {}
+    if clearedAchievementIds != nil:
+      for id in clearedAchievementIds:
+        ids.incl(id.getInt().uint16)
+
+    let eventFloorNodes = updateEventFloorNodes(eventFloorNodeId, ids)
+    result["changedResources"]["eventFloorNodes"] = %*eventFloorNodes
 
 proc getEventLiftAreaObject(areaPointId: int): JsonNode =
   return %*{
