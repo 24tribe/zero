@@ -74,14 +74,18 @@ proc getEventFloorNodes(): seq[JsonNode] =
     result.add(eventFloorNode)
 
 proc getQuestStates(): seq[JsonNode] =
-  for eventFloorNodeId in minEventFloorNodeId..maxEventFloorNodeId:
-    let questState = %*{
-      "questId": eventFloorNodeId,
-      "clearCount": 1,
-      "bestScore": 1
-    }
+  let rows = db.getAllRows(sql"SELECT questId, clearCount, bestScore FROM questStates")
 
-    result.add(questState)
+  for row in rows:
+    let questId = parseInt(row[0])
+    let clearCount = parseInt(row[1])
+    let bestScore = parseInt(row[2])
+
+    result.add(%*{
+      "questId": questId,
+      "clearCount": clearCount,
+      "bestScore": bestScore
+    })
 
 proc event_ListNode(): JsonNode =
   let eventFloorNodes = getEventFloorNodes()

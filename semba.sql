@@ -211,6 +211,45 @@ CREATE TABLE areaItemRewards (
     rewards STRING
 );
 
+DROP TABLE IF EXISTS questStates;
+CREATE TABLE questStates (
+    questId INTEGER PRIMARY KEY,
+    clearCount INTEGER,
+    bestScore INTEGER
+);
+
+INSERT INTO questStates (questId, clearCount, bestScore)
+VALUES
+(113101, 1, 1),
+(113102, 1, 1),
+(113103, 1, 1),
+(113104, 1, 1),
+(113105, 1, 1),
+(113106, 1, 1),
+(113107, 1, 1),
+(113108, 1, 1),
+(113109, 1, 1),
+(113110, 1, 1),
+(113111, 1, 1),
+(113112, 1, 1),
+(113113, 1, 1),
+(113114, 1, 1),
+(113115, 1, 1),
+(113116, 1, 1),
+(113117, 1, 1),
+(113118, 1, 1),
+(113119, 1, 1),
+(113120, 1, 1),
+(113121, 1, 1),
+(113122, 1, 1),
+(113123, 1, 1),
+(113124, 1, 1),
+(113125, 1, 1),
+(113126, 1, 1),
+(113127, 1, 1),
+(113128, 1, 1)
+;
+
 INSERT INTO areaItemRewards (areaItemId, rewards) VALUES
 (10500102, '[{"type": 5, "contents": [{"type": 3, "id": 1, "quantity": 1000}, {"type": 13, "id": 1, "quantity": 100}, {"type": 7, "id": 2, "quantity": 500}, {"type": 7, "id": 5031, "quantity": 1}]}]')
 ,(10500202, '[{"type": 5, "contents": [{"type": 3, "id": 1, "quantity": 1000}, {"type": 13, "id": 1, "quantity": 100}, {"type": 7, "id": 2, "quantity": 500}, {"type": 7, "id": 5021, "quantity": 1}]}]')
