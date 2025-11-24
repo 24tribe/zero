@@ -102,8 +102,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine,
 
     PROCESS_INFORMATION processInfo;
 
-    MessageBoxA(NULL, cmd.c_str(), NULL, 0);
-
     if (CreateProcessA(
       NULL, const_cast<char *>(cmd.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo
     )) {
