@@ -1,6 +1,9 @@
 project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'])
 
 cc = meson.get_compiler('c')
+fs = import('fs')
+sqlite3 = find_program('sqlite3', required : true)
+python3 = find_program('python3', required : true)
 
 d3d11_lib = cc.find_library('d3d11')
 imgui = dependency('imgui', default_options : 'default_library=static')
@@ -23,10 +26,6 @@ jansson_dep = jansson_proj.get_variable('libjansson_dep')
 inih_proj = subproject('inih')
 inih_dep = inih_proj.get_variable('libinih_dep')
 
-fs = import('fs')
-semba_nimble = fs.copyfile('semba.nimble')
-sqlite3_c = fs.copyfile('sqlite3.c')
-
 fs.copyfile('config.ini.dist', 'config.ini', install : true, install_dir : '.')
 fs.copyfile('steam_appid.txt', install : true, install_dir : '.')
 fs.copyfile('TRIBENINE.bat', install : true, install_dir : '.')
@@ -37,37 +36,7 @@ script_json = dumper_out_proj.get_variable('script_json')
 goldberg_steam_proj = subproject('goldberg_steam')
 goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
-nimble = find_program('nimble', required : true)
-
-libsemba = custom_target(
-    'libsemba',
-    depends : [semba_nimble, sqlite3_c],
-    input : ['semba.nim'],
-    output : 'libsemba.a',
-    command : [nimble, 'c', '-d:staticSqlite', '--verbose', '--app:staticlib', '--noMain:on', '-o:@OUTPUT@', '@INPUT@']
-)
-
-sembaserver = custom_target(
-    'sembaserver',
-    depends : [semba_nimble, sqlite3_c],
-    input : ['semba.nim', 'sembaserver.nim'],
-    output : 'sembaserver.exe',
-    command : [nimble, 'c', '-d:staticSqlite', '--verbose', '--app:console', '--threadAnalysis:off', '-o:@OUTPUT@', '@INPUT@'],
-    build_by_default : true
-)
-
-sqlite3 = find_program('sqlite3', required : true)
-
-semba_db = custom_target(
-    'semba_db',
-    input : 'semba.sql',
-    output : 'semba.db',
-    command : [sqlite3, '@OUTPUT@'],
-    feed : true,
-    build_by_default : true,
-    install : true,
-    install_dir : '.'
-)
+subdir('semba')
 
 onlineLogs_db = custom_target(
     'onlineLogs_db',
@@ -79,8 +48,6 @@ onlineLogs_db = custom_target(
     install : true,
     install_dir : '.'
 )
-
-python3 = find_program('python3', required : true)
 
 func_ptrs = custom_target(
     'il2cppFuncPtrs',
@@ -110,7 +77,6 @@ zero_src = [
     'TimeString.c',
     'FuncPtrs.c',
     'md5sum.c',
-    'NimInit.c',
     func_ptrs,
     autohook_tn,
     're.c',
@@ -120,10 +86,6 @@ zero_src = [
     'UserInterface.cpp',
     'DrawFunc.cpp',
 ]
-
-semba_dep = declare_dependency(
-    link_with : libsemba
-)
 
 zero_deps = [
     libminhook_dep,
@@ -141,10 +103,6 @@ shared_library('zero', zero_src, dependencies : zero_deps, install : true, insta
 
 executable('loader', 'loader.c', install : true, install_dir : '.')
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
-
-executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
-
-executable('semba', 'semba.c', dependencies : [semba_dep])
 
 executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 

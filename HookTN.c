@@ -16,12 +16,12 @@ References:
 #include "Il2CppHelper.h"
 #include "Config.h"
 #include "TimeString.h"
-#include "NimInit.h"
+#include "semba/NimInit.h"
 #include "Patterns.h"
+#include "semba/semba.h"
 
 #include <MinHook.h>
 #include <sds.h>
-#include <semba.h>
 
 #include <stdio.h>
 #include <string.h>
