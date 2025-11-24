@@ -1,8 +1,5 @@
-find_program('nimble', required : true)
-
-nim = find_program('nim')
+nim = find_program('nim', required : true)
 sqlite3_c = fs.copyfile('sqlite3.c')
-nimble_wrapper = fs.copyfile('nimble_wrapper.py')
 
 semba_extra = static_library('semba_extra', 'NimInit.c')
 
