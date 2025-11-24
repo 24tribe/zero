@@ -2,7 +2,6 @@
 #include "TimeString.h"
 #include "sds_utf_conv.h"
 
-#include <jansson.h>
 #include <sds.h>
 
 #include <windows.h>
