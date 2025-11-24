@@ -13,6 +13,6 @@ launcher_bg = custom_target(
 
 executable(
     'launcher', 'launcher.cpp',
-    dependencies : [webview_dep, sds_dep],
+    dependencies : [webview_dep, sds_dep, jansson_dep],
     win_subsystem : 'windows'
 )

@@ -32,8 +32,19 @@
 </style>
 </head><body>
     <div id="main">
-        <button id="start" type="button" onclick="alert('Hello world!')">Start</button>
+        <button id="start" type="button">Start</button>
     </div>
 <script>
+    let start_button = document.getElementById("start");
+
+    start_button.addEventListener("click", () => {
+        const item_key = "tribe_nine_exe";
+        const tribe_nine_exe = localStorage.getItem(item_key);
+        if (tribe_nine_exe === null) {
+            selectTribeNineExePath().then((path) => {
+                console.log(path);
+            });
+        }
+    });
 
 </script></body></html>
