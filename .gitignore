@@ -23,4 +23,6 @@ onlineLogs
 
 subprojects/goldberg_steam
 subprojects/imgui-1.91.6
+subprojects/webview-55b438dc11d0e46bc68526822380963ae9d362af
+
 imgui.ini

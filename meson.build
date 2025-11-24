@@ -5,6 +5,9 @@ fs = import('fs')
 sqlite3 = find_program('sqlite3', required : true)
 python3 = find_program('python3', required : true)
 
+webview_proj = subproject('webview-55b438dc11d0e46bc68526822380963ae9d362af')
+webview_dep = webview_proj.get_variable('webview_dep')
+
 d3d11_lib = cc.find_library('d3d11')
 imgui = dependency('imgui', default_options : 'default_library=static')
 
@@ -109,5 +112,7 @@ executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
 
 executable('imguitest', 'imguitest.cpp', 'DrawFunc.cpp', dependencies : [d3d11_lib, imgui])
+
+executable('webview', 'webview.cpp', dependencies : webview_dep)
 
 subdir('dump_ga')
