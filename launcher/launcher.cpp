@@ -12,6 +12,21 @@
 #define CURRENT_DIR_SIZE 4096
 #define EXE_PATH_SIZE 4096
 
+std::string EscapePath(const char *s) {
+  std::string res;
+
+  res.push_back('\"');
+  while (*s) {
+    if (*s == '\\' || *s == ' ') {
+      res.push_back('\\');
+    }
+    res.push_back(*s++);
+  }
+  res.push_back('\"');
+
+  return res;
+}
+
 static void initOpenInfo(OPENFILENAMEA* openInfo, char *exePath) {
   ZeroMemory(openInfo, sizeof(*openInfo));
   openInfo->lStructSize = sizeof(*openInfo);
@@ -21,12 +36,20 @@ static void initOpenInfo(OPENFILENAMEA* openInfo, char *exePath) {
   openInfo->Flags = OFN_FILEMUSTEXIST;
 }
 
+char CURRENT_DIR[CURRENT_DIR_SIZE];
+
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine,
                    int nCmdShow) {
   (void)hInst;
   (void)hPrevInst;
   (void)lpCmdLine;
   (void)nCmdShow;
+
+  // FIXME: this should be GetCurrentDirectoryW
+  if (GetCurrentDirectoryA(CURRENT_DIR_SIZE, CURRENT_DIR) == 0) {
+    return 0;
+  }
+
   webview_t w = webview_create(1, NULL);
   webview_set_title(w, "Tribe Nine Launcher");
   webview_set_size(w, 720, 480, WEBVIEW_HINT_NONE);
@@ -50,14 +73,50 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine,
     }
   }, w);
 
-  char current_dir[CURRENT_DIR_SIZE];
-  // FIXME: this should be GetCurrentDirectoryW
-  if (GetCurrentDirectoryA(CURRENT_DIR_SIZE, current_dir) == 0) {
-    return 0;
-  }
+  webview_bind(w, "launchTribeNine", [](const char *id, const char *req, void *arg) {
+    webview_t wv = reinterpret_cast<webview_t>(arg);
+    json_t *jsonReq = json_loads(req, 0, NULL);
+    if (!jsonReq || json_array_size(jsonReq) == 0) {
+      webview_return(wv, id, 1, "");
+      return;
+    }
+
+    const char *exePath = json_string_value(json_array_get(jsonReq, 0));
+
+    if (!exePath) {
+      webview_return(wv, id, 1, "");
+      return;
+    }
+
+    std::string dllPath{CURRENT_DIR};
+    dllPath.append("/libzero.dll");
+
+    std::string cmd = "./loader.exe ";
+    cmd.append(EscapePath(exePath));
+    cmd.push_back(' ');
+    cmd.append(EscapePath(dllPath.c_str()));
+
+    STARTUPINFO info;
+    ZeroMemory(&info, sizeof(info));
+    info.cb = sizeof(info);
+
+    PROCESS_INFORMATION processInfo;
+
+    MessageBoxA(NULL, cmd.c_str(), NULL, 0);
+
+    if (CreateProcessA(
+      NULL, const_cast<char *>(cmd.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo
+    )) {
+        CloseHandle(processInfo.hProcess);
+        CloseHandle(processInfo.hThread);
+    }
+
+    webview_terminate(wv);
+  }, w);
+
 
   std::stringstream index_path;
-  index_path << "file:///" << current_dir << "/index.html";
+  index_path << "file:///" << CURRENT_DIR << "/index.html";
   webview_navigate(w, index_path.str().c_str());
   webview_run(w);
   webview_destroy(w);

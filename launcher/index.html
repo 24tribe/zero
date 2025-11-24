@@ -38,12 +38,15 @@
     let start_button = document.getElementById("start");
 
     start_button.addEventListener("click", () => {
-        const item_key = "tribe_nine_exe";
-        const tribe_nine_exe = localStorage.getItem(item_key);
+        const TRIBE_NINE_EXE_KEY = "tribe_nine_exe";
+        const tribe_nine_exe = localStorage.getItem(TRIBE_NINE_EXE_KEY);
         if (tribe_nine_exe === null) {
             selectTribeNineExePath().then((path) => {
-                console.log(path);
+                localStorage.setItem(TRIBE_NINE_EXE_KEY, path);
+                launchTribeNine(path);
             });
+        } else {
+            launchTribeNine(tribe_nine_exe)
         }
     });
 
