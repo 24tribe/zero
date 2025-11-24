@@ -5,8 +5,6 @@
 
 #include <sds.h>
 
-sds CreateStackTracePath(const char *url);
-void SaveStackTrace(sds url);
 System_String_o *ConvertObjectToString(Il2CppObject *obj);
 System_String_o *GetStackTrace(void);
 

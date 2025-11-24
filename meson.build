@@ -118,7 +118,6 @@ zero_src = [
     autohook_tn,
     're.c',
     'sds_utf_conv.c',
-    'stacktrace_path.c',
     'Patterns.c',
     'Backend.cpp',
     'UserInterface.cpp',
@@ -154,13 +153,6 @@ executable(
 )
 
 executable('RegenSections', 'RegenSections.c', 'Section.c')
-
-executable(
-    'test_stacktrace_logger',
-    'test_stacktrace_logger.c',
-    'stacktrace_path.c',
-    dependencies : sds_dep
-)
 
 executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
 

@@ -107,7 +107,6 @@ void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, i
         uri = CreateSystemUri("https://httpbin.org/status/500");
     }
     SaveNeonApiPath(url);
-    SaveStackTrace(url);
     sdsfree(url);
     fpHTTPRequestCtor(__this, uri, methodType, method);
 }

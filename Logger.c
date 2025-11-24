@@ -2,7 +2,6 @@
 #include "utils.h"
 #include "TimeString.h"
 #include "sds_utf_conv.h"
-#include "stacktrace_path.h"
 
 #include <sds.h>
 #include <jansson.h>
@@ -26,35 +25,6 @@ System_String_o *GetStackTrace(void) {
     toStringFunc = (System_Diagnostics_StackTrace_toString)(uintptr_t)(toString->methodPtr);
     System_String_o *stackTraceStr = toStringFunc(stackTrace, toString->method);
     return stackTraceStr;
-}
-
-void SaveStackTrace(sds url) {
-    printf("[SaveStackTrace] %s\n", url);
-
-    sds path = CreateStackTracePath(url);
-
-    FILE *fpRead = fopen(path, "rb");
-    
-    if (fpRead) {
-        fclose(fpRead);
-        return;
-    } 
-
-    System_String_o *stackTrace = GetStackTrace();
-
-    sds stackTraceUtf8 = sds16to8(&(stackTrace->fields._firstChar), stackTrace->fields._stringLength);
-
-    FILE *fp = fopen(path, "wb");
-
-    if (fp) {
-        fwrite(stackTraceUtf8, 1, sdslen(stackTraceUtf8), fp);
-        fflush(fp);
-        fclose(fp);
-    } else {
-        printf("Failed to open stacktrace file: %s\n", path);
-    }
-
-    sdsfree(stackTraceUtf8);
 }
 
 System_String_o *ConvertObjectToString(Il2CppObject *obj) {
