@@ -57,20 +57,6 @@ void SaveStackTrace(sds url) {
     sdsfree(stackTraceUtf8);
 }
 
-void GetNameAndNamespaze(Il2CppObject *obj, const char **name, const char **namespaze) {
-    *name = "";
-    *namespaze = "";
-
-    if (obj) {
-        Il2CppClass *klass = obj->klass;
-    
-        if (klass) {
-            *name = klass->_1.name;
-            *namespaze = klass->_1.namespaze;
-        }
-    }
-}
-
 System_String_o *ConvertObjectToString(Il2CppObject *obj) {
     object_toString toString = (object_toString)(uintptr_t)(obj->klass->vtable[3 /* _3_toString*/].methodPtr);
     return toString(obj, obj->klass->vtable[3 /* _3_toString*/].method);
