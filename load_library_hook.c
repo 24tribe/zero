@@ -1,7 +1,5 @@
 #include "utils.h"
 #include "RemapMem.h"
-#include "MetadataDump.h"
-#include "Recons.h"
 #include "HookIl2Cpp.h"
 #include "Config.h"
 #include "md5sum.h"
@@ -50,28 +48,6 @@ void CalculateMd5Sum(sds path) {
     }
 }
 
-void DumpTNGameAssembly(char *gameName, void *GameAssembly, unsigned long long GameAssemblySize) {
-    char dumpPath[MAX_PATH];
-    char addressPath[MAX_PATH];
-
-    int perr1 = snprintf(dumpPath, MAX_PATH, "%s.dump", gameName);
-    int perr2 = snprintf(addressPath, MAX_PATH, "%s.addr", gameName);
-    
-    if (perr1 < 0 || perr2 < 0 || perr1 >= MAX_PATH || perr2 >= MAX_PATH) {
-        fputs("snprintf dumpPath or addressPath failed\n", stdout);
-    } else {
-        if (SaveMetadata(dumpPath, (void *)GameAssembly, GameAssemblySize)) {
-            printf("Saved %s\n", dumpPath);
-        } else {
-            printf("Failed to save %s\n", dumpPath);
-        }
-
-        if (SaveAddress(addressPath, GameAssembly)) {
-            printf("Saved address to %s\n", addressPath);
-        }
-    }
-}
-
 void GameAssemblyCallback(HMODULE GameAssembly) {
     char path[MAX_PATH];
 
@@ -93,8 +69,6 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
 
     printf("GameAssembly: addr: %p, size: 0x%llx\n", (void *)GameAssembly, GameAssemblySize);
 
-    // DumpTNGameAssembly(gameName, GameAssembly, GameAssemblySize);
-   
     InitRemapMem();
 
     if (RemapViewOfSection(GetCurrentProcess(), (void*)GameAssembly, GameAssemblySize, PAGE_EXECUTE_READWRITE)) {

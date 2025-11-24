@@ -101,9 +101,6 @@ zero_src = [
     'load_library_hook.c',
     'NtQueryDirectoryFileHook.c',
     'RemapMem.c',
-    'MetadataDump.c',
-    'Recons.cpp',
-    'Section.c',
     'utils.c',
     'HookIl2Cpp.c',
     'HookTN.c',
@@ -143,16 +140,7 @@ zero_deps = [
 shared_library('zero', zero_src, dependencies : zero_deps, install : true, install_dir : '.')
 
 executable('loader', 'loader.c', install : true, install_dir : '.')
-executable('metadata_test', 'metadata_test.c', 'MetadataDump.c')
-executable('printsections', 'printsections.c', 'MetadataDump.c', dependencies : ntdll_lib)
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
-
-executable(
-    'reconsdll', 'reconsdll.cpp', 'MetadataDump.c', 'Section.c', 'Recons.cpp',
-    dependencies : [libpeconv_dep, ntdll_lib]
-)
-
-executable('RegenSections', 'RegenSections.c', 'Section.c')
 
 executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
 
@@ -163,3 +151,5 @@ executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
 
 executable('imguitest', 'imguitest.cpp', 'DrawFunc.cpp', dependencies : [d3d11_lib, imgui])
+
+subdir('dump_ga')
