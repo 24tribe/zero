@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine,
   (void)lpCmdLine;
   (void)nCmdShow;
   webview_t w = webview_create(1, NULL);
-  webview_set_title(w, "Basic Example");
+  webview_set_title(w, "Tribe Nine Launcher");
   webview_set_size(w, 720, 480, WEBVIEW_HINT_NONE);
   char current_dir[CURRENT_DIR_SIZE];
   // FIXME: this should be GetCurrentDirectoryW
