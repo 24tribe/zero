@@ -31,7 +31,6 @@ inih_dep = inih_proj.get_variable('libinih_dep')
 
 fs.copyfile('config.ini.dist', 'config.ini', install : true, install_dir : '.')
 fs.copyfile('steam_appid.txt', install : true, install_dir : '.')
-fs.copyfile('TRIBENINE.bat', install : true, install_dir : '.')
 
 dumper_out_proj = subproject('dumper_out')
 script_json = dumper_out_proj.get_variable('script_json')
