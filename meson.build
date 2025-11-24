@@ -113,6 +113,5 @@ executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
 
 executable('imguitest', 'imguitest.cpp', 'DrawFunc.cpp', dependencies : [d3d11_lib, imgui])
 
-executable('webview', 'webview.cpp', dependencies : webview_dep)
-
 subdir('dump_ga')
+subdir('launcher')

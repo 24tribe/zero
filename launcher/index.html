@@ -1,0 +1,39 @@
+<!DOCTYPE html><html><head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    #main {
+        background-image: url("launcher_bg.png");
+        background-size: cover;
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 10fr 4fr 1fr;
+        grid-template-rows: 10fr 1.5fr 1fr;
+    }
+
+    #start {
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 2;
+        grid-row-end: 3;
+        background-color: #257ec2;
+        font-size: 7vh;
+        font-weight: bold;
+        color: white;
+        border: 0px;
+    }
+
+    #start:hover {
+        background-color: #3792d8;
+    }
+</style>
+</head><body>
+    <div id="main">
+        <button id="start" type="button" onclick="alert('Hello world!')">Start</button>
+    </div>
+<script>
+
+</script></body></html>
