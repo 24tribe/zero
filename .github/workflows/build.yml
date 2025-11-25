@@ -1,0 +1,36 @@
+name: build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Python
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.13'
+
+    - uses: nim-lang/setup-nimble-action@v1
+      with:
+        nimble-version: '0.16.4'
+
+    - name: Meson install
+    - uses: BSFishy/meson-build@v1.0.3
+      with:
+        action: install
+        setup-options: -Dwarning_level=3
+        options: --dest-dir=$GITHUB_WORKSPACE/tnz-x64
+
+    - name: Upload Release
+      uses: actions/upload-artifact@v4
+      with:
+        name: tnz-x64
+        path: $GITHUB_WORKSPACE/tnz-x64
