@@ -2,7 +2,6 @@ project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'])
 
 cc = meson.get_compiler('c')
 fs = import('fs')
-sqlite3 = find_program('sqlite3', required : true)
 python3 = find_program('python3', required : true)
 
 webview_proj = subproject('webview-55b438dc11d0e46bc68526822380963ae9d362af')

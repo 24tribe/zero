@@ -1,6 +1,8 @@
 nim = find_program('nim', required : true)
 sqlite3_c = fs.copyfile('sqlite3.c')
 
+sqlite3 = executable('sqlite3', 'shell.c', 'sqlite3.c')
+
 semba_extra = static_library('semba_extra', 'NimInit.c')
 
 libsemba = custom_target(
