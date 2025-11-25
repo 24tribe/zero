@@ -1,5 +1,7 @@
 project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'])
 
+add_global_link_arguments('-static', language : ['c', 'cpp'])
+
 cc = meson.get_compiler('c')
 fs = import('fs')
 python3 = find_program('python3', required : true)
