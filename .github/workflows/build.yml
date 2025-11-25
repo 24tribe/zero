@@ -29,10 +29,10 @@ jobs:
         meson-version: 1.8.1
         action: install
         setup-options: -Dwarning_level=3
-        options: --destdir=$GITHUB_WORKSPACE/tnz-x64
+        options: --destdir=tnz-x64
 
     - name: Upload Release
       uses: actions/upload-artifact@v4
       with:
         name: tnz-x64
-        path: $GITHUB_WORKSPACE/tnz-x64
+        path: build/tnz-x64
