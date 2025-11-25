@@ -19,12 +19,12 @@ jobs:
         python-version: '3.13'
 
     - name: Setup Nimble
-    - uses: nim-lang/setup-nimble-action@v1
+      uses: nim-lang/setup-nimble-action@v1
       with:
         nimble-version: '0.16.4'
 
     - name: Meson install
-    - uses: BSFishy/meson-build@v1.0.3
+      uses: BSFishy/meson-build@v1.0.3
       with:
         action: install
         setup-options: -Dwarning_level=3
