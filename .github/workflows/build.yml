@@ -18,10 +18,10 @@ jobs:
       with:
         python-version: '3.13'
 
-    - name: Setup Nimble
-      uses: nim-lang/setup-nimble-action@v1
+    - name: Setup Nim
+      uses: jiro4989/setup-nim-action@v2
       with:
-        nimble-version: '0.16.4'
+        nim-version: '2.2.4'
 
     - name: Meson install
       uses: BSFishy/meson-build@v1.0.3
