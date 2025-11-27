@@ -1,3 +1,0 @@
-Build with:
-meson setup build -Dwarning_level=3
-ninja -C build
