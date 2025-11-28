@@ -30,44 +30,59 @@ bool SaveAddress(const char *outname, void *GameAssembly) {
     return true;
 }
 
-bool CheckMd5Sum(sds path, const char *gaHex) {
-    sds GameAssemblyDll = SlurpFile(path);
+char *GetMd5Sum(sds path) {
+    sds data = SlurpFile(path);
 
-     if (GameAssemblyDll) {
+    if (data) {
         uint8_t digest[16];
-        md5sum_buffer((const uint8_t*)GameAssemblyDll, sdslen(GameAssemblyDll), digest);
-        char *hex = md5_hex(digest);
-
-        bool res = !strcmp(hex, gaHex);
-
-        free(hex);
-        sdsfree(GameAssemblyDll);
-
-        return res;
+        md5sum_buffer((const uint8_t*)data, sdslen(data), digest);
+        sdsfree(data);
+        return md5_hex(digest);
     }
 
-    return false;
+    return NULL;
 }
 
-void CalculateMd5Sum(sds path) {
-    const char *hex = "bf87cdb761f931b8ff806b2bd7a376af";
-    if (CheckMd5Sum(path, hex)) {
-        printf("Correct md5sum!!!\n");
+#define STABLE_MD5SUM "bf87cdb761f931b8ff806b2bd7a376af"
+
+enum GameVersion {
+    VERSION_NONE,
+    VERSION_STABLE,
+    VERSION_DEMO,
+    VERSION_BETA,
+};
+
+enum GameVersion GetGameVersion(char *hex) {
+    enum GameVersion version;
+
+    if (!strcmp(hex, STABLE_MD5SUM)) {
+        version = VERSION_STABLE;
     } else {
-        printf("WARNING! Incorrect md5sum (%s), manually update script.json!\n", hex);
+        version = VERSION_NONE;
     }
+
+    return version;
 }
+
 
 void GameAssemblyCallback(HMODULE GameAssembly) {
     char path[MAX_PATH];
+
+    enum GameVersion version = VERSION_NONE;
 
     // E:\TRIBENINE\GameAssembly.dll
     // E:\SteamLibrary\steamapps\common\Ratatan Demo\GameAssembly.dll
     // D:\unity\example\Build\GameAssembly.dll
     // FIXME: should use GetModuleFileNameW
     if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
-        CalculateMd5Sum(path);
+        char *hex = GetMd5Sum(path);
+
+        version = GetGameVersion(hex);
+
+        free(hex);
     }
+
+    printf("GameVersion enum: %d\n", (int)version);
 
     if (alreadyCalledGameAssemblyCallback) {
         return;
