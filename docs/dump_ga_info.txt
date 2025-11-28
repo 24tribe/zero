@@ -1,0 +1,44 @@
+Tribe Nine
+----------
+
+Reconstruct DLL before rebasing
+================================
+
+Unity Version: 2022.3.51f1 (9f9d16c45e54)
+
+D:\tribenine\dllinj\build\loader.exe "E:\TRIBENINE\tribenine.exe" "D:\tribenine\dllinj\build\libzero.dll"
+
+After saving TRIBENINE.dump and TRIBENINE.addr (with the address of GameAssembly at runtime)
+
+./build/reconsdll.exe TRIBENINE.dump TribeNineDummy/GA.dll $(cat TRIBENINE.addr)
+
+../Cpp2IL/Cpp2IL/bin/Debug/net9.0/Cpp2IL.exe  --game-path TribeNineDummy/ --output-as dummydll --verbose
+
+PE-bear Optional Hdr Image Base: 0x7ffcc2850000
+Got Binary codereg: 0x7FFCC8CF1070, metareg: 0x7FFCC9B07360 in 986ms.
+
+I think AssemblyGenerator in MelonLoader fails beacuse it expect it to have a base address of 0x180000000...
+
+Apply manual relocations
+========================
+
+Open "x64 Native Tools Command Prompt for VS 2022"
+
+cd /D "D:\tribenine\dllinj"
+editbin /REBASE:BASE=0x180000000 "TribeNineDummy\GA2.dll"
+
+Dump .rdata and .data sections with PE-Bear to rdata.bin and data.bin and run...
+
+python scripts/fix_relocs.py rdata.bin rdata_out.bin $(cat TRIBENINE.addr)
+python scripts/fix_relocs.py data.bin data_out.bin $(cat TRIBENINE.addr)
+
+Then load the data_outs into the dll and run...
+
+"..\Il2CppDumper\Il2CppDumper\bin\Debug\net8.0\Il2CppDumper.exe" "TribeNineDummy/GA.dll" "TribeNineDummy\tribenine_Data\il2cpp_data\Metadata\global-metadata.dat" dumper_out
+
+And... it works!!! MelonLoader doesn't, but it's not a priority.
+
+Build IL2CppDumper
+------------------
+cd "D:/tribenine/Il2CppDumper/Il2CppDumper"
+dotnet build -f net8.0
