@@ -30,21 +30,31 @@ bool SaveAddress(const char *outname, void *GameAssembly) {
     return true;
 }
 
-void CalculateMd5Sum(sds path) {
+bool CheckMd5Sum(sds path, const char *gaHex) {
     sds GameAssemblyDll = SlurpFile(path);
 
-    if (GameAssemblyDll) {
+     if (GameAssemblyDll) {
         uint8_t digest[16];
         md5sum_buffer((const uint8_t*)GameAssemblyDll, sdslen(GameAssemblyDll), digest);
         char *hex = md5_hex(digest);
-        if (!strcmp(hex, "bf87cdb761f931b8ff806b2bd7a376af")) {
-            printf("Correct md5sum!!!\n");
-        } else {
-            printf("WARNING! Incorrect md5sum (%s), manually update script.json!\n", hex);
-        }
-        free(hex);
 
+        bool res = !strcmp(hex, gaHex);
+
+        free(hex);
         sdsfree(GameAssemblyDll);
+
+        return res;
+    }
+
+    return false;
+}
+
+void CalculateMd5Sum(sds path) {
+    const char *hex = "bf87cdb761f931b8ff806b2bd7a376af";
+    if (CheckMd5Sum(path, hex)) {
+        printf("Correct md5sum!!!\n");
+    } else {
+        printf("WARNING! Incorrect md5sum (%s), manually update script.json!\n", hex);
     }
 }
 
