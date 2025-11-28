@@ -1,3 +1,20 @@
+#include "GameAssemblyDump.h"
+
+#include "MetadataDump.h"
+
+#include <stdio.h>
+
+bool SaveAddress(const char *outname, void *GameAssembly) {
+    FILE *fp = fopen(outname, "w");
+    if (!fp) {
+        printf("fopen failed\n");
+        return false;
+    }
+    fprintf(fp, "%llu\n", (unsigned long long)GameAssembly);
+    fclose(fp);
+    return true;
+}
+
 void DumpTNGameAssembly(char *gameName, void *GameAssembly, unsigned long long GameAssemblySize) {
     char dumpPath[MAX_PATH];
     char addressPath[MAX_PATH];

@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "md5sum.h"
 #include "sds_utf_conv.h"
+#include "dump_ga/GameAssemblyDump.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -18,17 +19,6 @@ typedef HMODULE (WINAPI *LOADLIBRARYW)(LPCWSTR);
 
 LOADLIBRARYW fpLoadLibraryW = NULL;
 bool alreadyCalledGameAssemblyCallback = false;
-
-bool SaveAddress(const char *outname, void *GameAssembly) {
-    FILE *fp = fopen(outname, "w");
-    if (!fp) {
-        printf("fopen failed\n");
-        return false;
-    }
-    fprintf(fp, "%llu\n", (unsigned long long)GameAssembly);
-    fclose(fp);
-    return true;
-}
 
 char *GetMd5Sum(sds path) {
     sds data = SlurpFile(path);
@@ -69,19 +59,18 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
     char path[MAX_PATH];
 
     enum GameVersion version = VERSION_NONE;
+    char *hex = NULL;
 
     // E:\TRIBENINE\GameAssembly.dll
     // E:\SteamLibrary\steamapps\common\Ratatan Demo\GameAssembly.dll
     // D:\unity\example\Build\GameAssembly.dll
     // FIXME: should use GetModuleFileNameW
     if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
-        char *hex = GetMd5Sum(path);
-
+        hex = GetMd5Sum(path);
         version = GetGameVersion(hex);
-
-        free(hex);
     }
 
+    printf("GameAssembly hex: %s\n", hex);
     printf("GameVersion enum: %d\n", (int)version);
 
     if (alreadyCalledGameAssemblyCallback) {
@@ -93,6 +82,12 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
     unsigned long long GameAssemblySize = CalcDLLSize(GameAssembly);
 
     printf("GameAssembly: addr: %p, size: 0x%llx\n", (void *)GameAssembly, GameAssemblySize);
+
+    if (ZERO_CONFIG.dumpGameAssembly) {
+        DumpTNGameAssembly(hex, GameAssembly, GameAssemblySize);
+    }
+
+    free(hex);
 
     InitRemapMem();
 

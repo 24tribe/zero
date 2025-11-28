@@ -88,6 +88,8 @@ zero_src = [
     'Backend.cpp',
     'UserInterface.cpp',
     'DrawFunc.cpp',
+    'dump_ga/GameAssemblyDump.c',
+    'dump_ga/MetadataDump.c',
 ]
 
 zero_deps = [
