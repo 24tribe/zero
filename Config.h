@@ -11,6 +11,7 @@ struct Config {
     uint16_t *goldbergPath;
     char *sembaDbPath;
     char *remoteUrl;
+    bool dumpGameAssembly;
 };
 
 extern struct Config ZERO_CONFIG;
