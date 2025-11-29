@@ -33,11 +33,27 @@ inih_dep = inih_proj.get_variable('libinih_dep')
 fs.copyfile('config.ini.dist', 'config.ini', install : true, install_dir : '.')
 fs.copyfile('steam_appid.txt', install : true, install_dir : '.')
 
+dumper_out_proj = subproject('dumper_out')
+script_json = dumper_out_proj.get_variable('script_json')
+
 goldberg_steam_proj = subproject('goldberg_steam')
 goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
 subdir('semba')
-subdir('autogen')
+
+func_ptrs = custom_target(
+    'il2cppFuncPtrs',
+    input : ['scripts/genIl2CppPtrs.py', script_json, 'gameFuncs.txt', 'typeInfos.txt'],
+    output : 'funcPtrs.h',
+    command : [python3, '@INPUT@', '@OUTPUT@']
+)
+
+autohook_tn = custom_target(
+    'autohookTN',
+    input: ['scripts/genReqHook.py', script_json, 'reqHooks.csv'],
+    output : 'autohookTN.h',
+    command : [python3, '@INPUT@', '@OUTPUT@']
+)
 
 zero_src = [
     'mylib.c',
