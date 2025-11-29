@@ -5,25 +5,17 @@ Build instructions
 
 - Install the x64 version of the [net6.0 sdk](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-desktop-6.0.19)
 - Install [MelonLoader 0.7.1](https://github.com/LavaGang/MelonLoader/releases/tag/v0.7.1) into the game
-- Open the game and wait to the end of the assemblies dump
-- Add a reference to MelonLoader assembly in csproj, it should look like this:
+- Open the game and wait to the end of the assemblies dump and close it
+- Open the .csproj and set the value of the TribeNineRoot property to the game's directory path,
+  for example:
 
 ```
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
+<PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="MyAssembly">
-        <HintPath>D:\path\to\game\MelonLoader\net6\MelonLoader.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-</Project>
+    <TribeNineRoot>D:\TRIBE NINE Closed Beta</TribeNineRoot>
+</PropertyGroup>
 ```
 
 - Run `dotnet build` inside the zeromod directory

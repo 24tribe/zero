@@ -5,4 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <!-- FIXME: this should be a NuGet package -->
+  <ItemGroup>
+    <Reference Include="MelonLoader">
+        <HintPath>$(TribeNineRoot)\MelonLoader\net6\MelonLoader.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
