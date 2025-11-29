@@ -54,7 +54,7 @@ zero_src = [
     'Config.c',
     'Il2CppHelper.c',
     'TimeString.c',
-    'FuncPtrs.c',
+    'autogen/FuncPtrs.c',
     'md5sum.c',
     func_ptrs,
     autohook_tn,
