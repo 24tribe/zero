@@ -18,12 +18,7 @@ const itemContentType = 7
 const charExpContentType = 13
 
 var db: DbConn = nil
-var onlineDb: DbConn = nil
 var remoteUrl = ""
-
-proc SembaInitOnlineDb(path: cstring) {.exportc.} =
-  if onlineDb == nil:
-    onlineDb = open($path, "", "", "")
 
 proc SembaInitOfflineDb*(path: cstring) {.exportc.} = 
   if db == nil:
@@ -42,21 +37,11 @@ proc dupString(str: string): cstring =
 
 proc getDateNow(): string = $(now().utc)
 
-proc logFlow(uri: string, req: string, res: string) =
-  if onlineDb != nil:
-    onlineDb.exec(
-      sql"INSERT INTO debugLogs (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
-      getDateNow(), uri, req, res
-    )
-
 proc logFlowOffline(uri: string, req: string, res: string) =
   db.exec(
     sql"INSERT INTO debugLogsOffline (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
     getDateNow(), uri, req, res
   )
-
-proc SembaLogFlow(uri: cstring, req: cstring, res: cstring) {.exportc.} =
-  logFlow($uri, $req, $res)
 
 proc adventure_ReleaseEventLift(jsonReq: JsonNode): JsonNode =
   return %*{

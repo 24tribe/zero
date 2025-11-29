@@ -103,9 +103,9 @@ Best_HTTP_HTTPRequest___ctor_FuncPtr fpHTTPRequestCtor = NULL;
 void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, int32_t methodType, const MethodInfo* method) {
     sds url = System_String_toSds(uri->fields.m_String);
     printf("[DetourHttpRequestCtor] %s\n", url);
-    if (ZERO_CONFIG.offlineMode) {
-        uri = CreateSystemUri("https://httpbin.org/status/500");
-    }
+
+    uri = CreateSystemUri("https://httpbin.org/status/500");
+
     SaveNeonApiPath(url);
     sdsfree(url);
     fpHTTPRequestCtor(__this, uri, methodType, method);
@@ -205,7 +205,6 @@ Il2CppObject *DetourSourceCore_GetResult(
             jsonReq = sdsempty();
         }
 
-        SembaLogFlow(neonApiPath, jsonReq, jsonRes);    
         sdsfree(neonApiPath);
         neonApiPath = NULL;
         sdsfree(jsonReq);
@@ -336,16 +335,16 @@ Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
     Google_Protobuf_MessageParser_TResponse__o* PNICKJFPBHH,
     const MethodInfo_F6CAF0* method
 ) {
-    if (ZERO_CONFIG.offlineMode) {
-        Il2CppClass *uniTaskClass = il2cpp_type_get_class_or_element_class(method->return_type);
-        Il2CppObject *xResponse = GetMockResponse(PNICKJFPBHH);
-    
-        if (xResponse) {
-            Cysharp_Threading_Tasks_UniTask_TResponse__o *res;
-            res = (Cysharp_Threading_Tasks_UniTask_TResponse__o *)CreateUniTask(uniTaskClass, xResponse);
-            return *res;
-        }
+
+    Il2CppClass *uniTaskClass = il2cpp_type_get_class_or_element_class(method->return_type);
+    Il2CppObject *xResponse = GetMockResponse(PNICKJFPBHH);
+
+    if (xResponse) {
+        Cysharp_Threading_Tasks_UniTask_TResponse__o *res;
+        res = (Cysharp_Threading_Tasks_UniTask_TResponse__o *)CreateUniTask(uniTaskClass, xResponse);
+        return *res;
     }
+
       
     return fpNeonApiGetResponse(__this, EFCDPGBOIHC, EAGJONBIADJ, JLCCEAFOLOE, PNICKJFPBHH, method);
 }
@@ -565,19 +564,15 @@ void HookTN(void *GameAssembly) {
 
     RunNimMainOnce();
 
-    if (ZERO_CONFIG.onlineLogsPath) {
-        SembaInitOnlineDb(ZERO_CONFIG.onlineLogsPath);
-    }
-
     if (ZERO_CONFIG.sembaDbPath) {
         SembaInitOfflineDb(ZERO_CONFIG.sembaDbPath);
     }
 
-    if (ZERO_CONFIG.offlineMode && ZERO_CONFIG.remoteUrl) {
+    if (ZERO_CONFIG.remoteUrl) {
         SembaSetRemoteUrl(ZERO_CONFIG.remoteUrl);
     }
 
-    if (ZERO_CONFIG.offlineMode && ZERO_CONFIG.saveFile) {
+    if (ZERO_CONFIG.saveFile) {
         SembaLoadSave(ZERO_CONFIG.saveFile);
     }
 

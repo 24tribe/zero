@@ -1,18 +1,6 @@
-# enable or disable offlineMode
-#
-# when offlineMode is false, the game communicates with the real tribe nine server
-# and logs the api calls (if onlineLogsPath is set)
-#
-# when offlineMode is true, the game intercepts the api calls and the game can be
-# played offline
-offlineMode=true
-
 # path to a save file created by createSaveFile.py
 # only used in offline mode
 #saveFile=
-
-# path to a sqlite3 db used to save api call flows in online mode
-#onlineLogsPath=onlineLogs.db
 
 # path to the goldberg steam api emulator dll
 goldbergPath=steam_api64.dll

@@ -110,7 +110,7 @@ HMODULE WINAPI DetourLoadLibraryW(LPCWSTR s) {
 
     HMODULE res;
 
-    if (strstr(libName, "steam_api64.dll") && ZERO_CONFIG.offlineMode) {
+    if (strstr(libName, "steam_api64.dll")) {
         if (!loggedGoldberg) {
             printf("[DetourLoadLibraryW] Changed steam_api64.dll to Goldberg\n");
             loggedGoldberg = true;

@@ -219,9 +219,8 @@ def appendDetourFunctionResOnly(impl_code, funcPtrType, fpVar, newSignature, arg
 {funcPtrType} {fpVar} = NULL;
 
 {newSignature}
-    if (ZERO_CONFIG.offlineMode) {{
-        neonApiPath = sdsnew("{uri}");
-    }}
+    neonApiPath = sdsnew("{uri}");
+
     return {fpVar}({", ".join(args)});
 }}
 """)
@@ -232,9 +231,9 @@ def appendDetourFunction(impl_code, funcPtrType, fpVar, req, lastReq, newSignatu
 typedef struct Neon_Model_Api_Rpc_{req}_o Neon_Model_Api_Rpc_{req}_o;
 Neon_Model_Api_Rpc_{req}_o *{lastReq} = NULL;
 {newSignature}
-    if (ZERO_CONFIG.offlineMode) {{
-        neonApiPath = sdsnew("{uri}");
-    }}
+
+    neonApiPath = sdsnew("{uri}");
+
     {lastReq} = data;
     return {fpVar}({", ".join(args)});
 }}
@@ -245,26 +244,23 @@ def appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, pat
 {funcPtrType} {fpVar} = NULL;
 
 {newSignature}
+    (void)__this;
+    (void)method;
+    (void)cancellationToken;
+    (void)requestHandler;
+
     RunNimMainOnce();
 
     const char *path = "{path}";
     sds jsonReq = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
 
-    if (ZERO_CONFIG.offlineMode) {{
-        SembaCall(path, jsonReq);
+    SembaCall(path, jsonReq);
 
-        sdsfree(jsonReq);
+    sdsfree(jsonReq);
 
-        return (Cysharp_Threading_Tasks_UniTask_o){{
-            .fields = {{.source = NULL, .token = 0}}
-        }};
-    }} else {{
-        SembaLogFlow(path, jsonReq, "");
-
-        sdsfree(jsonReq);
-
-        return {fpVar}({", ".join(args)});
-    }}
+    return (Cysharp_Threading_Tasks_UniTask_o){{
+        .fields = {{.source = NULL, .token = 0}}
+    }};
 }}
 """)
 
@@ -273,20 +269,20 @@ def appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, 
 {funcPtrType} {fpVar} = NULL;
 
 {newSignature}
+    (void)__this;
+    (void)method;
+    (void)cancellationToken;
+    (void)requestHandler;
+
     RunNimMainOnce();
 
     const char *path = "{path}";
 
-    if (ZERO_CONFIG.offlineMode) {{
-        SembaCall(path, "");
+    SembaCall(path, "");
 
-        return (Cysharp_Threading_Tasks_UniTask_o){{
-            .fields = {{.source = NULL, .token = 0}}
-        }};
-    }} else {{
-        SembaLogFlow(path, "", "");
-        return {fpVar}({", ".join(args)});
-    }}
+    return (Cysharp_Threading_Tasks_UniTask_o){{
+        .fields = {{.source = NULL, .token = 0}}
+    }};
 }}
 """)
 

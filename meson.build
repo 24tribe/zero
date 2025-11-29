@@ -41,17 +41,6 @@ goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
 subdir('semba')
 
-onlineLogs_db = custom_target(
-    'onlineLogs_db',
-    input : 'onlineLogs.sql',
-    output : 'onlineLogs.db',
-    command : [sqlite3, '@OUTPUT@'],
-    feed : true,
-    build_by_default : true,
-    install : true,
-    install_dir : '.'
-)
-
 func_ptrs = custom_target(
     'il2cppFuncPtrs',
     input : ['scripts/genIl2CppPtrs.py', script_json, 'gameFuncs.txt', 'typeInfos.txt'],

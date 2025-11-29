@@ -5,9 +5,7 @@
 #include <stdint.h>
 
 struct Config {
-    bool offlineMode;
     char *saveFile;
-    char *onlineLogsPath;
     uint16_t *goldbergPath;
     char *sembaDbPath;
     char *remoteUrl;

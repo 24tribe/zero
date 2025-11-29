@@ -13,9 +13,7 @@
 #define CONFIG_LOCATION "config.ini"
 
 struct Config ZERO_CONFIG = {
-    .offlineMode = false,
     .saveFile = NULL,
-    .onlineLogsPath = NULL,
     .goldbergPath = NULL,
     .sembaDbPath = NULL,
     .remoteUrl = NULL,
@@ -43,18 +41,8 @@ static int handler(void *user, const char *section, const char *name, const char
     (void)user;
     (void)section;
     
-    if (!strcmp(name, "offlineMode")) {
-        if (strstr(value, "true")) {
-            ZERO_CONFIG.offlineMode = true;
-        } else if (strstr(value, "false")) {
-            ZERO_CONFIG.offlineMode = false;
-        } else {
-            return 0; /* unknown section/name, error */
-        }
-    } else if (!strcmp(name, "saveFile")) {
+    if (!strcmp(name, "saveFile")) {
         ZERO_CONFIG.saveFile = sdsnew(value);
-    } else if (!strcmp(name, "onlineLogsPath")) {
-        ZERO_CONFIG.onlineLogsPath = sdsnew(value);  
     } else if (!strcmp(name, "goldbergPath")) {
         setGoldbergPath(value);
     } else if (!strcmp(name, "sembaDbPath")) {
@@ -81,9 +69,7 @@ static char *string_null_escape(char *s) {
 }
 
 void PrintZeroConfig(void) {
-    printf("offlineMode=%s\n", ZERO_CONFIG.offlineMode ? "true" : "false");
     printf("saveFile=%s\n", string_null_escape(ZERO_CONFIG.saveFile));
-    printf("onlineLogsPath=%s\n", string_null_escape(ZERO_CONFIG.onlineLogsPath));
     printf("sembaDbPath=%s\n", string_null_escape(ZERO_CONFIG.sembaDbPath));
     printf("remoteUrl=%s\n", string_null_escape(ZERO_CONFIG.remoteUrl));
     printf("dumpGameAssembly=%s\n", ZERO_CONFIG.dumpGameAssembly ? "true" : "false");
@@ -97,10 +83,6 @@ void PrintZeroConfig(void) {
 
     printf("goldbergPath=%s\n", goldbergPath);
     sdsfree(goldbergPath);
-
-    if (!ZERO_CONFIG.onlineLogsPath) {
-        printf("WARNING: onlineLogsPath not set, api call flows won't be saved!\n");
-    }
 
     if (!ZERO_CONFIG.goldbergPath) {
         printf("WARNING: goldbergPath not set, steam emulation won't work!\n");
