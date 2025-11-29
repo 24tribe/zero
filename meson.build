@@ -40,20 +40,7 @@ goldberg_steam_proj = subproject('goldberg_steam')
 goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
 subdir('semba')
-
-func_ptrs = custom_target(
-    'il2cppFuncPtrs',
-    input : ['scripts/genIl2CppPtrs.py', script_json, 'gameFuncs.txt', 'typeInfos.txt'],
-    output : 'funcPtrs.h',
-    command : [python3, '@INPUT@', '@OUTPUT@']
-)
-
-autohook_tn = custom_target(
-    'autohookTN',
-    input: ['scripts/genReqHook.py', script_json, 'reqHooks.csv'],
-    output : 'autohookTN.h',
-    command : [python3, '@INPUT@', '@OUTPUT@']
-)
+subdir('autogen')
 
 zero_src = [
     'mylib.c',
