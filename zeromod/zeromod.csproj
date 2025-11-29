@@ -4,12 +4,29 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TribeNineRoot>D:\tribenine\cbt\TRIBE NINE Closed Beta</TribeNineRoot>
   </PropertyGroup>
 
   <!-- FIXME: this should be a NuGet package -->
   <ItemGroup>
     <Reference Include="MelonLoader">
         <HintPath>$(TribeNineRoot)\MelonLoader\net6\MelonLoader.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInterop.Common">
+        <HintPath>$(TribeNineRoot)\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInterop.Runtime">
+        <HintPath>$(TribeNineRoot)\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(TribeNineRoot)\MelonLoader\net6\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>$(TribeNineRoot)\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2Cppcom.Tivadar.Best.HTTP">
+      <HintPath>$(TribeNineRoot)\MelonLoader\Il2CppAssemblies\Il2Cppcom.Tivadar.Best.HTTP.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
