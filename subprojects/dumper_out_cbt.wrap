@@ -1,0 +1,6 @@
+[wrap-file]
+source_url=https://www.dropbox.com/scl/fi/86knsocuyhgyt4ugqe5aa/dumper_out_cbt.zip?rlkey=blcbl2nngz1yvv7r53s4nv4m6&st=e17rnjck&dl=1
+source_filename=dumper_out_cbt.zip
+source_hash=7e41b7eb127029fa49fb0f761e402e20bbcd507a522b42917722a96fbf8e7447
+
+patch_directory=dumper_out_cbt
