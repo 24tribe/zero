@@ -154,4 +154,156 @@ extern IL2CPP_OBJECT_GET_CLASS il2cpp_object_get_class;
 extern IL2CPP_CLASS_GET_TYPE il2cpp_class_get_type;
 extern IL2CPP_CLASS_FROM_NAME il2cpp_class_from_name;
 
+typedef void(*Il2CppMethodPointer)();
+
+typedef struct MethodInfo MethodInfo;
+
+typedef struct VirtualInvokeData
+{
+    Il2CppMethodPointer methodPtr;
+    const MethodInfo* method;
+} VirtualInvokeData;
+
+typedef struct Il2CppType
+{
+    void* data;
+    unsigned int bits;
+} Il2CppType;
+
+typedef union Il2CppRGCTXData
+{
+    void* rgctxDataDummy;
+    const MethodInfo* method;
+    const Il2CppType* type;
+    Il2CppClass* klass;
+} Il2CppRGCTXData;
+
+typedef struct Il2CppRuntimeInterfaceOffsetPair
+{
+    Il2CppClass* interfaceType;
+    int32_t offset;
+} Il2CppRuntimeInterfaceOffsetPair;
+
+typedef struct Il2CppClass_1
+{
+    void* image;
+    void* gc_desc;
+    const char* name;
+    const char* namespaze;
+    Il2CppType byval_arg;
+    Il2CppType this_arg;
+    Il2CppClass* element_class;
+    Il2CppClass* castClass;
+    Il2CppClass* declaringType;
+    Il2CppClass* parent;
+    void *generic_class;
+    void* typeMetadataHandle;
+    void* interopData;
+    Il2CppClass* klass;
+    void* fields;
+    void* events;
+    void* properties;
+    void* methods;
+    Il2CppClass** nestedTypes;
+    Il2CppClass** implementedInterfaces;
+    Il2CppRuntimeInterfaceOffsetPair* interfaceOffsets;
+} Il2CppClass_1;
+
+typedef struct Il2CppClass_2
+{
+    Il2CppClass** typeHierarchy;
+    void *unity_user_data;
+    uint32_t initializationExceptionGCHandle;
+    uint32_t cctor_started;
+    uint32_t cctor_finished;
+    size_t cctor_thread;
+    void* genericContainerHandle;
+    uint32_t instance_size;
+    uint32_t actualSize;
+    uint32_t element_size;
+    int32_t native_size;
+    uint32_t static_fields_size;
+    uint32_t thread_static_fields_size;
+    int32_t thread_static_fields_offset;
+    uint32_t flags;
+    uint32_t token;
+    uint16_t method_count;
+    uint16_t property_count;
+    uint16_t field_count;
+    uint16_t event_count;
+    uint16_t nested_type_count;
+    uint16_t vtable_count;
+    uint16_t interfaces_count;
+    uint16_t interface_offsets_count;
+    uint8_t typeHierarchyDepth;
+    uint8_t genericRecursionDepth;
+    uint8_t rank;
+    uint8_t minimumAlignment;
+    uint8_t naturalAligment;
+    uint8_t packingSize;
+    uint8_t bitflags1;
+    uint8_t bitflags2;
+} Il2CppClass_2;
+
+typedef struct Il2CppClass
+{
+    Il2CppClass_1 _1;
+    void* static_fields;
+    Il2CppRGCTXData* rgctx_data;
+    Il2CppClass_2 _2;
+    VirtualInvokeData vtable[255];
+} Il2CppClass;
+
+typedef uintptr_t il2cpp_array_size_t;
+typedef int32_t il2cpp_array_lower_bound_t;
+typedef struct Il2CppArrayBounds
+{
+    il2cpp_array_size_t length;
+    il2cpp_array_lower_bound_t lower_bound;
+} Il2CppArrayBounds;
+
+typedef void (*InvokerMethod)(Il2CppMethodPointer, const MethodInfo*, void*, void**, void*);
+struct MethodInfo
+{
+    Il2CppMethodPointer methodPointer;
+    Il2CppMethodPointer virtualMethodPointer;
+    InvokerMethod invoker_method;
+    const char* name;
+    Il2CppClass *klass;
+    const Il2CppType *return_type;
+    const Il2CppType** parameters;
+    union
+    {
+        const Il2CppRGCTXData* rgctx_data;
+        const void* methodMetadataHandle;
+    };
+    union
+    {
+        const void* genericMethod;
+        const void* genericContainerHandle;
+    };
+    uint32_t token;
+    uint16_t flags;
+    uint16_t iflags;
+    uint16_t slot;
+    uint8_t parameters_count;
+    uint8_t bitflags;
+};
+
+// typedef struct _Module__Fields _Module__Fields;
+
+typedef struct _Module__c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	VirtualInvokeData vtable[32];
+} _Module__c;
+
+typedef struct _Module__o {
+	_Module__c *klass;
+	void *monitor;
+	// _Module__Fields fields;
+} _Module__o;
+
 #endif
