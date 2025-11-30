@@ -323,6 +323,9 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
         char *resJson = SembaCall(resTypeToReqPtr->uriPath, reqJson);
         if (resJson) {
             res = CallParseJson(messageParser, resJson);
+            if (!res) {
+                printf("WARNING: MessageParser.ParseJson failed to decode SembaCall response\n");
+            }
             free(resJson);
         }
     }
