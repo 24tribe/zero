@@ -19,6 +19,7 @@ libsemba = custom_target(
 sembaserver = custom_target(
     'sembaserver',
     depends : [sqlite3_c],
+    depend_files : 'semba.nim',
     input : ['sembaserver.nim'],
     output : 'sembaserver.exe',
     command : [
