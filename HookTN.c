@@ -82,14 +82,21 @@ void HookKbjlheaohmd__Kpffclmemeg(void) {
     }
 }
 
-void SaveNeonApiPath(sds url) {
-    if (!strstr(url, "https://game.tribenine-game.com")) {
-        return;
+int getBaseUrlSize(sds url) {
+    if (strstr(url, "https://game.tribenine-game.com")) {
+        return 31; // == len("https://game.tribenine-game.com")
+    } else if (strstr(url, "https://cbt-game.tribenine-game.com")) {
+        return 35; // == len("https://cbt-game.tribenine-game.com")
     }
 
-    int baseUrlSize = 31; // len("https://game.tribenine-game.com") == 31
+    return -1;
+}
 
-    neonApiPath = sdsnew(url + baseUrlSize);
+void SaveNeonApiPath(sds url) {
+    int baseUrlSize = getBaseUrlSize(url);
+    if (baseUrlSize >= 0) {
+        neonApiPath = sdsnew(url + baseUrlSize);
+    }
 }
 
 System_Uri_o *CreateSystemUri(char *s) {
