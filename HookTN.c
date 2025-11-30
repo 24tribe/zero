@@ -550,7 +550,7 @@ bool areGamePtrsReady(void) {
 }
 
 void HookTN(void *GameAssembly) {
-    StableInitGamePtrs(GameAssembly);
+    InitGamePtrs(GameAssembly);
     gamePtrsReady = true;
 
     HookHTTPRequestCtor();

@@ -5,7 +5,7 @@ func_ptrs = custom_target(
     'il2cppFuncPtrs',
     input : ['../scripts/genIl2CppPtrs.py', script_json, 'gameFuncs.txt', 'typeInfos.txt'],
     output : 'funcPtrs.h',
-    command : [python3, '@INPUT@', 'Stable', '@OUTPUT@']
+    command : [python3, '@INPUT@', '@OUTPUT@']
 )
 
 autohook_tn = custom_target(
