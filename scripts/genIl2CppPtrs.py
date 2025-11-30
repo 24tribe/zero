@@ -35,7 +35,7 @@ def main():
                 decls.append(decl)
                 break
         if not found:
-            print(f"Couldn't find definitions for {gameFunc}")
+            print(f"Couldn't find definitions for {game_func}")
             sys.exit(1)
 
     with open(args.type_infos, "r", encoding="utf-8") as f:
