@@ -1108,7 +1108,7 @@ proc sembaCallImpl*(uri: string, request: string): string =
   if uri == "echo":
     let dataUpper = jsonReq["data"].getStr().toUpperAscii()
     jsonRes = %*{"data": dataUpper}
-  elif uri == "/auth/steam_user":
+  elif uri == "/auth/steam_user" or uri == "/auth/sign_up":
     jsonRes = %*{"userId": "696969696969"}
   elif uri == "/auth/nonce":
     jsonRes = %*{"nonce": "6969696969696969"}
