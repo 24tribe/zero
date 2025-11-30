@@ -1,0 +1,16 @@
+dumper_out_cbt_proj = subproject('dumper_out_cbt')
+script_json_demo = dumper_out_cbt_proj.get_variable('script_json')
+
+func_ptrs_demo = custom_target(
+    'il2cppFuncPtrsDemo',
+    input : ['../scripts/genIl2CppPtrs.py', script_json_demo, 'gameFuncsDemo.txt', 'typeInfosDemo.txt'],
+    output : 'funcPtrs.h',
+    command : [python3, '@INPUT@', '@OUTPUT@']
+)
+
+autohook_tn_demo = custom_target(
+    'autohookTNDemo',
+    input: ['../scripts/genReqHook.py', script_json_demo, 'reqHooksDemo.csv'],
+    output : 'autohookTN.h',
+    command : [python3, '@INPUT@', 'requestHandle', '@OUTPUT@']
+)

@@ -18,6 +18,7 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("script_json")
     parser.add_argument("req_hooks_csv")
+    parser.add_argument("requestHandlerName")
     parser.add_argument("out_h")
 
     args = parser.parse_args()
@@ -46,13 +47,13 @@ def main():
 
     empty_req_res_hooks = get_empty_req_res_hooks(req_hooks)
 
-    impl_code, moreHookNames = createAutohookHEmptyReqRes(empty_req_res_hooks, script)
+    impl_code, moreHookNames = createAutohookHEmptyReqRes(empty_req_res_hooks, script, args.requestHandlerName)
 
     code += impl_code
 
     req_and_empty_res_hooks = get_req_and_empty_res_hooks(req_hooks)
 
-    impl_code, yetMoreHookNames = createAutohookReqAndEmptyRes(req_and_empty_res_hooks, script)
+    impl_code, yetMoreHookNames = createAutohookReqAndEmptyRes(req_and_empty_res_hooks, script, args.requestHandlerName)
 
     code += impl_code
 
@@ -239,7 +240,7 @@ Neon_Model_Api_Rpc_{req}_o *{lastReq} = NULL;
 }}
 """)
 
-def appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, path, funcPtrType):
+def appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, path, funcPtrType, requestHandler):
     impl_code.append(f"""
 {funcPtrType} {fpVar} = NULL;
 
@@ -247,7 +248,7 @@ def appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, pat
     (void)__this;
     (void)method;
     (void)cancellationToken;
-    (void)requestHandler;
+    (void){requestHandler};
 
     RunNimMainOnce();
 
@@ -264,7 +265,7 @@ def appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, pat
 }}
 """)
 
-def appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, funcPtrType):
+def appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, funcPtrType, requestHandler):
     impl_code.append(f"""
 {funcPtrType} {fpVar} = NULL;
 
@@ -272,7 +273,7 @@ def appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, 
     (void)__this;
     (void)method;
     (void)cancellationToken;
-    (void)requestHandler;
+    (void){requestHandler};
 
     RunNimMainOnce();
 
@@ -286,7 +287,7 @@ def appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, 
 }}
 """)
 
-def createAutohookHEmptyReqRes(empty_req_res_hooks, script):
+def createAutohookHEmptyReqRes(empty_req_res_hooks, script, requestHandler):
     hookNames = []
 
     impl_code = []
@@ -311,7 +312,7 @@ def createAutohookHEmptyReqRes(empty_req_res_hooks, script):
             name = match.group(1)
             path = nameToPath(name)
 
-            appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, funcPtrType)
+            appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, funcPtrType, requestHandler)
             appendCreateHookFunction(impl_code, hookName, var, detourName, fpVar)
 
     if empty_req_res_hooks != set():
@@ -320,7 +321,7 @@ def createAutohookHEmptyReqRes(empty_req_res_hooks, script):
     
     return impl_code, hookNames
 
-def createAutohookReqAndEmptyRes(req_and_empty_res_hooks, script):
+def createAutohookReqAndEmptyRes(req_and_empty_res_hooks, script, requestHandler):
     hookNames = []
     impl_code = []
 
@@ -344,7 +345,7 @@ def createAutohookReqAndEmptyRes(req_and_empty_res_hooks, script):
             name = match.group(1)
             path = nameToPath(name)
 
-            appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, path, funcPtrType)
+            appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, path, funcPtrType, requestHandler)
             appendCreateHookFunction(impl_code, hookName, var, detourName, fpVar)
 
     if req_and_empty_res_hooks != set():
@@ -378,6 +379,8 @@ def createAutohookH(req_hooks, script):
             detourName = getDetourName(var)
 
             responses = re.findall(r"Cysharp_Threading_Tasks_UniTask_(.+Response)__o", script_method["Signature"])
+            if len(responses) != 1:
+                print(script_method["Signature"])
             assert len(responses) == 1
             res = responses[0]
 

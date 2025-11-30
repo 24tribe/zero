@@ -171,7 +171,7 @@ Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object___GetResult_FuncPtr f
 Il2CppObject *DetourSourceCore_GetResult(
     Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o __this,
     int16_t token,
-    const MethodInfo_20B62E0* method
+    const GetResultMethodInfo* method
 ) {
     RunNimMainOnce();
 
@@ -330,10 +330,10 @@ CDGPJELFAMK__NOCKJHKDMGF_object__FuncPtr fpNeonApiGetResponse = NULL;
 Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
     CDGPJELFAMK_o* __this,
     BJAFDMJIDMJ_o* EFCDPGBOIHC,
-    LPCOHPIGHIN_o* EAGJONBIADJ,
+    NeonApiGetResponse_ThirdParam* EAGJONBIADJ,
     System_Threading_CancellationToken_o JLCCEAFOLOE,
     Google_Protobuf_MessageParser_TResponse__o* PNICKJFPBHH,
-    const MethodInfo_F6CAF0* method
+    const NeonApiGetResponse_MethodInfo* method
 ) {
 
     Il2CppClass *uniTaskClass = il2cpp_type_get_class_or_element_class(method->return_type);
@@ -400,6 +400,7 @@ void Hook_UnityEngine_Transform__set_position(void) {
     }
 }
 
+#ifdef HAVE_LUX_PHANTASM
 EMDHIMNBAPC___ctor_FuncPtr fpEMDHIMNBAPC___ctor = NULL;
 
 void Detour_EMDHIMNBAPC___ctor(
@@ -445,6 +446,8 @@ void Hook_EMDHIMNBAPC___ctor(void) {
         return;
     }
 }
+
+#endif
 
 UnityEngine_Camera__set_fieldOfView_FuncPtr fpUnityEngine_Camera__set_fieldOfView = NULL;
 
@@ -560,7 +563,10 @@ void HookTN(void *GameAssembly) {
     Hook_UnityEngine_Transform__set_position();
     Hook_UnityEngine_Transform__set_rotation();
     Hook_UnityEngine_Camera__set_fieldOfView();
+
+    #ifdef HAVE_LUX_PHANTASM
     Hook_EMDHIMNBAPC___ctor();
+#endif
 
     RunNimMainOnce();
 

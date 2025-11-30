@@ -12,5 +12,5 @@ autohook_tn = custom_target(
     'autohookTN',
     input: ['../scripts/genReqHook.py', script_json, 'reqHooks.csv'],
     output : 'autohookTN.h',
-    command : [python3, '@INPUT@', '@OUTPUT@']
+    command : [python3, '@INPUT@', 'requestHandler', '@OUTPUT@']
 )

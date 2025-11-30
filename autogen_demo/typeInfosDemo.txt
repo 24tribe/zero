@@ -1,0 +1,2 @@
+System.Uri_TypeInfo
+System.Diagnostics.StackTrace_TypeInfo

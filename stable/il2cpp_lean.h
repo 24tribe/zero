@@ -6,238 +6,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct Best_HTTP_HTTPRequest_Fields {
-	int32_t _MethodType_k__BackingField;
-	struct System_Uri_o* _Uri_k__BackingField;
-	struct Best_HTTP_HTTPResponse_o* _Response_k__BackingField;
-	struct Best_HTTP_Request_Settings_DownloadSettings_o* DownloadSettings;
-	struct Best_HTTP_Request_Settings_UploadSettings_o* UploadSettings;
-	struct Best_HTTP_Request_Settings_TimeoutSettings_o* TimeoutSettings;
-	struct Best_HTTP_Request_Settings_RetrySettings_o* RetrySettings;
-	struct Best_HTTP_Request_Settings_ProxySettings_o* ProxySettings;
-	struct Best_HTTP_Request_Settings_RedirectSettings_o* _RedirectSettings_k__BackingField;
-	struct Best_HTTP_OnRequestFinishedDelegate_o* _Callback_k__BackingField;
-	struct System_Threading_CancellationTokenSource_o* _CancellationTokenSource_k__BackingField;
-	struct System_Action_HTTPRequest__o* OnCancellationRequested;
-	struct System_Exception_o* _Exception_k__BackingField;
-	Il2CppObject* _Tag_k__BackingField;
-	int32_t _state;
-	struct Best_HTTP_Request_Timings_TimingCollector_o* _Timing_k__BackingField;
-	struct Best_HTTP_Request_Authenticators_IAuthenticator_o* Authenticator;
-	struct Best_HTTP_Shared_Logger_LoggingContext_o* _Context_k__BackingField;
-	struct System_Collections_Generic_Dictionary_string__List_string___o* _Headers_k__BackingField;
-} Best_HTTP_HTTPRequest_Fields;
+#define HAVE_LUX_PHANTASM
 
-typedef struct Best_HTTP_HTTPRequest_VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-	VirtualInvokeData _4_MoveNext;
-	VirtualInvokeData _5_get_Current;
-	VirtualInvokeData _6_Reset;
-} Best_HTTP_HTTPRequest_VTable;
-
-typedef struct Best_HTTP_HTTPRequest_c {
-	Il2CppClass_1 _1;
-	struct Best_HTTP_HTTPRequest_StaticFields* static_fields;
-	Il2CppRGCTXData* rgctx_data;
-	Il2CppClass_2 _2;
-	Best_HTTP_HTTPRequest_VTable vtable;
-} Best_HTTP_HTTPRequest_c;
-
-typedef struct Best_HTTP_HTTPRequest_o {
-	Best_HTTP_HTTPRequest_c *klass;
-	void *monitor;
-	Best_HTTP_HTTPRequest_Fields fields;
-} Best_HTTP_HTTPRequest_o;
-
-typedef struct Best_HTTP_HTTPRequest_StaticFields {
-	struct System_String_array* MethodNames;
-} Best_HTTP_HTTPRequest_StaticFields;
-
-typedef struct System_Uri_Fields {
-	struct System_String_o* m_String;
-	struct System_String_o* m_originalUnicodeString;
-	struct System_UriParser_o* m_Syntax;
-	struct System_String_o* m_DnsSafeHost;
-	uint64_t m_Flags;
-	struct System_Uri_UriInfo_o* m_Info;
-	bool m_iriParsing;
-} System_Uri_Fields;
-
-typedef struct System_Uri_VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-	VirtualInvokeData _4_System_Runtime_Serialization_ISerializable_GetObjectData;
-} System_Uri_VTable;
-
-typedef struct System_Uri_c {
-	Il2CppClass_1 _1;
-	struct System_Uri_StaticFields* static_fields;
-	Il2CppRGCTXData* rgctx_data;
-	Il2CppClass_2 _2;
-	System_Uri_VTable vtable;
-} System_Uri_c;
-
-typedef struct System_Uri_o {
-	System_Uri_c *klass;
-	void *monitor;
-	System_Uri_Fields fields;
-} System_Uri_o;
-
-typedef struct System_Uri_StaticFields {
-	struct System_String_o* UriSchemeFile;
-	struct System_String_o* UriSchemeFtp;
-	struct System_String_o* UriSchemeGopher;
-	struct System_String_o* UriSchemeHttp;
-	struct System_String_o* UriSchemeHttps;
-	struct System_String_o* UriSchemeWs;
-	struct System_String_o* UriSchemeWss;
-	struct System_String_o* UriSchemeMailto;
-	struct System_String_o* UriSchemeNews;
-	struct System_String_o* UriSchemeNntp;
-	struct System_String_o* UriSchemeNetTcp;
-	struct System_String_o* UriSchemeNetPipe;
-	struct System_String_o* SchemeDelimiter;
-	bool s_ConfigInitialized;
-	bool s_ConfigInitializing;
-	int32_t s_IdnScope;
-	bool s_IriParsing;
-	bool useDotNetRelativeOrAbsolute;
-	bool IsWindowsFileSystem;
-	Il2CppObject* s_initLock;
-	struct System_Char_array* HexLowerChars;
-	struct System_Char_array* _WSchars;
-} System_Uri_StaticFields;
-
-
-
-typedef struct System_String_VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-	VirtualInvokeData _4_CompareTo;
-	VirtualInvokeData _5_System_Collections_IEnumerable_GetEnumerator;
-	VirtualInvokeData _6_System_Collections_Generic_IEnumerable_System_Char__GetEnumerator;
-	VirtualInvokeData _7_CompareTo;
-	VirtualInvokeData _8_Equals;
-	VirtualInvokeData _9_GetTypeCode;
-	VirtualInvokeData _10_System_IConvertible_ToBoolean;
-	VirtualInvokeData _11_System_IConvertible_ToChar;
-	VirtualInvokeData _12_System_IConvertible_ToSByte;
-	VirtualInvokeData _13_System_IConvertible_ToByte;
-	VirtualInvokeData _14_System_IConvertible_ToInt16;
-	VirtualInvokeData _15_System_IConvertible_ToUInt16;
-	VirtualInvokeData _16_System_IConvertible_ToInt32;
-	VirtualInvokeData _17_System_IConvertible_ToUInt32;
-	VirtualInvokeData _18_System_IConvertible_ToInt64;
-	VirtualInvokeData _19_System_IConvertible_ToUInt64;
-	VirtualInvokeData _20_System_IConvertible_ToSingle;
-	VirtualInvokeData _21_System_IConvertible_ToDouble;
-	VirtualInvokeData _22_System_IConvertible_ToDecimal;
-	VirtualInvokeData _23_System_IConvertible_ToDateTime;
-	VirtualInvokeData _24_ToString;
-	VirtualInvokeData _25_System_IConvertible_ToType;
-	VirtualInvokeData _26_Clone;
-} System_String_VTable;
-
-typedef struct System_String_c {
-	Il2CppClass_1 _1;
-	struct System_String_StaticFields* static_fields;
-	Il2CppRGCTXData* rgctx_data;
-	Il2CppClass_2 _2;
-	System_String_VTable vtable;
-} System_String_c;
-
-typedef struct System_String_StaticFields {
-	struct System_String_o* Empty;
-} System_String_StaticFields;
-
-typedef struct Best_HTTP_Request_Settings_ProxySettings_Fields {
-	struct Best_HTTP_Proxies_Proxy_o* _Proxy_k__BackingField;
-} Best_HTTP_Request_Settings_ProxySettings_Fields;
-
-typedef struct Best_HTTP_Request_Settings_ProxySettings_VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-} Best_HTTP_Request_Settings_ProxySettings_VTable;
-
-typedef struct Best_HTTP_Request_Settings_ProxySettings_c {
-	Il2CppClass_1 _1;
-	void* static_fields;
-	Il2CppRGCTXData* rgctx_data;
-	Il2CppClass_2 _2;
-	Best_HTTP_Request_Settings_ProxySettings_VTable vtable;
-} Best_HTTP_Request_Settings_ProxySettings_c;
-
-typedef struct Best_HTTP_Request_Settings_ProxySettings_o {
-	Best_HTTP_Request_Settings_ProxySettings_c *klass;
-	void *monitor;
-	Best_HTTP_Request_Settings_ProxySettings_Fields fields;
-} Best_HTTP_Request_Settings_ProxySettings_o;
-
-typedef struct Best_HTTP_Proxies_Proxy_Fields {
-	struct System_Uri_o* _Address_k__BackingField;
-	struct Best_HTTP_Request_Authentication_Credentials_o* _Credentials_k__BackingField;
-	struct System_Collections_Generic_List_string__o* _Exceptions_k__BackingField;
-} Best_HTTP_Proxies_Proxy_Fields;
-
-typedef struct Best_HTTP_Proxies_Proxy_VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-} Best_HTTP_Proxies_Proxy_VTable;
-
-typedef struct Best_HTTP_Proxies_Proxy_c {
-	Il2CppClass_1 _1;
-	void* static_fields;
-	Il2CppRGCTXData* rgctx_data;
-	Il2CppClass_2 _2;
-	Best_HTTP_Proxies_Proxy_VTable vtable;
-} Best_HTTP_Proxies_Proxy_c;
-
-typedef struct Best_HTTP_Proxies_Proxy_o {
-	Best_HTTP_Proxies_Proxy_c *klass;
-	void *monitor;
-	Best_HTTP_Proxies_Proxy_Fields fields;
-} Best_HTTP_Proxies_Proxy_o;
-
-typedef struct Best_HTTP_Proxies_HTTPProxy_Fields {
-	bool _IsTransparent_k__BackingField;
-	bool _SendWholeUri_k__BackingField;
-	bool _NonTransparentForHTTPS_k__BackingField;
-} Best_HTTP_Proxies_HTTPProxy_Fields;
-
-typedef struct Best_HTTP_Proxies_HTTPProxy_VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-	VirtualInvokeData _4_BeginConnect;
-	VirtualInvokeData _5_GetRequestPath;
-	VirtualInvokeData _6_SetupRequest;
-} Best_HTTP_Proxies_HTTPProxy_VTable;
-
-typedef struct Best_HTTP_Proxies_HTTPProxy_c {
-	Il2CppClass_1 _1;
-	void* static_fields;
-	Il2CppRGCTXData* rgctx_data;
-	Il2CppClass_2 _2;
-	Best_HTTP_Proxies_HTTPProxy_VTable vtable;
-} Best_HTTP_Proxies_HTTPProxy_c;
-
-typedef struct Best_HTTP_Proxies_HTTPProxy_o {
-	Best_HTTP_Proxies_HTTPProxy_c *klass;
-	void *monitor;
-	Best_HTTP_Proxies_HTTPProxy_Fields fields;
-} Best_HTTP_Proxies_HTTPProxy_o;
+typedef struct MethodInfo_20B62E0 GetResultMethodInfo;
+typedef struct MethodInfo_F6CAF0 NeonApiGetResponse_MethodInfo;
+typedef struct LPCOHPIGHIN_o NeonApiGetResponse_ThirdParam;
 
 typedef struct System_Byte_array {
 	Il2CppObject obj;
@@ -279,41 +52,6 @@ typedef struct ONFKFJKNECJ_o {
 typedef struct ONFKFJKNECJ_StaticFields {
 	struct System_Security_Cryptography_Aes_o* PPBNDDBMFJM;
 } ONFKFJKNECJ_StaticFields;
-
-typedef struct System_Diagnostics_StackTrace_VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-	VirtualInvokeData _4_get_FrameCount;
-	VirtualInvokeData _5_GetFrame;
-	VirtualInvokeData _6_GetFrames;
-} System_Diagnostics_StackTrace_VTable;
-
-typedef struct System_Diagnostics_StackTrace_c {
-	Il2CppClass_1 _1;
-	struct System_Diagnostics_StackTrace_StaticFields* static_fields;
-	Il2CppRGCTXData* rgctx_data;
-	Il2CppClass_2 _2;
-	System_Diagnostics_StackTrace_VTable vtable;
-} System_Diagnostics_StackTrace_c;
-
-typedef struct System_Diagnostics_StackTrace_Fields {
-	struct System_Diagnostics_StackFrame_array* frames;
-	struct System_Diagnostics_StackTrace_array* captured_traces;
-	bool debug_info;
-} System_Diagnostics_StackTrace_Fields;
-
-typedef struct System_Diagnostics_StackTrace_o {
-	System_Diagnostics_StackTrace_c *klass;
-	void *monitor;
-	System_Diagnostics_StackTrace_Fields fields;
-} System_Diagnostics_StackTrace_o;
-
-typedef struct System_Diagnostics_StackTrace_StaticFields {
-	bool isAotidSet;
-	struct System_String_o* aotid;
-} System_Diagnostics_StackTrace_StaticFields;
 
 typedef struct Neon_Model_Api_ApiService_Fields Neon_Model_Api_ApiService_Fields; /* : CDGPJELFAMK_Fields */
 
@@ -526,9 +264,7 @@ typedef struct Neon_Model_Api_ApiService_o {
 	/* Neon_Model_Api_ApiService_Fields fields; */
 } Neon_Model_Api_ApiService_o;
 
-typedef struct System_Threading_CancellationToken_Fields {
-	struct System_Threading_CancellationTokenSource_o* _source;
-} System_Threading_CancellationToken_Fields;
+
 
 typedef struct System_Threading_CancellationToken_VTable {
 	VirtualInvokeData _0_Equals;
@@ -544,10 +280,6 @@ typedef struct System_Threading_CancellationToken_c {
 	Il2CppClass_2 _2;
 	System_Threading_CancellationToken_VTable vtable;
 } System_Threading_CancellationToken_c;
-
-typedef struct System_Threading_CancellationToken_o {
-	System_Threading_CancellationToken_Fields fields;
-} System_Threading_CancellationToken_o;
 
 typedef struct System_Threading_CancellationToken_StaticFields {
 	struct System_Action_object__o* s_actionToActionObjShunt;
@@ -739,11 +471,6 @@ typedef struct Cysharp_Threading_Tasks_IUniTaskSource_T__o {
 	/* Cysharp_Threading_Tasks_IUniTaskSource_T__Fields fields; */
 } Cysharp_Threading_Tasks_IUniTaskSource_T__o;
 
-typedef struct Cysharp_Threading_Tasks_UniTask_Fields {
-	struct Cysharp_Threading_Tasks_IUniTaskSource_o* source;
-	int16_t token;
-} Cysharp_Threading_Tasks_UniTask_Fields;
-
 typedef struct Cysharp_Threading_Tasks_UniTask_VTable {
 	VirtualInvokeData _0_Equals;
 	VirtualInvokeData _1_Finalize;
@@ -758,10 +485,6 @@ typedef struct Cysharp_Threading_Tasks_UniTask_c {
 	Il2CppClass_2 _2;
 	Cysharp_Threading_Tasks_UniTask_VTable vtable;
 } Cysharp_Threading_Tasks_UniTask_c;
-
-typedef struct Cysharp_Threading_Tasks_UniTask_o {
-	Cysharp_Threading_Tasks_UniTask_Fields fields;
-} Cysharp_Threading_Tasks_UniTask_o;
 
 typedef struct Cysharp_Threading_Tasks_UniTask_StaticFields {
 	struct Cysharp_Threading_Tasks_UniTask_o CanceledUniTask;
@@ -1386,16 +1109,6 @@ typedef struct MethodInfo_21C8770 {
 	uint8_t bitflags;
 } MethodInfo_21C8770;
 
-typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__Fields {
-	Il2CppObject* result;
-	Il2CppObject* error;
-	int16_t version;
-	bool hasUnhandledError;
-	int32_t completedCount;
-	struct System_Action_object__o* continuation;
-	Il2CppObject* continuationState;
-} Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__Fields;
-
 typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__VTable {
 	VirtualInvokeData _0_Equals;
 	VirtualInvokeData _1_Finalize;
@@ -1411,10 +1124,6 @@ typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__c {
 	Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__VTable vtable;
 } Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__c;
 
-typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o {
-	Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__Fields fields;
-} Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_object__o;
-
 typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__Fields {
 	Il2CppObject* result;
 	Il2CppObject* error;
@@ -1424,51 +1133,10 @@ typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__Fiel
 	struct System_Action_object__o* continuation;
 	Il2CppObject* continuationState;
 } Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__Fields;
-typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__RGCTXs {
-	MethodInfo* _0_Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__ReportUnhandledError;
-	Il2CppClass* _1_Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult_;
-	Il2CppClass* _2_Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult_;
-	Il2CppClass* _3_TResult;
-	MethodInfo* _4_Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__ValidateToken;
-} Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__RGCTXs;
-typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-} Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__VTable;
-typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__c {
-	Il2CppClass_1 _1;
-	void* static_fields;
-	Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__RGCTXs* rgctx_data;
-	Il2CppClass_2 _2;
-	Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__VTable vtable;
-} Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__c;
+
 typedef struct Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__o {
 	Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__Fields fields;
 } Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__o;
-
-typedef struct MethodInfo_20B62E0 {
-	Il2CppMethodPointer methodPointer;
-	Il2CppMethodPointer virtualMethodPointer;
-	InvokerMethod invoker_method;
-	const char* name;
-	Cysharp_Threading_Tasks_UniTaskCompletionSourceCore_TResult__c *klass;
-	const Il2CppType *return_type;
-	const Il2CppType** parameters;
-	const Il2CppRGCTXData* rgctx_data;
-	union
-	{
-		const void* genericMethod;
-		const void* genericContainerHandle;
-	};
-	uint32_t token;
-	uint16_t flags;
-	uint16_t iflags;
-	uint16_t slot;
-	uint8_t parameters_count;
-	uint8_t bitflags;
-} MethodInfo_20B62E0;
 
 typedef struct MethodInfo_110E210_RGCTXs {
 	Il2CppClass* _0_T;
@@ -1498,37 +1166,6 @@ typedef struct MethodInfo_110E210 {
 	uint8_t bitflags;
 } MethodInfo_110E210;
 
-typedef struct Google_Protobuf_MessageParser_TResponse__Fields /* : Google_Protobuf_MessageParser_Fields */ {
-	struct System_Func_T__o* factory;
-} Google_Protobuf_MessageParser_TResponse__Fields;
-
-typedef struct Google_Protobuf_MessageParser_TResponse__VTable {
-	VirtualInvokeData _0_Equals;
-	VirtualInvokeData _1_Finalize;
-	VirtualInvokeData _2_GetHashCode;
-	VirtualInvokeData _3_ToString;
-} Google_Protobuf_MessageParser_TResponse__VTable;
-
-typedef struct Google_Protobuf_MessageParser_TResponse__c {
-	Il2CppClass_1 _1;
-	void* static_fields;
-	Il2CppRGCTXData* rgctx_data;
-	Il2CppClass_2 _2;
-	Google_Protobuf_MessageParser_TResponse__VTable vtable;
-} Google_Protobuf_MessageParser_TResponse__c;
-
-typedef struct Google_Protobuf_MessageParser_TResponse__o {
-	Google_Protobuf_MessageParser_TResponse__c *klass;
-	void *monitor;
-	Google_Protobuf_MessageParser_TResponse__Fields fields;
-} Google_Protobuf_MessageParser_TResponse__o;
-
-typedef struct Cysharp_Threading_Tasks_UniTask_TResponse__Fields {
-	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
-	Il2CppObject* result;
-	int16_t token;
-} Cysharp_Threading_Tasks_UniTask_TResponse__Fields;
-
 typedef struct Cysharp_Threading_Tasks_UniTask_TResponse__VTable {
 	VirtualInvokeData _0_Equals;
 	VirtualInvokeData _1_Finalize;
@@ -1543,10 +1180,6 @@ typedef struct Cysharp_Threading_Tasks_UniTask_TResponse__c {
 	Il2CppClass_2 _2;
 	Cysharp_Threading_Tasks_UniTask_TResponse__VTable vtable;
 } Cysharp_Threading_Tasks_UniTask_TResponse__c;
-
-typedef struct Cysharp_Threading_Tasks_UniTask_TResponse__o {
-	Cysharp_Threading_Tasks_UniTask_TResponse__Fields fields;
-} Cysharp_Threading_Tasks_UniTask_TResponse__o;
 
 typedef struct CDGPJELFAMK_Fields {
 	struct KCFACGNDKOI_o* FEHDBEMDJLH;
@@ -1590,40 +1223,6 @@ typedef struct CDGPJELFAMK_o {
 	void *monitor;
 	CDGPJELFAMK_Fields fields;
 } CDGPJELFAMK_o;
-
-typedef struct MethodInfo_F6CAF0_RGCTXs {
-	MethodInfo* _0_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse__Create;
-	Il2CppClass* _1_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse_;
-	Il2CppClass* _2_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse_;
-	Il2CppClass* _3_CDGPJELFAMK_BGANPNAFBEF_TResponse_;
-	Il2CppClass* _4_Google_Protobuf_MessageParser_TResponse_;
-	MethodInfo* _5_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse__Start_CDGPJELFAMK_BGANPNAFBEF_TResponse__;
-	Il2CppClass* _6_CDGPJELFAMK_BGANPNAFBEF_TResponse_;
-	MethodInfo* _7_Cysharp_Threading_Tasks_CompilerServices_AsyncUniTaskMethodBuilder_TResponse__get_Task;
-	Il2CppClass* _8_Cysharp_Threading_Tasks_UniTask_TResponse_;
-} MethodInfo_F6CAF0_RGCTXs;
-
-typedef struct MethodInfo_F6CAF0 {
-	Il2CppMethodPointer methodPointer;
-	Il2CppMethodPointer virtualMethodPointer;
-	InvokerMethod invoker_method;
-	const char* name;
-	CDGPJELFAMK_c *klass;
-	const Il2CppType *return_type;
-	const Il2CppType** parameters;
-	const MethodInfo_F6CAF0_RGCTXs* rgctx_data;
-	union
-	{
-		const void* genericMethod;
-		const void* genericContainerHandle;
-	};
-	uint32_t token;
-	uint16_t flags;
-	uint16_t iflags;
-	uint16_t slot;
-	uint8_t parameters_count;
-	uint8_t bitflags;
-} MethodInfo_F6CAF0;
 
 typedef struct BJAFDMJIDMJ_Fields {
 	struct System_String_o* _JDLNGBAIDOD_k__BackingField;
@@ -1774,14 +1373,6 @@ typedef struct MethodInfo_76FC90 {
 	uint8_t parameters_count;
 	uint8_t bitflags;
 } MethodInfo_76FC90;
-
-typedef struct System_DateTime_Fields {
-	uint64_t _dateData;
-} System_DateTime_Fields;
-
-typedef struct System_DateTime_o {
-	System_DateTime_Fields fields;
-} System_DateTime_o;
 
 typedef struct Cysharp_Threading_Tasks_UniTask_AdventureAreaObjectResponse__Fields {
 	struct Cysharp_Threading_Tasks_IUniTaskSource_T__o* source;
@@ -2228,11 +1819,6 @@ typedef struct Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o {
 	Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_Fields fields;
 } Neon_Model_Api_Rpc_CharacterCostumeUpdateRequest_o;
 
-typedef struct System_Nullable_int__Fields {
-	bool hasValue;
-	int32_t value;
-} System_Nullable_int__Fields;
-
 typedef struct System_Nullable_int__VTable {
 	VirtualInvokeData _0_Equals;
 	VirtualInvokeData _1_Finalize;
@@ -2247,10 +1833,6 @@ typedef struct System_Nullable_int__c {
 	Il2CppClass_2 _2;
 	System_Nullable_int__VTable vtable;
 } System_Nullable_int__c;
-
-typedef struct System_Nullable_int__o {
-	System_Nullable_int__Fields fields;
-} System_Nullable_int__o;
 
 typedef struct Neon_Model_Api_Rpc_AdventureReadSequenceRequest_Fields {
 	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
@@ -2378,11 +1960,6 @@ typedef struct Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o {
 	Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_Fields fields;
 } Neon_Model_Api_Rpc_AdventureAcquireAreaItemRequest_o;
 
-typedef struct System_Nullable_long__Fields {
-	bool hasValue;
-	int64_t value;
-} System_Nullable_long__Fields;
-
 typedef struct System_Nullable_long__VTable {
 	VirtualInvokeData _0_Equals;
 	VirtualInvokeData _1_Finalize;
@@ -2398,9 +1975,7 @@ typedef struct System_Nullable_long__c {
 	System_Nullable_long__VTable vtable;
 } System_Nullable_long__c;
 
-typedef struct System_Nullable_long__o {
-	System_Nullable_long__Fields fields;
-} System_Nullable_long__o;
+
 
 typedef struct Neon_Model_Api_Rpc_XbFormationRequest_Fields {
 	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
@@ -4010,11 +3585,6 @@ typedef struct Neon_Model_Api_Rpc_XbPvpCasualMatchingRequest_o {
 	Neon_Model_Api_Rpc_XbPvpCasualMatchingRequest_Fields fields;
 } Neon_Model_Api_Rpc_XbPvpCasualMatchingRequest_o;
 
-typedef struct System_Nullable_double__Fields {
-	bool hasValue;
-	double value;
-} System_Nullable_double__Fields;
-
 typedef struct System_Nullable_double__VTable {
 	VirtualInvokeData _0_Equals;
 	VirtualInvokeData _1_Finalize;
@@ -4029,10 +3599,6 @@ typedef struct System_Nullable_double__c {
 	Il2CppClass_2 _2;
 	System_Nullable_double__VTable vtable;
 } System_Nullable_double__c;
-
-typedef struct System_Nullable_double__o {
-	System_Nullable_double__Fields fields;
-} System_Nullable_double__o;
 
 typedef struct Neon_Model_Api_Rpc_PurchaseVerifyRequest_Fields {
 	struct Google_Protobuf_UnknownFieldSet_o* _unknownFields;
@@ -9231,11 +8797,6 @@ typedef struct Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__o {
 	Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__Fields fields;
 } Cysharp_Threading_Tasks_UniTask_AuthNonceResponse__o;
 
-typedef struct System_Nullable_DateTime__Fields {
-	bool hasValue;
-	struct System_DateTime_o value;
-} System_Nullable_DateTime__Fields;
-
 typedef struct System_Nullable_DateTime__VTable {
 	VirtualInvokeData _0_Equals;
 	VirtualInvokeData _1_Finalize;
@@ -9250,10 +8811,6 @@ typedef struct System_Nullable_DateTime__c {
 	Il2CppClass_2 _2;
 	System_Nullable_DateTime__VTable vtable;
 } System_Nullable_DateTime__c;
-
-typedef struct System_Nullable_DateTime__o {
-	System_Nullable_DateTime__Fields fields;
-} System_Nullable_DateTime__o;
 
 typedef struct CEMAAIHMHDA_Fields {
 	int32_t _ACDJAMAIODN_k__BackingField;
@@ -9417,13 +8974,6 @@ typedef struct Neon_Common_Utility_CameraFovScaler_o {
 } Neon_Common_Utility_CameraFovScaler_o;
 
 typedef struct DG_Tweening_Tween_o DG_Tweening_Tween_o;
-typedef struct UnityEngine_Transform_o UnityEngine_Transform_o;
-
-typedef struct UnityEngine_Vector3_Fields {
-	float x;
-	float y;
-	float z;
-} UnityEngine_Vector3_Fields;
 
 typedef struct UnityEngine_Vector3_VTable {
 	VirtualInvokeData _0_Equals;
@@ -9442,17 +8992,6 @@ typedef struct UnityEngine_Vector3_c {
 	UnityEngine_Vector3_VTable vtable;
 } UnityEngine_Vector3_c;
 
-typedef struct UnityEngine_Vector3_o {
-	UnityEngine_Vector3_Fields fields;
-} UnityEngine_Vector3_o;
-
-typedef struct UnityEngine_Quaternion_Fields {
-	float x;
-	float y;
-	float z;
-	float w;
-} UnityEngine_Quaternion_Fields;
-
 typedef struct UnityEngine_Quaternion_VTable {
 	VirtualInvokeData _0_Equals;
 	VirtualInvokeData _1_Finalize;
@@ -9469,13 +9008,6 @@ typedef struct UnityEngine_Quaternion_c {
 	Il2CppClass_2 _2;
 	UnityEngine_Quaternion_VTable vtable;
 } UnityEngine_Quaternion_c;
-
-typedef struct UnityEngine_Quaternion_o {
-	UnityEngine_Quaternion_Fields fields;
-} UnityEngine_Quaternion_o;
-
-typedef struct System_Type_o System_Type_o;
-typedef struct UnityEngine_Object_o UnityEngine_Object_o;
 
 typedef struct UnityEngine_Vector2_Fields {
 	float x;
@@ -9546,13 +9078,6 @@ typedef struct Cinemachine_CinemachineVirtualCameraBase_TransitionParams_Fields 
 typedef struct Cinemachine_CinemachineVirtualCameraBase_TransitionParams_o {
 	Cinemachine_CinemachineVirtualCameraBase_TransitionParams_Fields fields;
 } Cinemachine_CinemachineVirtualCameraBase_TransitionParams_o;
-
-typedef struct UnityEngine_Object_array {
-	Il2CppObject obj;
-	Il2CppArrayBounds *bounds;
-	il2cpp_array_size_t max_length;
-	UnityEngine_Object_o* m_Items[65535];
-} UnityEngine_Object_array;
 
 typedef struct Cinemachine_CinemachineVirtualCameraBase_Fields /* : UnityEngine_MonoBehaviour_Fields */ {
 	intptr_t m_CachedPtr;
@@ -9685,8 +9210,6 @@ typedef struct Cinemachine_CinemachineVirtualCamera_o {
 	Cinemachine_CinemachineVirtualCamera_Fields fields;
 } Cinemachine_CinemachineVirtualCamera_o;
 
-typedef struct UnityEngine_Camera_o UnityEngine_Camera_o;
-
 typedef struct MasterMemory_TableBase_HAMAAANAAKG__Fields {
 	struct HAMAAANAAKG_array* data;
 } MasterMemory_TableBase_HAMAAANAAKG__Fields;
@@ -9781,33 +9304,6 @@ typedef struct HAMAAANAAKG_array {
 	il2cpp_array_size_t max_length;
 	HAMAAANAAKG_o* m_Items[65535];
 } HAMAAANAAKG_array;
-
-typedef struct System_Nullable_OOJEDNBBGBK__Fields {
-	bool hasValue;
-	int32_t value;
-} System_Nullable_OOJEDNBBGBK__Fields;
-
-typedef struct System_Nullable_OOJEDNBBGBK__o {
-	System_Nullable_OOJEDNBBGBK__Fields fields;
-} System_Nullable_OOJEDNBBGBK__o;
-
-typedef struct System_Nullable_LFJELIPKMBM__Fields {
-	bool hasValue;
-	int32_t value;
-} System_Nullable_LFJELIPKMBM__Fields;
-
-typedef struct System_Nullable_LFJELIPKMBM__o {
-	System_Nullable_LFJELIPKMBM__Fields fields;
-} System_Nullable_LFJELIPKMBM__o;
-
-typedef struct System_Nullable_IKAFHEBKEHP__Fields {
-	bool hasValue;
-	int32_t value;
-} System_Nullable_IKAFHEBKEHP__Fields;
-
-typedef struct System_Nullable_IKAFHEBKEHP__o {
-	System_Nullable_IKAFHEBKEHP__Fields fields;
-} System_Nullable_IKAFHEBKEHP__o;
 
 typedef struct System_Collections_Generic_IReadOnlyList_PDIFPHMPPAG__o System_Collections_Generic_IReadOnlyList_PDIFPHMPPAG__o;
 

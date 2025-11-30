@@ -41,6 +41,7 @@ goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
 subdir('semba')
 subdir('autogen')
+subdir('autogen_demo')
 
 zero_src = [
     'mylib.c',
@@ -54,10 +55,8 @@ zero_src = [
     'Config.c',
     'Il2CppHelper.c',
     'TimeString.c',
-    'autogen/FuncPtrs.c',
+    'FuncPtrs.c',
     'md5sum.c',
-    func_ptrs,
-    autohook_tn,
     're.c',
     'sds_utf_conv.c',
     'Patterns.c',
@@ -66,6 +65,22 @@ zero_src = [
     'DrawFunc.cpp',
     'dump_ga/GameAssemblyDump.c',
     'dump_ga/MetadataDump.c',
+]
+
+zero_stable_incdir = include_directories('stable')
+
+zero_stable_src = [
+    zero_src,
+    func_ptrs,
+    autohook_tn,
+]
+
+zero_demo_incdir = include_directories('demo')
+
+zero_demo_src = [
+    zero_src,
+    func_ptrs_demo,
+    autohook_tn_demo,
 ]
 
 zero_deps = [
@@ -80,7 +95,15 @@ zero_deps = [
     imgui
 ]
 
-shared_library('zero', zero_src, dependencies : zero_deps, install : true, install_dir : '.')
+shared_library(
+    'zero', zero_stable_src, dependencies : zero_deps, install : true,
+    install_dir : '.', include_directories : zero_stable_incdir
+)
+
+shared_library(
+    'zerodemo', zero_demo_src, dependencies : zero_deps, install : true,
+    install_dir : '.', include_directories : zero_demo_incdir
+)
 
 executable('loader', 'loader.c', install : true, install_dir : '.')
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
