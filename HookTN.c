@@ -19,6 +19,7 @@ References:
 #include "semba/NimInit.h"
 #include "Patterns.h"
 #include "semba/semba.h"
+#include "version.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -320,7 +321,14 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
     Il2CppObject *res = NULL;
 
     if (resTypeToReqPtr) {
-        char *resJson = SembaCall(resTypeToReqPtr->uriPath, reqJson);
+        char *resJson;
+
+        if (GetGameVersion() == VERSION_DEMO) {
+            resJson = SembaCallDemo(resTypeToReqPtr->uriPath, reqJson);
+        } else {
+            resJson = SembaCall(resTypeToReqPtr->uriPath, reqJson);
+        }
+
         if (resJson) {
             res = CallParseJson(messageParser, resJson);
             if (!res) {

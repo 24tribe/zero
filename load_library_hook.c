@@ -5,6 +5,7 @@
 #include "md5sum.h"
 #include "sds_utf_conv.h"
 #include "dump_ga/GameAssemblyDump.h"
+#include "version.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -33,32 +34,9 @@ char *GetMd5Sum(sds path) {
     return NULL;
 }
 
-#define STABLE_MD5SUM "bf87cdb761f931b8ff806b2bd7a376af"
-
-enum GameVersion {
-    VERSION_NONE,
-    VERSION_STABLE,
-    VERSION_DEMO,
-    VERSION_BETA,
-};
-
-enum GameVersion GetGameVersion(char *hex) {
-    enum GameVersion version;
-
-    if (!strcmp(hex, STABLE_MD5SUM)) {
-        version = VERSION_STABLE;
-    } else {
-        version = VERSION_NONE;
-    }
-
-    return version;
-}
-
-
 void GameAssemblyCallback(HMODULE GameAssembly) {
     char path[MAX_PATH];
 
-    enum GameVersion version = VERSION_NONE;
     char *hex = NULL;
 
     // E:\TRIBENINE\GameAssembly.dll
@@ -67,11 +45,11 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
     // FIXME: should use GetModuleFileNameW
     if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
         hex = GetMd5Sum(path);
-        version = GetGameVersion(hex);
+        InitGameVersion(hex);
     }
 
     printf("GameAssembly hex: %s\n", hex);
-    printf("GameVersion enum: %d\n", (int)version);
+    printf("GameVersion enum: %d\n", (int)GetGameVersion());
 
     if (alreadyCalledGameAssemblyCallback) {
         return;

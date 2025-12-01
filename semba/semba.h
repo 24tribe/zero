@@ -3,6 +3,7 @@
 
 extern void NimMain(void);
 extern char *SembaCall(const char *uri, const char *request);
+extern char *SembaCallDemo(const char *uri, const char *request);
 extern void SembaLoadSave(const char *path);
 extern void SembaInitOnlineDb(const char *path);
 extern void SembaInitOfflineDb(const char *path);

@@ -2,6 +2,7 @@ import std/asynchttpserver
 import std/asyncdispatch
 import std/cmdline
 import std/parseutils
+import std/strutils
 
 import semba
 
@@ -31,7 +32,7 @@ proc main {.async.} =
     let headers = newHttpHeaders({"Content-type": "text/plain; charset=utf-8"})
     echo("uri: ", path)
     echo("req: ", body)
-    let res = sembaCallImpl(path, body)
+    let res = sembaCallImpl(path, body, parseEnum[GameVersion](req.headers["user-agent"]))
     await req.respond(Http200, res, headers)
 
   server.listen(Port(port), "127.0.0.1")

@@ -65,6 +65,7 @@ zero_src = [
     'DrawFunc.cpp',
     'dump_ga/GameAssemblyDump.c',
     'dump_ga/MetadataDump.c',
+    'version.c'
 ]
 
 zero_stable_incdir = include_directories('stable')

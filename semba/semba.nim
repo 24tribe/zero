@@ -17,6 +17,9 @@ const gearContentType = 6
 const itemContentType = 7
 const charExpContentType = 13
 
+type GameVersion* = enum
+  gvNone, gvStable, gvDemo, gvBeta
+
 var db: DbConn = nil
 var remoteUrl = ""
 
@@ -1093,75 +1096,103 @@ proc adventure_AcquireAreaItem(jsonReq: JsonNode): JsonNode =
     "changedResources": changedResources
   }
 
-proc sembaCallRemote(uri: string, request: string): string =
-  var client = newHttpClient()
+proc sembaCallRemote(uri: string, request: string, version: GameVersion): string =
+  var client = newHttpClient($version)
   try:
     let res = client.postContent(remoteUrl & uri, request)
     return res
   finally:
     client.close()
 
-proc sembaCallImpl*(uri: string, request: string): string =
+proc getJsonResultStable(uri: string, jsonReq: JsonNode): JsonNode =
+  if uri == "echo":
+    let dataUpper = jsonReq["data"].getStr().toUpperAscii()
+    result = %*{"data": dataUpper}
+  elif uri == "/auth/steam_user":
+    result = %*{"userId": "696969696969"}
+  elif uri == "/auth/nonce":
+    result = %*{"nonce": "6969696969696969"}
+  elif uri == "/auth/sign_in":
+    result = %*{"sessionToken": "69696969-6969-6969-6969-696969696969", "language": 2}
+  elif uri == "/adventure/area_object":
+    result = adventure_AreaObject(jsonReq)
+  elif uri == "/tip/release":
+    result = tip_Release(jsonReq)
+  elif uri == "/adventure/move_to_area":
+    result = adventure_MoveToArea(jsonReq)
+  elif uri == "/battle/start":
+    result = battle_Start(jsonReq)
+  elif uri == "/battle/finish":
+    result = battle_Finish(jsonReq)
+  elif uri == "/user/cross_date":
+    result = user_CrossDate(jsonReq)
+  elif uri == "/adventure/update_character_status":
+    result = adventure_UpdateCharacterStatus(jsonReq)
+  elif uri == "/user/log_in":
+    result = user_LogIn()
+  elif uri == "/formation/update":
+    result = formation_Update(jsonReq)
+  elif uri == "/character/costume_update":
+    result = character_CostumeUpdate(jsonReq)
+  elif uri == "/adventure/read_sequence":
+    result = adventure_ReadSequence(jsonReq)
+  elif uri == "/adventure/acquire_area_item":
+    result = adventure_AcquireAreaItem(jsonReq)
+  elif uri == "/adventure/release_event_lift":
+    result = adventure_ReleaseEventLift(jsonReq)
+  elif uri == "/event/list_node":
+    result = event_ListNode()
+  elif uri == "/event/finish_node":
+    result = event_FinishNode(jsonReq)
+  elif uri == "/adventure/warp_area_locator":
+    result = adventure_WarpAreaLocator(jsonReq)
+  else:
+    result = nil
+
+proc stableToDemo_UserLogInResponse(jsonRes: JsonNode): JsonNode =
+  echo("stabletodemo called");
+  result = jsonRes
+
+proc getJsonResultDemo(uri: string, jsonReq: JsonNode): JsonNode =
+  if uri == "/auth/sign_up":
+    result = %*{"userId": "696969696969"}
+  elif uri == "/user/log_in":
+    result = stableToDemo_UserLogInResponse(user_LogIn())
+  else:
+    result = nil
+
+proc sembaCallImpl*(uri: string, request: string, version: GameVersion): string =
   let jsonReq = if request != "": parseJson(request) else: nil
   var jsonRes: JsonNode
 
-  if uri == "echo":
-    let dataUpper = jsonReq["data"].getStr().toUpperAscii()
-    jsonRes = %*{"data": dataUpper}
-  elif uri == "/auth/steam_user" or uri == "/auth/sign_up":
-    jsonRes = %*{"userId": "696969696969"}
-  elif uri == "/auth/nonce":
-    jsonRes = %*{"nonce": "6969696969696969"}
-  elif uri == "/auth/sign_in":
-    jsonRes = %*{"sessionToken": "69696969-6969-6969-6969-696969696969", "language": 2}
-  elif uri == "/adventure/area_object":
-    jsonRes = adventure_AreaObject(jsonReq)
-  elif uri == "/tip/release":
-    jsonRes = tip_Release(jsonReq)
-  elif uri == "/adventure/move_to_area":
-    jsonRes = adventure_MoveToArea(jsonReq)
-  elif uri == "/battle/start":
-    jsonRes = battle_Start(jsonReq)
-  elif uri == "/battle/finish":
-    jsonRes = battle_Finish(jsonReq)
-  elif uri == "/user/cross_date":
-    jsonRes = user_CrossDate(jsonReq)
-  elif uri == "/adventure/update_character_status":
-    jsonRes = adventure_UpdateCharacterStatus(jsonReq)
-  elif uri == "/user/log_in":
-    jsonRes = user_LogIn()
-  elif uri == "/formation/update":
-    jsonRes = formation_Update(jsonReq)
-  elif uri == "/character/costume_update":
-    jsonRes = character_CostumeUpdate(jsonReq)
-  elif uri == "/adventure/read_sequence":
-    jsonRes = adventure_ReadSequence(jsonReq)
-  elif uri == "/adventure/acquire_area_item":
-    jsonRes = adventure_AcquireAreaItem(jsonReq)
-  elif uri == "/adventure/release_event_lift":
-    jsonRes = adventure_ReleaseEventLift(jsonReq)
-  elif uri == "/event/list_node":
-    jsonRes = event_ListNode()
-  elif uri == "/event/finish_node":
-    jsonRes = event_FinishNode(jsonReq)
-  elif uri == "/adventure/warp_area_locator":
-    jsonRes = adventure_WarpAreaLocator(jsonReq)
+  if version == gvDemo:
+    jsonRes = getJsonResultDemo(uri, jsonReq)
   else:
-    jsonRes = nil
+    jsonRes = getJsonResultStable(uri, jsonReq)
 
   result = if jsonRes != nil: $jsonRes else: ""
 
   logFlowOffline(uri, request, result)
 
-proc sembaCallUnsafe*(uri: string, request: string): string =
+proc sembaCallUnsafe*(uri: string, request: string, version: GameVersion): string =
   if remoteUrl != "":
-    return sembaCallRemote(uri, request)
+    return sembaCallRemote(uri, request, version)
 
-  return sembaCallImpl(uri, request)
+  return sembaCallImpl(uri, request, version)
+
+proc SembaCallDemo(uri: cstring, request: cstring): cstring {.exportc.} =
+  try:
+    let res = sembaCallUnsafe($uri, $request, gvDemo)
+    result = if res != "": dupString(res) else: nil
+  except Exception:
+    let e = getCurrentException()
+    echo "[SembaCallDemo] Nim Exception: " & getCurrentExceptionMsg()
+    echo e.getStackTrace()
+    result = nil
 
 proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
   try:
-    let res = sembaCallUnsafe($uri, $request)
+    let res = sembaCallUnsafe($uri, $request, gvStable)
     result = if res != "": dupString(res) else: nil
   except Exception:
     let e = getCurrentException()
@@ -1180,7 +1211,7 @@ proc loadSave(path: string) =
     for row in save["reqs"]:
       let uri = row[0].getStr()
       let req = row[1]
-      let res = sembaCallUnsafe(uri, $req)
+      let res = sembaCallUnsafe(uri, $req, gvStable) # FIXME: add version param to loadSave
       if res == "":
         echo "[loadSave][!] '" & uri & "' is not implemented"
   else:
