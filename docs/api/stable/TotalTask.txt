@@ -1,0 +1,8 @@
+TotalTask
+
+[ProtoMember(1)]
+conditionId: int
+
+[ProtoMember(2)]
+count: long
+

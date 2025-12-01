@@ -1,0 +1,17 @@
+NineSequence
+
+[ProtoMember(1)]
+nineSequenceId: int
+
+[ProtoMember(2)]
+choices: string
+
+[ProtoMember(3)]
+expiresAt: Timestamp
+
+[ProtoMember(4)]
+lastReceiveAt: Timestamp
+
+[ProtoMember(5)]
+lastReadAt: Timestamp
+
