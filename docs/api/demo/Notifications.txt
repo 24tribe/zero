@@ -1,0 +1,8 @@
+Notifications
+
+[ProtoMember(1)]
+gacha: GachaNotification
+
+[ProtoMember(2)]
+mail: bool?
+

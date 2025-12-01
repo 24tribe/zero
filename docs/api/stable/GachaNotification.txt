@@ -1,0 +1,8 @@
+GachaNotification
+
+[ProtoMember(1)]
+latestGachaStartAt: Timestamp
+
+[ProtoMember(2)]
+executableGachaIds: RepeatedField<int>
+

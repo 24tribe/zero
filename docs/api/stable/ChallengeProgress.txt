@@ -1,0 +1,11 @@
+ChallengeProgress
+
+[ProtoMember(1)]
+challengeProgressId: int
+
+[ProtoMember(5)]
+state: int
+
+[ProtoMember(3)]
+clearedAt: Timestamp
+

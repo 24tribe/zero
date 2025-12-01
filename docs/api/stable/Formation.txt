@@ -1,0 +1,11 @@
+Formation
+
+[ProtoMember(1)]
+number: int
+
+[ProtoMember(3)]
+members: FormationMembers
+
+[ProtoMember(4)]
+cards: FormationCards
+

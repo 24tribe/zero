@@ -1,0 +1,11 @@
+Notifications
+
+[ProtoMember(1)]
+gacha: GachaNotification
+
+[ProtoMember(2)]
+mail: bool?
+
+[ProtoMember(4)]
+itemRequest: bool?
+

@@ -1,0 +1,29 @@
+TensionCard
+
+[ProtoMember(1)]
+tensionCardId: int
+
+[ProtoMember(8)]
+entityId: int
+
+[ProtoMember(2)]
+exp: int
+
+[ProtoMember(3)]
+limitBreak: int
+
+[ProtoMember(4)]
+receivedAt: Timestamp
+
+[ProtoMember(5)]
+maxLevel: int
+
+[ProtoMember(6)]
+abilityEfficacies: RepeatedField<AbilityEfficacy>
+
+[ProtoMember(7)]
+trainingScoreLevelScore: int
+
+[ProtoMember(9)]
+isLocked: bool
+
