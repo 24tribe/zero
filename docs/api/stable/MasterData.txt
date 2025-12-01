@@ -1,0 +1,4 @@
+MasterData
+
+[ProtoMember(2)]
+shopProducts: RepeatedField<ShopProduct>

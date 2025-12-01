@@ -1,0 +1,10 @@
+UserLogInResponse
+
+[ProtoMember(1)]
+resources: Resources
+
+[ProtoMember(2)]
+moveToAreaLocatorId: int?
+
+[ProtoMember(3)]
+masterData: MasterData

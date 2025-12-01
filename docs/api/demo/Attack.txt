@@ -1,0 +1,35 @@
+Attack
+
+[ProtoMember(1)]
+id: int
+
+[ProtoMember(3)]
+powerMultiply: float
+
+[ProtoMember(4)]
+hitbackDistance: float
+
+[ProtoMember(5)]
+attackerHitSlowTime: float
+
+[ProtoMember(6)]
+attackerHitSlowSpeed: float
+
+[ProtoMember(7)]
+defenderHitSlowTime: float
+
+[ProtoMember(8)]
+defenderHitSlowSpeed: float
+
+[ProtoMember(9)]
+hitInterval: float
+
+[ProtoMember(10)]
+blowUpParameterMasterId: int
+
+[ProtoMember(11)]
+hitConditionSkillId: int?
+
+[ProtoMember(14)]
+attackAttributes: RepeatedField<int>
+
