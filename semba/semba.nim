@@ -1149,15 +1149,104 @@ proc getJsonResultStable(uri: string, jsonReq: JsonNode): JsonNode =
   else:
     result = nil
 
-proc stableToDemo_UserLogInResponse(jsonRes: JsonNode): JsonNode =
-  echo("stabletodemo called");
-  result = jsonRes
+proc statusToDemo(status: var JsonNode) =
+  status["currentAreaId"] = %*300601
+  status["currentPosition"] = %* $status["currentPositionCoordinates"]
+
+  status.delete("currentAreaType")
+  status.delete("currentAreaKeyId")
+  status.delete("currentPositionCoordinates")
+
+proc characterToDemo(character: var JsonNode) =
+  character["spGauge"] = %*100
+  character["abilityEfficacies"] = %*[]
+  character["attacks"] = %*[]
+  character["limitedAbilityEfficacyIds"] = %*[]
+  character["likability"] = %*100
+
+  character.delete("actionPointMax")
+  character.delete("actionPointRate")
+  character.delete("actionPointConsumption")
+  character.delete("damageTakenRate")
+
+proc charactersToDemo(characters: var JsonNode) =
+  var newCharacters = newSeq[JsonNode]()
+  for character in characters.mitems():
+    if character["characterId"].getInt() <= 101501:
+      characterToDemo(character)
+      newCharacters.add(character)
+
+  characters = %*newCharacters
+
+proc tensionCardsToDemo(tensionCards: var JsonNode) =
+  for tensionCard in tensionCards.mitems():
+    tensionCard.delete("entityId")
+    tensionCard.delete("isLocked")
+
+proc challengeProgressesToDemo(challengeProgresses: var JsonNode) =
+  var newChallengeProgresses = newSeq[JsonNode]()
+  for challengeProgress in challengeProgresses.mitems():
+    if challengeProgress["challengeProgressId"].getInt() < 1000112:
+      challengeProgress.delete("state")
+      newChallengeProgresses.add(challengeProgress)
+
+  challengeProgresses = %*newChallengeProgresses
+
+proc getBaseCostumes(characters: JsonNode): seq[JsonNode] =
+  for character in characters:
+    let costumeId = ((character["characterId"].getInt() div 10) * 100) + 1
+    result.add(%*{
+      "characterCostumeId": costumeId,
+      "receivedAt": "2025-04-24T03:49:59Z"
+    })
+
+proc demo_user_LogIn(): JsonNode =
+  let res = user_LogIn()
+
+  var status = res["resources"]["status"]
+  statusToDemo(status)
+
+  var characters = res["resources"]["characters"]
+  charactersToDemo(characters)
+  
+  #[ var tensionCards = res["resources"]["tensionCards"]
+  tensionCardsToDemo(tensionCards) ]#
+
+  var notifications = res["resources"]["notifications"]
+  notifications.delete("itemRequest")
+
+  var challengeProgresses = res["resources"]["challengeProgresses"]
+  challengeProgressesToDemo(challengeProgresses)
+
+  let characterCostumes = getBaseCostumes(characters)
+
+  return %*{
+    "resources": {
+      "challengeTasks": res["resources"]["challengeTasks"],
+      "wallet": {},
+      "characters": characters,
+      "status": status,
+      "tensionCards": [],
+      "formations": res["resources"]["formations"],
+      "notifications": notifications,
+      "challenges": [{"challengeId": 100, "state": 8}],
+      "challengeProgresses": challengeProgresses,
+      "areas": [],
+      "nineSequences": [],
+      "tips": [],
+      "characterCostumes": characterCostumes,
+      "missions": [],
+      "totalTasks": [],
+      "profile": {"name": "Yo Kuronaka3"},
+    },
+    "masterData": {"shopProducts": [], "shopProductLimitedDiscounts": []}
+  }
 
 proc getJsonResultDemo(uri: string, jsonReq: JsonNode): JsonNode =
   if uri == "/auth/sign_up":
     result = %*{"userId": "696969696969"}
   elif uri == "/user/log_in":
-    result = stableToDemo_UserLogInResponse(user_LogIn())
+    result = demo_user_LogIn()
   else:
     result = nil
 
