@@ -1150,7 +1150,7 @@ proc getJsonResultStable(uri: string, jsonReq: JsonNode): JsonNode =
     result = nil
 
 proc statusToDemo(status: var JsonNode) =
-  status["currentAreaId"] = %*300601
+  status["currentAreaId"] = %*100101
 
   let x = status["currentPositionCoordinates"]["x"].getFloat()
   let y = status["currentPositionCoordinates"]["y"].getFloat()
@@ -1215,9 +1215,10 @@ proc demo_adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
     "changedResources": {
       "status": status,
     },
-    #[ "areaBgm": {
-      "id": 0,
-    } ]#
+    "areaBgm": {
+      "id": 201,
+      "eventName": "bgm_adv_02_basic",
+    }
   }
 
 proc demo_user_CrossDate(jsonReq: JsonNode): JsonNode =
