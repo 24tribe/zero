@@ -25,6 +25,7 @@ void MyMain(HMODULE hModule) {
 
     // HookNtQueryDirectoryFile();
     HookLoadLibrary();
+    // HookCreateFile();
 
     HANDLE hMainThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UIMainThread, hModule, 0, NULL);
 
