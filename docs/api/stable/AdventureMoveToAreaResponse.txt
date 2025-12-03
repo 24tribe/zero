@@ -1,0 +1,14 @@
+AdventureMoveToAreaResponse
+
+[ProtoMember(1)]
+changedResources: Resources
+
+[ProtoMember(2)]
+areaChangeLocks: RepeatedField<AreaChangeLock>
+
+[ProtoMember(3)]
+areaBehavior: AreaBehavior
+
+[ProtoMember(4)]
+areaBgm: AreaBgm
+

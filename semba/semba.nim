@@ -1207,6 +1207,19 @@ proc getBaseCostumes(characters: JsonNode): seq[JsonNode] =
 proc notificationsToDemo(notifications: var JsonNode) =
   notifications.delete("itemRequest")
 
+proc demo_adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
+  var status = getUserStatus()
+  statusToDemo(status)
+
+  return %*{
+    "changedResources": {
+      "status": status,
+    },
+    #[ "areaBgm": {
+      "id": 0,
+    } ]#
+  }
+
 proc demo_user_CrossDate(jsonReq: JsonNode): JsonNode =
   let res = user_CrossDate(jsonReq)
 
@@ -1275,6 +1288,8 @@ proc getJsonResultDemo(uri: string, jsonReq: JsonNode): JsonNode =
     result = demo_user_CrossDate(jsonReq)
   elif uri == "/news/list":
     result = %*{"news": []}
+  elif uri == "/adventure/move_to_area":
+    result = demo_adventure_MoveToArea(jsonReq)
   else:
     result = nil
 
