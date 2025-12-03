@@ -1,5 +1,5 @@
 #include "utils.h"
-#include "sds.h"
+#include "sds_utf_conv.h"
 
 #include <MinHook.h>
 
@@ -19,10 +19,13 @@ HANDLE WINAPI DetourCreateFileW(
 
     sds filename = sds16to8(filenameW, wcslen(filenameW));
 
-    printf("CreateFileW: %s\n", filename);
+    // FIXME: change abcache.json contents to {"IgnoreCatalogCache":false,"IgnoreRemoteCatalog":true}
+    if (strstr(filename, "abcache.json")) {
+        printf("CreateFileW: %s\n", filename);
+    }
 
     sdsfree(filename);
-    
+
     return fpCreateFileW(filenameW, access, shareMode, attrs, creationDisp, flags, template);
 }
 

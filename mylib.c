@@ -2,6 +2,7 @@
 #include "NtQueryDirectoryFileHook.h"
 #include "Config.h"
 #include "UserInterface.h"
+#include "create_file_hook.h"
 
 #include <MinHook.h>
 
@@ -25,7 +26,7 @@ void MyMain(HMODULE hModule) {
 
     // HookNtQueryDirectoryFile();
     HookLoadLibrary();
-    // HookCreateFile();
+    HookCreateFile();
 
     HANDLE hMainThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UIMainThread, hModule, 0, NULL);
 

@@ -578,7 +578,7 @@ Aktsk_ABCache_IBundleHandle_o* Detour_Aktsk_ABCache_AssetBundleStore__GetBundleH
     Aktsk_ABCache_AssetBundleStore_o* __this, System_String_o* bundleName, const MethodInfo* method
 ) {
     sds bundle = System_String_toSds(bundleName);
-    printf("Tried to load %s\n", bundle);
+    // printf("Tried to load %s\n", bundle);
     return fpAktsk_ABCache_AssetBundleStore__GetBundleHandle(__this, bundleName, method);
 }
 
