@@ -1226,9 +1226,32 @@ proc demo_adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   }
 
 proc demo_adventure_AreaObject(): JsonNode =
+  let areaObject = %*{
+    "areaPointId": 300203001,
+    "areaObjectId": 100001,
+    "action": {
+      "type": 5,
+      "areaEnemyId": 100001,
+      "battleEntryId": 1000001,
+    }
+  }
+
   return %*{
-    "areaObjects": [],
+    "areaObjects": [areaObject],
     "bloodStains": [],
+  }
+
+proc demo_adventure_Variable(jsonReq: JsonNode): JsonNode =
+  var adventureVariables = newSeq[JsonNode]()
+
+  for adventureVariableId in jsonReq["adventureVariableIds"]:
+    adventureVariables.add(%*{
+      "adventureVariableId": adventureVariableId.getInt(),
+      "value": 1,
+    })
+
+  return %*{
+    "adventureVariables": adventureVariables
   }
 
 proc demo_user_CrossDate(jsonReq: JsonNode): JsonNode =
@@ -1303,7 +1326,9 @@ proc getJsonResultDemo(uri: string, jsonReq: JsonNode): JsonNode =
     result = demo_adventure_MoveToArea(jsonReq)
   elif uri == "/adventure/area_object":
     result = demo_adventure_AreaObject()
-  else:
+  elif uri == "/adventure/variable":
+    result = demo_adventure_Variable(jsonReq)
+  else: 
     result = nil
 
 proc sembaCallImpl*(uri: string, request: string, version: GameVersion): string =

@@ -1,0 +1,23 @@
+AreaObject
+
+[ProtoMember(1)]
+areaObjectId: int?
+
+[ProtoMember(2)]
+areaPointId: int
+
+[ProtoMember(3)]
+areaObjectBehaviorId: int?
+
+[ProtoMember(4)]
+areaItemSpawnId: int?
+
+[ProtoMember(5)]
+areaEnemyRateSetId: int?
+
+[ProtoMember(6)]
+action: AreaObjectAction
+
+[ProtoMember(7)]
+challengeProgressId: int
+
