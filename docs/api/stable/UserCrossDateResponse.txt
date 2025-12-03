@@ -1,0 +1,8 @@
+UserCrossDateResponse
+
+[ProtoMember(1)]
+rewards: RepeatedField<Rewards>
+
+[ProtoMember(2)]
+changedResources: Resources
+

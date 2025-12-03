@@ -1,0 +1,5 @@
+TutorialStatus
+
+[ProtoMember(1)]
+status: RepeatedField<TutorialStatusStatus>
+

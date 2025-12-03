@@ -1,0 +1,23 @@
+NewsItem
+
+[ProtoMember(1)]
+newsGroupId: int
+
+[ProtoMember(2)]
+priority: int
+
+[ProtoMember(3)]
+category: int
+
+[ProtoMember(4)]
+title: string
+
+[ProtoMember(5)]
+startAt: Timestamp
+
+[ProtoMember(6)]
+editedAt: Timestamp
+
+[ProtoMember(7)]
+isImportant: bool
+

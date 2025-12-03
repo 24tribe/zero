@@ -570,6 +570,36 @@ bool areGamePtrsReady(void) {
     return gamePtrsReady;
 }
 
+#ifdef TRIBE_NINE_DEMO
+
+Aktsk_ABCache_AssetBundleStore__GetBundleHandle_FuncPtr fpAktsk_ABCache_AssetBundleStore__GetBundleHandle = NULL;
+
+Aktsk_ABCache_IBundleHandle_o* Detour_Aktsk_ABCache_AssetBundleStore__GetBundleHandle(
+    Aktsk_ABCache_AssetBundleStore_o* __this, System_String_o* bundleName, const MethodInfo* method
+) {
+    sds bundle = System_String_toSds(bundleName);
+    printf("Tried to load %s\n", bundle);
+    return fpAktsk_ABCache_AssetBundleStore__GetBundleHandle(__this, bundleName, method);
+}
+
+void Hook_Aktsk_ABCache_AssetBundleStore__GetBundleHandle(void) {
+    printf("Hook_Aktsk_ABCache_AssetBundleStore__GetBundleHandle called\n");
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Aktsk_ABCache_AssetBundleStore__GetBundleHandle,
+        (LPVOID)(uintptr_t)&Detour_Aktsk_ABCache_AssetBundleStore__GetBundleHandle,
+        (LPVOID *)&fpAktsk_ABCache_AssetBundleStore__GetBundleHandle
+    ) != MH_OK) {
+        printf("Failed to create Aktsk_ABCache_AssetBundleStore__GetBundleHandle hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Aktsk_ABCache_AssetBundleStore__GetBundleHandle, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable Aktsk_ABCache_AssetBundleStore__GetBundleHandle hook\n");
+        return;
+    }
+}
+#endif
+
 void HookTN(void *GameAssembly) {
     InitGamePtrs(GameAssembly);
     gamePtrsReady = true;
@@ -584,6 +614,10 @@ void HookTN(void *GameAssembly) {
 
     #ifdef HAVE_LUX_PHANTASM
     Hook_EMDHIMNBAPC___ctor();
+#endif
+
+#ifdef TRIBE_NINE_DEMO
+    Hook_Aktsk_ABCache_AssetBundleStore__GetBundleHandle();
 #endif
 
     RunNimMainOnce();

@@ -6,9 +6,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define TRIBE_NINE_DEMO
+
 typedef struct MethodInfo_1C7D920 GetResultMethodInfo;
 typedef struct MethodInfo_E255C0 NeonApiGetResponse_MethodInfo;
 typedef struct CDPAJOEFJDI_o NeonApiGetResponse_ThirdParam;
+typedef struct Aktsk_ABCache_AssetBundleStore_o Aktsk_ABCache_AssetBundleStore_o;
+typedef struct Aktsk_ABCache_IBundleHandle_o Aktsk_ABCache_IBundleHandle_o;
 
 typedef struct CDPAJOEFJDI_o CDPAJOEFJDI_o;
 

@@ -1151,7 +1151,11 @@ proc getJsonResultStable(uri: string, jsonReq: JsonNode): JsonNode =
 
 proc statusToDemo(status: var JsonNode) =
   status["currentAreaId"] = %*300601
-  status["currentPosition"] = %* $status["currentPositionCoordinates"]
+
+  let x = status["currentPositionCoordinates"]["x"].getFloat()
+  let y = status["currentPositionCoordinates"]["y"].getFloat()
+  let z = status["currentPositionCoordinates"]["z"].getFloat()
+  status["currentPosition"] = %*($x & "," & $y & "," & $z)
 
   status.delete("currentAreaType")
   status.delete("currentAreaKeyId")
@@ -1200,6 +1204,25 @@ proc getBaseCostumes(characters: JsonNode): seq[JsonNode] =
       "receivedAt": "2025-04-24T03:49:59Z"
     })
 
+proc notificationsToDemo(notifications: var JsonNode) =
+  notifications.delete("itemRequest")
+
+proc demo_user_CrossDate(jsonReq: JsonNode): JsonNode =
+  let res = user_CrossDate(jsonReq)
+
+  var status = res["changedResources"]["status"]
+  statusToDemo(status)
+
+  var notifications = res["changedResources"]["notifications"]
+  notificationsToDemo(notifications)
+
+  return %*{
+    "changedResources": {
+      "status": status,
+      "notifications": notifications,
+    }
+  }
+
 proc demo_user_LogIn(): JsonNode =
   let res = user_LogIn()
 
@@ -1213,7 +1236,7 @@ proc demo_user_LogIn(): JsonNode =
   tensionCardsToDemo(tensionCards) ]#
 
   var notifications = res["resources"]["notifications"]
-  notifications.delete("itemRequest")
+  notificationsToDemo(notifications)
 
   var challengeProgresses = res["resources"]["challengeProgresses"]
   challengeProgressesToDemo(challengeProgresses)
@@ -1238,6 +1261,7 @@ proc demo_user_LogIn(): JsonNode =
       "missions": [],
       "totalTasks": [],
       "profile": {"name": "Yo Kuronaka3"},
+      "tutorialStatus": {"status": []},
     },
     "masterData": {"shopProducts": [], "shopProductLimitedDiscounts": []}
   }
@@ -1247,6 +1271,10 @@ proc getJsonResultDemo(uri: string, jsonReq: JsonNode): JsonNode =
     result = %*{"userId": "696969696969"}
   elif uri == "/user/log_in":
     result = demo_user_LogIn()
+  elif uri == "/user/cross_date":
+    result = demo_user_CrossDate(jsonReq)
+  elif uri == "/news/list":
+    result = %*{"news": []}
   else:
     result = nil
 

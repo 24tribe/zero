@@ -1,0 +1,8 @@
+TutorialStatusStatus
+
+[ProtoMember(1)]
+key: int
+
+[ProtoMember(2)]
+value: int
+
