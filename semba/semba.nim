@@ -1150,7 +1150,7 @@ proc getJsonResultStable(uri: string, jsonReq: JsonNode): JsonNode =
     result = nil
 
 proc statusToDemo(status: var JsonNode) =
-  status["currentAreaId"] = %*100101
+  status["currentAreaId"] = %*300601
 
   let x = status["currentPositionCoordinates"]["x"].getFloat()
   let y = status["currentPositionCoordinates"]["y"].getFloat()
@@ -1209,7 +1209,9 @@ proc notificationsToDemo(notifications: var JsonNode) =
 
 proc demo_adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   var status = getUserStatus()
+
   statusToDemo(status)
+  status["currentPosition"] = jsonReq["currentLocation"]["position"]
 
   return %*{
     "changedResources": {
@@ -1219,6 +1221,12 @@ proc demo_adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
       "id": 201,
       "eventName": "bgm_adv_02_basic",
     }
+  }
+
+proc demo_adventure_AreaObject(): JsonNode =
+  return %*{
+    "areaObjects": [],
+    "bloodStains": [],
   }
 
 proc demo_user_CrossDate(jsonReq: JsonNode): JsonNode =
@@ -1291,6 +1299,8 @@ proc getJsonResultDemo(uri: string, jsonReq: JsonNode): JsonNode =
     result = %*{"news": []}
   elif uri == "/adventure/move_to_area":
     result = demo_adventure_MoveToArea(jsonReq)
+  elif uri == "/adventure/area_object":
+    result = demo_adventure_AreaObject()
   else:
     result = nil
 
