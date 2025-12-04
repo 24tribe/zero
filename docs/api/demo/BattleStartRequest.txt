@@ -1,0 +1,23 @@
+BattleStartRequest
+
+[ProtoMember(1)]
+battleEntryIds: RepeatedField<int>
+
+[ProtoMember(2)]
+lineCharacterIds: RepeatedField<int>
+
+[ProtoMember(3)]
+battleTriggers: RepeatedField<BattleTrigger>
+
+[ProtoMember(4)]
+advantageType: BattleAdvantageType
+
+[ProtoMember(5)]
+isAttackHit: bool
+
+[ProtoMember(6)]
+currentLocation: CurrentLocation
+
+[ProtoMember(7)]
+bloodStainLocation: BloodStainLocation
+

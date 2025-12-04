@@ -1,0 +1,8 @@
+TipReleaseResponse
+
+[ProtoMember(1)]
+changedResources: Resources
+
+[ProtoMember(2)]
+areaObjects: RepeatedField<AreaObject>
+

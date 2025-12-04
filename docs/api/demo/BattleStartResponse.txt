@@ -1,0 +1,32 @@
+BattleStartResponse
+
+[ProtoMember(1)]
+formation: Formation
+
+[ProtoMember(2)]
+characters: RepeatedField<Character>
+
+[ProtoMember(4)]
+tensionCards: RepeatedField<TensionCard>
+
+[ProtoMember(5)]
+battleParameters: RepeatedField<BattleParameter>
+
+[ProtoMember(6)]
+battleTriggers: RepeatedField<BattleTrigger>
+
+[ProtoMember(7)]
+advantageType: BattleAdvantageType
+
+[ProtoMember(8)]
+changedResources: Resources
+
+[ProtoMember(9)]
+characterDishes: RepeatedField<CharacterDish>
+
+[ProtoMember(10)]
+wonResultType: BattleWonResultType
+
+[ProtoMember(11)]
+abilityEnigmaId: int?
+
