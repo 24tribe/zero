@@ -14,6 +14,11 @@ typedef struct CDPAJOEFJDI_o NeonApiGetResponse_ThirdParam;
 typedef struct Aktsk_ABCache_AssetBundleStore_o Aktsk_ABCache_AssetBundleStore_o;
 typedef struct Aktsk_ABCache_IBundleHandle_o Aktsk_ABCache_IBundleHandle_o;
 
+typedef struct Neon_Model_Api_Model_Enemy_o Neon_Model_Api_Model_Enemy_o;
+typedef struct EJOPFMGFPOA_o EJOPFMGFPOA_o;
+typedef struct MNHJNDFAPMD_o MNHJNDFAPMD_o;
+typedef struct OJLLOCJDBLM_o OJLLOCJDBLM_o;
+
 typedef struct CDPAJOEFJDI_o CDPAJOEFJDI_o;
 
 typedef struct CDGPJELFAMK_VTable {

@@ -1234,16 +1234,71 @@ proc demo_battle_Start(jsonReq: JsonNode): JsonNode =
     {
       "bgmId": 4,
       "cameraSettingsAsset": "CameraSettings",
-      "waves": [],
+      "waves": [
+      ],
       "enemies": [
         {
-          "id": 10000010,
+          "id": 250108,
+          "name": "24 Kanon Ikura",
+          "title": "",
+          "description": "An autonomous drone that is modified...",
+          "isBoss": false,
           "attack": 6000,
-          "hp": 2400,
           "defense": 1000,
+          "hp": 2400,
+          "guardDurability": 0,
+          "movementSpeed": 7,
+          "supportPowerRate": 0,
+          "costumeId": "",
+          "characterActionId": 250103,
+          "characterActionResourceId": 0,
+          "abilityPassiveIds": [20001],
+          "battleVfxId": 0,
+          "pushWeightType": 0,
+          "tensionValue": 100,
+          "dropExp": 100,
+          "characterWeaponCostumeIds": [],
+          "abnormalityParamSet": {
+            "electric": {
+              "attackRate": 0,
+              "burstResistance": 20,
+              "burstResistanceIncreaseValue": 10,
+              "burstResistanceLimit": 50,
+              "defenseRate": 0
+            },
+            "oily": {
+              "attackRate": 0,
+              "burstResistance": 20,
+              "burstResistanceIncreaseValue": 10,
+              "burstResistanceLimit": 50,
+              "defenseRate": 0
+            },
+            "pressure": {
+              "attackRate": 0,
+              "burstResistance": 20,
+              "burstResistanceIncreaseValue": 10,
+              "burstResistanceLimit": 50,
+              "defenseRate": 0
+            },
+            "scared": {
+              "attackRate": 0,
+              "burstResistance": 20,
+              "burstResistanceIncreaseValue": 10,
+              "burstResistanceLimit": 50,
+              "defenseRate": 0
+            },
+            "unfortified": {
+              "attackRate": 0,
+              "burstResistance": 20,
+              "burstResistanceIncreaseValue": 10,
+              "burstResistanceLimit": 50,
+              "defenseRate": 0
+            }
+          },
           "isSkipEncounterAnimation": true,
           "hpStackCount": 0
-        }
+          
+        },
       ],
       "fieldName": "Field/env030_03",
       "id": 1000001,
@@ -1258,7 +1313,7 @@ proc demo_battle_Start(jsonReq: JsonNode): JsonNode =
 
   result = %*{
     "formation": {
-      "number": 0,
+      "number": 1,
       "members": {"character1Id": 100101, "character1OwnershipType": 1},
       "cards": {
       },

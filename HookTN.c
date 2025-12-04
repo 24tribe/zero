@@ -572,29 +572,36 @@ bool areGamePtrsReady(void) {
 
 #ifdef TRIBE_NINE_DEMO
 
-Aktsk_ABCache_AssetBundleStore__GetBundleHandle_FuncPtr fpAktsk_ABCache_AssetBundleStore__GetBundleHandle = NULL;
+typedef void (*OJLLOCJDBLM___ctor_FuncPtr) (OJLLOCJDBLM_o* __this, MNHJNDFAPMD_o* NFADCMKHEAI, Neon_Model_Api_Model_Enemy_o* PIOECLPHAFK, EJOPFMGFPOA_o* LFLBBLLOAKF, int32_t ODCLDJBPJMJ, const MethodInfo* method);
 
-Aktsk_ABCache_IBundleHandle_o* Detour_Aktsk_ABCache_AssetBundleStore__GetBundleHandle(
-    Aktsk_ABCache_AssetBundleStore_o* __this, System_String_o* bundleName, const MethodInfo* method
+OJLLOCJDBLM___ctor_FuncPtr OJLLOCJDBLM___ctor = NULL;
+OJLLOCJDBLM___ctor_FuncPtr fpOJLLOCJDBLM___ctor = NULL;
+
+void Detour_OJLLOCJDBLM___ctor(
+    OJLLOCJDBLM_o* __this, MNHJNDFAPMD_o* NFADCMKHEAI,
+    Neon_Model_Api_Model_Enemy_o* PIOECLPHAFK, EJOPFMGFPOA_o* LFLBBLLOAKF,
+    int32_t ODCLDJBPJMJ, const MethodInfo* method
 ) {
-    sds bundle = System_String_toSds(bundleName);
-    // printf("Tried to load %s\n", bundle);
-    return fpAktsk_ABCache_AssetBundleStore__GetBundleHandle(__this, bundleName, method);
+    printf(
+        "NFADCMKHEAI=%p, PIOECLPHAFK=%p, LFLBBLLOAKF=%p, ODCLDJBPJMJ=%lld\n",
+        (void *)NFADCMKHEAI, (void *)PIOECLPHAFK, (void *)LFLBBLLOAKF, (long long)ODCLDJBPJMJ
+    );
+    fpOJLLOCJDBLM___ctor(__this, NFADCMKHEAI, PIOECLPHAFK, LFLBBLLOAKF, ODCLDJBPJMJ, method);
 }
 
-void Hook_Aktsk_ABCache_AssetBundleStore__GetBundleHandle(void) {
-    printf("Hook_Aktsk_ABCache_AssetBundleStore__GetBundleHandle called\n");
+void Hook_OJLLOCJDBLM___ctor(void) {
+    printf("Hook_OJLLOCJDBLM___ctor called\n");
     if (MH_CreateHook(
-        (void *)(uintptr_t)Aktsk_ABCache_AssetBundleStore__GetBundleHandle,
-        (LPVOID)(uintptr_t)&Detour_Aktsk_ABCache_AssetBundleStore__GetBundleHandle,
-        (LPVOID *)&fpAktsk_ABCache_AssetBundleStore__GetBundleHandle
+        (void *)(uintptr_t)OJLLOCJDBLM___ctor,
+        (LPVOID)(uintptr_t)&Detour_OJLLOCJDBLM___ctor,
+        (LPVOID *)&fpOJLLOCJDBLM___ctor
     ) != MH_OK) {
-        printf("Failed to create Aktsk_ABCache_AssetBundleStore__GetBundleHandle hook\n");
+        printf("Failed to create OJLLOCJDBLM___ctor hook\n");
         return;
     }
 
-    if (MH_EnableHook((void *)(uintptr_t)Aktsk_ABCache_AssetBundleStore__GetBundleHandle, /* changePermissions = */ FALSE) != MH_OK) {
-        printf("Failed to enable Aktsk_ABCache_AssetBundleStore__GetBundleHandle hook\n");
+    if (MH_EnableHook((void *)(uintptr_t)OJLLOCJDBLM___ctor, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable OJLLOCJDBLM___ctor hook\n");
         return;
     }
 }
@@ -617,7 +624,8 @@ void HookTN(void *GameAssembly) {
 #endif
 
 #ifdef TRIBE_NINE_DEMO
-    Hook_Aktsk_ABCache_AssetBundleStore__GetBundleHandle();
+    OJLLOCJDBLM___ctor = (OJLLOCJDBLM___ctor_FuncPtr)((uintptr_t)GameAssembly + 60351888ull);
+    Hook_OJLLOCJDBLM___ctor();
 #endif
 
     RunNimMainOnce();
