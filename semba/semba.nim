@@ -1210,6 +1210,71 @@ proc getBaseCostumes(characters: JsonNode): seq[JsonNode] =
 proc notificationsToDemo(notifications: var JsonNode) =
   notifications.delete("itemRequest")
 
+proc demo_battle_Start(jsonReq: JsonNode): JsonNode =
+  var characterSeq = newSeq[JsonNode]()
+
+  # FIXME: fix this n+1 problem
+  for lineCharacterId in jsonReq["lineCharacterIds"]:
+    let characterRow = db.getRow(sql(
+      "SELECT " & dbCharacterFields & " FROM characters WHERE characterId = ?"
+    ), lineCharacterId.getInt())
+
+    characterSeq.add(parseCharacterRow(characterRow))
+
+  var characters = %*characterSeq
+
+  charactersToDemo(characters)
+
+  var status = getUserStatus()
+  statusToDemo(status)
+
+  let advantageType = jsonReq.getOrDefault("advantageType")
+
+  let battleParameters = %*[
+    {
+      "bgmId": 4,
+      "cameraSettingsAsset": "CameraSettings",
+      "waves": [],
+      "enemies": [
+        {
+          "id": 10000010,
+          "attack": 6000,
+          "hp": 2400,
+          "defense": 1000,
+          "isSkipEncounterAnimation": true,
+          "hpStackCount": 0
+        }
+      ],
+      "fieldName": "Field/env030_03",
+      "id": 1000001,
+      "mapRot": 230,
+      "posX": 0,
+      "posY": 0,
+      "posZ": -9,
+      "rot": 0,
+      "waveConditions": []
+    }
+  ]
+
+  result = %*{
+    "formation": {
+      "number": 0,
+      "members": {"character1Id": 100101, "character1OwnershipType": 1},
+      "cards": {
+      },
+    },
+    "characters": characters,
+    "tensionCards": [],
+    "changedResources": {
+      "status": status
+    },
+    "battleParameters": battleParameters,
+    "battleTriggers": jsonReq["battleTriggers"]
+  }
+
+  if advantageType != nil:
+    result["advantageType"] = advantageType
+
 proc demo_adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
   var status = getUserStatus()
 
@@ -1228,10 +1293,10 @@ proc demo_adventure_MoveToArea(jsonReq: JsonNode): JsonNode =
 proc demo_adventure_AreaObject(): JsonNode =
   let areaObject = %*{
     "areaPointId": 300203001,
-    "areaObjectId": 100001,
+    "areaObjectId": 130104,
     "action": {
       "type": 5,
-      "areaEnemyId": 100001,
+      "areaEnemyId": 130104,
       "battleEntryId": 1000001,
     }
   }
@@ -1328,6 +1393,10 @@ proc getJsonResultDemo(uri: string, jsonReq: JsonNode): JsonNode =
     result = demo_adventure_AreaObject()
   elif uri == "/adventure/variable":
     result = demo_adventure_Variable(jsonReq)
+  elif uri == "/battle/start":
+    result = demo_battle_Start(jsonReq)
+  elif uri == "/tip/release":
+    result = tip_Release(jsonReq)
   else: 
     result = nil
 
