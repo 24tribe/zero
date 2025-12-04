@@ -1,0 +1,17 @@
+AbnormalityParamSet
+
+[ProtoMember(1)]
+oily: AbnormalityParam
+
+[ProtoMember(2)]
+pressure: AbnormalityParam
+
+[ProtoMember(3)]
+scared: AbnormalityParam
+
+[ProtoMember(4)]
+electric: AbnormalityParam
+
+[ProtoMember(5)]
+unfortified: AbnormalityParam
+

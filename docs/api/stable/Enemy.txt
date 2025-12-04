@@ -1,0 +1,20 @@
+Enemy
+
+[ProtoMember(1)]
+id: int
+
+[ProtoMember(6)]
+attack: int
+
+[ProtoMember(7)]
+defense: int
+
+[ProtoMember(8)]
+hp: int
+
+[ProtoMember(34)]
+isSkipEncounterAnimation: bool
+
+[ProtoMember(35)]
+hpStackCount: int?
+
