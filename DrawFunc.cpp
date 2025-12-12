@@ -2,6 +2,8 @@
 
 #include "imgui.h"
 
+#include <string>
+
 DrawFunc::DrawFunc(bool active) : active(active),
                                   showSavesWindow(false),
                                   showDemo(false),
@@ -15,11 +17,82 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   runCommand() {
 }
 
-void ShowSavesWindow(bool* p_open) {
-    if (ImGui::Begin("Saves", p_open)) {
-        ImGui::Text("Saves window!!!");
-        ImGui::End();
+struct SaveFile {
+    std::string name;
+};
+
+void DrawSaveTable(std::vector<SaveFile>& save_files) {
+    ImGuiTableFlags flags = (
+        ImGuiTableFlags_RowBg
+        | ImGuiTableFlags_BordersV
+        | ImGuiTableFlags_BordersOuterV
+        | ImGuiTableFlags_BordersInnerV
+        | ImGuiTableFlags_BordersH
+        | ImGuiTableFlags_BordersOuterH
+        | ImGuiTableFlags_BordersInnerH
+        | ImGuiTableFlags_NoBordersInBody
+    );
+
+    if (ImGui::BeginTable("saves_table", 2, flags)) {
+        ImGuiListClipper clipper;
+        clipper.Begin(save_files.size());
+        while (clipper.Step()) {
+            for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; ++row_n) {
+                const SaveFile& save_file = save_files[row_n];
+
+                ImGui::PushID(save_file.name.c_str());
+                ImGui::TableNextRow(ImGuiTableRowFlags_None, 0);
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%s", save_file.name.c_str());
+
+                ImGui::TableSetColumnIndex(1);
+
+                ImGui::Button("Load Game");
+                ImGui::SameLine();
+                ImGui::Button("Delete Game");
+
+                ImGui::PopID();
+            }
+        }
+        ImGui::EndTable();
     }
+}
+
+void ShowSavesWindow(bool* p_open) {
+    std::vector<SaveFile> save_files = {
+        {"zero"},
+        {"magata"},
+        {"ichinose"},
+        {"shark"},
+        {"brave diver"},
+        {"solitaire"},
+        {"backgammon"},
+        {"minatoxb"},
+        {"tsuki"},
+        {"yo"},
+    };
+
+    if (!ImGui::Begin("Saves", p_open)) {
+        ImGui::End();
+        return;
+    }
+
+#define LINE_BUFFER_SIZE 1024
+    static char line_buffer[LINE_BUFFER_SIZE] = {0};
+
+    ImGui::InputText("File Name", line_buffer, LINE_BUFFER_SIZE);
+    ImGui::Button("Save Game");
+
+    if (ImGui::BeginChild("saves_child",
+        ImVec2(-FLT_MIN, ImGui::GetFontSize() * 20),
+        ImGuiChildFlags_ResizeY)
+    ) {
+        DrawSaveTable(save_files);
+    }
+    ImGui::EndChild();
+
+    ImGui::End();
 }
 
 void DrawFunc::operator()(void) {
