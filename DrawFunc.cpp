@@ -3,6 +3,7 @@
 #include "imgui.h"
 
 DrawFunc::DrawFunc(bool active) : active(active),
+                                  showSavesWindow(false),
                                   showDemo(false),
                                   gamePtrsReady(false),
                                   result("..."),
@@ -12,6 +13,13 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   customFovFlag(nullptr),
                                   togglePausePos(),
                                   runCommand() {
+}
+
+void ShowSavesWindow(bool* p_open) {
+    if (ImGui::Begin("Saves", p_open)) {
+        ImGui::Text("Saves window!!!");
+        ImGui::End();
+    }
 }
 
 void DrawFunc::operator()(void) {
@@ -50,6 +58,8 @@ void DrawFunc::operator()(void) {
                 ImGui::Checkbox("Enable custom fov", customFovFlag);
             }
 
+            ImGui::Checkbox("Show saves window", &showSavesWindow);
+
             if (fov_scale) {
                 ImGui::DragFloat("fovScale", fov_scale, 0.1f);
             }
@@ -59,6 +69,10 @@ void DrawFunc::operator()(void) {
 
         if (showDemo) {
             ImGui::ShowDemoWindow(&showDemo);
+        }
+
+        if (showSavesWindow) {
+            ShowSavesWindow(&showSavesWindow);
         }
     }
 

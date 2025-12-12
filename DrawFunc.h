@@ -7,6 +7,7 @@ class DrawFunc {
     public:
 
     bool active;
+    bool showSavesWindow;
     bool showDemo;
     bool gamePtrsReady;
     const char* result;
