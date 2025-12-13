@@ -2,6 +2,8 @@
 
 #include "imgui.h"
 
+#include <processthreadsapi.h>
+
 #include <string>
 #include <algorithm>
 
@@ -22,6 +24,22 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   runCommand() {
 }
 
+struct ThreadData {
+    std::function<char *(const char *)> loadSaveFile;
+    const char *name;
+    bool completed;
+    char *res;
+    bool started;
+};
+
+int CallLoadSaveFile(void *userData) {
+    ThreadData& data = *reinterpret_cast<ThreadData*>(userData);
+    data.started = true;
+    data.res = data.loadSaveFile(data.name);
+    data.completed = true;
+    return 0;
+}
+
 void DrawSaveTable(
     std::vector<std::string>& save_files,
     std::function<char *(const char *)> loadSaveFile,
@@ -38,9 +56,26 @@ void DrawSaveTable(
         | ImGuiTableFlags_NoBordersInBody
     );
 
+    static ThreadData thread_data = {0, NULL, false, NULL, false};
+
+    if (thread_data.completed) {
+        thread_data.started = false;
+        thread_data.completed = false;
+        if (thread_data.res) {
+            *err = thread_data.res;
+        } else {
+            *err = "Save file loaded!";
+        }
+    }
+
+    if (thread_data.started) {
+        *err = "Loading game...";
+    }
+
     if (ImGui::BeginTable("saves_table", 2, flags)) {
         ImGuiListClipper clipper;
         clipper.Begin(save_files.size());
+
         while (clipper.Step()) {
             for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; ++row_n) {
                 const std::string& save_file = save_files[row_n];
@@ -53,10 +88,13 @@ void DrawSaveTable(
 
                 ImGui::TableSetColumnIndex(1);
 
-                if (ImGui::Button("Load Game") && loadSaveFile) {
-                    *err = loadSaveFile(save_file.c_str());
-                    if (!*err) {
-                        *err = "Save file loaded!";
+                if (ImGui::Button("Load Game") && loadSaveFile && !thread_data.started) {
+                    thread_data.started = true;
+                    thread_data.name = save_file.c_str();
+                    thread_data.loadSaveFile = loadSaveFile;
+                    if (!CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CallLoadSaveFile, &thread_data, 0, NULL)) {
+                        thread_data.started = false;
+                        *err = "Failed to create thread";
                     }
                 }
 
