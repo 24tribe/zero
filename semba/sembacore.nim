@@ -186,6 +186,97 @@ proc getLuxPhantasmaAreaObjects(): seq[JsonNode] =
   # 130801923: kazuki first encounter in event
   result.add(getEventLiftAreaObject(130801921))
 
+proc getAreaObjects*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"""
+    SELECT areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action
+    FROM areaObjects
+  """)
+
+  for row in rows:
+    let areaId = parseInt(row[0])
+    let areaObjectId = parseInt(row[1])
+    let areaPointId = parseInt(row[2])
+    let areaObjectBehaviorId = parseInt(row[3])
+    let action = parseJson(row[4])
+
+    let areaObject = %*{
+      "areaId": areaId,
+      "areaObjectId": areaObjectId,
+      "areaPointId": areaPointId,
+      "areaObjectBehaviorId": areaObjectBehaviorId,
+      "action": action
+    }
+
+    result.add(areaObject)
+
+proc addAreaObject*(db: DbConn, areaObject: JsonNode) =
+  let areaId = areaObject["areaId"].getInt()
+  let areaObjectId = areaObject["areaObjectId"].getInt()
+  let areaPointId = areaObject["areaPointId"].getInt()
+  let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
+  let action = $(areaObject["action"])
+
+  db.exec(sql"""
+    INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+    VALUES (?, ?, ?, ?, ?)
+  """, areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+
+proc addAreaEnemy*(db: DbConn, areaEnemy: JsonNode) =
+  let areaId = areaEnemy["areaId"].getInt()
+  let areaPointId = areaEnemy["areaPointId"].getInt()
+  let areaEnemyRateSetId = areaEnemy["areaEnemyRateSetId"].getInt()
+  let action = $(areaEnemy["action"])
+
+  db.exec(sql"""
+    INSERT INTO areaEnemies (areaId, areaPointId, areaEnemyRateSetId, action)
+    VALUES (?, ?, ?, ?)
+  """, areaId, areaPointId, areaEnemyRateSetId, action)
+
+proc getAreaEnemies*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"""
+    SELECT areaId, areaPointId, areaEnemyRateSetId, action
+    FROM areaEnemies
+  """)
+
+  for row in rows:
+    let areaId = parseInt(row[0])
+    let areaPointId = parseInt(row[1])
+    let areaEnemyRateSetId = parseInt(row[2])
+    let action = parseJson(row[3])
+
+    let areaEnemy = %*{
+      "areaId": areaId,
+      "areaPointId": areaPointId,
+      "areaEnemyRateSetId": areaEnemyRateSetId,
+      "action": action 
+    }
+
+    result.add(areaEnemy)
+
+proc parseAreaObjectRow(row: Row): JsonNode =
+  var areaObjectId = parseInt(row[0])
+  var areaPointId = parseInt(row[1])
+  var areaObjectBehaviorId = parseInt(row[2])
+  var action = parseJson(row[3])
+
+  result = %*{
+    "areaObjectId": areaObjectId,
+    "areaPointId": areaPointId,
+    "areaObjectBehaviorId": areaObjectBehaviorId,
+    "action": action
+  }
+
+proc parseAreaEnemyRow(row: Row): JsonNode =
+  let areaPointId = parseInt(row[0])
+  let areaEnemyRateSetId = parseInt(row[1])
+  let action = parseJson(row[2])
+
+  result = %*{
+    "areaPointId": areaPointId,
+    "areaEnemyRateSetId": areaEnemyRateSetId,
+    "action": action 
+  }
+
 proc adventure_AreaObject(db: DbConn, jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
   let rows = db.getAllRows(sql"""
@@ -200,30 +291,18 @@ proc adventure_AreaObject(db: DbConn, jsonReq: JsonNode): JsonNode =
     areaObjects = getLuxPhantasmaAreaObjects()
 
   for row in rows:
-    var areaObjectId = parseInt(row[0])
-    var areaPointId = parseInt(row[1])
-    var areaObjectBehaviorId = parseInt(row[2])
-    var action = parseJson(row[3])
+    let areaObject = parseAreaObjectRow(row)
+    areaObjects.add(areaObject)
 
-    areaObjects.add(%*{
-      "areaObjectId": areaObjectId,
-      "areaPointId": areaPointId,
-      "areaObjectBehaviorId": areaObjectBehaviorId,
-      "action": action
-    })
-
-  let enemies = db.getAllRows(sql"""
+  let enemyRows = db.getAllRows(sql"""
     SELECT areaPointId, areaEnemyRateSetId, action
     FROM areaEnemies
     WHERE areaId = ?
   """, areaId)
 
-  for enemy in enemies:
-    areaObjects.add(%*{
-      "areaPointId": parseInt(enemy[0]),
-      "areaEnemyRateSetId": parseInt(enemy[1]),
-      "action": parseJson(enemy[2])
-    })
+  for row in enemyRows:
+    let areaEnemy = parseAreaEnemyRow(row)
+    areaObjects.add(areaEnemy)
 
   var areaItemsRes = newSeq[JsonNode]()
 
@@ -234,7 +313,7 @@ proc adventure_AreaObject(db: DbConn, jsonReq: JsonNode): JsonNode =
 
   return %*{"areaObjects": areaObjects, "areaItems": areaItemsRes}
 
-proc addTip(db: DbConn, tip: JsonNode) =
+proc addTip*(db: DbConn, tip: JsonNode) =
   let tipId = tip["tipId"].getInt()
   let releasedAt = tip["releasedAt"].getStr()
   db.exec(sql"INSERT INTO tips (tipId, releasedAt) VALUES (?, ?)", tipId, releasedAt)
@@ -764,7 +843,7 @@ proc getNineSequences(db: DbConn): seq[JsonNode] =
     
     result.add(content)
 
-proc getTips(db: DbConn): seq[JsonNode] =
+proc getTips*(db: DbConn): seq[JsonNode] =
   let tipsRows = db.getAllRows(sql"""
     SELECT tipId, releasedAt
     FROM tips
