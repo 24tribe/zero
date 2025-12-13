@@ -879,7 +879,7 @@ proc user_LogIn(db: DbConn): JsonNode =
   }
 
 proc updateFormation*(db: DbConn, formation: JsonNode) =
-  let number = formation["number"].getInt()
+  let number = formation.getOrDefault("number").getInt()
   let members = $(formation["members"])
   let cards = $(formation["cards"])
 

@@ -97,6 +97,11 @@ int main(int, char**)
         return nullptr;
     };
 
+    draw_func.loadSaveFile = [](const char *name) {
+        std::cout << "Loaded (/s) save file with name: " << name << "\n";
+        return nullptr;
+    };
+
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop

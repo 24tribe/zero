@@ -43,6 +43,10 @@ extern "C" int UIMainThread(LPVOID _1) {
         return SembaCreateSaveFile(ZERO_CONFIG.savesDir, name);
     };
 
+    draw_func.loadSaveFile = [](const char *name) {
+        return SembaLoadSaveFile(ZERO_CONFIG.savesDir, name);
+    };
+
     draw_func.runCommand = [&draw_func]() {
     };
 
