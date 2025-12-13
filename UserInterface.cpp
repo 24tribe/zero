@@ -2,10 +2,12 @@
 
 extern "C" {
 #include "HookTN.h"
+#include "Config.h"
 }
 
 #include "Backend.h"
 #include "DrawFunc.h"
+#include "SavesHelper.hpp"
 
 #include <windows.h>
 #include <synchapi.h>
@@ -18,6 +20,19 @@ extern "C" int UIMainThread(LPVOID _1) {
     (void)_1;
 
     DrawFunc draw_func{false};
+
+    draw_func.saves_dir = ZERO_CONFIG.savesDir;
+
+    std::string what;
+
+    try {
+        if (GetSaveFiles(ZERO_CONFIG.savesDir, draw_func.save_files) != SH_OK) {
+            draw_func.result = "Failed to load save files names";
+        }
+    } catch (const std::exception& e) {
+        what = e.what();
+        draw_func.result = what.c_str();
+    }
 
     draw_func.togglePausePos = []() {
         togglePausePosition();

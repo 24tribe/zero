@@ -67,6 +67,7 @@ zero_src = [
     'dump_ga/MetadataDump.c',
     'version.c',
     'create_file_hook.c',
+    'SavesHelper.cpp',
 ]
 
 zero_stable_incdir = include_directories('stable')

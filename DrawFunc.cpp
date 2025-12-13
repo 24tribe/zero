@@ -13,15 +13,13 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   rotation(nullptr),
                                   fov_scale(nullptr),
                                   customFovFlag(nullptr),
+                                  saves_dir(nullptr),
+                                  save_files(),
                                   togglePausePos(),
                                   runCommand() {
 }
 
-struct SaveFile {
-    std::string name;
-};
-
-void DrawSaveTable(std::vector<SaveFile>& save_files) {
+void DrawSaveTable(std::vector<std::string>& save_files) {
     ImGuiTableFlags flags = (
         ImGuiTableFlags_RowBg
         | ImGuiTableFlags_BordersV
@@ -38,13 +36,13 @@ void DrawSaveTable(std::vector<SaveFile>& save_files) {
         clipper.Begin(save_files.size());
         while (clipper.Step()) {
             for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; ++row_n) {
-                const SaveFile& save_file = save_files[row_n];
+                const std::string& save_file = save_files[row_n];
 
-                ImGui::PushID(save_file.name.c_str());
+                ImGui::PushID(save_file.c_str());
                 ImGui::TableNextRow(ImGuiTableRowFlags_None, 0);
 
                 ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%s", save_file.name.c_str());
+                ImGui::Text("%s", save_file.c_str());
 
                 ImGui::TableSetColumnIndex(1);
 
@@ -59,24 +57,13 @@ void DrawSaveTable(std::vector<SaveFile>& save_files) {
     }
 }
 
-void ShowSavesWindow(bool* p_open) {
-    std::vector<SaveFile> save_files = {
-        {"zero"},
-        {"magata"},
-        {"ichinose"},
-        {"shark"},
-        {"brave diver"},
-        {"solitaire"},
-        {"backgammon"},
-        {"minatoxb"},
-        {"tsuki"},
-        {"yo"},
-    };
-
+void ShowSavesWindow(bool* p_open, std::vector<std::string> save_files, char *saves_dir) {
     if (!ImGui::Begin("Saves", p_open)) {
         ImGui::End();
         return;
     }
+
+    ImGui::Text("Saves Directory Path: %s", saves_dir ? saves_dir : "(null)");
 
 #define LINE_BUFFER_SIZE 1024
     static char line_buffer[LINE_BUFFER_SIZE] = {0};
@@ -145,7 +132,7 @@ void DrawFunc::operator()(void) {
         }
 
         if (showSavesWindow) {
-            ShowSavesWindow(&showSavesWindow);
+            ShowSavesWindow(&showSavesWindow, save_files, saves_dir);
         }
     }
 

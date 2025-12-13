@@ -85,6 +85,9 @@ int main(int, char**)
 
     DrawFunc draw_func{true};
 
+    draw_func.save_files.push_back("Shark");
+    draw_func.save_files.push_back("Solitaire");
+
     draw_func.runCommand = [](){
         std::cout << "Hello World!!\n";
     };

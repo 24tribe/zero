@@ -2,6 +2,7 @@
 #define DRAW_FUNC_H_10_11_2025_09_40_AM
 
 #include <functional>
+#include <string>
 
 class DrawFunc {
     public:
@@ -16,6 +17,10 @@ class DrawFunc {
     float* rotation;
     float* fov_scale;
     bool* customFovFlag;
+
+    char *saves_dir;
+
+    std::vector<std::string> save_files;
 
     std::function<void()> togglePausePos;
     std::function<void()> runCommand;
