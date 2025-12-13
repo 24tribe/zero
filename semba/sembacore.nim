@@ -104,7 +104,7 @@ proc getQuestStates(db: DbConn): seq[JsonNode] =
       "bestScore": bestScore
     })
 
-proc getUserStatus(db: DbConn): JsonNode =
+proc getUserStatus*(db: DbConn): JsonNode =
   let statusRow = db.getRow(sql"SELECT val FROM userData WHERE keyName = ?", "status")
   return parseJson(statusRow[0])
 
@@ -360,7 +360,7 @@ proc tip_Release(db: DbConn, jsonReq: JsonNode): JsonNode =
 proc getDistance(x1: float, y1: float, z1: float, x2: float, y2: float, z2: float): float =
   return sqrt(pow(x2-x1, 2) + pow(y2-y1, 2) + pow(z2-z1, 2))
 
-proc setUserStatus(db: DbConn, status: JsonNode) =
+proc setUserStatus*(db: DbConn, status: JsonNode) =
   db.exec(sql"UPDATE userData SET val = ? WHERE keyName = ?", $status, "status")
 
 proc updatePos(db: DbConn, status: var JsonNode, fromAreaId: int, toAreaId: int) =

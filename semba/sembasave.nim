@@ -45,6 +45,10 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     for areaEnemy in areaEnemies:
       addAreaEnemy(db, areaEnemy)
 
+  if version >= 4:
+    let status = jsonData["status"]
+    setUserStatus(db, status)
+
 proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't create save file"
 
@@ -55,13 +59,15 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   let tips = getTips(db)
   let areaObjects = getAreaObjects(db)
   let areaEnemies = getAreaEnemies(db)
+  let status = getUserStatus(db)
 
   var jsonData = %*{
-    "version": 3,
+    "version": 4,
     "formations": formations,
     "tips": tips,
     "areaObjects": areaObjects,
     "areaEnemies": areaEnemies,
+    "status": status,
   }
 
   writeFile(saves_dir & "/" & name & ".save", $jsonData)
