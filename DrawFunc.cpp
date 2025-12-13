@@ -3,6 +3,7 @@
 #include "imgui.h"
 
 #include <string>
+#include <algorithm>
 
 DrawFunc::DrawFunc(bool active) : active(active),
                                   showSavesWindow(false),
@@ -15,6 +16,7 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   customFovFlag(nullptr),
                                   saves_dir(nullptr),
                                   save_files(),
+                                  createSaveFile(),
                                   togglePausePos(),
                                   runCommand() {
 }
@@ -57,7 +59,10 @@ void DrawSaveTable(std::vector<std::string>& save_files) {
     }
 }
 
-void ShowSavesWindow(bool* p_open, std::vector<std::string> save_files, char *saves_dir) {
+void ShowSavesWindow(
+    bool* p_open, std::vector<std::string>& save_files, char *saves_dir,
+    std::function<char *(char *)> createSaveFile
+) {
     if (!ImGui::Begin("Saves", p_open)) {
         ImGui::End();
         return;
@@ -67,9 +72,25 @@ void ShowSavesWindow(bool* p_open, std::vector<std::string> save_files, char *sa
 
 #define LINE_BUFFER_SIZE 1024
     static char line_buffer[LINE_BUFFER_SIZE] = {0};
+    static const char *err = "";
 
     ImGui::InputText("File Name", line_buffer, LINE_BUFFER_SIZE);
-    ImGui::Button("Save Game");
+    if (ImGui::Button("Save Game") && createSaveFile && line_buffer[0] != '\0') {
+        std::string name{line_buffer};
+
+        if (std::find(save_files.begin(), save_files.end(), name) != save_files.end()) {
+            err = "error: can't overwrite save file yet";
+        } else {
+            err = createSaveFile(line_buffer);
+            if (!err) {
+                save_files.push_back(line_buffer);
+                err = "";
+            }
+        }
+    }
+
+    ImGui::SameLine();
+    ImGui::Text("%s", err);
 
     if (ImGui::BeginChild("saves_child",
         ImVec2(-FLT_MIN, ImGui::GetFontSize() * 20),
@@ -132,7 +153,7 @@ void DrawFunc::operator()(void) {
         }
 
         if (showSavesWindow) {
-            ShowSavesWindow(&showSavesWindow, save_files, saves_dir);
+            ShowSavesWindow(&showSavesWindow, save_files, saves_dir, createSaveFile);
         }
     }
 

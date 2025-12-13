@@ -3,6 +3,7 @@
 extern "C" {
 #include "HookTN.h"
 #include "Config.h"
+#include "semba/semba.h"
 }
 
 #include "Backend.h"
@@ -36,6 +37,10 @@ extern "C" int UIMainThread(LPVOID _1) {
 
     draw_func.togglePausePos = []() {
         togglePausePosition();
+    };
+
+    draw_func.createSaveFile = [](char *name) {
+        return SembaCreateSaveFile(ZERO_CONFIG.savesDir, name);
     };
 
     draw_func.runCommand = [&draw_func]() {

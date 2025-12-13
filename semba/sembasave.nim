@@ -4,13 +4,13 @@ import db_connector/db_sqlite
 
 import sembacore
 
-proc loadSaveFile*(db: DbConn, path: string): string =
+proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't load save file"
 
   if db == nil:
     return baseError & ", db is not initialized"
 
-  let content = readFile(path)
+  let content = readFile(saves_dir & "/" & name & ".save")
   let jsonData = parseJson(content)
 
   let version = jsonData["version"].getInt()
@@ -23,7 +23,7 @@ proc loadSaveFile*(db: DbConn, path: string): string =
   for formation in formations:
     updateFormation(db, formation)
 
-proc createSaveFile*(db: DbConn, path: string): string =
+proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't create save file"
 
   if db == nil:
@@ -36,4 +36,4 @@ proc createSaveFile*(db: DbConn, path: string): string =
     "formations": formations,
   }
 
-  writeFile(path, $jsonData)
+  writeFile(saves_dir & "/" & name & ".save", $jsonData)

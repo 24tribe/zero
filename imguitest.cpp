@@ -92,6 +92,11 @@ int main(int, char**)
         std::cout << "Hello World!!\n";
     };
 
+    draw_func.createSaveFile = [](char *name) {
+        std::cout << "Created (/s) save file with name: " << name << "\n";
+        return nullptr;
+    };
+
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop

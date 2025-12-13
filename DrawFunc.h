@@ -22,6 +22,7 @@ class DrawFunc {
 
     std::vector<std::string> save_files;
 
+    std::function<char*(char*)> createSaveFile;
     std::function<void()> togglePausePos;
     std::function<void()> runCommand;
 
