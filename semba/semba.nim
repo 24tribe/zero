@@ -59,27 +59,5 @@ proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
     echo e.getStackTrace()
     result = nil
 
-proc isPristineDb(db: DbConn): bool = db.getRow(sql"SELECT uri FROM debugLogsOffline")[0] == ""
-
-proc loadSave(db: DbConn, path: string) =
-  let saveStr = readFile(path)
-
-  let save = parseJson(saveStr)
-
-  if isPristineDb(db):
-    for row in save["reqs"]:
-      let uri = row[0].getStr()
-      let req = row[1]
-      let res = sembaCallUnsafe(uri, $req, gvStable) # FIXME: add version param to loadSave
-      if res == "":
-        echo "[loadSave][!] '" & uri & "' is not implemented"
-  else:
-    echo "[loadSave] db is not pristine, skipping savefile '" & path & "'"
-
 proc SembaLoadSave(path: cstring) {.exportc.} =
-  try:
-    loadSave(ctx.db, $path)
-  except Exception:
-    let e = getCurrentException()
-    echo "[SembaLoadSave] Nim Exception: " & getCurrentExceptionMsg()
-    echo e.getStackTrace()
+  discard

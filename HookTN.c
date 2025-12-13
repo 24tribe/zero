@@ -638,10 +638,6 @@ void HookTN(void *GameAssembly) {
         SembaSetRemoteUrl(ZERO_CONFIG.remoteUrl);
     }
 
-    if (ZERO_CONFIG.saveFile) {
-        SembaLoadSave(ZERO_CONFIG.saveFile);
-    }
-
     printf("Applying autohooks...\n");
     FILETIME start;
     GetSystemTimeAsFileTime(&start);

@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 struct Config {
-    char *saveFile;
     uint16_t *goldbergPath;
     char *sembaDbPath;
     char *remoteUrl;

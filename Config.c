@@ -13,7 +13,6 @@
 #define CONFIG_LOCATION "config.ini"
 
 struct Config ZERO_CONFIG = {
-    .saveFile = NULL,
     .goldbergPath = NULL,
     .sembaDbPath = NULL,
     .remoteUrl = NULL,
@@ -41,9 +40,7 @@ static int handler(void *user, const char *section, const char *name, const char
     (void)user;
     (void)section;
     
-    if (!strcmp(name, "saveFile")) {
-        ZERO_CONFIG.saveFile = sdsnew(value);
-    } else if (!strcmp(name, "goldbergPath")) {
+    if (!strcmp(name, "goldbergPath")) {
         setGoldbergPath(value);
     } else if (!strcmp(name, "sembaDbPath")) {
         ZERO_CONFIG.sembaDbPath = sdsnew(value);
@@ -69,7 +66,6 @@ static char *string_null_escape(char *s) {
 }
 
 void PrintZeroConfig(void) {
-    printf("saveFile=%s\n", string_null_escape(ZERO_CONFIG.saveFile));
     printf("sembaDbPath=%s\n", string_null_escape(ZERO_CONFIG.sembaDbPath));
     printf("remoteUrl=%s\n", string_null_escape(ZERO_CONFIG.remoteUrl));
     printf("dumpGameAssembly=%s\n", ZERO_CONFIG.dumpGameAssembly ? "true" : "false");

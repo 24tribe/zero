@@ -1,7 +1,3 @@
-# path to a save file created by createSaveFile.py
-# only used in offline mode
-#saveFile=
-
 # path to the goldberg steam api emulator dll
 goldbergPath=steam_api64.dll
 
