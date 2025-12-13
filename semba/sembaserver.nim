@@ -4,7 +4,9 @@ import std/cmdline
 import std/parseutils
 import std/strutils
 
-import semba
+import db_connector/db_sqlite
+
+import sembacore
 
 proc main {.async.} =
   let cmdParams = commandLineParams()
@@ -22,7 +24,8 @@ proc main {.async.} =
     echo("Failed to parse port '", portStr, "'")
     return
 
-  SembaInitOfflineDb($dbPath)
+  var db = open(dbPath, "", "", "")
+  var lastBattleStartReq = BattleStartRequest(val : nil)
 
   var server = newAsyncHttpServer()
 
@@ -32,7 +35,8 @@ proc main {.async.} =
     let headers = newHttpHeaders({"Content-type": "text/plain; charset=utf-8"})
     echo("uri: ", path)
     echo("req: ", body)
-    let res = sembaCallImpl(path, body, parseEnum[GameVersion](req.headers["user-agent"]))
+    let version = parseEnum[GameVersion](req.headers["user-agent"])
+    let res = sembaCallImpl(path, body, version, db, lastBattleStartReq)
     await req.respond(Http200, res, headers)
 
   server.listen(Port(port), "127.0.0.1")
