@@ -701,7 +701,7 @@ proc character_CostumeUpdate(db: DbConn, jsonReq: JsonNode): JsonNode =
     }
   }
 
-proc getFormations(db: DbConn): seq[JsonNode] =
+proc getFormations*(db: DbConn): seq[JsonNode] =
   let formationsRows = db.getAllRows(sql"""
     SELECT number, members, cards FROM formations
   """)
@@ -878,12 +878,17 @@ proc user_LogIn(db: DbConn): JsonNode =
     "masterData": {"shopProducts": getShopProducts(db)}
   }
 
-proc formation_Update(db: DbConn, jsonReq: JsonNode): JsonNode =
-  let number = jsonReq["number"].getInt()
+proc updateFormation*(db: DbConn, formation: JsonNode) =
+  let number = formation["number"].getInt()
+  let members = $(formation["members"])
+  let cards = $(formation["cards"])
 
   db.exec(sql"""
     UPDATE formations SET members = ?, cards = ? WHERE number = ?
-  """, $(jsonReq["members"]), $(jsonReq["cards"]), number)
+  """, members, cards, number)
+
+proc formation_Update(db: DbConn, jsonReq: JsonNode): JsonNode =
+  updateFormation(db, jsonReq)
 
   return %*{
     "changedResources": {

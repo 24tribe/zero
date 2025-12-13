@@ -1,11 +1,10 @@
-import std/assertions
-import std/json
 import std/httpclient
 import system/ansi_c
 
 import db_connector/db_sqlite
 
 import sembacore
+import sembasave
 
 type SembaContext = object
   db: DbConn
@@ -59,5 +58,20 @@ proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
     echo e.getStackTrace()
     result = nil
 
-proc SembaLoadSave(path: cstring) {.exportc.} =
-  discard
+proc SembaLoadSaveFile(path: cstring): cstring {.exportc.} =
+  try:
+    let res = loadSaveFile(ctx.db, $path)
+    result = if res != "": dupString(res) else: nil
+  except Exception:
+    let e = getCurrentException()
+    let msg = "[SembaLoadSaveFile] Nim Exception: " & getCurrentExceptionMsg() & e.getStackTrace()
+    result = dupString(msg)
+
+proc SembaCreateSaveFile(path: cstring): cstring {.exportc.} =
+  try:
+    let res = createSaveFile(ctx.db, $path)
+    result = if res != "": dupString(res) else: nil
+  except Exception:
+    let e = getCurrentException()
+    let msg = "[SembaCreateSaveFile] Nim Exception: " & getCurrentExceptionMsg() & e.getStackTrace()
+    result = dupString(msg)
