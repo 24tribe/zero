@@ -234,13 +234,21 @@ proc adventure_AreaObject(db: DbConn, jsonReq: JsonNode): JsonNode =
 
   return %*{"areaObjects": areaObjects, "areaItems": areaItemsRes}
 
+proc addTip(db: DbConn, tip: JsonNode) =
+  let tipId = tip["tipId"].getInt()
+  let releasedAt = tip["releasedAt"].getStr()
+  db.exec(sql"INSERT INTO tips (tipId, releasedAt) VALUES (?, ?)", tipId, releasedAt)
+
 proc tip_Release(db: DbConn, jsonReq: JsonNode): JsonNode =
   var tips = newSeq[JsonNode]()
   var areaObjects = newSeq[JsonNode]()
 
   for node in jsonReq["tipIds"]:
     let tipId = node.num
-    tips.add(%*{"tipId": tipId, "releasedAt": "2025-09-10T02:17:06Z"})
+
+    let tip = %*{"tipId": tipId, "releasedAt": "2025-09-10T02:17:06Z"}
+    addTip(db, tip)
+    tips.add(tip)
 
     let newAreaObjects = db.getAllRows(sql"""
       SELECT areaObjectId, newAreaPointId, newAreaObjectBehaviorId, newAction
