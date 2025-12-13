@@ -4,6 +4,9 @@ goldbergPath=steam_api64.dll
 # path to semba db (offline db)
 sembaDbPath=semba.db
 
+# path where the game stores the save files
+savesDir=saves
+
 # if set in offline mode, makes api calls to this server instead of using the local db
 #remoteUrl=http://127.0.0.1:9999
 

@@ -9,6 +9,7 @@ struct Config {
     char *sembaDbPath;
     char *remoteUrl;
     bool dumpGameAssembly;
+    char *savesDir;
 };
 
 extern struct Config ZERO_CONFIG;

@@ -17,6 +17,7 @@ struct Config ZERO_CONFIG = {
     .sembaDbPath = NULL,
     .remoteUrl = NULL,
     .dumpGameAssembly = false,
+    .savesDir = NULL,
 };
 
 static void setGoldbergPath(const char *value) {
@@ -44,6 +45,8 @@ static int handler(void *user, const char *section, const char *name, const char
         setGoldbergPath(value);
     } else if (!strcmp(name, "sembaDbPath")) {
         ZERO_CONFIG.sembaDbPath = sdsnew(value);
+    } else if (!strcmp(name, "savesDir")) {
+        ZERO_CONFIG.savesDir = sdsnew(value);
     } else if (!strcmp(name, "remoteUrl")) {
         ZERO_CONFIG.remoteUrl = sdsnew(value);
     } else if (!strcmp(name, "dumpGameAssembly")) {
@@ -69,6 +72,7 @@ void PrintZeroConfig(void) {
     printf("sembaDbPath=%s\n", string_null_escape(ZERO_CONFIG.sembaDbPath));
     printf("remoteUrl=%s\n", string_null_escape(ZERO_CONFIG.remoteUrl));
     printf("dumpGameAssembly=%s\n", ZERO_CONFIG.dumpGameAssembly ? "true" : "false");
+    printf("savesDir=%s\n", string_null_escape(ZERO_CONFIG.savesDir));
 
     sds goldbergPath;
     if (ZERO_CONFIG.goldbergPath) {
