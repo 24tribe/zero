@@ -1,11 +1,16 @@
 #include "DrawFunc.h"
 
+extern "C" {
+#include "TimeUtil.h"
+}
+
 #include "imgui.h"
 
 #include <processthreadsapi.h>
 
 #include <string>
 #include <algorithm>
+#include <sstream>
 
 DrawFunc::DrawFunc(bool active) : active(active),
                                   showSavesWindow(false),
@@ -30,6 +35,8 @@ struct ThreadData {
     bool completed;
     char *res;
     bool started;
+    FILETIME start;
+    FILETIME end;
 };
 
 int CallLoadSaveFile(void *userData) {
@@ -37,6 +44,7 @@ int CallLoadSaveFile(void *userData) {
     data.started = true;
     data.res = data.loadSaveFile(data.name);
     data.completed = true;
+    GetSystemTimeAsFileTime(&data.end);
     return 0;
 }
 
@@ -56,7 +64,8 @@ void DrawSaveTable(
         | ImGuiTableFlags_NoBordersInBody
     );
 
-    static ThreadData thread_data = {0, NULL, false, NULL, false};
+    static ThreadData thread_data = {0, NULL, false, NULL, false, {0, 0}, {0, 0}};
+    static std::string msg;
 
     if (thread_data.completed) {
         thread_data.started = false;
@@ -64,7 +73,11 @@ void DrawSaveTable(
         if (thread_data.res) {
             *err = thread_data.res;
         } else {
-            *err = "Save file loaded!";
+            std::stringstream ss;
+            ULONGLONG diff = GetFileTimeDiff(thread_data.end, thread_data.start);
+            ss << "Save file loaded in " << TimeDiffToMs(diff) << " ms";
+            msg = ss.str();
+            *err = msg.c_str();
         }
     }
 
@@ -92,6 +105,7 @@ void DrawSaveTable(
                     thread_data.started = true;
                     thread_data.name = save_file.c_str();
                     thread_data.loadSaveFile = loadSaveFile;
+                    GetSystemTimeAsFileTime(&thread_data.start);
                     if (!CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CallLoadSaveFile, &thread_data, 0, NULL)) {
                         thread_data.started = false;
                         *err = "Failed to create thread";

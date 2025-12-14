@@ -20,6 +20,7 @@ References:
 #include "Patterns.h"
 #include "semba/semba.h"
 #include "version.h"
+#include "TimeUtil.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -556,14 +557,6 @@ void HookNeonApiGetResponse(void) {
     }
 }
 
-ULONGLONG GetFileTimeDiff(FILETIME tim1, FILETIME tim2) {
-    ULARGE_INTEGER res = {
-        .LowPart = tim1.dwLowDateTime - tim2.dwLowDateTime,
-        .HighPart = tim1.dwHighDateTime - tim2.dwHighDateTime
-    };
-    return res.QuadPart;
-}
-
 static bool gamePtrsReady = false;
 
 bool areGamePtrsReady(void) {
@@ -645,5 +638,5 @@ void HookTN(void *GameAssembly) {
     FILETIME end;
     GetSystemTimeAsFileTime(&end);
     ULONGLONG diff = GetFileTimeDiff(end, start);
-    printf("Autohooking done in %llu ms!\n", diff / 10000ull);
+    printf("Autohooking done in %llu ms!\n", TimeDiffToMs(diff));
 }

@@ -20,30 +20,38 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
 
   let formations = jsonData["formations"]
 
+  db.exec(sql"BEGIN")
   for formation in formations:
     updateFormation(db, formation)
+  db.exec(sql"COMMIT")
 
   if version >= 3:
     let tips = jsonData["tips"]
 
     db.exec(sql"DELETE FROM tips")
 
+    db.exec(sql"BEGIN")
     for tip in tips:
       addTip(db, tip)
+    db.exec(sql"COMMIT")
 
     let areaObjects = jsonData["areaObjects"]
 
     db.exec(sql"DELETE FROM areaObjects")
 
+    db.exec(sql"BEGIN")
     for areaObject in areaObjects:
       addAreaObject(db, areaObject)
+    db.exec(sql"COMMIT")
 
     let areaEnemies = jsonData["areaEnemies"]
 
     db.exec(sql"DELETE FROM areaEnemies")
 
+    db.exec(sql"BEGIN")
     for areaEnemy in areaEnemies:
       addAreaEnemy(db, areaEnemy)
+    db.exec(sql"COMMIT")
 
   if version >= 4:
     let status = jsonData["status"]

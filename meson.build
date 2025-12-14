@@ -68,6 +68,7 @@ zero_src = [
     'version.c',
     'create_file_hook.c',
     'SavesHelper.cpp',
+    'TimeUtil.c',
 ]
 
 zero_stable_incdir = include_directories('stable')
@@ -115,7 +116,7 @@ executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 
 executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
 
-executable('imguitest', 'imguitest.cpp', 'DrawFunc.cpp', dependencies : [d3d11_lib, imgui])
+executable('imguitest', 'imguitest.cpp', 'DrawFunc.cpp', 'TimeUtil.c', dependencies : [d3d11_lib, imgui])
 
 subdir('dump_ga')
 subdir('launcher')
