@@ -5,10 +5,12 @@ sqlite3 = executable('sqlite3', 'shell.c', 'sqlite3.c')
 
 semba_extra = static_library('semba_extra', 'NimInit.c')
 
+semba_core_files = ['sembacore.nim', 'sembademo.nim', 'sembastable.nim']
+
 libsemba = custom_target(
     'libsemba',
     depends : [sqlite3_c],
-    depend_files : ['sembacore.nim', 'sembasave.nim'],
+    depend_files : [semba_core_files, 'sembasave.nim'],
     input : ['semba.nim'],
     output : 'libsemba.a',
     command : [
@@ -20,7 +22,7 @@ libsemba = custom_target(
 sembaserver = custom_target(
     'sembaserver',
     depends : [sqlite3_c],
-    depend_files : 'sembacore.nim',
+    depend_files : semba_core_files,
     input : ['sembaserver.nim'],
     output : 'sembaserver.exe',
     command : [
