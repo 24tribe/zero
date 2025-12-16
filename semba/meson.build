@@ -7,6 +7,12 @@ semba_extra = static_library('semba_extra', 'NimInit.c')
 
 semba_core_files = ['sembacore.nim', 'sembademo.nim', 'sembastable.nim']
 
+if get_option('buildtype') == 'release'
+    nim_release_args = ['-d:release']
+else
+    nim_release_args = []
+endif
+
 libsemba = custom_target(
     'libsemba',
     depends : [sqlite3_c],
@@ -14,7 +20,7 @@ libsemba = custom_target(
     input : ['semba.nim'],
     output : 'libsemba.a',
     command : [
-        nim, 'c', '-d:staticSqlite', '--app:staticlib', '--noMain:on',
+        nim, 'c', '-d:staticSqlite', '--app:staticlib', '--noMain:on', nim_release_args,
         '-o:@OUTPUT@', '@INPUT@'
     ]
 )
@@ -26,7 +32,7 @@ sembaserver = custom_target(
     input : ['sembaserver.nim'],
     output : 'sembaserver.exe',
     command : [
-        nim, 'c', '-d:staticSqlite', '--app:console', '--threadAnalysis:off',
+        nim, 'c', '-d:staticSqlite', '--app:console', '--threadAnalysis:off', nim_release_args,
         '-o:@OUTPUT@', '@INPUT@'
     ],
     build_by_default : true
