@@ -1339,6 +1339,18 @@ proc adventure_AcquireAreaItem(db: DbConn, jsonReq: JsonNode): JsonNode =
     "changedResources": changedResources
   }
 
+proc xb_Formation(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let xbId = jsonReq["xbId"].getInt()
+
+  let row = db.getRow(sql"SELECT content FROM xbFormations WHERE xbId=?", xbId)
+
+  if row[0] == "":
+    raise newException(SembaError, "Couldn't find formation for xbId=" & $xbId)
+
+  let res = parseJson(row[0])
+
+  return res
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -1384,5 +1396,7 @@ proc getJsonResultStable*(
     result = event_FinishNode(db, jsonReq)
   elif uri == "/adventure/warp_area_locator":
     result = adventure_WarpAreaLocator(db, jsonReq)
+  elif uri == "/xb/formation":
+    result = xb_Formation(db, jsonReq)
   else:
     result = nil

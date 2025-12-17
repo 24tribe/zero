@@ -1,0 +1,35 @@
+XbFormationResponse
+
+[ProtoMember(1)]
+playerMembers: RepeatedField<XbMember>
+
+[ProtoMember(2)]
+enemyMembers: RepeatedField<XbMember>
+
+[ProtoMember(3)]
+playerRecommendedMembers: RepeatedField<XbMember>
+
+[ProtoMember(4)]
+allPlayerMembers: RepeatedField<XbMember>
+
+[ProtoMember(5)]
+playerTribeLogoAasPath: string
+
+[ProtoMember(6)]
+enemyTribeLogoAasPath: string
+
+[ProtoMember(7)]
+playerTeamName: string
+
+[ProtoMember(9)]
+enemyTeamName: string
+
+[ProtoMember(8)]
+isTeamEditEnabled: bool
+
+[ProtoMember(10)]
+playerPvpUserInfos: XbPvPUserInfo
+
+[ProtoMember(11)]
+enemyPvpUserInfos: XbPvPUserInfo
+
