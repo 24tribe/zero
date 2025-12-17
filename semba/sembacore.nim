@@ -16,6 +16,33 @@ proc logFlowOffline(db: DbConn, uri: string, req: string, res: string) =
     getDateNow(), uri, req, res
   )
 
+proc addOfflineLog*(db: DbConn, offlineLog: JsonNode) =
+  let receivedAt = offlineLog["receivedAt"].getStr()
+  let uri = offlineLog["uri"].getStr()
+  let req = offlineLog["req"].getStr()
+  let res = offlineLog["res"].getStr()
+
+  db.exec(
+    sql"INSERT INTO debugLogsOffline (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
+    receivedAt, uri, req, res
+  )
+
+proc getOfflineLogs*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT receivedAt, uri, req, res FROM debugLogsOffline")
+
+  for row in rows:
+    let receivedAt = row[0]
+    let uri = row[1]
+    let req = row[2]
+    let res = row[3]
+
+    result.add(%*{
+      "receivedAt": receivedAt,
+      "uri": uri,
+      "req": req,
+      "res": res
+    })
+
 proc sembaCallImpl*(
     uri: string, request: string, version: GameVersion,
     db: DbConn, lastBattleStartReq: var BattleStartRequest

@@ -22,6 +22,46 @@ const maxEventFloorNodeId = 113128
 
 proc getDateNow*(): string = $(now().utc)
 
+proc getAreaBgms*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT areaId, id, eventName FROM areaBgm")
+
+  for row in rows:
+    let areaId = parseInt(row[0])
+    let id = parseInt(row[1])
+    let eventName = row[2]
+
+    result.add(%*{
+      "areaId": areaId,
+      "id": id,
+      "eventName": eventName
+    })
+
+proc addAreaBgm*(db: DbConn, areaBgm: JsonNode) =
+  let areaId = areaBgm["areaId"].getInt()
+  let id = areaBgm["id"].getInt()
+  let eventName = areaBgm["eventName"].getStr()
+
+  db.exec(sql"""
+    INSERT INTO areaBgm (areaId, id, eventName) VALUES (?, ?, ?)
+  """, areaId, id, eventName)
+
+proc addClearedAchievement*(db: DbConn, clearedAchievement: JsonNode) =
+  let id = clearedAchievement["id"].getInt()
+  let eventFloorNodeId = clearedAchievement["eventFloorNodeId"].getInt()
+
+  db.exec(
+    sql"INSERT INTO clearedAchievements (id, eventFloorNodeId) VALUES (?, ?)",
+    id, eventFloorNodeId
+  )
+
+proc getClearedAchievements*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT id, eventFloorNodeId FROM clearedAchievements")
+
+  for row in rows:
+    let id = parseInt(row[0])
+    let eventFloorNodeId = parseInt(row[1])
+    result.add(%*{"id": id, "eventFloorNodeId": eventFloorNodeId})
+
 proc getClearedAchievementIds(db: DbConn, eventFloorNodeId: int): set[uint16] =
   let rows = db.getAllRows(
     sql"SELECT id FROM clearedAchievements WHERE eventFloorNodeId = ?", eventFloorNodeId
@@ -81,7 +121,17 @@ proc event_ListNode(db: DbConn): JsonNode =
     }
   }
 
-proc getQuestStates(db: DbConn): seq[JsonNode] =
+proc addQuestState*(db: DbConn, questState: JsonNode) =
+  let questId = questState["questId"].getInt()
+  let clearCount = questState["clearCount"].getInt()
+  let bestScore = questState["bestScore"].getInt()
+
+  db.exec(
+    sql"INSERT INTO questStates (questId, clearCount, bestScore) VALUES (?, ?, ?)",
+    questId, clearCount, bestScore
+  )
+
+proc getQuestStates*(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"SELECT questId, clearCount, bestScore FROM questStates")
 
   for row in rows:
@@ -404,6 +454,26 @@ proc updateStatusFromStatusLocation(status: var JsonNode, otherStatus: JsonNode)
   status["currentPositionCoordinates"] = otherStatus["currentPositionCoordinates"]
   status["currentAreaKeyId"] = otherStatus["currentAreaKeyId"]
 
+proc getAreaActionSequenceIds*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT areaId, actionSequenceId FROM areaActionSequenceIds")
+
+  for row in rows:
+    let areaId = parseInt(row[0])
+    let actionSequenceId = parseInt(row[1])
+    result.add(%*{
+      "areaId": areaId,
+      "actionSequenceId": actionSequenceId,
+    })
+
+proc addAreaActionSequenceId*(db: DbConn, areaActionSequenceId: JsonNode) =
+  let areaId = areaActionSequenceId["areaId"].getInt()
+  let actionSequenceId = areaActionSequenceId["actionSequenceId"].getInt()
+
+  db.exec(
+    sql"INSERT INTO areaActionSequenceIds (areaId, actionSequenceId) VALUES (?, ?)",
+    areaId, actionSequenceId
+  )
+
 proc getActionSequenceId(db: DbConn, areaId: int): int =
   let row = db.getRow(sql"SELECT actionSequenceId FROM areaActionSequenceIds WHERE areaId = ?", areaId)
   result = if row[0] != "": parseInt(row[0]) else: 0
@@ -478,11 +548,26 @@ proc parseTensionCardRow(tensionCardRow: Row): JsonNode =
     "isLocked": isLocked
   }
 
-proc getTensionCards(db: DbConn): seq[JsonNode] =
+proc getTensionCards*(db: DbConn): seq[JsonNode] =
   let tensionCardsRows = db.getAllRows(sql("SELECT " & dbTensionCardsFields & " FROM tensionCards"))
 
   for tensionCardRow in tensionCardsRows:
     result.add(parseTensionCardRow(tensionCardRow))
+
+proc addTensionCard*(db: DbConn, tensionCard: JsonNode) =
+  let tensionCardId = tensionCard["tensionCardId"].getInt()
+  let receivedAt = tensionCard["receivedAt"].getStr()
+  let maxLevel = tensionCard["maxLevel"].getInt()
+  let abilityEfficacies = $tensionCard["abilityEfficacies"]
+  let trainingScoreLevelScore = tensionCard["trainingScoreLevelScore"].getInt()
+  let entityId = tensionCard["entityId"].getInt()
+  let isLocked = if tensionCard["isLocked"].getBool(): 1 else: 0
+
+  db.exec(
+    sql("INSERT INTO tensionCards (" & dbTensionCardsFields & ") VALUES (?, ?, ?, ?, ?, ?, ?)"),
+    tensionCardId, receivedAt, maxLevel, abilityEfficacies,
+    trainingScoreLevelScore, entityId, isLocked
+  )
 
 proc getEquippedTensionCards(db: DbConn): seq[JsonNode] =
   # FIXME: should return current formation tension cards
@@ -614,11 +699,53 @@ proc battle_Start(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonRe
 proc setCharacterHp(db: DbConn, characterId: int, hp: int) =
   db.exec(sql"UPDATE characters SET hp = ? WHERE characterId = ?", hp, characterId)
 
-proc getCharacters(db: DbConn): seq[JsonNode] =
+proc getCharacters*(db: DbConn): seq[JsonNode] =
   let charactersRows = db.getAllRows(sql("SELECT " & dbCharacterFields & " FROM characters"))
 
   for characterRow in charactersRows:   
     result.add(parseCharacterRow(characterRow))
+
+proc addCharacter*(db: DbConn, character: JsonNode) =
+  let characterId = character["characterId"].getInt()
+  let exp = character["exp"].getInt()
+  let hp = character["hp"].getInt()
+  let attack = character["attack"].getInt()
+  let defense = character["defense"].getInt()
+  let maxHp = character["maxHp"].getInt()
+  let receivedAt = character["receivedAt"].getStr()
+  let characterOwnershipType = character["characterOwnershipType"].getInt()
+  let criticalRate = character["criticalRate"].getInt()
+  let criticalDamageRate = character["criticalDamageRate"].getInt()
+  let movementSpeed = character["movementSpeed"].getInt()
+  let damageInflictedRate = character["damageInflictedRate"].getInt()
+  let tensionIncreaseRate = character["tensionIncreaseRate"].getInt()
+  let cpRecastRate = character["cpRecastRate"].getInt()
+  let spGaugeIncreaseRate = character["spGaugeIncreaseRate"].getInt()
+  let attackSpeed = character["attackSpeed"].getInt()
+  let characterCostumeId = character["characterCostumeId"].getInt()
+  let abnormalityParamSet = $character["abnormalityParamSet"]
+  let trainingScoreLevelScore = character["trainingScoreLevelScore"].getInt()
+  let trainingScoreRankScore = character["trainingScoreRankScore"].getInt()
+  let actionPointMax = character["actionPointMax"].getInt()
+  let actionPointRate = character["actionPointRate"].getInt()
+  let actionPointConsumption = character["actionPointConsumption"].getInt()
+  let damageTakenRate = character["damageTakenRate"].getInt()
+
+  db.exec(sql"""
+    INSERT INTO characters
+    (characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
+     criticalRate, criticalDamageRate, movementSpeed, damageInflictedRate, tensionIncreaseRate,
+     cpRecastRate, spGaugeIncreaseRate, attackSpeed, characterCostumeId, abnormalityParamSet,
+     trainingScoreLevelScore, trainingScoreRankScore, actionPointMax, actionPointRate,
+     actionPointConsumption, damageTakenRate)
+    VALUES
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  """, characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
+     criticalRate, criticalDamageRate, movementSpeed, damageInflictedRate, tensionIncreaseRate,
+     cpRecastRate, spGaugeIncreaseRate, attackSpeed, characterCostumeId, abnormalityParamSet,
+     trainingScoreLevelScore, trainingScoreRankScore, actionPointMax, actionPointRate,
+     actionPointConsumption, damageTakenRate
+  )
 
 proc removeAreaObject(db: DbConn, areaKeyId: int, triggerId: int) =
   db.exec(sql"DELETE FROM areaObjects WHERE areaId=? AND areaObjectBehaviorId=?", areaKeyId, triggerId);
@@ -800,7 +927,17 @@ proc getFormations*(db: DbConn): seq[JsonNode] =
 
     result.add(formation)
 
-proc getChallengeProgresses(db: DbConn): seq[JsonNode] =
+proc addChallengeProgress*(db: DbConn, challengeProgress: JsonNode) =
+  let challengeProgressId = challengeProgress["challengeProgressId"].getInt()
+  let clearedAt = challengeProgress.getOrDefault("clearedAt").getStr()
+  let state = challengeProgress["state"].getInt()
+
+  db.exec(sql"""
+    INSERT INTO challengeProgresses (challengeProgressId, clearedAt, state)
+    VALUES (?, ?, ?)
+  """, challengeProgressId, clearedAt, state)
+
+proc getChallengeProgresses*(db: DbConn): seq[JsonNode] =
   let challengeProgressesRows = db.getAllRows(sql"""
     SELECT challengeProgressId, clearedAt, state
     FROM challengeProgresses
@@ -823,7 +960,17 @@ proc getChallengeProgresses(db: DbConn): seq[JsonNode] =
         "state": state
       })
 
-proc getNineSequences(db: DbConn): seq[JsonNode] =
+proc addNineSequence*(db: DbConn, nineSequence: JsonNode) =
+  let nineSequenceId = nineSequence["nineSequenceId"].getInt()
+  let tmp = nineSequence.copy()
+  tmp.delete("nineSequenceId")
+  let content = $tmp
+  db.exec(
+    sql"INSERT INTO nineSequences (nineSequenceId, content) VALUES (?, ?)",
+    nineSequenceId, content
+  )
+
+proc getNineSequences*(db: DbConn): seq[JsonNode] =
   let nineSequencesRows = db.getAllRows(sql"SELECT nineSequenceId, content FROM nineSequences")
 
   for nineSequenceRow in nineSequencesRows:
@@ -870,7 +1017,11 @@ proc getCharacterCostumes(db: DbConn): seq[JsonNode] =
       "receivedAt": receivedAt
     })
 
-proc getTotalTasks(db: DbConn): seq[JsonNode] =
+proc addTotalTask*(db: DbConn, totalTask: JsonNode) =
+  let conditionId = totalTask["conditionId"].getInt()
+  db.exec(sql"INSERT INTO totalTasks (conditionId) VALUES (?)", conditionId)
+
+proc getTotalTasks*(db: DbConn): seq[JsonNode] =
   let totalTasksRows = db.getAllRows(sql"SELECT conditionId FROM totalTasks")
   
   for totalTaskRow in totalTasksRows:
@@ -878,7 +1029,17 @@ proc getTotalTasks(db: DbConn): seq[JsonNode] =
 
     result.add(%*{"conditionId": conditionId})
 
-proc getTutorialStates(db: DbConn): seq[JsonNode] =
+proc addTutorialState*(db: DbConn, tutorialState: JsonNode) =
+  let tutorialStatusKey = tutorialState["tutorialStatusKey"].getInt()
+  let enabledTmp = tutorialState.getOrDefault("enabled")
+  let enabled = if enabledTmp != nil: (if enabledTmp.getBool(): "true" else: "false") else: ""
+
+  db.exec(
+    sql"INSERT INTO tutorialStates (tutorialStatusKey, enabled) VALUES (?, ?)",
+    tutorialStatusKey, enabled
+  )
+
+proc getTutorialStates*(db: DbConn): seq[JsonNode] =
   let tutorialStatesRows = db.getAllRows(sql"SELECT tutorialStatusKey, enabled FROM tutorialStates")
 
   for tutorialStateRow in tutorialStatesRows:
@@ -898,7 +1059,16 @@ proc getShopProducts(db: DbConn): seq[JsonNode] =
   for shopProductRow in shopProductsRows:
     result.add(parseJson(shopProductRow[0]))
 
-proc getAdventureVariables(db: DbConn): seq[JsonNode] =
+proc addAdventureVariable*(db: DbConn, adventureVariable: JsonNode) =
+  let adventureVariableId = adventureVariable["adventureVariableId"].getInt()
+  let value = adventureVariable["value"].getInt()
+
+  db.exec(
+    sql"INSERT INTO adventureVariables (adventureVariableId, value) VALUES (?, ?)",
+    adventureVariableId, value
+  )
+
+proc getAdventureVariables*(db: DbConn): seq[JsonNode] =
   let adventureVariablesRows = db.getAllRows(sql"SELECT adventureVariableId, value FROM adventureVariables")
 
   for row in adventureVariablesRows:
@@ -910,7 +1080,18 @@ proc getAdventureVariables(db: DbConn): seq[JsonNode] =
       "value": value
     })
 
-proc getChallengeTasks(db: DbConn): seq[JsonNode] =
+proc addChallengeTask*(db: DbConn, challengeTask: JsonNode) =
+  let challengeTaskId = challengeTask["challengeTaskId"].getInt()
+  let clearedAt = challengeTask["clearedAt"].getStr()
+  let tmpCount = challengeTask.getOrDefault("count")
+  let count = if tmpCount != nil: $tmpCount.getInt() else: ""
+
+  db.exec(
+    sql"INSERT INTO challengeTasks (challengeTaskId, clearedAt, count) VALUES (?, ?, ?)",
+    challengeTaskId, clearedAt, count
+  )
+
+proc getChallengeTasks*(db: DbConn): seq[JsonNode] =
   for row in db.getAllRows(sql"SELECT challengeTaskId, clearedAt, count FROM challengeTasks"):
     let challengeTaskId = parseInt(row[0])
     let clearedAt = row[1]
