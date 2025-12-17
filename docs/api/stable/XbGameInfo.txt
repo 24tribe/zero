@@ -1,0 +1,26 @@
+XbGameInfo
+
+[ProtoMember(6)]
+xbId: int
+
+[ProtoMember(5)]
+index: int
+
+[ProtoMember(1)]
+topTeam: XbTeam
+
+[ProtoMember(2)]
+bottomTeam: XbTeam
+
+[ProtoMember(4)]
+currentAtBatEventInfo: XbAtBatEventInfo
+
+[ProtoMember(7)]
+xbStoryInfo: XbStoryInfo
+
+[ProtoMember(3)]
+predictedTensionInfos: RepeatedField<XbPredictedTensionInfo>
+
+[ProtoMember(8)]
+clientStatus: XbClientStatus
+
