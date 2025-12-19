@@ -1,0 +1,26 @@
+XbPlayResponse
+
+[ProtoMember(3)]
+currentAtBatGameInfo: XbGameInfo
+
+[ProtoMember(4)]
+nextAtBatGameInfo: XbGameInfo
+
+[ProtoMember(5)]
+result: XbGameResult
+
+[ProtoMember(1)]
+rewards: RepeatedField<Rewards>
+
+[ProtoMember(8)]
+ignoredRewards: RepeatedField<Resource>
+
+[ProtoMember(2)]
+changedResources: Resources
+
+[ProtoMember(6)]
+rankMatchRankState: XbPvpRankState
+
+[ProtoMember(7)]
+scoreBoards: RepeatedField<XbInningHalfScoreBoard>
+

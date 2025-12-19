@@ -1,0 +1,17 @@
+XbPlayRequest
+
+[ProtoMember(1)]
+xbId: int
+
+[ProtoMember(3)]
+zoneAreaIndex: int
+
+[ProtoMember(4)]
+commandId: int
+
+[ProtoMember(5)]
+magicOrbId: int?
+
+[ProtoMember(2)]
+isAtBatSkip: bool
+
