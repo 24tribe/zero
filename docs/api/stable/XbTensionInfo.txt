@@ -1,0 +1,29 @@
+XbTensionInfo
+
+[ProtoMember(12)]
+isPlayer: bool
+
+[ProtoMember(9)]
+skitIndex: int?
+
+[ProtoMember(3)]
+tensionValue: float
+
+[ProtoMember(4)]
+tensionLv: int
+
+[ProtoMember(11)]
+runnerMemberId: int?
+
+[ProtoMember(5)]
+isTensionMax: bool
+
+[ProtoMember(6)]
+previousTensionValue: float
+
+[ProtoMember(7)]
+previousTensionLv: int
+
+[ProtoMember(8)]
+previousIsTensionMax: bool
+

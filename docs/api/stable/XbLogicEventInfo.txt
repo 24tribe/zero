@@ -1,0 +1,23 @@
+XbLogicEventInfo
+
+[ProtoMember(1)]
+index: int
+
+[ProtoMember(2)]
+timing: int
+
+[ProtoMember(3)]
+eventOrder: int
+
+[ProtoMember(4)]
+skillInfo: XbSkillInfo
+
+[ProtoMember(6)]
+tensionInfos: RepeatedField<XbTensionInfo>
+
+[ProtoMember(5)]
+playerSkillOrbInfos: RepeatedField<XbSkillOrbInfo>
+
+[ProtoMember(7)]
+enemySkillOrbInfos: RepeatedField<XbSkillOrbInfo>
+

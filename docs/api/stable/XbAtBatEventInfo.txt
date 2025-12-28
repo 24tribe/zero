@@ -1,0 +1,26 @@
+XbAtBatEventInfo
+
+[ProtoMember(1)]
+battingInfo: XbBattingInfo
+
+[ProtoMember(2)]
+battedBallInfo: XbBattedBallInfo
+
+[ProtoMember(8)]
+errorInfo: XbErrorInfo
+
+[ProtoMember(3)]
+defenseInfos: RepeatedField<XbDefenseInfo>
+
+[ProtoMember(4)]
+beforeGameSituation: XbGameSituationUpdateInfo
+
+[ProtoMember(5)]
+afterGameSituation: XbGameSituationUpdateInfo
+
+[ProtoMember(12)]
+logicEventInfos: RepeatedField<XbLogicEventInfo>
+
+[ProtoMember(6)]
+buffInfos: RepeatedField<XbBuffInfo>
+
