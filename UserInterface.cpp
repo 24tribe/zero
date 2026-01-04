@@ -13,6 +13,8 @@ extern "C" {
 #include <windows.h>
 #include <synchapi.h>
 
+#include <sstream>
+
 static bool KeyPressed(int vKey) {
 	return (GetAsyncKeyState(vKey) & 1) != 0;
 }
@@ -45,6 +47,20 @@ extern "C" int UIMainThread(LPVOID _1) {
 
     draw_func.loadSaveFile = [](const char *name) {
         return SembaLoadSaveFile(ZERO_CONFIG.savesDir, name);
+    };
+
+    draw_func.on_move_to_zone_area = [&draw_func](int zone_area_id) {
+        const char *currentLocation = "{\"areaType\": 1, \"direction\": 5, \"positionCoordinates\": {\"x\": -6, \"y\": 53.59764, \"z\": -15.75}, \"areaKeyId\": 300402}";
+
+        std::stringstream ss;
+        ss << "{";
+        ss << "\"areaId\": " << zone_area_id << ", ";
+        ss << "\"currentLocation\": " << currentLocation << ", ";
+        ss << "}";
+        draw_func.result = SembaCall("/adventure/move_to_area", ss.str().c_str());
+        if (!draw_func.result) {
+            draw_func.result = "Failed to move to area";
+        }
     };
 
     draw_func.runCommand = [&draw_func]() {

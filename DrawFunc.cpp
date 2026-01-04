@@ -22,7 +22,9 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   fov_scale(nullptr),
                                   customFovFlag(nullptr),
                                   saves_dir(nullptr),
+                                  zone_area_id(130801),
                                   save_files(),
+                                  on_move_to_zone_area(),
                                   createSaveFile(),
                                   loadSaveFile(),
                                   togglePausePos(),
@@ -208,6 +210,12 @@ void DrawFunc::operator()(void) {
             if (fov_scale) {
                 ImGui::DragFloat("fovScale", fov_scale, 0.1f);
             }
+        }
+
+        ImGui::Separator();
+        ImGui::InputInt("zone_area_id", &zone_area_id);
+        if (ImGui::Button("Move to zoneArea") && on_move_to_zone_area) {
+            on_move_to_zone_area(zone_area_id);
         }
 
         ImGui::End();
