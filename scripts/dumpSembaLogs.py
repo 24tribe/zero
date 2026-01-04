@@ -13,7 +13,7 @@ def get_debug_logs(semba_db):
 
     cur = con.cursor()
 
-    res = cur.execute("SELECT receivedAt, uri, req, res FROM debugLogs")
+    res = cur.execute("SELECT receivedAt, uri, req, res FROM debugLogsOffline")
     data = res.fetchall()
 
     result = []
