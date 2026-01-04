@@ -418,9 +418,9 @@ proc updatePos(db: DbConn, status: var JsonNode, fromAreaId: int, toAreaId: int)
     WHERE fromAreaId = ? AND toAreaId = ?
   """, fromAreaId, toAreaId)
 
-  let currentPosX = parseFloat(status["currentPositionCoordinates"]["x"].getStr())
-  let currentPosY = parseFloat(status["currentPositionCoordinates"]["y"].getStr())
-  let currentPosZ = parseFloat(status["currentPositionCoordinates"]["z"].getStr())
+  let currentPosX = status["currentPositionCoordinates"]["x"].getFloat()
+  let currentPosY = status["currentPositionCoordinates"]["y"].getFloat()
+  let currentPosZ = status["currentPositionCoordinates"]["z"].getFloat()
 
   var hasDist = false
   var smallestDist = 0.0
