@@ -3,6 +3,7 @@
 #include <string.h>
 #include <windows.h>
 #include <tlhelp32.h>
+#include <synchapi.h>
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
@@ -62,6 +63,8 @@ int main(int argc, char* argv[]) {
         fputs("CreateRemoteThread failed", stderr);
         return 1;
     }
+
+    Sleep(2000);
 
     ResumeThread(pi.hThread);
 
