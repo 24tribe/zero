@@ -26,10 +26,17 @@ def parse_class(code):
     fields = []
 
     for fieldName, protoFieldNum in re.findall(r"([^\s]+)FieldNumber = (\d+)", code):
+        fieldNamePublic = fieldName
         fieldName = fieldName[:1].lower() + fieldName[1:]
 
-        match = re.search(r"private (?:[^\s]+ )*([^\s]+) " + f"{fieldName}_;", code)
-        assert match
+        typeFmt = r"(?:[^\s]+ )*([^\s]+)"
+
+        match = re.search(r"private " + typeFmt + f" {fieldName}_;", code)
+        if not match:
+            match = re.search(r"public " + typeFmt + f" {fieldNamePublic}\n", code)
+            if not match:
+                raise RuntimeError(f"couldn't find {fieldName} type!")
+
         type_ = match.group(1)
 
         fields.append({

@@ -1,0 +1,6582 @@
+
+<!DOCTYPE html>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Roboto";
+            background: #222222;
+            color: #f8f8f8;
+            margin: 40px auto;
+            max-width: 650px;
+        }
+
+        code {
+            border-radius: 3px;
+            background: #333333;
+            box-shadow: inset 0 0 1px 1px #eee;
+            padding: 4px;
+        }
+
+        a {
+            color: #f8f8f8;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Protobuf Objects</h1>
+
+<h3 id="AdventureAccessWarpPointRequest"><a href="#AdventureAccessWarpPointRequest">AdventureAccessWarpPointRequest</a></h3>
+
+
+<p><b>warpPointId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureAccessWarpPointResponse"><a href="#AdventureAccessWarpPointResponse">AdventureAccessWarpPointResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>areaObjects: </b><code>RepeatedField&lt;<a href="#AreaObject">AreaObject</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="AdventureAcquireAreaItemRequest"><a href="#AdventureAcquireAreaItemRequest">AdventureAcquireAreaItemRequest</a></h3>
+
+
+<p><b>areaItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureAcquireAreaItemResponse"><a href="#AdventureAcquireAreaItemResponse">AdventureAcquireAreaItemResponse</a></h3>
+
+
+<p><b>areaItem: </b><code><a href="#AreaItem">AreaItem</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>areaObjects: </b><code>RepeatedField&lt;<a href="#AreaObject">AreaObject</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="AdventureAreaObjectRequest"><a href="#AdventureAreaObjectRequest">AdventureAreaObjectRequest</a></h3>
+
+
+<p><b>areaId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureAreaObjectResponse"><a href="#AdventureAreaObjectResponse">AdventureAreaObjectResponse</a></h3>
+
+
+<p><b>areaObjects: </b><code>RepeatedField&lt;<a href="#AreaObject">AreaObject</a>&gt;</code></p>
+
+
+<p><b>areaItems: </b><code>RepeatedField&lt;<a href="#AreaItem">AreaItem</a>&gt;</code></p>
+
+
+<p><b>bloodStains: </b><code>RepeatedField&lt;<a href="#BloodStain">BloodStain</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="AdventureFindGraffitiRequest"><a href="#AdventureFindGraffitiRequest">AdventureFindGraffitiRequest</a></h3>
+
+
+<p><b>graffitiArtId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureFindGraffitiResponse"><a href="#AdventureFindGraffitiResponse">AdventureFindGraffitiResponse</a></h3>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureHospitalRequest"><a href="#AdventureHospitalRequest">AdventureHospitalRequest</a></h3>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureMoveToAreaRequest"><a href="#AdventureMoveToAreaRequest">AdventureMoveToAreaRequest</a></h3>
+
+
+<p><b>areaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<p><b>respawnAtHospital: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureMoveToAreaResponse"><a href="#AdventureMoveToAreaResponse">AdventureMoveToAreaResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>areaChangeLocks: </b><code>RepeatedField&lt;<a href="#AreaChangeLock">AreaChangeLock</a>&gt;</code></p>
+
+
+<p><b>areaBehavior: </b><code><a href="#AreaBehavior">AreaBehavior</a></code></p>
+
+
+<p><b>areaBgm: </b><code><a href="#AreaBgm">AreaBgm</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureReadSequenceRequest"><a href="#AdventureReadSequenceRequest">AdventureReadSequenceRequest</a></h3>
+
+
+<p><b>sequenceRequestIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>nineSequences: </b><code>RepeatedField&lt;<a href="#NineSequenceRequest">NineSequenceRequest</a>&gt;</code></p>
+
+
+<p><b>miniGameId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>areaType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>areaKeyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureReadSequenceResponse"><a href="#AdventureReadSequenceResponse">AdventureReadSequenceResponse</a></h3>
+
+
+<p><b>areaObjects: </b><code>RepeatedField&lt;<a href="#AreaObject">AreaObject</a>&gt;</code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>deletedCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="AdventureReleaseEventLiftRequest"><a href="#AdventureReleaseEventLiftRequest">AdventureReleaseEventLiftRequest</a></h3>
+
+
+<p><b>eventLiftId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureTrackTargetRequest"><a href="#AdventureTrackTargetRequest">AdventureTrackTargetRequest</a></h3>
+
+
+<p><b>warpPointId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>fieldBossId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>dungeonId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="AdventureUpdateCharacterStatusRequest"><a href="#AdventureUpdateCharacterStatusRequest">AdventureUpdateCharacterStatusRequest</a></h3>
+
+
+<p><b>characterUpdates: </b><code>RepeatedField&lt;<a href="#CharacterUpdate">CharacterUpdate</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="AdventureWarpAreaLocatorRequest"><a href="#AdventureWarpAreaLocatorRequest">AdventureWarpAreaLocatorRequest</a></h3>
+
+
+<p><b>warpAreaType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>warpAreaId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthNonceResponse"><a href="#AuthNonceResponse">AuthNonceResponse</a></h3>
+
+
+<p><b>nonce: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignInRequest"><a href="#AuthSignInRequest">AuthSignInRequest</a></h3>
+
+
+<p><b>deviceSecret: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceUniqueId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceToken: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceModel: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>clientDigest: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignInResponse"><a href="#AuthSignInResponse">AuthSignInResponse</a></h3>
+
+
+<p><b>sessionToken: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceChanged: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>language: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignUpAppleRequest"><a href="#AuthSignUpAppleRequest">AuthSignUpAppleRequest</a></h3>
+
+
+<p><b>deviceSecret: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceUniqueId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceModel: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>idToken: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>execute: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignUpAppleResponse"><a href="#AuthSignUpAppleResponse">AuthSignUpAppleResponse</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>userName: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>language: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isDeleted: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignUpGoogleRequest"><a href="#AuthSignUpGoogleRequest">AuthSignUpGoogleRequest</a></h3>
+
+
+<p><b>deviceSecret: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceUniqueId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceModel: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>idToken: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>code: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>codeVerifier: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>execute: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignUpGoogleResponse"><a href="#AuthSignUpGoogleResponse">AuthSignUpGoogleResponse</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>userName: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>language: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isDeleted: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignUpPasscodeRequest"><a href="#AuthSignUpPasscodeRequest">AuthSignUpPasscodeRequest</a></h3>
+
+
+<p><b>deviceSecret: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceUniqueId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceModel: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>passcode: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>execute: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignUpPasscodeResponse"><a href="#AuthSignUpPasscodeResponse">AuthSignUpPasscodeResponse</a></h3>
+
+
+<p><b>userName: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>language: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isDeleted: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSignUpRequest"><a href="#AuthSignUpRequest">AuthSignUpRequest</a></h3>
+
+
+<p><b>deviceSecret: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceUniqueId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deviceModel: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>language: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>locale: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="AuthSignUpResponse"><a href="#AuthSignUpResponse">AuthSignUpResponse</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSteamUserRequest"><a href="#AuthSteamUserRequest">AuthSteamUserRequest</a></h3>
+
+
+<p><b>sessionTicket: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="AuthSteamUserResponse"><a href="#AuthSteamUserResponse">AuthSteamUserResponse</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<hr>
+
+<h3 id="BattleFinishRequest"><a href="#BattleFinishRequest">BattleFinishRequest</a></h3>
+
+
+<p><b>battleResult: </b><code><a href="#BattleResult">BattleResult</a></code></p>
+
+
+<p><b>characterUpdates: </b><code>RepeatedField&lt;<a href="#CharacterUpdate">CharacterUpdate</a>&gt;</code></p>
+
+
+<p><b>battleTaskTopics: </b><code>RepeatedField&lt;<a href="#BattleTaskTopic">BattleTaskTopic</a>&gt;</code></p>
+
+
+<p><b>encounteredEnemyIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>battleTimeSecond: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>taskConditionResult: </b><code><a href="#BattleTaskConditionResult">BattleTaskConditionResult</a></code></p>
+
+
+<hr>
+
+<h3 id="BattleFinishResponse"><a href="#BattleFinishResponse">BattleFinishResponse</a></h3>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>ignoredRewards: </b><code>RepeatedField&lt;<a href="#Resource">Resource</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>characterExps: </b><code>RepeatedField&lt;<a href="#CharacterExp">CharacterExp</a>&gt;</code></p>
+
+
+<p><b>areaObjects: </b><code>RepeatedField&lt;<a href="#AreaObject">AreaObject</a>&gt;</code></p>
+
+
+<p><b>moveToAreaLocatorId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>fractalViseUpdate: </b><code><a href="#FractalViseUpdate">FractalViseUpdate</a></code></p>
+
+
+<hr>
+
+<h3 id="BattleRestartRequest"><a href="#BattleRestartRequest">BattleRestartRequest</a></h3>
+
+
+<p><b>lineCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>encounteredEnemyIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>isDifficultyDecrease: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="BattleRestartResponse"><a href="#BattleRestartResponse">BattleRestartResponse</a></h3>
+
+
+<p><b>characters: </b><code>RepeatedField&lt;<a href="#Character">Character</a>&gt;</code></p>
+
+
+<p><b>tensionCards: </b><code>RepeatedField&lt;<a href="#TensionCard">TensionCard</a>&gt;</code></p>
+
+
+<p><b>battleParameters: </b><code>RepeatedField&lt;<a href="#BattleParameter">BattleParameter</a>&gt;</code></p>
+
+
+<p><b>battleTriggers: </b><code>RepeatedField&lt;<a href="#BattleTrigger">BattleTrigger</a>&gt;</code></p>
+
+
+<p><b>advantageType: </b><code><a href="#BattleAdvantageType">BattleAdvantageType</a></code></p>
+
+
+<p><b>characterDishes: </b><code>RepeatedField&lt;<a href="#CharacterDish">CharacterDish</a>&gt;</code></p>
+
+
+<p><b>wonResultType: </b><code><a href="#BattleWonResultType">BattleWonResultType</a></code></p>
+
+
+<p><b>abilityEnigmaId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>guestCharacters: </b><code>RepeatedField&lt;<a href="#GuestCharacter">GuestCharacter</a>&gt;</code></p>
+
+
+<p><b>difficultyDecreaseCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="BattleSkipRequest"><a href="#BattleSkipRequest">BattleSkipRequest</a></h3>
+
+
+<p><b>battleEntryId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>battleTrigger: </b><code><a href="#BattleTrigger">BattleTrigger</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<p><b>lineCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="BattleSkipResponse"><a href="#BattleSkipResponse">BattleSkipResponse</a></h3>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>ignoredRewards: </b><code>RepeatedField&lt;<a href="#Resource">Resource</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>characterExps: </b><code>RepeatedField&lt;<a href="#CharacterExp">CharacterExp</a>&gt;</code></p>
+
+
+<p><b>areaObjects: </b><code>RepeatedField&lt;<a href="#AreaObject">AreaObject</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="BattleStartRequest"><a href="#BattleStartRequest">BattleStartRequest</a></h3>
+
+
+<p><b>battleEntryIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>lineCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>battleTriggers: </b><code>RepeatedField&lt;<a href="#BattleTrigger">BattleTrigger</a>&gt;</code></p>
+
+
+<p><b>advantageType: </b><code><a href="#BattleAdvantageType">BattleAdvantageType</a></code></p>
+
+
+<p><b>isAttackHit: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<p><b>bloodStainLocation: </b><code><a href="#BloodStainLocation">BloodStainLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="BattleStartResponse"><a href="#BattleStartResponse">BattleStartResponse</a></h3>
+
+
+<p><b>characters: </b><code>RepeatedField&lt;<a href="#Character">Character</a>&gt;</code></p>
+
+
+<p><b>tensionCards: </b><code>RepeatedField&lt;<a href="#TensionCard">TensionCard</a>&gt;</code></p>
+
+
+<p><b>battleParameters: </b><code>RepeatedField&lt;<a href="#BattleParameter">BattleParameter</a>&gt;</code></p>
+
+
+<p><b>battleTriggers: </b><code>RepeatedField&lt;<a href="#BattleTrigger">BattleTrigger</a>&gt;</code></p>
+
+
+<p><b>advantageType: </b><code><a href="#BattleAdvantageType">BattleAdvantageType</a></code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>characterDishes: </b><code>RepeatedField&lt;<a href="#CharacterDish">CharacterDish</a>&gt;</code></p>
+
+
+<p><b>wonResultType: </b><code><a href="#BattleWonResultType">BattleWonResultType</a></code></p>
+
+
+<p><b>abilityEnigmaId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>guestCharacters: </b><code>RepeatedField&lt;<a href="#GuestCharacter">GuestCharacter</a>&gt;</code></p>
+
+
+<p><b>difficultyDecreaseCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ChangedResourcesResponse"><a href="#ChangedResourcesResponse">ChangedResourcesResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterCostumeUpdateRequest"><a href="#CharacterCostumeUpdateRequest">CharacterCostumeUpdateRequest</a></h3>
+
+
+<p><b>characterCostumeId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterEnhanceRequest"><a href="#CharacterEnhanceRequest">CharacterEnhanceRequest</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>consumedItems: </b><code>RepeatedField&lt;<a href="#ConsumedItem">ConsumedItem</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="CharacterEquipRequest"><a href="#CharacterEquipRequest">CharacterEquipRequest</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gearSlot1: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>gearSlot2: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>gearSlot3: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="CharacterItemPresentRequest"><a href="#CharacterItemPresentRequest">CharacterItemPresentRequest</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>itemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterLimitBreakRequest"><a href="#CharacterLimitBreakRequest">CharacterLimitBreakRequest</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>limitBreakCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterLimitBreakResponse"><a href="#CharacterLimitBreakResponse">CharacterLimitBreakResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="CharacterRankEnhanceRequest"><a href="#CharacterRankEnhanceRequest">CharacterRankEnhanceRequest</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterRankEnhanceResponse"><a href="#CharacterRankEnhanceResponse">CharacterRankEnhanceResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="CharacterSkillPanelEnhanceRequest"><a href="#CharacterSkillPanelEnhanceRequest">CharacterSkillPanelEnhanceRequest</a></h3>
+
+
+<p><b>characterSkillPanelId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>level: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterSkillPanelEnhanceResponse"><a href="#CharacterSkillPanelEnhanceResponse">CharacterSkillPanelEnhanceResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="CharacterSkillPanelResetRequest"><a href="#CharacterSkillPanelResetRequest">CharacterSkillPanelResetRequest</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterSkillPanelResetResponse"><a href="#CharacterSkillPanelResetResponse">CharacterSkillPanelResetResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="CityReleaseGearShopRequest"><a href="#CityReleaseGearShopRequest">CityReleaseGearShopRequest</a></h3>
+
+
+<p><b>cityId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DebugChallengeClearRequest"><a href="#DebugChallengeClearRequest">DebugChallengeClearRequest</a></h3>
+
+
+<p><b>challengeId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DebugChallengeClearResponse"><a href="#DebugChallengeClearResponse">DebugChallengeClearResponse</a></h3>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>deletedCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="DebugJiraTokenResponse"><a href="#DebugJiraTokenResponse">DebugJiraTokenResponse</a></h3>
+
+
+<p><b>token: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="DebugMailSendRequest"><a href="#DebugMailSendRequest">DebugMailSendRequest</a></h3>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DebugShopPurchaseRequest"><a href="#DebugShopPurchaseRequest">DebugShopPurchaseRequest</a></h3>
+
+
+<p><b>shopProductId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DebugUserBulkResourceRequest"><a href="#DebugUserBulkResourceRequest">DebugUserBulkResourceRequest</a></h3>
+
+
+<p><b>types_: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>stackableResourceRate: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DebugXbPvpSpecifyEnemyRequest"><a href="#DebugXbPvpSpecifyEnemyRequest">DebugXbPvpSpecifyEnemyRequest</a></h3>
+
+
+<p><b>enemyUserId: </b><code><a href="#long">long</a>?</code></p>
+
+
+<hr>
+
+<h3 id="DishOrderRequest"><a href="#DishOrderRequest">DishOrderRequest</a></h3>
+
+
+<p><b>dishId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonAcquireAreaItemRequest"><a href="#DungeonAcquireAreaItemRequest">DungeonAcquireAreaItemRequest</a></h3>
+
+
+<p><b>dungeonDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonAcquireAreaItemResponse"><a href="#DungeonAcquireAreaItemResponse">DungeonAcquireAreaItemResponse</a></h3>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>dungeonAreaItem: </b><code><a href="#DungeonAreaItem">DungeonAreaItem</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonBattleSkipRequest"><a href="#DungeonBattleSkipRequest">DungeonBattleSkipRequest</a></h3>
+
+
+<p><b>dungeonDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>lineCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="DungeonBattleStartRequest"><a href="#DungeonBattleStartRequest">DungeonBattleStartRequest</a></h3>
+
+
+<p><b>dungeonDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>lineCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>advantageType: </b><code><a href="#BattleAdvantageType">BattleAdvantageType</a></code></p>
+
+
+<p><b>isAttackHit: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonEntryRequest"><a href="#DungeonEntryRequest">DungeonEntryRequest</a></h3>
+
+
+<p><b>dungeonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonEntryResponse"><a href="#DungeonEntryResponse">DungeonEntryResponse</a></h3>
+
+
+<p><b>currentDungeonDifficultyId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>prevAccessDungeonDifficultyId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonFinishRequest"><a href="#DungeonFinishRequest">DungeonFinishRequest</a></h3>
+
+
+<p><b>dungeonDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonResumeRequest"><a href="#DungeonResumeRequest">DungeonResumeRequest</a></h3>
+
+
+<p><b>dungeonDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonResumeResponse"><a href="#DungeonResumeResponse">DungeonResumeResponse</a></h3>
+
+
+<p><b>dungeonState: </b><code><a href="#DungeonState">DungeonState</a></code></p>
+
+
+<p><b>dungeonEnemies: </b><code>RepeatedField&lt;<a href="#DungeonEnemy">DungeonEnemy</a>&gt;</code></p>
+
+
+<p><b>dungeonAreaItems: </b><code>RepeatedField&lt;<a href="#DungeonAreaItem">DungeonAreaItem</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="DungeonStartRequest"><a href="#DungeonStartRequest">DungeonStartRequest</a></h3>
+
+
+<p><b>dungeonDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>bulkConsumeCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>bloodStainLocation: </b><code><a href="#BloodStainLocation">BloodStainLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonStartResponse"><a href="#DungeonStartResponse">DungeonStartResponse</a></h3>
+
+
+<p><b>dungeonState: </b><code><a href="#DungeonState">DungeonState</a></code></p>
+
+
+<p><b>dungeonEnemies: </b><code>RepeatedField&lt;<a href="#DungeonEnemy">DungeonEnemy</a>&gt;</code></p>
+
+
+<p><b>dungeonAreaItems: </b><code>RepeatedField&lt;<a href="#DungeonAreaItem">DungeonAreaItem</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="EventFinishNodeRequest"><a href="#EventFinishNodeRequest">EventFinishNodeRequest</a></h3>
+
+
+<p><b>eventFloorNodeId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clearedAchievementIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>isConsumeItem: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>result: </b><code><a href="#EventFloorNodeQuestResult">EventFloorNodeQuestResult</a></code></p>
+
+
+<p><b>questResult: </b><code><a href="#QuestResult">QuestResult</a></code></p>
+
+
+<hr>
+
+<h3 id="EventFinishNodeResponse"><a href="#EventFinishNodeResponse">EventFinishNodeResponse</a></h3>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FieldBossEntryRequest"><a href="#FieldBossEntryRequest">FieldBossEntryRequest</a></h3>
+
+
+<p><b>fieldBossId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="FieldBossEntryResponse"><a href="#FieldBossEntryResponse">FieldBossEntryResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>prevAccessFieldBossDifficultyId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="FollowAddRequest"><a href="#FollowAddRequest">FollowAddRequest</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<hr>
+
+<h3 id="FollowAddResponse"><a href="#FollowAddResponse">FollowAddResponse</a></h3>
+
+
+<p><b>followedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FollowDetailRequest"><a href="#FollowDetailRequest">FollowDetailRequest</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<hr>
+
+<h3 id="FollowDetailResponse"><a href="#FollowDetailResponse">FollowDetailResponse</a></h3>
+
+
+<p><b>characterLikabilities: </b><code>RepeatedField&lt;<a href="#CharacterLikability">CharacterLikability</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="FollowListResponse"><a href="#FollowListResponse">FollowListResponse</a></h3>
+
+
+<p><b>users: </b><code>RepeatedField&lt;<a href="#FollowUser">FollowUser</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="FollowRemoveRequest"><a href="#FollowRemoveRequest">FollowRemoveRequest</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<hr>
+
+<h3 id="FollowRemoveResponse"><a href="#FollowRemoveResponse">FollowRemoveResponse</a></h3>
+
+
+<p><b>deletedResources: </b><code><a href="#ResourceEntities">ResourceEntities</a></code></p>
+
+
+<hr>
+
+<h3 id="FollowSearchRequest"><a href="#FollowSearchRequest">FollowSearchRequest</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<hr>
+
+<h3 id="FollowSearchResponse"><a href="#FollowSearchResponse">FollowSearchResponse</a></h3>
+
+
+<p><b>user: </b><code><a href="#FollowUser">FollowUser</a></code></p>
+
+
+<hr>
+
+<h3 id="FormationSwitchRequest"><a href="#FormationSwitchRequest">FormationSwitchRequest</a></h3>
+
+
+<p><b>formationNumber: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FormationUpdateRequest"><a href="#FormationUpdateRequest">FormationUpdateRequest</a></h3>
+
+
+<p><b>number: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>members: </b><code><a href="#FormationMembers">FormationMembers</a></code></p>
+
+
+<p><b>cards: </b><code><a href="#FormationCards">FormationCards</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseAcquireAreaItemRequest"><a href="#FractalViseAcquireAreaItemRequest">FractalViseAcquireAreaItemRequest</a></h3>
+
+
+<p><b>fractalViseAreaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseAcquireAreaItemResponse"><a href="#FractalViseAcquireAreaItemResponse">FractalViseAcquireAreaItemResponse</a></h3>
+
+
+<p><b>changedFractalViseArea: </b><code><a href="#FractalViseArea">FractalViseArea</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseBattleStartBossBattleRequest"><a href="#FractalViseBattleStartBossBattleRequest">FractalViseBattleStartBossBattleRequest</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fractalViseBossDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>lineCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<p><b>bloodStainLocation: </b><code><a href="#BloodStainLocation">BloodStainLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseBattleStartRequest"><a href="#FractalViseBattleStartRequest">FractalViseBattleStartRequest</a></h3>
+
+
+<p><b>fractalViseAreaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>lineCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>advantageType: </b><code><a href="#BattleAdvantageType">BattleAdvantageType</a></code></p>
+
+
+<p><b>isAttackHit: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<p><b>bloodStainLocation: </b><code><a href="#BloodStainLocation">BloodStainLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseBossDifficultyRequest"><a href="#FractalViseBossDifficultyRequest">FractalViseBossDifficultyRequest</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseBossDifficultyResponse"><a href="#FractalViseBossDifficultyResponse">FractalViseBossDifficultyResponse</a></h3>
+
+
+<p><b>fractalViseBossDifficulties: </b><code>RepeatedField&lt;<a href="#FractalViseBossDifficulty">FractalViseBossDifficulty</a>&gt;</code></p>
+
+
+<p><b>difficultyReleased: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseClearRequest"><a href="#FractalViseClearRequest">FractalViseClearRequest</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseClearResponse"><a href="#FractalViseClearResponse">FractalViseClearResponse</a></h3>
+
+
+<p><b>fractalViseTotalScore: </b><code><a href="#FractalViseTotalScore">FractalViseTotalScore</a></code></p>
+
+
+<p><b>fractalViseMissions: </b><code>RepeatedField&lt;<a href="#FractalViseMission">FractalViseMission</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseNextAreaInfo"><a href="#FractalViseNextAreaInfo">FractalViseNextAreaInfo</a></h3>
+
+
+<p><b>fractalViseAreaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clearRate: </b><code><a href="#float">float</a>?</code></p>
+
+
+<p><b>treasureBoxAcquiredCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>treasureBoxTotalCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseNextAreaRequest"><a href="#FractalViseNextAreaRequest">FractalViseNextAreaRequest</a></h3>
+
+
+<p><b>fractalViseAreaId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseNextAreaResponse"><a href="#FractalViseNextAreaResponse">FractalViseNextAreaResponse</a></h3>
+
+
+<p><b>changedFractalViseArea: </b><code><a href="#FractalViseArea">FractalViseArea</a></code></p>
+
+
+<p><b>nextAreaInfo: </b><code>RepeatedField&lt;<a href="#FractalViseNextAreaInfo">FractalViseNextAreaInfo</a>&gt;</code></p>
+
+
+<p><b>bloodStains: </b><code>RepeatedField&lt;<a href="#BloodStain">BloodStain</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseResumeRequest"><a href="#FractalViseResumeRequest">FractalViseResumeRequest</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseResumeResponse"><a href="#FractalViseResumeResponse">FractalViseResumeResponse</a></h3>
+
+
+<p><b>fractalViseAreas: </b><code>RepeatedField&lt;<a href="#FractalViseArea">FractalViseArea</a>&gt;</code></p>
+
+
+<p><b>nextAreaInfo: </b><code>RepeatedField&lt;<a href="#FractalViseNextAreaInfo">FractalViseNextAreaInfo</a>&gt;</code></p>
+
+
+<p><b>bloodStains: </b><code>RepeatedField&lt;<a href="#BloodStain">BloodStain</a>&gt;</code></p>
+
+
+<p><b>fractalViseTotalScore: </b><code><a href="#FractalViseTotalScore">FractalViseTotalScore</a></code></p>
+
+
+<p><b>fractalViseMissions: </b><code>RepeatedField&lt;<a href="#FractalViseMission">FractalViseMission</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseRetireRequest"><a href="#FractalViseRetireRequest">FractalViseRetireRequest</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseRetireResponse"><a href="#FractalViseRetireResponse">FractalViseRetireResponse</a></h3>
+
+
+<p><b>fractalViseTotalScore: </b><code><a href="#FractalViseTotalScore">FractalViseTotalScore</a></code></p>
+
+
+<p><b>fractalViseMissions: </b><code>RepeatedField&lt;<a href="#FractalViseMission">FractalViseMission</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseRewardsReceiveMissionParam"><a href="#FractalViseRewardsReceiveMissionParam">FractalViseRewardsReceiveMissionParam</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fractalViseMissionIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="FractalViseRewardsReceiveRequest"><a href="#FractalViseRewardsReceiveRequest">FractalViseRewardsReceiveRequest</a></h3>
+
+
+<p><b>receiveMission: </b><code><a href="#FractalViseRewardsReceiveMissionParam">FractalViseRewardsReceiveMissionParam</a></code></p>
+
+
+<p><b>isReceiveTotalScoreRewards: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseRewardsReceiveResponse"><a href="#FractalViseRewardsReceiveResponse">FractalViseRewardsReceiveResponse</a></h3>
+
+
+<p><b>fractalViseTotalScore: </b><code><a href="#FractalViseTotalScore">FractalViseTotalScore</a></code></p>
+
+
+<p><b>fractalViseMissions: </b><code>RepeatedField&lt;<a href="#FractalViseMission">FractalViseMission</a>&gt;</code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseRewardsTopRequest"><a href="#FractalViseRewardsTopRequest">FractalViseRewardsTopRequest</a></h3>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseRewardsTopResponse"><a href="#FractalViseRewardsTopResponse">FractalViseRewardsTopResponse</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>fractalViseTotalScore: </b><code><a href="#FractalViseTotalScore">FractalViseTotalScore</a></code></p>
+
+
+<p><b>fractalViseMissions: </b><code>RepeatedField&lt;<a href="#FractalViseMission">FractalViseMission</a>&gt;</code></p>
+
+
+<p><b>isChallengeableFractalViseBoss: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseStartRequest"><a href="#FractalViseStartRequest">FractalViseStartRequest</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseStartResponse"><a href="#FractalViseStartResponse">FractalViseStartResponse</a></h3>
+
+
+<p><b>fractalViseAreas: </b><code>RepeatedField&lt;<a href="#FractalViseArea">FractalViseArea</a>&gt;</code></p>
+
+
+<p><b>nextAreaInfo: </b><code>RepeatedField&lt;<a href="#FractalViseNextAreaInfo">FractalViseNextAreaInfo</a>&gt;</code></p>
+
+
+<p><b>bloodStains: </b><code>RepeatedField&lt;<a href="#BloodStain">BloodStain</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseUpdate"><a href="#FractalViseUpdate">FractalViseUpdate</a></h3>
+
+
+<p><b>changedFractalViseArea: </b><code><a href="#FractalViseArea">FractalViseArea</a></code></p>
+
+
+<p><b>enemyScores: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>fractalViseTotalScore: </b><code><a href="#FractalViseTotalScore">FractalViseTotalScore</a></code></p>
+
+
+<p><b>fractalViseMissions: </b><code>RepeatedField&lt;<a href="#FractalViseMission">FractalViseMission</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GachaExecuteRequest"><a href="#GachaExecuteRequest">GachaExecuteRequest</a></h3>
+
+
+<p><b>gachaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gachaButtonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clientTimestamp: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="GachaExecuteResponse"><a href="#GachaExecuteResponse">GachaExecuteResponse</a></h3>
+
+
+<p><b>drawnCards: </b><code>RepeatedField&lt;<a href="#GachaCard">GachaCard</a>&gt;</code></p>
+
+
+<p><b>drawnRewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>gacha: </b><code><a href="#Gacha">Gacha</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GachaListResponse"><a href="#GachaListResponse">GachaListResponse</a></h3>
+
+
+<p><b>gachas: </b><code>RepeatedField&lt;<a href="#Gacha">Gacha</a>&gt;</code></p>
+
+
+<p><b>gachaRateSets: </b><code>RepeatedField&lt;<a href="#GachaRateSet">GachaRateSet</a>&gt;</code></p>
+
+
+<p><b>gachaHistories: </b><code>RepeatedField&lt;<a href="#GachaHistory">GachaHistory</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>gachaCharacters: </b><code>RepeatedField&lt;<a href="#Character">Character</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GachaSelectRequest"><a href="#GachaSelectRequest">GachaSelectRequest</a></h3>
+
+
+<p><b>gachaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gachaCardId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="GachaSelectResponse"><a href="#GachaSelectResponse">GachaSelectResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>gachaCategoryState: </b><code><a href="#GachaCategoryState">GachaCategoryState</a></code></p>
+
+
+<p><b>receivedRewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GearCompressRequest"><a href="#GearCompressRequest">GearCompressRequest</a></h3>
+
+
+<p><b>gearEntityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GearCompressResponse"><a href="#GearCompressResponse">GearCompressResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>deletedResources: </b><code><a href="#ResourceEntities">ResourceEntities</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GearEnhanceRequest"><a href="#GearEnhanceRequest">GearEnhanceRequest</a></h3>
+
+
+<p><b>gearEntityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>consumedGearEntityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>consumedItems: </b><code>RepeatedField&lt;<a href="#ConsumedItem">ConsumedItem</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GearEnhanceResponse"><a href="#GearEnhanceResponse">GearEnhanceResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>deletedResources: </b><code><a href="#ResourceEntities">ResourceEntities</a></code></p>
+
+
+<hr>
+
+<h3 id="GearLockRequest"><a href="#GearLockRequest">GearLockRequest</a></h3>
+
+
+<p><b>gearEntityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GearUnlockRequest"><a href="#GearUnlockRequest">GearUnlockRequest</a></h3>
+
+
+<p><b>gearEntityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="HappyWorkerCancelRequest"><a href="#HappyWorkerCancelRequest">HappyWorkerCancelRequest</a></h3>
+
+
+<p><b>happyWorkerItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="HappyWorkerCancelResponse"><a href="#HappyWorkerCancelResponse">HappyWorkerCancelResponse</a></h3>
+
+
+<p><b>happyWorkerItem: </b><code><a href="#HappyWorkerItem">HappyWorkerItem</a></code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="HappyWorkerListRequest"><a href="#HappyWorkerListRequest">HappyWorkerListRequest</a></h3>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="HappyWorkerListResponse"><a href="#HappyWorkerListResponse">HappyWorkerListResponse</a></h3>
+
+
+<p><b>happyWorkerItems: </b><code>RepeatedField&lt;<a href="#HappyWorkerItem">HappyWorkerItem</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="HappyWorkerStartRequest"><a href="#HappyWorkerStartRequest">HappyWorkerStartRequest</a></h3>
+
+
+<p><b>happyWorkerItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="HappyWorkerStartResponse"><a href="#HappyWorkerStartResponse">HappyWorkerStartResponse</a></h3>
+
+
+<p><b>happyWorkerItem: </b><code><a href="#HappyWorkerItem">HappyWorkerItem</a></code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemExchangeRequest"><a href="#ItemExchangeRequest">ItemExchangeRequest</a></h3>
+
+
+<p><b>itemExchangeId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>consumedItemIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemOpenSelectBoxRequest"><a href="#ItemOpenSelectBoxRequest">ItemOpenSelectBoxRequest</a></h3>
+
+
+<p><b>selectBoxChoices: </b><code>RepeatedField&lt;<a href="#SelectBoxChoice">SelectBoxChoice</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="ItemRequestCollectResponse"><a href="#ItemRequestCollectResponse">ItemRequestCollectResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemRequestFulfillRequest"><a href="#ItemRequestFulfillRequest">ItemRequestFulfillRequest</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>deliveryRequestItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemRequestFulfillResponse"><a href="#ItemRequestFulfillResponse">ItemRequestFulfillResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>deliveryCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemRequestGetResponse"><a href="#ItemRequestGetResponse">ItemRequestGetResponse</a></h3>
+
+
+<p><b>itemRequest: </b><code><a href="#ItemRequest">ItemRequest</a></code></p>
+
+
+<p><b>isPublished: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemRequestListResponse"><a href="#ItemRequestListResponse">ItemRequestListResponse</a></h3>
+
+
+<p><b>itemRequests: </b><code>RepeatedField&lt;<a href="#ItemRequest">ItemRequest</a>&gt;</code></p>
+
+
+<p><b>users: </b><code>RepeatedField&lt;<a href="#FollowUser">FollowUser</a>&gt;</code></p>
+
+
+<p><b>deliveryCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemRequestPublishRequest"><a href="#ItemRequestPublishRequest">ItemRequestPublishRequest</a></h3>
+
+
+<p><b>deliveryRequestItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemRequestPublishResponse"><a href="#ItemRequestPublishResponse">ItemRequestPublishResponse</a></h3>
+
+
+<p><b>itemRequest: </b><code><a href="#ItemRequest">ItemRequest</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemSellRequest"><a href="#ItemSellRequest">ItemSellRequest</a></h3>
+
+
+<p><b>items: </b><code>RepeatedField&lt;<a href="#ConsumedItem">ConsumedItem</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="ItemSynthesizeRequest"><a href="#ItemSynthesizeRequest">ItemSynthesizeRequest</a></h3>
+
+
+<p><b>itemSynthesisId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentLocation: </b><code><a href="#CurrentLocation">CurrentLocation</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemUseRequest"><a href="#ItemUseRequest">ItemUseRequest</a></h3>
+
+
+<p><b>itemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemUseSupplyGearEffectRequest"><a href="#ItemUseSupplyGearEffectRequest">ItemUseSupplyGearEffectRequest</a></h3>
+
+
+<p><b>itemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>baseGearEntityId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemUseSupplyRequest"><a href="#ItemUseSupplyRequest">ItemUseSupplyRequest</a></h3>
+
+
+<p><b>itemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="LoginBonusReceiveRequest"><a href="#LoginBonusReceiveRequest">LoginBonusReceiveRequest</a></h3>
+
+
+<p><b>loginBonusId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="LoginBonusReceiveResponse"><a href="#LoginBonusReceiveResponse">LoginBonusReceiveResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="MailDeleteRequest"><a href="#MailDeleteRequest">MailDeleteRequest</a></h3>
+
+
+<p><b>entityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="MailDeleteResponse"><a href="#MailDeleteResponse">MailDeleteResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>list: </b><code><a href="#MailList">MailList</a></code></p>
+
+
+<hr>
+
+<h3 id="MailListResponse"><a href="#MailListResponse">MailListResponse</a></h3>
+
+
+<p><b>list: </b><code><a href="#MailList">MailList</a></code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="MailOpenRequest"><a href="#MailOpenRequest">MailOpenRequest</a></h3>
+
+
+<p><b>entityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="MailOpenResponse"><a href="#MailOpenResponse">MailOpenResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<p><b>overflowedRewards: </b><code>RepeatedField&lt;<a href="#Resource">Resource</a>&gt;</code></p>
+
+
+<p><b>list: </b><code><a href="#MailList">MailList</a></code></p>
+
+
+<hr>
+
+<h3 id="MissionCountRewardReceiveRequest"><a href="#MissionCountRewardReceiveRequest">MissionCountRewardReceiveRequest</a></h3>
+
+
+<p><b>missionCountRewardId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="MissionCountRewardReceiveResponse"><a href="#MissionCountRewardReceiveResponse">MissionCountRewardReceiveResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="MissionReceiveRequest"><a href="#MissionReceiveRequest">MissionReceiveRequest</a></h3>
+
+
+<p><b>missionIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="MissionReceiveResponse"><a href="#MissionReceiveResponse">MissionReceiveResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="NewsListRequest"><a href="#NewsListRequest">NewsListRequest</a></h3>
+
+
+<p><b>language: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="NewsListResponse"><a href="#NewsListResponse">NewsListResponse</a></h3>
+
+
+<p><b>news: </b><code>RepeatedField&lt;<a href="#NewsItem">NewsItem</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="NewsUserListResponse"><a href="#NewsUserListResponse">NewsUserListResponse</a></h3>
+
+
+<p><b>news: </b><code>RepeatedField&lt;<a href="#NewsItem">NewsItem</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="ProfileUpdateBadgesRequest"><a href="#ProfileUpdateBadgesRequest">ProfileUpdateBadgesRequest</a></h3>
+
+
+<p><b>profileBadgeIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="ProfileUpdateBannerRequest"><a href="#ProfileUpdateBannerRequest">ProfileUpdateBannerRequest</a></h3>
+
+
+<p><b>profileBannerId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ProfileUpdateCharacterLikabilityScaleRequest"><a href="#ProfileUpdateCharacterLikabilityScaleRequest">ProfileUpdateCharacterLikabilityScaleRequest</a></h3>
+
+
+<p><b>scale: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ProfileUpdateNameRequest"><a href="#ProfileUpdateNameRequest">ProfileUpdateNameRequest</a></h3>
+
+
+<p><b>name: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="PurchaseHistoryResponse"><a href="#PurchaseHistoryResponse">PurchaseHistoryResponse</a></h3>
+
+
+<p><b>histories: </b><code>RepeatedField&lt;<a href="#PurchaseHistory">PurchaseHistory</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="PurchaseSessionPublishRequest"><a href="#PurchaseSessionPublishRequest">PurchaseSessionPublishRequest</a></h3>
+
+
+<p><b>purchaseSessionId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>eventType: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>transactionId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>productId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>clientCurrency: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>clientPrice: </b><code><a href="#double">double</a>?</code></p>
+
+
+<p><b>purchaseData: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>dataSignature: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>receipt: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>failureReason: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="PurchaseSessionStartRequest"><a href="#PurchaseSessionStartRequest">PurchaseSessionStartRequest</a></h3>
+
+
+<p><b>shopProductId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="PurchaseSessionStartResponse"><a href="#PurchaseSessionStartResponse">PurchaseSessionStartResponse</a></h3>
+
+
+<p><b>purchaseSessionId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>transactionId: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="PurchaseVerifyRequest"><a href="#PurchaseVerifyRequest">PurchaseVerifyRequest</a></h3>
+
+
+<p><b>purchaseSessionId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>transactionId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>clientCurrency: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>clientPrice: </b><code><a href="#double">double</a>?</code></p>
+
+
+<p><b>purchaseData: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>dataSignature: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="RecipeShopPurchaseRequest"><a href="#RecipeShopPurchaseRequest">RecipeShopPurchaseRequest</a></h3>
+
+
+<p><b>recipeShopId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplicationGetResponse"><a href="#RefundApplicationGetResponse">RefundApplicationGetResponse</a></h3>
+
+
+<p><b>refundApplication: </b><code><a href="#RefundApplication">RefundApplication</a></code></p>
+
+
+<p><b>profileName: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>refundPurchase: </b><code><a href="#RefundPurchase">RefundPurchase</a></code></p>
+
+
+<p><b>refundPaidGem: </b><code><a href="#RefundPaidGem">RefundPaidGem</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplicationRequestRefundRequest"><a href="#RefundApplicationRequestRefundRequest">RefundApplicationRequestRefundRequest</a></h3>
+
+
+<p><b>isSkipItunesGoogleplay: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>bank: </b><code><a href="#RefundDestinationBank">RefundDestinationBank</a></code></p>
+
+
+<p><b>paypal: </b><code><a href="#RefundDestinationPaypal">RefundDestinationPaypal</a></code></p>
+
+
+<p><b>wise: </b><code><a href="#RefundDestinationWise">RefundDestinationWise</a></code></p>
+
+
+<p><b>overseaBank: </b><code><a href="#RefundDestinationOverseaBank">RefundDestinationOverseaBank</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplicationRequestRefundResponse"><a href="#RefundApplicationRequestRefundResponse">RefundApplicationRequestRefundResponse</a></h3>
+
+
+<p><b>refundApplication: </b><code><a href="#RefundApplication">RefundApplication</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplicationSendVerificationCodeResponse"><a href="#RefundApplicationSendVerificationCodeResponse">RefundApplicationSendVerificationCodeResponse</a></h3>
+
+
+<p><b>cooldownAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplicationUpdateEmailIdRequest"><a href="#RefundApplicationUpdateEmailIdRequest">RefundApplicationUpdateEmailIdRequest</a></h3>
+
+
+<p><b>emailId: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplicationUpdateEmailIdResponse"><a href="#RefundApplicationUpdateEmailIdResponse">RefundApplicationUpdateEmailIdResponse</a></h3>
+
+
+<p><b>refundApplication: </b><code><a href="#RefundApplication">RefundApplication</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplicationVerifyEmailIdRequest"><a href="#RefundApplicationVerifyEmailIdRequest">RefundApplicationVerifyEmailIdRequest</a></h3>
+
+
+<p><b>verificationCode: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplicationVerifyEmailIdResponse"><a href="#RefundApplicationVerifyEmailIdResponse">RefundApplicationVerifyEmailIdResponse</a></h3>
+
+
+<p><b>refundApplication: </b><code><a href="#RefundApplication">RefundApplication</a></code></p>
+
+
+<hr>
+
+<h3 id="RuledBattleStartRequest"><a href="#RuledBattleStartRequest">RuledBattleStartRequest</a></h3>
+
+
+<p><b>ruledBattleId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="SeasonPassPurchasePaidPassRequest"><a href="#SeasonPassPurchasePaidPassRequest">SeasonPassPurchasePaidPassRequest</a></h3>
+
+
+<p><b>seasonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>purchaseUpper: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="SeasonPassPurchasePaidPassResponse"><a href="#SeasonPassPurchasePaidPassResponse">SeasonPassPurchasePaidPassResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="SeasonPassReceiveAllRequest"><a href="#SeasonPassReceiveAllRequest">SeasonPassReceiveAllRequest</a></h3>
+
+
+<p><b>seasonId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="SeasonPassReceiveAllResponse"><a href="#SeasonPassReceiveAllResponse">SeasonPassReceiveAllResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="SeasonPassReceiveRequest"><a href="#SeasonPassReceiveRequest">SeasonPassReceiveRequest</a></h3>
+
+
+<p><b>seasonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>seasonPassTierId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>seasonPassType: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="SeasonPassReceiveResponse"><a href="#SeasonPassReceiveResponse">SeasonPassReceiveResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="SeasonPassTierPurchaseRequest"><a href="#SeasonPassTierPurchaseRequest">SeasonPassTierPurchaseRequest</a></h3>
+
+
+<p><b>seasonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>purchaseCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopCycleUpdateShopPurchaseRequest"><a href="#ShopCycleUpdateShopPurchaseRequest">ShopCycleUpdateShopPurchaseRequest</a></h3>
+
+
+<p><b>cycleUpdateShopId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clientTimestamp: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopCycleUpdateShopReleaseRequest"><a href="#ShopCycleUpdateShopReleaseRequest">ShopCycleUpdateShopReleaseRequest</a></h3>
+
+
+<p><b>cycleUpdateShopId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopGearShopListRequest"><a href="#ShopGearShopListRequest">ShopGearShopListRequest</a></h3>
+
+
+<p><b>shopId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopGearShopListResponse"><a href="#ShopGearShopListResponse">ShopGearShopListResponse</a></h3>
+
+
+<p><b>shopGearState: </b><code><a href="#ShopGearState">ShopGearState</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopGearShopPurchaseRequest"><a href="#ShopGearShopPurchaseRequest">ShopGearShopPurchaseRequest</a></h3>
+
+
+<p><b>shopGearProductId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopGearShopPurchaseResponse"><a href="#ShopGearShopPurchaseResponse">ShopGearShopPurchaseResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>shopGearState: </b><code><a href="#ShopGearState">ShopGearState</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopGemListResponse"><a href="#ShopGemListResponse">ShopGemListResponse</a></h3>
+
+
+<p><b>shopProducts: </b><code>RepeatedField&lt;<a href="#ShopProduct">ShopProduct</a>&gt;</code></p>
+
+
+<p><b>storeProducts: </b><code>RepeatedField&lt;<a href="#StoreProduct">StoreProduct</a>&gt;</code></p>
+
+
+<p><b>monthlyBillingAmount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopPurchaseRequest"><a href="#ShopPurchaseRequest">ShopPurchaseRequest</a></h3>
+
+
+<p><b>shopProductId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopRandomCostumeListRequest"><a href="#ShopRandomCostumeListRequest">ShopRandomCostumeListRequest</a></h3>
+
+
+<p><b>shopId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopRandomCostumeListResponse"><a href="#ShopRandomCostumeListResponse">ShopRandomCostumeListResponse</a></h3>
+
+
+<p><b>characterCostumeIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>expiresAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopRandomCostumePurchaseRequest"><a href="#ShopRandomCostumePurchaseRequest">ShopRandomCostumePurchaseRequest</a></h3>
+
+
+<p><b>shopId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterCostumeId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="StaminaPurchaseRequest"><a href="#StaminaPurchaseRequest">StaminaPurchaseRequest</a></h3>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="StaminaUseItemRequest"><a href="#StaminaUseItemRequest">StaminaUseItemRequest</a></h3>
+
+
+<p><b>itemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="SubsystemStatusResponse"><a href="#SubsystemStatusResponse">SubsystemStatusResponse</a></h3>
+
+
+<p><b>shop: </b><code><a href="#SubsystemStatus">SubsystemStatus</a></code></p>
+
+
+<p><b>gacha: </b><code><a href="#SubsystemStatus">SubsystemStatus</a></code></p>
+
+
+<hr>
+
+<h3 id="TensionCardDisassembleRequest"><a href="#TensionCardDisassembleRequest">TensionCardDisassembleRequest</a></h3>
+
+
+<p><b>entityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="TensionCardDisassembleResponse"><a href="#TensionCardDisassembleResponse">TensionCardDisassembleResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>deletedResources: </b><code><a href="#ResourceEntities">ResourceEntities</a></code></p>
+
+
+<hr>
+
+<h3 id="TensionCardEnhanceRequest"><a href="#TensionCardEnhanceRequest">TensionCardEnhanceRequest</a></h3>
+
+
+<p><b>consumedItems: </b><code>RepeatedField&lt;<a href="#ConsumedItem">ConsumedItem</a>&gt;</code></p>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="TensionCardLevelLimitEnhanceRequest"><a href="#TensionCardLevelLimitEnhanceRequest">TensionCardLevelLimitEnhanceRequest</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="TensionCardLimitBreakEnhanceRequest"><a href="#TensionCardLimitBreakEnhanceRequest">TensionCardLimitBreakEnhanceRequest</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>consumedEntityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>consumedItem: </b><code><a href="#ConsumedItem">ConsumedItem</a></code></p>
+
+
+<hr>
+
+<h3 id="TensionCardLimitBreakEnhanceResponse"><a href="#TensionCardLimitBreakEnhanceResponse">TensionCardLimitBreakEnhanceResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>deletedResources: </b><code><a href="#ResourceEntities">ResourceEntities</a></code></p>
+
+
+<hr>
+
+<h3 id="TensionCardLockRequest"><a href="#TensionCardLockRequest">TensionCardLockRequest</a></h3>
+
+
+<p><b>entityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>isLock: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="TipReleaseByBattleRequest"><a href="#TipReleaseByBattleRequest">TipReleaseByBattleRequest</a></h3>
+
+
+<p><b>battleResult: </b><code><a href="#BattleResult">BattleResult</a></code></p>
+
+
+<hr>
+
+<h3 id="TipReleaseRequest"><a href="#TipReleaseRequest">TipReleaseRequest</a></h3>
+
+
+<p><b>tipIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="TipReleaseResponse"><a href="#TipReleaseResponse">TipReleaseResponse</a></h3>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>areaObjects: </b><code>RepeatedField&lt;<a href="#AreaObject">AreaObject</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="TrialBattleRewardReceiveRequest"><a href="#TrialBattleRewardReceiveRequest">TrialBattleRewardReceiveRequest</a></h3>
+
+
+<p><b>trialCharacterEventId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>trialBattleId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="TrialBattleRewardReceiveResponse"><a href="#TrialBattleRewardReceiveResponse">TrialBattleRewardReceiveResponse</a></h3>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="TrialBattleStartRequest"><a href="#TrialBattleStartRequest">TrialBattleStartRequest</a></h3>
+
+
+<p><b>trialCharacterEventId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>trialBattleId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="TutorialSkipResponse"><a href="#TutorialSkipResponse">TutorialSkipResponse</a></h3>
+
+
+<p><b>moveToAreaLocatorId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>deletedCharacterIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="UserCrossDateResponse"><a href="#UserCrossDateResponse">UserCrossDateResponse</a></h3>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<hr>
+
+<h3 id="UserDeleteResponse"><a href="#UserDeleteResponse">UserDeleteResponse</a></h3>
+
+
+<p><b>willDeletedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="UserLinkAppleRequest"><a href="#UserLinkAppleRequest">UserLinkAppleRequest</a></h3>
+
+
+<p><b>idToken: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="UserLinkGoogleRequest"><a href="#UserLinkGoogleRequest">UserLinkGoogleRequest</a></h3>
+
+
+<p><b>idToken: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>code: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>codeVerifier: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="UserLinksListResponse"><a href="#UserLinksListResponse">UserLinksListResponse</a></h3>
+
+
+<p><b>apple: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>google: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="UserLogInResponse"><a href="#UserLogInResponse">UserLogInResponse</a></h3>
+
+
+<p><b>resources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>masterData: </b><code><a href="#MasterData">MasterData</a></code></p>
+
+
+<p><b>moveToAreaLocatorId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="UserUpdateBirthdateRequest"><a href="#UserUpdateBirthdateRequest">UserUpdateBirthdateRequest</a></h3>
+
+
+<p><b>year: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>month: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="UserUpdateLanguageRequest"><a href="#UserUpdateLanguageRequest">UserUpdateLanguageRequest</a></h3>
+
+
+<p><b>language: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="WebSessionTokenResponse"><a href="#WebSessionTokenResponse">WebSessionTokenResponse</a></h3>
+
+
+<p><b>token: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="XbAddCommandUnlockItemRequest"><a href="#XbAddCommandUnlockItemRequest">XbAddCommandUnlockItemRequest</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>magicOrbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbAddCommandUnlockItemResponse"><a href="#XbAddCommandUnlockItemResponse">XbAddCommandUnlockItemResponse</a></h3>
+
+
+<p><b>commandLockInfo: </b><code><a href="#XbCommandLockInfo">XbCommandLockInfo</a></code></p>
+
+
+<hr>
+
+<h3 id="XbFormationRequest"><a href="#XbFormationRequest">XbFormationRequest</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>enemyUserId: </b><code><a href="#long">long</a>?</code></p>
+
+
+<p><b>enemyCpuUserId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbFormationResponse"><a href="#XbFormationResponse">XbFormationResponse</a></h3>
+
+
+<p><b>playerMembers: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<p><b>enemyMembers: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<p><b>playerRecommendedMembers: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<p><b>allPlayerMembers: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<p><b>playerTribeLogoAasPath: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>enemyTribeLogoAasPath: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>playerTeamName: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>enemyTeamName: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>isTeamEditEnabled: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>playerPvpUserInfos: </b><code><a href="#XbPvPUserInfo">XbPvPUserInfo</a></code></p>
+
+
+<p><b>enemyPvpUserInfos: </b><code><a href="#XbPvPUserInfo">XbPvPUserInfo</a></code></p>
+
+
+<hr>
+
+<h3 id="XbFormationUpdateRequest"><a href="#XbFormationUpdateRequest">XbFormationUpdateRequest</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>playerMembers: </b><code>RepeatedField&lt;<a href="#XbMemberRequest">XbMemberRequest</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbFormationUpdateResponse"><a href="#XbFormationUpdateResponse">XbFormationUpdateResponse</a></h3>
+
+
+<p><b>playerMembers: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbMemberRequest"><a href="#XbMemberRequest">XbMemberRequest</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>xbCharacterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>battingOrder: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>position: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPlayRequest"><a href="#XbPlayRequest">XbPlayRequest</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>zoneAreaIndex: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>commandId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>magicOrbId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>isAtBatSkip: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPlayResponse"><a href="#XbPlayResponse">XbPlayResponse</a></h3>
+
+
+<p><b>currentAtBatGameInfo: </b><code><a href="#XbGameInfo">XbGameInfo</a></code></p>
+
+
+<p><b>nextAtBatGameInfo: </b><code><a href="#XbGameInfo">XbGameInfo</a></code></p>
+
+
+<p><b>result: </b><code><a href="#XbGameResult">XbGameResult</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Rewards">Rewards</a>&gt;</code></p>
+
+
+<p><b>ignoredRewards: </b><code>RepeatedField&lt;<a href="#Resource">Resource</a>&gt;</code></p>
+
+
+<p><b>changedResources: </b><code><a href="#Resources">Resources</a></code></p>
+
+
+<p><b>rankMatchRankState: </b><code><a href="#XbPvpRankState">XbPvpRankState</a></code></p>
+
+
+<p><b>scoreBoards: </b><code>RepeatedField&lt;<a href="#XbInningHalfScoreBoard">XbInningHalfScoreBoard</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbPvpCasualMatchingRequest"><a href="#XbPvpCasualMatchingRequest">XbPvpCasualMatchingRequest</a></h3>
+
+
+<p><b>enemyUserId: </b><code><a href="#long">long</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbPvpCasualMatchingResponse"><a href="#XbPvpCasualMatchingResponse">XbPvpCasualMatchingResponse</a></h3>
+
+
+<p><b>enemyUserId: </b><code><a href="#long">long</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbPvpEntryResponse"><a href="#XbPvpEntryResponse">XbPvpEntryResponse</a></h3>
+
+
+<p><b>rankMatchRankState: </b><code><a href="#XbPvpRankState">XbPvpRankState</a></code></p>
+
+
+<p><b>isSeasonResetOccurred: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>prevSeasonRankPoint: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPvpFormationResponse"><a href="#XbPvpFormationResponse">XbPvpFormationResponse</a></h3>
+
+
+<p><b>playerMembers: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<p><b>allPlayerMembers: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<p><b>isFormationInitialized: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPvpFormationUpdateRequest"><a href="#XbPvpFormationUpdateRequest">XbPvpFormationUpdateRequest</a></h3>
+
+
+<p><b>playerMembers: </b><code>RepeatedField&lt;<a href="#XbPvpMemberRequest">XbPvpMemberRequest</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbPvpFormationUpdateResponse"><a href="#XbPvpFormationUpdateResponse">XbPvpFormationUpdateResponse</a></h3>
+
+
+<p><b>playerMembers: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbPvpMemberRequest"><a href="#XbPvpMemberRequest">XbPvpMemberRequest</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>xbCharacterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>battingOrder: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>position: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPvpQuickMatchingResponse"><a href="#XbPvpQuickMatchingResponse">XbPvpQuickMatchingResponse</a></h3>
+
+
+<p><b>enemyUserId: </b><code><a href="#long">long</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbPvpRankMatchHistory"><a href="#XbPvpRankMatchHistory">XbPvpRankMatchHistory</a></h3>
+
+
+<p><b>isPlayerWon: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>enemyUserInfo: </b><code><a href="#XbPvPUserInfo">XbPvPUserInfo</a></code></p>
+
+
+<p><b>enemyFormationMembers: </b><code>RepeatedField&lt;<a href="#XbPvpMatchHistoryMember">XbPvpMatchHistoryMember</a>&gt;</code></p>
+
+
+<p><b>scoreBoards: </b><code>RepeatedField&lt;<a href="#XbInningHalfScoreBoard">XbInningHalfScoreBoard</a>&gt;</code></p>
+
+
+<p><b>executedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>isCpuUser: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPvpRankMatchHistoryListRequest"><a href="#XbPvpRankMatchHistoryListRequest">XbPvpRankMatchHistoryListRequest</a></h3>
+
+
+<p><b>seasonId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPvpRankMatchHistoryListResponse"><a href="#XbPvpRankMatchHistoryListResponse">XbPvpRankMatchHistoryListResponse</a></h3>
+
+
+<p><b>histories: </b><code>RepeatedField&lt;<a href="#XbPvpRankMatchHistory">XbPvpRankMatchHistory</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbPvpRankMatchingResponse"><a href="#XbPvpRankMatchingResponse">XbPvpRankMatchingResponse</a></h3>
+
+
+<p><b>enemyUserId: </b><code><a href="#long">long</a>?</code></p>
+
+
+<p><b>enemyCpuUserId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbRetireResponse"><a href="#XbRetireResponse">XbRetireResponse</a></h3>
+
+
+<p><b>rankMatchRankState: </b><code><a href="#XbPvpRankState">XbPvpRankState</a></code></p>
+
+
+<hr>
+
+<h3 id="XbSkillOrbStatusRequest"><a href="#XbSkillOrbStatusRequest">XbSkillOrbStatusRequest</a></h3>
+
+
+<p><b>isPlayer: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>type: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>status: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>brokenAtBatCount: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbStartRequest"><a href="#XbStartRequest">XbStartRequest</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>playerMembers: </b><code>RepeatedField&lt;<a href="#XbMemberRequest">XbMemberRequest</a>&gt;</code></p>
+
+
+<p><b>enemyUserId: </b><code><a href="#long">long</a>?</code></p>
+
+
+<p><b>enemyCpuUserId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>actionSequenceId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbStartResponse"><a href="#XbStartResponse">XbStartResponse</a></h3>
+
+
+<p><b>nextAtBatGameInfo: </b><code><a href="#XbGameInfo">XbGameInfo</a></code></p>
+
+
+<hr>
+
+<h3 id="XbStatusRequest"><a href="#XbStatusRequest">XbStatusRequest</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbStatusResponse"><a href="#XbStatusResponse">XbStatusResponse</a></h3>
+
+
+<p><b>currentAtBatGameInfo: </b><code><a href="#XbGameInfo">XbGameInfo</a></code></p>
+
+
+<hr>
+
+<h3 id="XbUpdateSkillOrbStatusRequest"><a href="#XbUpdateSkillOrbStatusRequest">XbUpdateSkillOrbStatusRequest</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>skillOrbStatuses: </b><code>RepeatedField&lt;<a href="#XbSkillOrbStatusRequest">XbSkillOrbStatusRequest</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbUpdateSkillOrbStatusResponse"><a href="#XbUpdateSkillOrbStatusResponse">XbUpdateSkillOrbStatusResponse</a></h3>
+
+
+<p><b>playerSkillOrbInfos: </b><code>RepeatedField&lt;<a href="#XbSkillOrbInfo">XbSkillOrbInfo</a>&gt;</code></p>
+
+
+<p><b>enemySkillOrbInfos: </b><code>RepeatedField&lt;<a href="#XbSkillOrbInfo">XbSkillOrbInfo</a>&gt;</code></p>
+
+
+<p><b>currentAtBatGameInfo: </b><code><a href="#XbGameInfo">XbGameInfo</a></code></p>
+
+
+<hr>
+
+<h3 id="XbUpdateTensionRequest"><a href="#XbUpdateTensionRequest">XbUpdateTensionRequest</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>tensionFluctuationIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbUpdateTensionResponse"><a href="#XbUpdateTensionResponse">XbUpdateTensionResponse</a></h3>
+
+
+<p><b>playerTensionInfos: </b><code>RepeatedField&lt;<a href="#XbTensionInfo">XbTensionInfo</a>&gt;</code></p>
+
+
+<p><b>enemyTensionInfos: </b><code>RepeatedField&lt;<a href="#XbTensionInfo">XbTensionInfo</a>&gt;</code></p>
+
+
+<p><b>currentAtBatGameInfo: </b><code><a href="#XbGameInfo">XbGameInfo</a></code></p>
+
+
+<h3 id="AbilityEfficacy"><a href="#AbilityEfficacy">AbilityEfficacy</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>abilityEfficacyGroupId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>coolTimeMillisecond: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>effectCoolTimeMillisecond: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>activeTimeMillisecond: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>efficacyType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>probability: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>activateConditions: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>deactivateConditions: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>sustainConditions: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>targetConditions: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>fValues: </b><code>RepeatedField&lt;<a href="#float">float</a>&gt;</code></p>
+
+
+<p><b>values: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>uiViewPriority: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>effectValueSteps: </b><code>RepeatedField&lt;<a href="#float">float</a>&gt;</code></p>
+
+
+<p><b>targetType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>maximumActiveTimeMillisecond: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="AbnormalityParam"><a href="#AbnormalityParam">AbnormalityParam</a></h3>
+
+
+<p><b>attackRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>defenseRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>burstResistance: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>burstResistanceLimit: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>burstResistanceIncreaseValue: </b><code><a href="#float">float</a></code></p>
+
+
+<hr>
+
+<h3 id="AbnormalityParamSet"><a href="#AbnormalityParamSet">AbnormalityParamSet</a></h3>
+
+
+<p><b>oily: </b><code><a href="#AbnormalityParam">AbnormalityParam</a></code></p>
+
+
+<p><b>pressure: </b><code><a href="#AbnormalityParam">AbnormalityParam</a></code></p>
+
+
+<p><b>scared: </b><code><a href="#AbnormalityParam">AbnormalityParam</a></code></p>
+
+
+<p><b>electric: </b><code><a href="#AbnormalityParam">AbnormalityParam</a></code></p>
+
+
+<p><b>unfortified: </b><code><a href="#AbnormalityParam">AbnormalityParam</a></code></p>
+
+
+<hr>
+
+<h3 id="AdventureVariable"><a href="#AdventureVariable">AdventureVariable</a></h3>
+
+
+<p><b>adventureVariableId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>value: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="Area"><a href="#Area">Area</a></h3>
+
+
+<p><b>areaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isDark: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AreaBehavior"><a href="#AreaBehavior">AreaBehavior</a></h3>
+
+
+<p><b>actionSequenceId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="AreaBgm"><a href="#AreaBgm">AreaBgm</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>eventName: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="AreaChangeLock"><a href="#AreaChangeLock">AreaChangeLock</a></h3>
+
+
+<p><b>areaChangeLockId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="AreaGroup"><a href="#AreaGroup">AreaGroup</a></h3>
+
+
+<p><b>areaGroupId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="AreaItem"><a href="#AreaItem">AreaItem</a></h3>
+
+
+<p><b>areaItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>acquired: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="AreaObject"><a href="#AreaObject">AreaObject</a></h3>
+
+
+<p><b>areaObjectId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>areaPointId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>areaObjectBehaviorId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>areaEnemyRateSetId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>action: </b><code><a href="#AreaObjectAction">AreaObjectAction</a></code></p>
+
+
+<hr>
+
+<h3 id="AreaObjectAction"><a href="#AreaObjectAction">AreaObjectAction</a></h3>
+
+
+<p><b>type: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>label: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>areaItemId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>areaEnemyId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>battleEntryId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>sequenceId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>graffitiArtId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>warpPointId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>fieldBossId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>dungeonId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>eventLiftId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="AreaObjectLock"><a href="#AreaObjectLock">AreaObjectLock</a></h3>
+
+
+<p><b>areaObjectLockId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="Attack"><a href="#Attack">Attack</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>powerMultiply: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>hitbackDistance: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>attackerHitSlowTime: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>attackerHitSlowSpeed: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>defenderHitSlowTime: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>defenderHitSlowSpeed: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>hitInterval: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>blowUpParameterMasterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>hitConditionSkillId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>attackAttributes: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="BattleParameter"><a href="#BattleParameter">BattleParameter</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>enemies: </b><code>RepeatedField&lt;<a href="#Enemy">Enemy</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="BattleTaskConditionResult"><a href="#BattleTaskConditionResult">BattleTaskConditionResult</a></h3>
+
+
+<p><b>usedSkills: </b><code>RepeatedField&lt;<a href="#CharacterSkillCount">CharacterSkillCount</a>&gt;</code></p>
+
+
+<p><b>enemyStabilityBreaks: </b><code>RepeatedField&lt;<a href="#EnemyStabilityBreakCount">EnemyStabilityBreakCount</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="BattleTaskTopic"><a href="#BattleTaskTopic">BattleTaskTopic</a></h3>
+
+
+<p><b>type: </b><code><a href="#BattleTaskTopicType">BattleTaskTopicType</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="BattleTrigger"><a href="#BattleTrigger">BattleTrigger</a></h3>
+
+
+<p><b>triggerType: </b><code><a href="#BattleTriggerType">BattleTriggerType</a></code></p>
+
+
+<p><b>triggerIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="BloodStain"><a href="#BloodStain">BloodStain</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>userName: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>positionCoordinates: </b><code><a href="#PositionCoordinates">PositionCoordinates</a></code></p>
+
+
+<p><b>areaEnemyId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>fieldBossId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>dungeonId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>fractalViseBossDifficultyId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>characters: </b><code>RepeatedField&lt;<a href="#BloodStainCharacter">BloodStainCharacter</a>&gt;</code></p>
+
+
+<p><b>tensionCards: </b><code>RepeatedField&lt;<a href="#BloodStainTensionCard">BloodStainTensionCard</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="BloodStainCharacter"><a href="#BloodStainCharacter">BloodStainCharacter</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>exp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>rank: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterCostumeId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="BloodStainLocation"><a href="#BloodStainLocation">BloodStainLocation</a></h3>
+
+
+<p><b>areaType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>areaKeyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>positionCoordinates: </b><code><a href="#PositionCoordinates">PositionCoordinates</a></code></p>
+
+
+<hr>
+
+<h3 id="BloodStainTensionCard"><a href="#BloodStainTensionCard">BloodStainTensionCard</a></h3>
+
+
+<p><b>tensionCardId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>exp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>limitBreak: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="BulkMail"><a href="#BulkMail">BulkMail</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>subject: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>body: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>sender: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="Challenge"><a href="#Challenge">Challenge</a></h3>
+
+
+<p><b>challengeId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>state: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clearedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>expiresAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="ChallengeProgress"><a href="#ChallengeProgress">ChallengeProgress</a></h3>
+
+
+<p><b>challengeProgressId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>state: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clearedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="ChallengeTask"><a href="#ChallengeTask">ChallengeTask</a></h3>
+
+
+<p><b>challengeTaskId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clearedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="Character"><a href="#Character">Character</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>exp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>limitBreak: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>hp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>attack: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>defense: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>maxHp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gearSlot1: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>gearSlot2: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>gearSlot3: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>receivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>characterOwnershipType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dishId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>dishEffectCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dishEffectExpiredAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>rank: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>criticalRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>criticalDamageRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>supportPowerRate: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>movementSpeed: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>powerRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>dodgeSpeed: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>damageInflictedRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>tensionIncreaseRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>cpRecastRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>recoveryGivenRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>spGaugeIncreaseRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>attackSpeed: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>characterCostumeId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>characterSkillPanel1Level: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterSkillPanel2Level: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterSkillPanel3Level: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterSkillPanel4Level: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterSkillPanel5Level: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>abnormalityParamSet: </b><code><a href="#AbnormalityParamSet">AbnormalityParamSet</a></code></p>
+
+
+<p><b>trainingScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>trainingScoreLevelScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>trainingScoreRankScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>actionPointMax: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>actionPointRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>actionPointConsumption: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>damageTakenRate: </b><code><a href="#float">float</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterCostume"><a href="#CharacterCostume">CharacterCostume</a></h3>
+
+
+<p><b>characterCostumeId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterDish"><a href="#CharacterDish">CharacterDish</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dishId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dishEffectCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterExp"><a href="#CharacterExp">CharacterExp</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>exp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dropExp: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterLikability"><a href="#CharacterLikability">CharacterLikability</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>likability: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterMountingPower"><a href="#CharacterMountingPower">CharacterMountingPower</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>value: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterMountingPowerCommon"><a href="#CharacterMountingPowerCommon">CharacterMountingPowerCommon</a></h3>
+
+
+<p><b>value: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterPiece"><a href="#CharacterPiece">CharacterPiece</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterSkillCount"><a href="#CharacterSkillCount">CharacterSkillCount</a></h3>
+
+
+<p><b>characterSkillId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CharacterUpdate"><a href="#CharacterUpdate">CharacterUpdate</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>hp: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="City"><a href="#City">City</a></h3>
+
+
+<p><b>cityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isGearShopReleased: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>releasedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="ConsumedItem"><a href="#ConsumedItem">ConsumedItem</a></h3>
+
+
+<p><b>itemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ConsumedQuantifiedResource"><a href="#ConsumedQuantifiedResource">ConsumedQuantifiedResource</a></h3>
+
+
+<p><b>type: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="CurrentLocation"><a href="#CurrentLocation">CurrentLocation</a></h3>
+
+
+<p><b>areaType: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>areaKeyId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>positionCoordinates: </b><code><a href="#PositionCoordinates">PositionCoordinates</a></code></p>
+
+
+<p><b>direction: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="CycleUpdateShopState"><a href="#CycleUpdateShopState">CycleUpdateShopState</a></h3>
+
+
+<p><b>cycleUpdateShopId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isReleased: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>purchasedCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>lastPurchasedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="DailyPassState"><a href="#DailyPassState">DailyPassState</a></h3>
+
+
+<p><b>dailyPassId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>expiresAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>lastReceivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="Dungeon"><a href="#Dungeon">Dungeon</a></h3>
+
+
+<p><b>dungeonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isFinished: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonAreaItem"><a href="#DungeonAreaItem">DungeonAreaItem</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonAreaItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonPieceId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonPieceX: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonPieceY: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonPieceIndex: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>acquiredAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonDifficultyPiece"><a href="#DungeonDifficultyPiece">DungeonDifficultyPiece</a></h3>
+
+
+<p><b>dungeonPieceId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>x: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>y: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>rotate: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonEnemy"><a href="#DungeonEnemy">DungeonEnemy</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonEnemyRateId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isBoss: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>dungeonPieceId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonPieceX: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonPieceY: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonPieceIndex: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>defeatedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="DungeonState"><a href="#DungeonState">DungeonState</a></h3>
+
+
+<p><b>dungeonDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dungeonPieces: </b><code>RepeatedField&lt;<a href="#DungeonDifficultyPiece">DungeonDifficultyPiece</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="Enemy"><a href="#Enemy">Enemy</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>attack: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>defense: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>hp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isSkipEncounterAnimation: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>hpStackCount: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="EnemyStabilityBreakCount"><a href="#EnemyStabilityBreakCount">EnemyStabilityBreakCount</a></h3>
+
+
+<p><b>enemyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="EventFloorNode"><a href="#EventFloorNode">EventFloorNode</a></h3>
+
+
+<p><b>eventFloorNodeId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clearedAchievementIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>allAchievementClearedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>unlockedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="EventFloorNodeQuestResult"><a href="#EventFloorNodeQuestResult">EventFloorNodeQuestResult</a></h3>
+
+
+<p><b>score: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="EventLift"><a href="#EventLift">EventLift</a></h3>
+
+
+<p><b>eventLiftId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="Follow"><a href="#Follow">Follow</a></h3>
+
+
+<p><b>followUserId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>followedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="FollowInfo"><a href="#FollowInfo">FollowInfo</a></h3>
+
+
+<p><b>followUserNumber: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FollowUser"><a href="#FollowUser">FollowUser</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>followedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>flowerMark: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>loggedInAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>cityId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>profile: </b><code><a href="#Profile">Profile</a></code></p>
+
+
+<p><b>formation: </b><code><a href="#Formation">Formation</a></code></p>
+
+
+<p><b>characters: </b><code>RepeatedField&lt;<a href="#FollowUserCharacter">FollowUserCharacter</a>&gt;</code></p>
+
+
+<p><b>tensionCards: </b><code>RepeatedField&lt;<a href="#FollowUserTensionCard">FollowUserTensionCard</a>&gt;</code></p>
+
+
+<p><b>isXbPvpFormationInitialized: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>profileBadgeIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="FollowUserCharacter"><a href="#FollowUserCharacter">FollowUserCharacter</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>characterCostumeId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="FollowUserTensionCard"><a href="#FollowUserTensionCard">FollowUserTensionCard</a></h3>
+
+
+<p><b>tensionCardId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>exp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="Formation"><a href="#Formation">Formation</a></h3>
+
+
+<p><b>number: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>members: </b><code><a href="#FormationMembers">FormationMembers</a></code></p>
+
+
+<p><b>cards: </b><code><a href="#FormationCards">FormationCards</a></code></p>
+
+
+<hr>
+
+<h3 id="FormationCards"><a href="#FormationCards">FormationCards</a></h3>
+
+
+<p><b>tensionCard1Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>tensionCard2Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>tensionCard3Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>tensionCard4Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>tensionCard5Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="FormationMembers"><a href="#FormationMembers">FormationMembers</a></h3>
+
+
+<p><b>character1Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>character2Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>character3Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>character1OwnershipType: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>character2OwnershipType: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>character3OwnershipType: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="FractalVise"><a href="#FractalVise">FractalVise</a></h3>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fractalViseScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>specialTreasureBoxAcquiredAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>inProgress: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>currentScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>selectedAreaIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="FractalViseArea"><a href="#FractalViseArea">FractalViseArea</a></h3>
+
+
+<p><b>fractalViseAreaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>enemies: </b><code>RepeatedField&lt;<a href="#FractalViseAreaEnemy">FractalViseAreaEnemy</a>&gt;</code></p>
+
+
+<p><b>items: </b><code>RepeatedField&lt;<a href="#FractalViseAreaItem">FractalViseAreaItem</a>&gt;</code></p>
+
+
+<p><b>scoreAreaItems: </b><code>RepeatedField&lt;<a href="#FractalViseAreaScoreAreaItem">FractalViseAreaScoreAreaItem</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="FractalViseAreaEnemy"><a href="#FractalViseAreaEnemy">FractalViseAreaEnemy</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fractalVisePieceId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>index: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>defeatedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseAreaItem"><a href="#FractalViseAreaItem">FractalViseAreaItem</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fractalVisePieceId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>index: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>acquiredAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseAreaScoreAreaItem"><a href="#FractalViseAreaScoreAreaItem">FractalViseAreaScoreAreaItem</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>index: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fractalViseScoreAreaItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>acquiredAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseBossDifficulty"><a href="#FractalViseBossDifficulty">FractalViseBossDifficulty</a></h3>
+
+
+<p><b>fractalViseBossDifficultyId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>defeatCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseMission"><a href="#FractalViseMission">FractalViseMission</a></h3>
+
+
+<p><b>fractalViseMissionId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fractalViseId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="FractalViseTotalScore"><a href="#FractalViseTotalScore">FractalViseTotalScore</a></h3>
+
+
+<p><b>totalScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedStepCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="Gacha"><a href="#Gacha">Gacha</a></h3>
+
+
+<p><b>gachaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gachaButtonStates: </b><code>RepeatedField&lt;<a href="#GachaButtonState">GachaButtonState</a>&gt;</code></p>
+
+
+<p><b>gachaCategoryState: </b><code><a href="#GachaCategoryState">GachaCategoryState</a></code></p>
+
+
+<hr>
+
+<h3 id="GachaButtonState"><a href="#GachaButtonState">GachaButtonState</a></h3>
+
+
+<p><b>gachaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gachaButtonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>executionCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>lastExecutedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="GachaCard"><a href="#GachaCard">GachaCard</a></h3>
+
+
+<p><b>cardType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>cardId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isAttention: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isSelectable: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>gachaCardId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="GachaCategoryState"><a href="#GachaCategoryState">GachaCategoryState</a></h3>
+
+
+<p><b>gachaCategoryId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>guaranteedCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isGuaranteedPickup: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>executionCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isSelectable: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="GachaHistory"><a href="#GachaHistory">GachaHistory</a></h3>
+
+
+<p><b>gachaCategoryId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gachaId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gachaButtonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>costs: </b><code>RepeatedField&lt;<a href="#Resource">Resource</a>&gt;</code></p>
+
+
+<p><b>drawnRewards: </b><code>RepeatedField&lt;<a href="#GachaReward">GachaReward</a>&gt;</code></p>
+
+
+<p><b>executedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="GachaNotification"><a href="#GachaNotification">GachaNotification</a></h3>
+
+
+<p><b>latestGachaStartAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>executableGachaIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GachaRate"><a href="#GachaRate">GachaRate</a></h3>
+
+
+<p><b>gachaRateId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>percentRate: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>percentRatePerCard: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>cards: </b><code>RepeatedField&lt;<a href="#GachaCard">GachaCard</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GachaRateSet"><a href="#GachaRateSet">GachaRateSet</a></h3>
+
+
+<p><b>gachaRateSetId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>rows: </b><code>RepeatedField&lt;<a href="#GachaRate">GachaRate</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GachaReward"><a href="#GachaReward">GachaReward</a></h3>
+
+
+<p><b>type: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>alternativeRewards: </b><code>RepeatedField&lt;<a href="#Resource">Resource</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="Gear"><a href="#Gear">Gear</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gearId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>rarity: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isLocked: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>subStatus1Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>subStatus2Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>subStatus3Id: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>trainingScoreLevelScore: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="GearRewardStatus"><a href="#GearRewardStatus">GearRewardStatus</a></h3>
+
+
+<p><b>subStatusIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>gearRarity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="GearSubStatus"><a href="#GearSubStatus">GearSubStatus</a></h3>
+
+
+<p><b>gearStatusRateSetIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="GraffitiArt"><a href="#GraffitiArt">GraffitiArt</a></h3>
+
+
+<p><b>graffitiArtId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="GuestCharacter"><a href="#GuestCharacter">GuestCharacter</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>guestCharacterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>hp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dishId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>dishEffectCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dishEffectExpiredAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>joinedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>attack: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>defense: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>maxHp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>criticalRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>criticalDamageRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>supportPowerRate: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>movementSpeed: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>powerRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>dodgeSpeed: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>damageInflictedRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>tensionIncreaseRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>cpRecastRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>recoveryGivenRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>spGaugeIncreaseRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>attackSpeed: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>abnormalityParamSet: </b><code><a href="#AbnormalityParamSet">AbnormalityParamSet</a></code></p>
+
+
+<p><b>actionPointMax: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>actionPointRate: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>actionPointConsumption: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>trainingScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>trainingScoreLevelScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>trainingScoreRankScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>damageTakenRate: </b><code><a href="#float">float</a></code></p>
+
+
+<hr>
+
+<h3 id="HappyWorkerItem"><a href="#HappyWorkerItem">HappyWorkerItem</a></h3>
+
+
+<p><b>happyWorkerItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isCleared: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>state: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="Item"><a href="#Item">Item</a></h3>
+
+
+<p><b>itemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ItemRequest"><a href="#ItemRequest">ItemRequest</a></h3>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>deliveryRequestItemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>publishedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>fulfilledAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>isNew: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="KeyTask"><a href="#KeyTask">KeyTask</a></h3>
+
+
+<p><b>conditionId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>name: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="LoginBonus"><a href="#LoginBonus">LoginBonus</a></h3>
+
+
+<p><b>loginBonusId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedDay: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>loggedInDay: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="MagicOrb"><a href="#MagicOrb">MagicOrb</a></h3>
+
+
+<p><b>magicOrbId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="Mail"><a href="#Mail">Mail</a></h3>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>mailType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>mailParams: </b><code><a href="#MailParams">MailParams</a></code></p>
+
+
+<p><b>rewards: </b><code>RepeatedField&lt;<a href="#Resource">Resource</a>&gt;</code></p>
+
+
+<p><b>createdAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>openedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>endAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="MailList"><a href="#MailList">MailList</a></h3>
+
+
+<p><b>unopened: </b><code>RepeatedField&lt;<a href="#Mail">Mail</a>&gt;</code></p>
+
+
+<p><b>opened: </b><code>RepeatedField&lt;<a href="#Mail">Mail</a>&gt;</code></p>
+
+
+<p><b>bulkMails: </b><code>RepeatedField&lt;<a href="#BulkMail">BulkMail</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="MailParams"><a href="#MailParams">MailParams</a></h3>
+
+
+<p><b>mailTemplateId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>subject: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>body: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>bulkMailId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>sender: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="MasterData"><a href="#MasterData">MasterData</a></h3>
+
+
+<p><b>shopProducts: </b><code>RepeatedField&lt;<a href="#ShopProduct">ShopProduct</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="Mission"><a href="#Mission">Mission</a></h3>
+
+
+<p><b>missionId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedStepCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>resetAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>clearedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="MissionCountRewardState"><a href="#MissionCountRewardState">MissionCountRewardState</a></h3>
+
+
+<p><b>missionCountRewardId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedStepCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>resetAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="MysteryBoxDrawResult"><a href="#MysteryBoxDrawResult">MysteryBoxDrawResult</a></h3>
+
+
+<p><b>cardId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>duplicate: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="MysteryBoxDrawResults"><a href="#MysteryBoxDrawResults">MysteryBoxDrawResults</a></h3>
+
+
+<p><b>results: </b><code>RepeatedField&lt;<a href="#MysteryBoxDrawResult">MysteryBoxDrawResult</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="NewsItem"><a href="#NewsItem">NewsItem</a></h3>
+
+
+<p><b>newsGroupId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>priority: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>category: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>title: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>startAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>editedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>isImportant: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="NewsNotification"><a href="#NewsNotification">NewsNotification</a></h3>
+
+
+<p><b>updatedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>importantUpdatedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="NineSequence"><a href="#NineSequence">NineSequence</a></h3>
+
+
+<p><b>nineSequenceId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>choices: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>expiresAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>lastReceiveAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>lastReadAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="NineSequenceRequest"><a href="#NineSequenceRequest">NineSequenceRequest</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>choices: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="Notifications"><a href="#Notifications">Notifications</a></h3>
+
+
+<p><b>gacha: </b><code><a href="#GachaNotification">GachaNotification</a></code></p>
+
+
+<p><b>mail: </b><code><a href="#bool">bool</a>?</code></p>
+
+
+<p><b>itemRequest: </b><code><a href="#bool">bool</a>?</code></p>
+
+
+<hr>
+
+<h3 id="PositionCoordinates"><a href="#PositionCoordinates">PositionCoordinates</a></h3>
+
+
+<p><b>x: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>y: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>z: </b><code><a href="#float">float</a></code></p>
+
+
+<hr>
+
+<h3 id="Profile"><a href="#Profile">Profile</a></h3>
+
+
+<p><b>name: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>profileBannerId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>profileBadgeIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>characterLikabilityScale: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ProfileBadge"><a href="#ProfileBadge">ProfileBadge</a></h3>
+
+
+<p><b>profileBadgeId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="ProfileBanner"><a href="#ProfileBanner">ProfileBanner</a></h3>
+
+
+<p><b>profileBannerId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="PurchaseHistory"><a href="#PurchaseHistory">PurchaseHistory</a></h3>
+
+
+<p><b>name: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>gameTime: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>moneyAmount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>freeAmount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clientPrice: </b><code><a href="#double">double</a>?</code></p>
+
+
+<p><b>clientCurrency: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="PurchaseStep"><a href="#PurchaseStep">PurchaseStep</a></h3>
+
+
+<p><b>storeProductId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>rewardSetId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>costs: </b><code>RepeatedField&lt;<a href="#Resource">Resource</a>&gt;</code></p>
+
+
+<p><b>name: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>description: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="QuestState"><a href="#QuestState">QuestState</a></h3>
+
+
+<p><b>questId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>clearCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>bestScore: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundApplication"><a href="#RefundApplication">RefundApplication</a></h3>
+
+
+<p><b>verifiedEmailId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>emailIdVerifiedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>acceptedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundDestinationBank"><a href="#RefundDestinationBank">RefundDestinationBank</a></h3>
+
+
+<p><b>bankBranchId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>bankAccountType: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>bankAccountNumber: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>bankAccountHolder: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundDestinationOverseaBank"><a href="#RefundDestinationOverseaBank">RefundDestinationOverseaBank</a></h3>
+
+
+<p><b>bankName: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>swiftCode: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>bankAccountNumber: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>bankAddress: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>bankAccountHolder: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>bankAccountOwnerCountry: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>bankAccountOwnerAddress: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundDestinationPaypal"><a href="#RefundDestinationPaypal">RefundDestinationPaypal</a></h3>
+
+
+<p><b>useVerifiedEmail: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>emailId: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundDestinationWise"><a href="#RefundDestinationWise">RefundDestinationWise</a></h3>
+
+
+<p><b>useVerifiedEmail: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>emailId: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="RefundPaidGem"><a href="#RefundPaidGem">RefundPaidGem</a></h3>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>purchaseCurrencies: </b><code>RepeatedField&lt;<a href="#string">string</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="RefundPurchase"><a href="#RefundPurchase">RefundPurchase</a></h3>
+
+
+<p><b>itunesGoogleplay: </b><code>RepeatedField&lt;<a href="#RefundPurchaseItem">RefundPurchaseItem</a>&gt;</code></p>
+
+
+<p><b>steam: </b><code>RepeatedField&lt;<a href="#RefundPurchaseItem">RefundPurchaseItem</a>&gt;</code></p>
+
+
+<p><b>xsolla: </b><code>RepeatedField&lt;<a href="#RefundPurchaseItem">RefundPurchaseItem</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="RefundPurchaseItem"><a href="#RefundPurchaseItem">RefundPurchaseItem</a></h3>
+
+
+<p><b>clientCurrency: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>clientPrice: </b><code><a href="#double">double</a></code></p>
+
+
+<hr>
+
+<h3 id="Resource"><a href="#Resource">Resource</a></h3>
+
+
+<p><b>type: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>resourceParams: </b><code><a href="#ResourceParams">ResourceParams</a></code></p>
+
+
+<hr>
+
+<h3 id="ResourceEntities"><a href="#ResourceEntities">ResourceEntities</a></h3>
+
+
+<p><b>followUserIds: </b><code>RepeatedField&lt;<a href="#long">long</a>&gt;</code></p>
+
+
+<p><b>gearEntityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>tensionCardEntityIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="ResourceParams"><a href="#ResourceParams">ResourceParams</a></h3>
+
+
+<p><b>oldLimitBreak: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>newLimitBreak: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>gearRewardStatus: </b><code><a href="#GearRewardStatus">GearRewardStatus</a></code></p>
+
+
+<p><b>gearSubStatusDraw: </b><code><a href="#GearSubStatus">GearSubStatus</a></code></p>
+
+
+<p><b>mysteryBoxDrawResults: </b><code><a href="#MysteryBoxDrawResults">MysteryBoxDrawResults</a></code></p>
+
+
+<hr>
+
+<h3 id="Resources"><a href="#Resources">Resources</a></h3>
+
+
+<p><b>adventureVariables: </b><code>RepeatedField&lt;<a href="#AdventureVariable">AdventureVariable</a>&gt;</code></p>
+
+
+<p><b>areas: </b><code>RepeatedField&lt;<a href="#Area">Area</a>&gt;</code></p>
+
+
+<p><b>areaChangeLocks: </b><code>RepeatedField&lt;<a href="#AreaChangeLock">AreaChangeLock</a>&gt;</code></p>
+
+
+<p><b>areaGroups: </b><code>RepeatedField&lt;<a href="#AreaGroup">AreaGroup</a>&gt;</code></p>
+
+
+<p><b>areaObjectLocks: </b><code>RepeatedField&lt;<a href="#AreaObjectLock">AreaObjectLock</a>&gt;</code></p>
+
+
+<p><b>challenges: </b><code>RepeatedField&lt;<a href="#Challenge">Challenge</a>&gt;</code></p>
+
+
+<p><b>challengeProgresses: </b><code>RepeatedField&lt;<a href="#ChallengeProgress">ChallengeProgress</a>&gt;</code></p>
+
+
+<p><b>challengeTasks: </b><code>RepeatedField&lt;<a href="#ChallengeTask">ChallengeTask</a>&gt;</code></p>
+
+
+<p><b>characters: </b><code>RepeatedField&lt;<a href="#Character">Character</a>&gt;</code></p>
+
+
+<p><b>characterCostumes: </b><code>RepeatedField&lt;<a href="#CharacterCostume">CharacterCostume</a>&gt;</code></p>
+
+
+<p><b>characterLikabilities: </b><code>RepeatedField&lt;<a href="#CharacterLikability">CharacterLikability</a>&gt;</code></p>
+
+
+<p><b>characterMountingPowers: </b><code>RepeatedField&lt;<a href="#CharacterMountingPower">CharacterMountingPower</a>&gt;</code></p>
+
+
+<p><b>characterMountingPowerCommon: </b><code><a href="#CharacterMountingPowerCommon">CharacterMountingPowerCommon</a></code></p>
+
+
+<p><b>characterPieces: </b><code>RepeatedField&lt;<a href="#CharacterPiece">CharacterPiece</a>&gt;</code></p>
+
+
+<p><b>cities: </b><code>RepeatedField&lt;<a href="#City">City</a>&gt;</code></p>
+
+
+<p><b>cycleUpdateShopStates: </b><code>RepeatedField&lt;<a href="#CycleUpdateShopState">CycleUpdateShopState</a>&gt;</code></p>
+
+
+<p><b>dailyPassStates: </b><code>RepeatedField&lt;<a href="#DailyPassState">DailyPassState</a>&gt;</code></p>
+
+
+<p><b>dungeons: </b><code>RepeatedField&lt;<a href="#Dungeon">Dungeon</a>&gt;</code></p>
+
+
+<p><b>eventFloorNodes: </b><code>RepeatedField&lt;<a href="#EventFloorNode">EventFloorNode</a>&gt;</code></p>
+
+
+<p><b>eventLifts: </b><code>RepeatedField&lt;<a href="#EventLift">EventLift</a>&gt;</code></p>
+
+
+<p><b>follows: </b><code>RepeatedField&lt;<a href="#Follow">Follow</a>&gt;</code></p>
+
+
+<p><b>formations: </b><code>RepeatedField&lt;<a href="#Formation">Formation</a>&gt;</code></p>
+
+
+<p><b>fractalVises: </b><code>RepeatedField&lt;<a href="#FractalVise">FractalVise</a>&gt;</code></p>
+
+
+<p><b>gears: </b><code>RepeatedField&lt;<a href="#Gear">Gear</a>&gt;</code></p>
+
+
+<p><b>graffitiArts: </b><code>RepeatedField&lt;<a href="#GraffitiArt">GraffitiArt</a>&gt;</code></p>
+
+
+<p><b>guestCharacters: </b><code>RepeatedField&lt;<a href="#GuestCharacter">GuestCharacter</a>&gt;</code></p>
+
+
+<p><b>items: </b><code>RepeatedField&lt;<a href="#Item">Item</a>&gt;</code></p>
+
+
+<p><b>loginBonuses: </b><code>RepeatedField&lt;<a href="#LoginBonus">LoginBonus</a>&gt;</code></p>
+
+
+<p><b>magicOrbs: </b><code>RepeatedField&lt;<a href="#MagicOrb">MagicOrb</a>&gt;</code></p>
+
+
+<p><b>missions: </b><code>RepeatedField&lt;<a href="#Mission">Mission</a>&gt;</code></p>
+
+
+<p><b>missionCountRewardStates: </b><code>RepeatedField&lt;<a href="#MissionCountRewardState">MissionCountRewardState</a>&gt;</code></p>
+
+
+<p><b>nineSequences: </b><code>RepeatedField&lt;<a href="#NineSequence">NineSequence</a>&gt;</code></p>
+
+
+<p><b>notifications: </b><code><a href="#Notifications">Notifications</a></code></p>
+
+
+<p><b>profile: </b><code><a href="#Profile">Profile</a></code></p>
+
+
+<p><b>profileBadges: </b><code>RepeatedField&lt;<a href="#ProfileBadge">ProfileBadge</a>&gt;</code></p>
+
+
+<p><b>profileBanners: </b><code>RepeatedField&lt;<a href="#ProfileBanner">ProfileBanner</a>&gt;</code></p>
+
+
+<p><b>questStates: </b><code>RepeatedField&lt;<a href="#QuestState">QuestState</a>&gt;</code></p>
+
+
+<p><b>seasonPasses: </b><code>RepeatedField&lt;<a href="#SeasonPass">SeasonPass</a>&gt;</code></p>
+
+
+<p><b>seasonPassTierStates: </b><code>RepeatedField&lt;<a href="#SeasonPassTierState">SeasonPassTierState</a>&gt;</code></p>
+
+
+<p><b>shopProductStates: </b><code>RepeatedField&lt;<a href="#ShopProductState">ShopProductState</a>&gt;</code></p>
+
+
+<p><b>status: </b><code><a href="#Status">Status</a></code></p>
+
+
+<p><b>synthesisRecipes: </b><code>RepeatedField&lt;<a href="#SynthesisRecipe">SynthesisRecipe</a>&gt;</code></p>
+
+
+<p><b>tensionCards: </b><code>RepeatedField&lt;<a href="#TensionCard">TensionCard</a>&gt;</code></p>
+
+
+<p><b>tips: </b><code>RepeatedField&lt;<a href="#Tip">Tip</a>&gt;</code></p>
+
+
+<p><b>totalTasks: </b><code>RepeatedField&lt;<a href="#TotalTask">TotalTask</a>&gt;</code></p>
+
+
+<p><b>trialBattleStates: </b><code>RepeatedField&lt;<a href="#TrialBattleState">TrialBattleState</a>&gt;</code></p>
+
+
+<p><b>tutorialStates: </b><code>RepeatedField&lt;<a href="#TutorialState">TutorialState</a>&gt;</code></p>
+
+
+<p><b>wallet: </b><code><a href="#Wallet">Wallet</a></code></p>
+
+
+<p><b>warpPoints: </b><code>RepeatedField&lt;<a href="#WarpPoint">WarpPoint</a>&gt;</code></p>
+
+
+<p><b>xbStatuses: </b><code>RepeatedField&lt;<a href="#XbStatus">XbStatus</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="Reward"><a href="#Reward">Reward</a></h3>
+
+
+<p><b>type: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>quantity: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>resourceParams: </b><code><a href="#ResourceParams">ResourceParams</a></code></p>
+
+
+<p><b>isNew: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isBonus: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>overflowed: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>discardedQuantity: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>sentAsMail: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>oldValue: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>otherRewards: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="Rewards"><a href="#Rewards">Rewards</a></h3>
+
+
+<p><b>type: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>contents: </b><code>RepeatedField&lt;<a href="#Reward">Reward</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="SeasonPass"><a href="#SeasonPass">SeasonPass</a></h3>
+
+
+<p><b>seasonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>purchaseState: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>exp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>weeklyExp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>weeklyExpResetAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>weeklyMissionIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>seasonMissionSheetId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="SeasonPassTierState"><a href="#SeasonPassTierState">SeasonPassTierState</a></h3>
+
+
+<p><b>seasonPassTierId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>freePassRewardReceivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>paidPassRewardReceivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="SelectBoxChoice"><a href="#SelectBoxChoice">SelectBoxChoice</a></h3>
+
+
+<p><b>itemId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>number: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopGearPurchaseState"><a href="#ShopGearPurchaseState">ShopGearPurchaseState</a></h3>
+
+
+<p><b>shopGearProductId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>subGearStatusIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>count: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopGearState"><a href="#ShopGearState">ShopGearState</a></h3>
+
+
+<p><b>shopId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>refreshAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>purchaseStates: </b><code>RepeatedField&lt;<a href="#ShopGearPurchaseState">ShopGearPurchaseState</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="ShopProduct"><a href="#ShopProduct">ShopProduct</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>shopId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>purchaseSteps: </b><code>RepeatedField&lt;<a href="#PurchaseStep">PurchaseStep</a>&gt;</code></p>
+
+
+<p><b>dailyPassId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>limitCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>resetCycle: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>resetPeriod: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>priority: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>keyTasks: </b><code>RepeatedField&lt;<a href="#KeyTask">KeyTask</a>&gt;</code></p>
+
+
+<p><b>startAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>endAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>imagePath: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="ShopProductState"><a href="#ShopProductState">ShopProductState</a></h3>
+
+
+<p><b>shopProductId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>purchasedCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>nextResetAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="Status"><a href="#Status">Status</a></h3>
+
+
+<p><b>exp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>rank: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>gold: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>staminaWhenUpdated: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>staminaUpdatedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>formationNumber: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentAreaType: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>currentAreaKeyId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>currentPositionCoordinates: </b><code><a href="#PositionCoordinates">PositionCoordinates</a></code></p>
+
+
+<p><b>currentDirection: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>staminaPurchasedCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>birthYear: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>birthMonth: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>loggedInAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>trackingWarpPointId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>trackingFieldBossId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>trackingDungeonId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>enemyForcedRespawnAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>flowerMark: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>dishId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>dishEffectExpiredAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>dishEffectBaseGearEntityId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>dishEffectCount: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>costumeToken: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="StoreProduct"><a href="#StoreProduct">StoreProduct</a></h3>
+
+
+<p><b>id: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>productId: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>moneyAmount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>freeAmount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>price: </b><code><a href="#double">double</a>?</code></p>
+
+
+<p><b>currency: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="SubsystemStatus"><a href="#SubsystemStatus">SubsystemStatus</a></h3>
+
+
+<p><b>startAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>message: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>title: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>hideTimes: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="SynthesisRecipe"><a href="#SynthesisRecipe">SynthesisRecipe</a></h3>
+
+
+<p><b>synthesisRecipeId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="TensionCard"><a href="#TensionCard">TensionCard</a></h3>
+
+
+<p><b>tensionCardId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>entityId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>exp: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>limitBreak: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>receivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<p><b>maxLevel: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>abilityEfficacies: </b><code>RepeatedField&lt;<a href="#AbilityEfficacy">AbilityEfficacy</a>&gt;</code></p>
+
+
+<p><b>trainingScoreLevelScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isLocked: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="Tip"><a href="#Tip">Tip</a></h3>
+
+
+<p><b>tipId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>releasedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="TotalTask"><a href="#TotalTask">TotalTask</a></h3>
+
+
+<p><b>conditionId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>count: </b><code><a href="#long">long</a></code></p>
+
+
+<hr>
+
+<h3 id="TrialBattleState"><a href="#TrialBattleState">TrialBattleState</a></h3>
+
+
+<p><b>trialBattleId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>rewardReceivedAt: </b><code><a href="#Timestamp">Timestamp</a></code></p>
+
+
+<hr>
+
+<h3 id="TutorialState"><a href="#TutorialState">TutorialState</a></h3>
+
+
+<p><b>tutorialStatusKey: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>enabled: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="Wallet"><a href="#Wallet">Wallet</a></h3>
+
+
+<p><b>free: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>paid: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="WarpPoint"><a href="#WarpPoint">WarpPoint</a></h3>
+
+
+<p><b>warpPointId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbAtBatEventInfo"><a href="#XbAtBatEventInfo">XbAtBatEventInfo</a></h3>
+
+
+<p><b>battingInfo: </b><code><a href="#XbBattingInfo">XbBattingInfo</a></code></p>
+
+
+<p><b>battedBallInfo: </b><code><a href="#XbBattedBallInfo">XbBattedBallInfo</a></code></p>
+
+
+<p><b>errorInfo: </b><code><a href="#XbErrorInfo">XbErrorInfo</a></code></p>
+
+
+<p><b>defenseInfos: </b><code>RepeatedField&lt;<a href="#XbDefenseInfo">XbDefenseInfo</a>&gt;</code></p>
+
+
+<p><b>beforeGameSituation: </b><code><a href="#XbGameSituationUpdateInfo">XbGameSituationUpdateInfo</a></code></p>
+
+
+<p><b>afterGameSituation: </b><code><a href="#XbGameSituationUpdateInfo">XbGameSituationUpdateInfo</a></code></p>
+
+
+<p><b>logicEventInfos: </b><code>RepeatedField&lt;<a href="#XbLogicEventInfo">XbLogicEventInfo</a>&gt;</code></p>
+
+
+<p><b>buffInfos: </b><code>RepeatedField&lt;<a href="#XbBuffInfo">XbBuffInfo</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbBaseAdvanceInfo"><a href="#XbBaseAdvanceInfo">XbBaseAdvanceInfo</a></h3>
+
+
+<p><b>isPlayer: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>memberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>baseNum: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>score: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>prevScore: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbBattedBallInfo"><a href="#XbBattedBallInfo">XbBattedBallInfo</a></h3>
+
+
+<p><b>direction: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>isInfield: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>runningInfos: </b><code>RepeatedField&lt;<a href="#XbRunningInfo">XbRunningInfo</a>&gt;</code></p>
+
+
+<p><b>time: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>afterGameSituation: </b><code><a href="#XbGameSituationUpdateInfo">XbGameSituationUpdateInfo</a></code></p>
+
+
+<p><b>fielderMemberId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>ballLevel: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isCovered: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>coverPenalty: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>baseAdvanceInfos: </b><code>RepeatedField&lt;<a href="#XbBaseAdvanceInfo">XbBaseAdvanceInfo</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbBattingInfo"><a href="#XbBattingInfo">XbBattingInfo</a></h3>
+
+
+<p><b>isStrikeOut: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="XbBlockadeZoneAreaInfo"><a href="#XbBlockadeZoneAreaInfo">XbBlockadeZoneAreaInfo</a></h3>
+
+
+<p><b>prevBlockadedZoneAreaIndices: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>blockadedZoneAreaIndices: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>unblockadedZoneAreaIndices: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbBoutInfo"><a href="#XbBoutInfo">XbBoutInfo</a></h3>
+
+
+<p><b>boutOccurred: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>baseNumOfBout: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>baseNumOfRunner: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>runnerMemberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fielderMemberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isTouchOut: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>baseAdvanceInfos: </b><code>RepeatedField&lt;<a href="#XbBaseAdvanceInfo">XbBaseAdvanceInfo</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbBuffInfo"><a href="#XbBuffInfo">XbBuffInfo</a></h3>
+
+
+<p><b>index: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>timing: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>eventOrder: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>playerBuffMemberIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>enemyBuffMemberIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbClientStatus"><a href="#XbClientStatus">XbClientStatus</a></h3>
+
+
+<p><b>previousAtBatIsOut: </b><code><a href="#bool">bool</a>?</code></p>
+
+
+<p><b>previousAtBatIsChance: </b><code><a href="#bool">bool</a>?</code></p>
+
+
+<p><b>currentAtBatIsChance: </b><code><a href="#bool">bool</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbCommand"><a href="#XbCommand">XbCommand</a></h3>
+
+
+<p><b>commandId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>xbCharacterWordsId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isLockingCommand: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>correctType: </b><code><a href="#XbCommandCorrectType">XbCommandCorrectType</a></code></p>
+
+
+<p><b>predictedScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>battedBallPredictionId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>predictedUseSkillOrbIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbCommandLockInfo"><a href="#XbCommandLockInfo">XbCommandLockInfo</a></h3>
+
+
+<p><b>commandId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>commandLockId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>lockItemInfos: </b><code>RepeatedField&lt;<a href="#XbCommandLockItemInfo">XbCommandLockItemInfo</a>&gt;</code></p>
+
+
+<p><b>unlockMagicOrbId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbCommandLockItemInfo"><a href="#XbCommandLockItemInfo">XbCommandLockItemInfo</a></h3>
+
+
+<p><b>magicOrbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>status: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbDefenseInfo"><a href="#XbDefenseInfo">XbDefenseInfo</a></h3>
+
+
+<p><b>eventOrder: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>targetRunnerMemberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>defenseOwnBaseInfo: </b><code><a href="#XbDefenseOwnBaseInfo">XbDefenseOwnBaseInfo</a></code></p>
+
+
+<p><b>throwingInfo: </b><code><a href="#XbThrowingBallInfo">XbThrowingBallInfo</a></code></p>
+
+
+<p><b>runningInfos: </b><code>RepeatedField&lt;<a href="#XbRunningInfo">XbRunningInfo</a>&gt;</code></p>
+
+
+<p><b>boutInfo: </b><code><a href="#XbBoutInfo">XbBoutInfo</a></code></p>
+
+
+<p><b>beforeGameSituation: </b><code><a href="#XbGameSituationUpdateInfo">XbGameSituationUpdateInfo</a></code></p>
+
+
+<p><b>afterGameSituation: </b><code><a href="#XbGameSituationUpdateInfo">XbGameSituationUpdateInfo</a></code></p>
+
+
+<p><b>baseAdvanceInfos: </b><code>RepeatedField&lt;<a href="#XbBaseAdvanceInfo">XbBaseAdvanceInfo</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbDefenseOwnBaseInfo"><a href="#XbDefenseOwnBaseInfo">XbDefenseOwnBaseInfo</a></h3>
+
+
+<p><b>isDefenseOwnBase: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>fielderMemberId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>baseNum: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbErrorInfo"><a href="#XbErrorInfo">XbErrorInfo</a></h3>
+
+
+<p><b>isError: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>direction: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>fielderMemberId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>errorPenalty: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>runningInfos: </b><code>RepeatedField&lt;<a href="#XbRunningInfo">XbRunningInfo</a>&gt;</code></p>
+
+
+<p><b>afterGameSituation: </b><code><a href="#XbGameSituationUpdateInfo">XbGameSituationUpdateInfo</a></code></p>
+
+
+<p><b>baseAdvanceInfos: </b><code>RepeatedField&lt;<a href="#XbBaseAdvanceInfo">XbBaseAdvanceInfo</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbGameInfo"><a href="#XbGameInfo">XbGameInfo</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>index: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>topTeam: </b><code><a href="#XbTeam">XbTeam</a></code></p>
+
+
+<p><b>bottomTeam: </b><code><a href="#XbTeam">XbTeam</a></code></p>
+
+
+<p><b>currentAtBatEventInfo: </b><code><a href="#XbAtBatEventInfo">XbAtBatEventInfo</a></code></p>
+
+
+<p><b>xbStoryInfo: </b><code><a href="#XbStoryInfo">XbStoryInfo</a></code></p>
+
+
+<p><b>predictedTensionInfos: </b><code>RepeatedField&lt;<a href="#XbPredictedTensionInfo">XbPredictedTensionInfo</a>&gt;</code></p>
+
+
+<p><b>clientStatus: </b><code><a href="#XbClientStatus">XbClientStatus</a></code></p>
+
+
+<hr>
+
+<h3 id="XbGameSituationUpdateInfo"><a href="#XbGameSituationUpdateInfo">XbGameSituationUpdateInfo</a></h3>
+
+
+<p><b>inning: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isTop: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isPlayerOffense: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>batterMemberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>pitcherMemberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentBaseSituation: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>topTeamScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>bottomTeamScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>currentOutCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isChange: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isGameSet: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isFirstAtBatInGame: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isFirstAtBatInHalfInning: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>eventOrder: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbInningHalfScoreBoard"><a href="#XbInningHalfScoreBoard">XbInningHalfScoreBoard</a></h3>
+
+
+<p><b>isPlayer: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>name: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>isTop: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>totalScore: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>hitCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>errorCount: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>inningScores: </b><code>RepeatedField&lt;<a href="#XbInningScore">XbInningScore</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbInningScore"><a href="#XbInningScore">XbInningScore</a></h3>
+
+
+<p><b>inning: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>score: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbLibrettoInfo"><a href="#XbLibrettoInfo">XbLibrettoInfo</a></h3>
+
+
+<p><b>sequencePath: </b><code><a href="#string">string</a></code></p>
+
+
+<hr>
+
+<h3 id="XbLogicEventInfo"><a href="#XbLogicEventInfo">XbLogicEventInfo</a></h3>
+
+
+<p><b>index: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>timing: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>eventOrder: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>skillInfo: </b><code><a href="#XbSkillInfo">XbSkillInfo</a></code></p>
+
+
+<p><b>tensionInfos: </b><code>RepeatedField&lt;<a href="#XbTensionInfo">XbTensionInfo</a>&gt;</code></p>
+
+
+<p><b>playerSkillOrbInfos: </b><code>RepeatedField&lt;<a href="#XbSkillOrbInfo">XbSkillOrbInfo</a>&gt;</code></p>
+
+
+<p><b>enemySkillOrbInfos: </b><code>RepeatedField&lt;<a href="#XbSkillOrbInfo">XbSkillOrbInfo</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbMember"><a href="#XbMember">XbMember</a></h3>
+
+
+<p><b>memberId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>xbBaseCharacterId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>xbCharacterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>characterAssetId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>level: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>position: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>battingOrder: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>skillIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>displayLevel: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>maxHp: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>attack: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>defense: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>characterSkillPanelLevels: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>isGuest: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isDisable: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isVisible: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isHologram: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPhaseInfo"><a href="#XbPhaseInfo">XbPhaseInfo</a></h3>
+
+
+<p><b>phaseId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isPhaseChanged: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>phaseSequencePath: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>themeSequencePath: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>correctTensionFluctuationIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbPredictedTensionInfo"><a href="#XbPredictedTensionInfo">XbPredictedTensionInfo</a></h3>
+
+
+<p><b>zoneAreaIndex: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>commandId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isPlayer: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>tensionValue: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>tensionLv: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isTensionMax: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPvpFormation"><a href="#XbPvpFormation">XbPvpFormation</a></h3>
+
+
+<p><b>members: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<p><b>trainingScore: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbPvpMatchHistoryMember"><a href="#XbPvpMatchHistoryMember">XbPvpMatchHistoryMember</a></h3>
+
+
+<p><b>characterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>xbCharacterId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>characterAssetId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>position: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbPvpRankState"><a href="#XbPvpRankState">XbPvpRankState</a></h3>
+
+
+<p><b>seasonId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>rankPoint: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>rewardPoint: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>prevRankPoint: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>prevRewardPoint: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>maxRankPoint: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbPvPUserInfo"><a href="#XbPvPUserInfo">XbPvPUserInfo</a></h3>
+
+
+<p><b>name: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>userId: </b><code><a href="#long">long</a></code></p>
+
+
+<p><b>profileBannerId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>profileBadgeIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>characters: </b><code>RepeatedField&lt;<a href="#FollowUserCharacter">FollowUserCharacter</a>&gt;</code></p>
+
+
+<p><b>flowerMark: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isCpuUser: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>rankMatchRank: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbRunningInfo"><a href="#XbRunningInfo">XbRunningInfo</a></h3>
+
+
+<p><b>memberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>startPosition: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>endPosition: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>velocity: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>time: </b><code><a href="#float">float</a></code></p>
+
+
+<hr>
+
+<h3 id="XbSkillInfo"><a href="#XbSkillInfo">XbSkillInfo</a></h3>
+
+
+<p><b>isPlayer: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>memberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>skillId: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbSkillOrbInfo"><a href="#XbSkillOrbInfo">XbSkillOrbInfo</a></h3>
+
+
+<p><b>skillOrbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>status: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>prevStatus: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>restBrokenAtBatCount: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbStatus"><a href="#XbStatus">XbStatus</a></h3>
+
+
+<p><b>xbId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>actionSequenceId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbStoryInfo"><a href="#XbStoryInfo">XbStoryInfo</a></h3>
+
+
+<p><b>phaseInfo: </b><code><a href="#XbPhaseInfo">XbPhaseInfo</a></code></p>
+
+
+<p><b>librettoInfo: </b><code><a href="#XbLibrettoInfo">XbLibrettoInfo</a></code></p>
+
+
+<p><b>commandLockInfo: </b><code><a href="#XbCommandLockInfo">XbCommandLockInfo</a></code></p>
+
+
+<p><b>blockadeCharacterWordsIds: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>phaseClearProgressCount: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>isSuddenDeath: </b><code><a href="#bool">bool</a>?</code></p>
+
+
+<p><b>isSuddenDeathChanged: </b><code><a href="#bool">bool</a>?</code></p>
+
+
+<hr>
+
+<h3 id="XbSuggest"><a href="#XbSuggest">XbSuggest</a></h3>
+
+
+<p><b>commandId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>members: </b><code>RepeatedField&lt;<a href="#XbSuggestMember">XbSuggestMember</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbSuggestMember"><a href="#XbSuggestMember">XbSuggestMember</a></h3>
+
+
+<p><b>index: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>memberId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>suggestionId: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>skillRank: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbTeam"><a href="#XbTeam">XbTeam</a></h3>
+
+
+<p><b>name: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>tribeLogoAasPath: </b><code><a href="#string">string</a></code></p>
+
+
+<p><b>pvpUserInfo: </b><code><a href="#XbPvPUserInfo">XbPvPUserInfo</a></code></p>
+
+
+<p><b>members: </b><code>RepeatedField&lt;<a href="#XbMember">XbMember</a>&gt;</code></p>
+
+
+<p><b>batFirst: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>isPlayerTeam: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>inningScores: </b><code>RepeatedField&lt;<a href="#int">int</a>&gt;</code></p>
+
+
+<p><b>currentBattingOrder: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>zoneAreas: </b><code>RepeatedField&lt;<a href="#XbZoneArea">XbZoneArea</a>&gt;</code></p>
+
+
+<p><b>defaultZoneAreaIndex: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>selectedCommand: </b><code><a href="#XbCommand">XbCommand</a></code></p>
+
+
+<p><b>tensionValue: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>tensionLv: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>isTensionMax: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>blockadeZoneAreaInfo: </b><code><a href="#XbBlockadeZoneAreaInfo">XbBlockadeZoneAreaInfo</a></code></p>
+
+
+<p><b>skillOrbInfos: </b><code>RepeatedField&lt;<a href="#XbSkillOrbInfo">XbSkillOrbInfo</a>&gt;</code></p>
+
+
+<hr>
+
+<h3 id="XbTensionInfo"><a href="#XbTensionInfo">XbTensionInfo</a></h3>
+
+
+<p><b>isPlayer: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>skitIndex: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>tensionValue: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>tensionLv: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>runnerMemberId: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>isTensionMax: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>previousTensionValue: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>previousTensionLv: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>previousIsTensionMax: </b><code><a href="#bool">bool</a></code></p>
+
+
+<hr>
+
+<h3 id="XbThrowingBallInfo"><a href="#XbThrowingBallInfo">XbThrowingBallInfo</a></h3>
+
+
+<p><b>isThrown: </b><code><a href="#bool">bool</a></code></p>
+
+
+<p><b>positionFrom: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>baseNumFrom: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>baseNumOfReceive: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>fielderMemberIdFrom: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>fielderMemberIdTo: </b><code><a href="#int">int</a>?</code></p>
+
+
+<p><b>time: </b><code><a href="#float">float</a></code></p>
+
+
+<p><b>ballLevel: </b><code><a href="#int">int</a></code></p>
+
+
+<hr>
+
+<h3 id="XbZoneArea"><a href="#XbZoneArea">XbZoneArea</a></h3>
+
+
+<p><b>index: </b><code><a href="#int">int</a></code></p>
+
+
+<p><b>playerSuggests: </b><code>RepeatedField&lt;<a href="#XbSuggest">XbSuggest</a>&gt;</code></p>
+
+
+<p><b>enemySuggests: </b><code>RepeatedField&lt;<a href="#XbSuggest">XbSuggest</a>&gt;</code></p>
+
+
+<p><b>commands: </b><code>RepeatedField&lt;<a href="#XbCommand">XbCommand</a>&gt;</code></p>
+
+
+</body>
+</html>
