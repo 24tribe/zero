@@ -1301,7 +1301,7 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
 
   let readSequenceAreaAction = getReadSequenceAreaAction(db, seqReqId)
 
-  if readSequenceAreaAction.areaId != 0 and readSequenceAreaAction.actionSequenceId != 0:
+  if readSequenceAreaAction.areaId != 0:
     updateActionSequenceId(db, readSequenceAreaAction.areaId, readSequenceAreaAction.actionSequenceId)
 
   let readSequenceAreaBgm = getReadSequenceAreaBgm(db, seqReqId)
