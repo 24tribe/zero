@@ -245,15 +245,20 @@ proc getAreaObjects*(db: DbConn): seq[JsonNode] =
     let areaObjectId = parseInt(row[1])
     let areaPointId = parseInt(row[2])
     let areaObjectBehaviorId = parseInt(row[3])
-    let action = parseJson(row[4])
+    var action: JsonNode = nil
+
+    if row[4] != "":
+      action = parseJson(row[4])
 
     let areaObject = %*{
       "areaId": areaId,
       "areaObjectId": areaObjectId,
       "areaPointId": areaPointId,
       "areaObjectBehaviorId": areaObjectBehaviorId,
-      "action": action
     }
+
+    if action != nil:
+      areaObject["action"] = action
 
     result.add(areaObject)
 
