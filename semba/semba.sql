@@ -9,10 +9,11 @@ CREATE TABLE debugLogsOffline (
 DROP TABLE IF EXISTS areaObjects;
 CREATE TABLE areaObjects (
     areaId INTEGER,
-    areaObjectId INTEGER PRIMARY KEY,
+    areaObjectId INTEGER,
     areaPointId INTEGER,
     areaObjectBehaviorId INTEGER,
-    action STRING
+    action STRING,
+    PRIMARY KEY (areaId, areaObjectId)
 );
 
 DROP TABLE IF EXISTS tipRelease;
