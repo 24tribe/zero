@@ -1,16 +1,16 @@
 from argparse import ArgumentParser
 from functools import partial
-
-from dumpSembaLogs import get_debug_logs
+import json
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("semba_db")
+    parser.add_argument("online_logs_json")
     parser.add_argument("out_sql")
 
     args = parser.parse_args()
 
-    debug_logs = get_debug_logs(args.semba_db)
+    with open(args.online_logs_json, "r", encoding="utf-8") as f:
+        debug_logs = json.load(f)
 
     first_move_to_area = get_first_move_to_area(debug_logs)
 
