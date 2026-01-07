@@ -67,6 +67,13 @@ CREATE TABLE areaBgm (
     eventName STRING
 );
 
+DROP TABLE IF EXISTS areaBgmOriginal;
+CREATE TABLE areaBgmOriginal (
+    areaId INTEGER PRIMARY KEY,
+    id INTEGER,
+    eventName STRING
+);
+
 DROP TABLE IF EXISTS userData;
 CREATE TABLE userData (
     keyName STRING PRIMARY KEY,
@@ -9713,5 +9720,6 @@ VALUES
 
 INSERT INTO areaObjectsOriginal SELECT * FROM areaObjects;
 INSERT INTO areaEnemiesOriginal SELECT * FROM areaEnemies;
+INSERT INTO areaBgmOriginal SELECT * FROM areaBgm;
 
 COMMIT;
