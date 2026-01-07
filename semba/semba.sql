@@ -1,3 +1,5 @@
+BEGIN;
+
 DROP TABLE IF EXISTS debugLogsOffline;
 CREATE TABLE debugLogsOffline (
     receivedAt STRING,
@@ -9690,3 +9692,5 @@ VALUES
 ,(101622, 101622605)
 ,(101622, 101622606)
 ;
+
+COMMIT;
