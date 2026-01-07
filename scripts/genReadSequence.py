@@ -3,15 +3,14 @@ from functools import partial
 import json
 import sys
 
-from dumpSembaLogs import get_debug_logs
-
 def main():
     parser = ArgumentParser()
-    parser.add_argument("semba_db")
+    parser.add_argument("online_logs_json")
     parser.add_argument("output_sql")
     args = parser.parse_args()
 
-    debug_logs = get_debug_logs(args.semba_db)
+    with open(args.online_logs_json, "r", encoding="utf-8") as f:
+        debug_logs = json.load(f)
 
     with open(args.output_sql, "w", encoding="utf-8") as f:
         write_sql(debug_logs, f)
@@ -19,7 +18,7 @@ def main():
 def write_sql(debug_logs, f):
     printf = partial(print, file=f)
 
-    printf("INSERT INTO readSequence (sequenceRequestId, areaObjects, changedResources) VALUES ")
+    printf("INSERT INTO readSequence (sequenceRequestId, areaObjects, changedResources, nineSequenceId) VALUES ")
 
     first = True
     for debug_log in debug_logs:
@@ -29,13 +28,26 @@ def write_sql(debug_logs, f):
             else:
                 f.write(", ") 
 
-            seqReqId = debug_log["req"]["sequenceRequestIds"][0]
+            seqReqId = 0
+            nineSequenceId = 0
+
+            seqRequestIds = debug_log["req"].get("sequenceRequestIds", [])
+            nineSequences = debug_log["req"].get("nineSequences", [])
+
+            if len(seqRequestIds) > 0:
+                seqReqId = seqRequestIds[0]
+
+            if len(nineSequences) > 0:
+                nineSequenceId = nineSequences[0]["id"]
+
             changedResources = debug_log["res"]["changedResources"]
             areaObjects = debug_log["res"].get("areaObjects")
 
-            areaObjectsStr = json.dumps(areaObjects) if areaObjects is not None else ""
+            areaObjectsStr = (json.dumps(areaObjects) if areaObjects is not None else "").replace("'", "''")
 
-            printf(f"({seqReqId}, '{areaObjectsStr}', '{json.dumps(changedResources)}')")
+            changedResourcesJson = json.dumps(changedResources).replace("'", "''")
+
+            printf(f"({seqReqId}, '{areaObjectsStr}', '{changedResourcesJson}', {nineSequenceId})")
     
     printf(";")
 

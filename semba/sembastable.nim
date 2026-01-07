@@ -1285,18 +1285,12 @@ proc updateAreaBgm(db: DbConn, areaId: int, id: int, eventName: string) =
     id, eventName, areaId
   )
 
-proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
-  let seqReqId = jsonReq["sequenceRequestIds"][0].getInt()
-
-  let row = db.getRow(sql"""
-    SELECT areaObjects, changedResources FROM readSequence WHERE sequenceRequestId=?
-  """, seqReqId);
-
+proc readSequenceHandleRow(db: DbConn, row: Row, areaKeyId: int): JsonNode =
   var areaObjects: JsonNode = nil
 
   if row[0] != "":
     areaObjects = parseJson(row[0])
-    updateAreaObjects(db, jsonReq["areaKeyId"].getInt(), areaObjects)
+    updateAreaObjects(db, areaKeyId, areaObjects)
 
   var changedResources = parseJson(row[1]) 
   updateResources(db, changedResources)  
@@ -1308,15 +1302,34 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   if areaObjects != nil:
     result["areaObjects"] = areaObjects
 
-  let readSequenceAreaAction = getReadSequenceAreaAction(db, seqReqId)
+proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
+  let nineSequences = jsonReq.getOrDefault("nineSequences").getElems()
+  let areaKeyId = jsonReq["areaKeyId"].getInt()
 
-  if readSequenceAreaAction.areaId != 0:
-    updateActionSequenceId(db, readSequenceAreaAction.areaId, readSequenceAreaAction.actionSequenceId)
+  if sequenceRequestIds.len > 0:
+    let seqReqId = sequenceRequestIds[0].getInt()
+    let row = db.getRow(sql"""
+      SELECT areaObjects, changedResources FROM readSequence WHERE sequenceRequestId=?
+    """, seqReqId);
 
-  let readSequenceAreaBgm = getReadSequenceAreaBgm(db, seqReqId)
+    result = readSequenceHandleRow(db, row, areaKeyId)
 
-  if readSequenceAreaBgm.areaId != 0:
-    updateAreaBgm(db, readSequenceAreaBgm.areaId, readSequenceAreaBgm.id, readSequenceAreaBgm.eventName)
+    let readSequenceAreaAction = getReadSequenceAreaAction(db, seqReqId)
+
+    if readSequenceAreaAction.areaId != 0:
+      updateActionSequenceId(db, readSequenceAreaAction.areaId, readSequenceAreaAction.actionSequenceId)
+
+    let readSequenceAreaBgm = getReadSequenceAreaBgm(db, seqReqId)
+
+    if readSequenceAreaBgm.areaId != 0:
+      updateAreaBgm(db, readSequenceAreaBgm.areaId, readSequenceAreaBgm.id, readSequenceAreaBgm.eventName)
+  else:
+    let nineSequenceId = nineSequences[0]["id"].getInt()
+    let row = db.getRow(sql"""
+      SELECT areaObjects, changedResources FROM readSequence WHERE nineSequenceId=?
+    """, nineSequenceId);
+    result = readSequenceHandleRow(db, row, areaKeyId)
 
 proc getAreaItemRewards(db: DbConn, areaItemId: int): JsonNode =
   let row = db.getRow(sql"SELECT rewards FROM areaItemRewards WHERE areaItemId = ?", areaItemId);
