@@ -267,12 +267,13 @@ proc addAreaObject*(db: DbConn, areaObject: JsonNode) =
   let areaObjectId = areaObject["areaObjectId"].getInt()
   let areaPointId = areaObject["areaPointId"].getInt()
   let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
-  let action = $(areaObject["action"])
+  let action = areaObject.getOrDefault("action")
+  let actionStr = if action != nil: $action else: ""
 
   db.exec(sql"""
     INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
     VALUES (?, ?, ?, ?, ?)
-  """, areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+  """, areaId, areaObjectId, areaPointId, areaObjectBehaviorId, actionStr)
 
 proc addAreaEnemy*(db: DbConn, areaEnemy: JsonNode) =
   let areaId = areaEnemy["areaId"].getInt()
