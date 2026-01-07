@@ -4,8 +4,14 @@ import db_connector/db_sqlite
 
 import sembacore
 
+proc resetAreaObjects*(db: DbConn) =
+  db.exec(sql"DELETE FROM areaObjects")
+  db.exec(sql"INSERT INTO areaObjects SELECT * FROM areaObjectsOriginal")
+  db.exec(sql"DELETE FROM areaEnemiesOriginal")
+  db.exec(sql"INSERT INTO areaEnemiesOriginal SELECT * FROM areaEnemiesOriginal")
+
 # version 3: tips, areaObjects, areaEnemies
-proc loadSaveFileVer3(db: DbConn, jsonData: JsonNode) =
+proc loadSaveFileVer3(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: bool) =
   let tips = jsonData["tips"]
 
   db.exec(sql"DELETE FROM tips")
@@ -17,7 +23,8 @@ proc loadSaveFileVer3(db: DbConn, jsonData: JsonNode) =
 
   let areaObjects = jsonData["areaObjects"]
 
-  db.exec(sql"DELETE FROM areaObjects")
+  if not dontDeleteAllAreaObjects:
+    db.exec(sql"DELETE FROM areaObjects")
 
   db.exec(sql"BEGIN")
   for areaObject in areaObjects:
@@ -26,7 +33,8 @@ proc loadSaveFileVer3(db: DbConn, jsonData: JsonNode) =
 
   let areaEnemies = jsonData["areaEnemies"]
 
-  db.exec(sql"DELETE FROM areaEnemies")
+  if not dontDeleteAllAreaObjects:
+    db.exec(sql"DELETE FROM areaEnemies")
 
   db.exec(sql"BEGIN")
   for areaEnemy in areaEnemies:
@@ -140,6 +148,7 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode) =
 #[
 version 2: formations
 version 4: userStatus
+version 6: has new areaObjects
 ]#
 proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't load save file"
@@ -152,6 +161,8 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
 
   let version = jsonData["version"].getInt()
 
+  resetAreaObjects(db)
+
   if version < 2:
     return baseError & ", invalid version: should be >= 2"
 
@@ -163,7 +174,15 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   db.exec(sql"COMMIT")
 
   if version >= 3:
-    loadSaveFileVer3(db, jsonData)
+    # all saves until version 5 are stuck in the first three areas
+    let dontDeleteAllAreaObjects = version <= 5
+    if dontDeleteAllAreaObjects:
+      db.exec(sql"BEGIN")
+      db.exec(sql"DELETE FROM areaObjects WHERE areaId=300402 or areaId=300401 or areaId=101381")
+      db.exec(sql"DELETE FROM areaEnemies WHERE areaId=300402 or areaId=300401 or areaId=101381")
+      db.exec(sql"END")
+
+    loadSaveFileVer3(db, jsonData, dontDeleteAllAreaObjects)
 
   if version >= 4:
     let status = jsonData["status"]
@@ -198,7 +217,7 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   let clearedAchievements = getClearedAchievements(db)
 
   var jsonData = %*{
-    "version": 5,
+    "version": 6,
     "formations": formations,
     "tips": tips,
     "areaObjects": areaObjects,
