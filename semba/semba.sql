@@ -297,6 +297,17 @@ CREATE TABLE xbPlayData (
     PRIMARY KEY (idx, xbId)
 );
 
+DROP TABLE IF EXISTS challenges;
+CREATE TABLE challenges (
+    challengeId INTEGER PRIMARY KEY,
+    state INTEGER,
+    clearedAt STRING,
+    expiresAt STRING
+);
+
+INSERT INTO challenges (challengeId, state, clearedAt, expiresAt) VALUES
+(100, 8, '', '')
+;
 
 INSERT INTO xbPlayData (idx, xbId, nextAtBatGameInfo, changedResources, currentAtBatGameInfo) VALUES
     

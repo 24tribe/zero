@@ -1120,11 +1120,34 @@ proc getChallengeTasks*(db: DbConn): seq[JsonNode] =
 
     result.add(challengeTask)
 
+proc getChallenges*(db: DbConn): seq[JsonNode] =
+  let query = sql"SELECT challengeId, state, clearedAt, expiresAt FROM challenges"
+
+  for row in db.getAllRows(query):
+    let challengeId = parseInt(row[0])
+    let state = parseInt(row[1])
+    let clearedAt = row[2]
+    let expiresAt = row[3]
+
+    let challenge = %*{
+      "challengeId": challengeId,
+      "state": state
+    }
+
+    if clearedAt != "":
+      challenge["clearedAt"] = %*clearedAt
+
+    if expiresAt != "":
+      challenge["expiresAt"] = %*expiresAt
+
+    result.add(challenge)
+
 proc user_LogIn*(db: DbConn): JsonNode =
   let formations = getFormations(db)
   let adventureVariables = getAdventureVariables(db)
   let challengeTasks = getChallengeTasks(db)
   let questStates = getQuestStates(db)
+  let challenges = getChallenges(db)
 
   return %*{
     "resources": {
@@ -1137,7 +1160,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "formations": formations,
       "characterMountingPowerCommon": {},
       "notifications": getNotifications(),
-      "challenges": [{"challengeId": 100, "state": 8}],
+      "challenges": challenges,
       "challengeProgresses": getChallengeProgresses(db),
       "areas": [{"areaId": 300401}, {"areaId": 300402}],
       "nineSequences": getNineSequences(db),
