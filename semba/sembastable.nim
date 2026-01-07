@@ -1244,11 +1244,27 @@ proc updateChallengeTasks(db: DbConn, challengeTasks: JsonNode) =
       ON CONFLICT (challengeTaskId) DO UPDATE SET clearedAt = ?, count = ?
     """, challengeTaskId, clearedAt, count, clearedAt, count)
 
+proc updateChallenges(db: DbConn, challenges: seq[JsonNode]) =
+  for challenge in challenges:
+    let challengeId = challenge["challengeId"].getInt()
+    let state = challenge["state"].getInt()
+    let clearedAt = challenge.getOrDefault("clearedAt").getStr()
+    let expiresAt = challenge.getOrDefault("expiresAt").getStr()
+    db.exec(sql"""
+      INSERT INTO challenges (challengeId, state, clearedAt, expiresAt)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT (challengeId) DO
+      UPDATE SET state = excluded.state,
+                 clearedAt = excluded.clearedAt,
+                 expiresAt = excluded.expiresAt
+    """, challengeId, state, clearedAt, expiresAt)
+
 proc updateResources(db: DbConn, changedResources: var JsonNode) =
-  var status = getUserStatus(db)
-  updateStatusFromStatusLocation(status, changedResources["status"])
-  changedResources["status"] = status
-  setUserStatus(db, status);
+  if changedResources.getOrDefault("status") != nil:
+    var status = getUserStatus(db)
+    updateStatusFromStatusLocation(status, changedResources["status"])
+    changedResources["status"] = status
+    setUserStatus(db, status);
 
   let nineSequences = changedResources.getOrDefault("nineSequences")
 
@@ -1269,6 +1285,9 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
 
   if challengeTasks != nil:
     updateChallengeTasks(db, challengeTasks)
+
+  let challenges = changedResources.getOrDefault("challenges").getElems()
+  updateChallenges(db, challenges)
 
 proc updateActionSequenceId(db: DbConn, areaId: int, actionSequenceId: int) =
   db.exec(
@@ -1998,6 +2017,7 @@ proc xb_Play(db: DbConn, jsonReq: JsonNode): JsonNode =
     result["nextAtBatGameInfo"] = nextAtBatGameInfo
 
   if changedResources != nil:
+    updateResources(db, changedResources)
     result["changedResources"] = changedResources
 
   if protoJsonGetBool(currentAtBatGameInfo["currentAtBatEventInfo"]["afterGameSituation"], "isGameSet"):
