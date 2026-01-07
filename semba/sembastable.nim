@@ -310,14 +310,17 @@ proc parseAreaObjectRow(row: Row): JsonNode =
   var areaObjectId = parseInt(row[0])
   var areaPointId = parseInt(row[1])
   var areaObjectBehaviorId = parseInt(row[2])
-  var action = parseJson(row[3])
+  let actionStr = row[3]
+  let action = if actionStr != "": parseJson(actionStr) else: nil
 
   result = %*{
     "areaObjectId": areaObjectId,
     "areaPointId": areaPointId,
     "areaObjectBehaviorId": areaObjectBehaviorId,
-    "action": action
   }
+
+  if action != nil:
+    result["action"] = action
 
 proc parseAreaEnemyRow(row: Row): JsonNode =
   let areaPointId = parseInt(row[0])
