@@ -184,7 +184,7 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
       db.exec(sql"BEGIN")
       db.exec(sql"DELETE FROM areaObjects WHERE areaId=300402 or areaId=300401 or areaId=101381")
       db.exec(sql"DELETE FROM areaEnemies WHERE areaId=300402 or areaId=300401 or areaId=101381")
-      db.exec(sql"DELETE FROM areaBgm WHERE areaId=300402 or areaId=300401 or areaId=101381")
+      db.exec(sql"DELETE FROM areaBgm WHERE areaId=300402 or areaId=300401 or areaId=300501 or areaId=101381 or areaId=130801")
       db.exec(sql"END")
 
     loadSaveFileVer3(db, jsonData, dontDeleteAllAreaObjects)
