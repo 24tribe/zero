@@ -18,6 +18,16 @@ CREATE TABLE areaObjects (
     PRIMARY KEY (areaId, areaObjectId)
 );
 
+DROP TABLE IF EXISTS areaObjectsOriginal;
+CREATE TABLE areaObjectsOriginal (
+    areaId INTEGER,
+    areaObjectId INTEGER,
+    areaPointId INTEGER,
+    areaObjectBehaviorId INTEGER,
+    action STRING,
+    PRIMARY KEY (areaId, areaObjectId)
+);
+
 DROP TABLE IF EXISTS tipRelease;
 CREATE TABLE tipRelease (
     tipId INTEGER,
@@ -30,6 +40,14 @@ CREATE TABLE tipRelease (
 
 DROP TABLE IF EXISTS areaEnemies;
 CREATE TABLE areaEnemies (
+    areaId INTEGER,
+    areaPointId INTEGER,
+    areaEnemyRateSetId INTEGER,
+    action STRING
+);
+
+DROP TABLE IF EXISTS areaEnemiesOriginal;
+CREATE TABLE areaEnemiesOriginal (
     areaId INTEGER,
     areaPointId INTEGER,
     areaEnemyRateSetId INTEGER,
@@ -9692,5 +9710,8 @@ VALUES
 ,(101622, 101622605)
 ,(101622, 101622606)
 ;
+
+INSERT INTO areaObjectsOriginal SELECT * FROM areaObjects;
+INSERT INTO areaEnemiesOriginal SELECT * FROM areaEnemies;
 
 COMMIT;
