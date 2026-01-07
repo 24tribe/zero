@@ -782,7 +782,7 @@ proc updateAreaObjects(db: DbConn, areaId: int, areaObjects: JsonNode) =
     db.exec(sql"""
       INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
       VALUES (?, ?, ?, ?, ?)
-      ON CONFLICT (areaObjectId) DO
+      ON CONFLICT (areaId, areaObjectId) DO
       UPDATE SET areaPointId = excluded.areaPointId,
                  areaObjectBehaviorId = excluded.areaObjectBehaviorId,
                  action = excluded.action
