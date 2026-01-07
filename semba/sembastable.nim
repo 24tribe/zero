@@ -1980,6 +1980,14 @@ proc xb_Play(db: DbConn, jsonReq: JsonNode): JsonNode =
   if protoJsonGetBool(currentAtBatGameInfo["currentAtBatEventInfo"]["afterGameSituation"], "isGameSet"):
     result["result"] = %*"xb_result_lost" # xbId == 10001
 
+proc user_Notification(db: DbConn): JsonNode =
+  let notifications = getNotifications()
+  return %*{
+    "changedResources": {
+      "notifications": notifications
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -2033,5 +2041,7 @@ proc getJsonResultStable*(
     result = xb_UpdateTension(db, jsonReq)
   elif uri == "/xb/play":
     result = xb_Play(db, jsonReq)
+  elif uri == "/user/notification":
+    result = user_Notification(db)
   else:
     result = nil
