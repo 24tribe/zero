@@ -1244,7 +1244,7 @@ proc updateChallengeTasks(db: DbConn, challengeTasks: JsonNode) =
       ON CONFLICT (challengeTaskId) DO UPDATE SET clearedAt = ?, count = ?
     """, challengeTaskId, clearedAt, count, clearedAt, count)
 
-proc updateChallenges(db: DbConn, challenges: seq[JsonNode]) =
+proc updateChallenges*(db: DbConn, challenges: seq[JsonNode]) =
   for challenge in challenges:
     let challengeId = challenge["challengeId"].getInt()
     let state = challenge["state"].getInt()

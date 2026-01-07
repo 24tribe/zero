@@ -152,6 +152,7 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
 version 2: formations
 version 4: userStatus
 version 6: has new areaObjects
+version 7: challenges
 ]#
 proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't load save file"
@@ -196,6 +197,10 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   if version >= 5:
     loadSaveFileVer5(db, jsonData, dontDeleteAllAreaObjects)
 
+  if version >= 7:
+    let challenges = jsonData["challenges"].getElems()
+    updateChallenges(db, challenges)
+
 proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't create save file"
 
@@ -220,9 +225,10 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   let areaActionSequenceIds = getAreaActionSequenceIds(db)
   let questStates = getQuestStates(db)
   let clearedAchievements = getClearedAchievements(db)
+  let challenges = getChallenges(db)
 
   var jsonData = %*{
-    "version": 6,
+    "version": 7,
     "formations": formations,
     "tips": tips,
     "areaObjects": areaObjects,
@@ -241,6 +247,7 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     "areaActionSequenceIds": areaActionSequenceIds,
     "questStates": questStates,
     "clearedAchievements": clearedAchievements,
+    "challenges": challenges
   }
 
   writeFile(saves_dir & "/" & name & ".save", $jsonData)
