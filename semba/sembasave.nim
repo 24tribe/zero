@@ -7,8 +7,10 @@ import sembacore
 proc resetAreaObjects*(db: DbConn) =
   db.exec(sql"DELETE FROM areaObjects")
   db.exec(sql"INSERT INTO areaObjects SELECT * FROM areaObjectsOriginal")
-  db.exec(sql"DELETE FROM areaEnemiesOriginal")
-  db.exec(sql"INSERT INTO areaEnemiesOriginal SELECT * FROM areaEnemiesOriginal")
+  db.exec(sql"DELETE FROM areaEnemies")
+  db.exec(sql"INSERT INTO areaEnemies SELECT * FROM areaEnemiesOriginal")
+  db.exec(sql"DELETE FROM areaBgm")
+  db.exec(sql"INSERT INTO areaBgm SELECT * FROM areaBgmOriginal")
 
 # version 3: tips, areaObjects, areaEnemies
 proc loadSaveFileVer3(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: bool) =
@@ -49,7 +51,7 @@ version 5: (
   clearedAchievements
 )
 ]#
-proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode) =
+proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: bool) =
   db.exec(sql"BEGIN")
 
   let offlineLogs = jsonData["offlineLogs"]
@@ -61,7 +63,8 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode) =
 
   let areaBgms = jsonData["areaBgms"]
 
-  db.exec(sql"DELETE FROM areaBgm")
+  if not dontDeleteAllAreaObjects:
+    db.exec(sql"DELETE FROM areaBgm")
 
   for areaBgm in areaBgms:
     addAreaBgm(db, areaBgm)
@@ -173,13 +176,15 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     updateFormation(db, formation)
   db.exec(sql"COMMIT")
 
+  # all saves until version 5 are stuck in the first three areas
+  let dontDeleteAllAreaObjects = version <= 5
+
   if version >= 3:
-    # all saves until version 5 are stuck in the first three areas
-    let dontDeleteAllAreaObjects = version <= 5
     if dontDeleteAllAreaObjects:
       db.exec(sql"BEGIN")
       db.exec(sql"DELETE FROM areaObjects WHERE areaId=300402 or areaId=300401 or areaId=101381")
       db.exec(sql"DELETE FROM areaEnemies WHERE areaId=300402 or areaId=300401 or areaId=101381")
+      db.exec(sql"DELETE FROM areaBgm WHERE areaId=300402 or areaId=300401 or areaId=101381")
       db.exec(sql"END")
 
     loadSaveFileVer3(db, jsonData, dontDeleteAllAreaObjects)
@@ -189,7 +194,7 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     setUserStatus(db, status)
 
   if version >= 5:
-    loadSaveFileVer5(db, jsonData)
+    loadSaveFileVer5(db, jsonData, dontDeleteAllAreaObjects)
 
 proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't create save file"
