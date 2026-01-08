@@ -164,7 +164,7 @@ CREATE TABLE totalTasks (
 
 DROP TABLE IF EXISTS tutorialStates;
 CREATE TABLE tutorialStates (
-    tutorialStatusKey INTEGER,
+    tutorialStatusKey INTEGER PRIMARY KEY,
     enabled STRING
 );
 
