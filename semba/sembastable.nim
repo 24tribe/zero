@@ -2102,7 +2102,7 @@ proc adventure_AccessWarpPoint(db: DbConn, jsonReq: JsonNode): JsonNode =
     updateTutorialState(db, respiteUnitTutorialStatusKey, true)
     changedTutorialStates.add(%*{
       "tutorialStatusKey": respiteUnitTutorialStatusKey,
-      "enabled": "true"
+      "enabled": true
     })
 
   if not hasWarpPoint(db, warpPointId):
