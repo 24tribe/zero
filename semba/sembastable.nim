@@ -2031,6 +2031,28 @@ proc user_Notification(db: DbConn): JsonNode =
     }
   }
 
+proc adventure_Hospital(db: DbConn): JsonNode =
+  let characters = getCharacters(db)
+  let status = getUSerStatus(db)
+
+  var changedCharacters = newSeq[JsonNode]() 
+
+  for character in characters:
+    let characterId = character["characterId"].getInt()
+    let hp = character["hp"].getInt()
+    let maxHp = character["maxHp"].getInt()
+    if hp != maxHp:
+      setCharacterHp(db, characterId, maxHp)
+      character["hp"] = %*maxHp
+      changedCharacters.add(character)
+
+  return %*{
+    "changedResources": {
+      "characters": changedCharacters,
+      "status": status
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -2086,5 +2108,7 @@ proc getJsonResultStable*(
     result = xb_Play(db, jsonReq)
   elif uri == "/user/notification":
     result = user_Notification(db)
+  elif uri == "/adventure/hospital":
+    result = adventure_Hospital(db)
   else:
     result = nil
