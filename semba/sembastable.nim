@@ -27,6 +27,8 @@ type TensionData = object
 const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
 
+const respiteUnitTutorialStatusKey = 43
+
 proc getDateNow*(): string = $(now().utc)
 
 proc getAreaBgms*(db: DbConn): seq[JsonNode] =
@@ -1142,12 +1144,20 @@ proc getChallenges*(db: DbConn): seq[JsonNode] =
 
     result.add(challenge)
 
+proc getWarpPoints(db: DbConn): seq[JsonNode] =
+  for row in db.getAllRows(sql"SELECT warpPointId FROM warpPoints"):
+    let warpPointId = parseInt(row[0])
+    result.add(%*{
+      "warpPointId": warpPointId
+    })
+
 proc user_LogIn*(db: DbConn): JsonNode =
   let formations = getFormations(db)
   let adventureVariables = getAdventureVariables(db)
   let challengeTasks = getChallengeTasks(db)
   let questStates = getQuestStates(db)
   let challenges = getChallenges(db)
+  let warpPoints = getWarpPoints(db)
 
   return %*{
     "resources": {
@@ -1172,6 +1182,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "profileBanners": [{"profileBannerId": 2010011, "receivedAt": "2025-09-10T02:22:51Z"}],
       "tutorialStates": getTutorialStates(db),
       "questStates": questStates,
+      "warpPoints": warpPoints,
     },
     "masterData": {"shopProducts": getShopProducts(db)}
   }
@@ -2031,11 +2042,12 @@ proc user_Notification(db: DbConn): JsonNode =
     }
   }
 
-proc adventure_Hospital(db: DbConn): JsonNode =
+#[
+Set the characters hp to max in the database and return the characters with
+changed hp.
+]#
+proc healCharacters(db: DbConn): seq[JsonNode] =
   let characters = getCharacters(db)
-  let status = getUSerStatus(db)
-
-  var changedCharacters = newSeq[JsonNode]() 
 
   for character in characters:
     let characterId = character["characterId"].getInt()
@@ -2044,11 +2056,67 @@ proc adventure_Hospital(db: DbConn): JsonNode =
     if hp != maxHp:
       setCharacterHp(db, characterId, maxHp)
       character["hp"] = %*maxHp
-      changedCharacters.add(character)
+      result.add(character)
+
+proc adventure_Hospital(db: DbConn): JsonNode =
+  let status = getUserStatus(db)
+  let changedCharacters = healCharacters(db)
 
   return %*{
     "changedResources": {
       "characters": changedCharacters,
+      "status": status
+    }
+  }
+
+proc getTutorialState(db: DbConn, tutorialStatusKey: int): bool =
+  let row = db.getRow(sql"SELECT enabled FROM tutorialStates WHERE tutorialStatusKey=?", tutorialStatusKey)
+
+  if row[0] == "":
+    return false
+
+  return row[0] == "true"
+
+proc updateTutorialState(db: DbConn, tutorialStatusKey: int, enabled: bool) =
+  db.exec(sql"""
+    INSERT INTO tutorialStates (tutorialStatusKey, enabled) VALUES
+    (?, ?)
+    ON CONFLICT (tutorialStatusKey) DO UPDATE SET enabled = excluded.enabled
+  """, tutorialStatusKey, $enabled)
+
+proc hasWarpPoint(db: DbConn, warpPointId: int): bool =
+  let row = db.getRow(sql"SELECT warpPointId FROM warpPoints WHERE warpPointId=?", warpPointId)
+  return row[0] != ""
+
+proc addWarpPoint(db: DbConn, warpPointId: int) =
+  db.exec(sql"INSERT INTO warpPoints (warpPointId) VALUES (?)", warpPointId)
+
+proc adventure_AccessWarpPoint(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let warpPointId = jsonReq["warpPointId"].getInt()
+
+  var changedTutorialStates = newSeq[JsonNode]()
+  var changedWarpPoints = newSeq[JsonNode]()
+  let status = getUserStatus(db)
+
+  if not getTutorialState(db, respiteUnitTutorialStatusKey):
+    updateTutorialState(db, respiteUnitTutorialStatusKey, true)
+    changedTutorialStates.add(%*{
+      "tutorialStatusKey": respiteUnitTutorialStatusKey,
+      "enabled": "true"
+    })
+
+  if not hasWarpPoint(db, warpPointId):
+    addWarpPoint(db, warpPointId)
+    changedWarpPoints.add(%*{
+      "warpPointId": warpPointId
+    })
+
+  # TODO: update also missions (zero sensei?), areaObjects and guestCharacters
+
+  return %*{
+    "changedResources": {
+      "warpPoints": changedWarpPoints,
+      "tutorialStates": changedTutorialStates,
       "status": status
     }
   }
@@ -2110,5 +2178,7 @@ proc getJsonResultStable*(
     result = user_Notification(db)
   elif uri == "/adventure/hospital":
     result = adventure_Hospital(db)
+  elif uri == "/adventure/access_warp_point":
+    result = adventure_AccessWarpPoint(db, jsonReq)
   else:
     result = nil

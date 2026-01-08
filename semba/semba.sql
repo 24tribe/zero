@@ -305,6 +305,11 @@ CREATE TABLE challenges (
     expiresAt STRING
 );
 
+DROP TABLE IF EXISTS warpPoints;
+CREATE TABLE warpPoints (
+    warpPointId INTEGER PRIMARY KEY
+);
+
 INSERT INTO challenges (challengeId, state, clearedAt, expiresAt) VALUES
 (100, 8, '', '')
 ;
