@@ -310,6 +310,16 @@ CREATE TABLE warpPoints (
     warpPointId INTEGER PRIMARY KEY
 );
 
+DROP TABLE IF EXISTS areas;
+CREATE TABLE areas (
+    areaId INTEGER PRIMARY KEY
+);
+
+INSERT INTO areas (areaId) VALUES
+(300401)
+,(300402)
+;
+
 INSERT INTO challenges (challengeId, state, clearedAt, expiresAt) VALUES
 (100, 8, '', '')
 ;

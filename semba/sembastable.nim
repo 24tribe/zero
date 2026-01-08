@@ -510,8 +510,21 @@ proc getAreaBgm(db: DbConn, areaId: int): JsonNode =
   if eventName != "":
     result["eventName"] = %*eventName
 
+proc hasArea(db: DbConn, areaId: int): bool =
+  let row = db.getRow(sql"SELECT areaId FROM areas WHERE areaId=?", areaId)
+  return row[0] != ""
+
+proc addArea(db: DbConn, areaId: int) =
+  db.exec(sql"INSERT INTO areas (areaId) VALUES (?)", areaId)
+
 proc adventure_MoveToArea(db: DbConn, jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
+
+  var changedAreas = newSeq[JsonNode]()
+
+  if not hasArea(db, areaId):
+    addArea(db, areaId)
+    changedAreas.add(%*{"areaId": areaId})
 
   let currentLocation = jsonReq["currentLocation"]
 
@@ -533,7 +546,8 @@ proc adventure_MoveToArea(db: DbConn, jsonReq: JsonNode): JsonNode =
   result = %*{
     "areaBgm": areaBgm,
     "changedResources": {
-      "status": status
+      "status": status,
+      "areas": changedAreas
     }
   }
 
@@ -1151,6 +1165,13 @@ proc getWarpPoints(db: DbConn): seq[JsonNode] =
       "warpPointId": warpPointId
     })
 
+proc getAreas(db: DbConn): seq[JsonNode] =
+  for row in db.getAllRows(sql"SELECT areaId FROM areas"):
+    let areaId = parseInt(row[0])
+    result.add(%*{
+      "areaId": areaId
+    })
+
 proc user_LogIn*(db: DbConn): JsonNode =
   let formations = getFormations(db)
   let adventureVariables = getAdventureVariables(db)
@@ -1158,6 +1179,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let questStates = getQuestStates(db)
   let challenges = getChallenges(db)
   let warpPoints = getWarpPoints(db)
+  let areas = getAreas(db)
 
   return %*{
     "resources": {
@@ -1172,7 +1194,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "notifications": getNotifications(),
       "challenges": challenges,
       "challengeProgresses": getChallengeProgresses(db),
-      "areas": [{"areaId": 300401}, {"areaId": 300402}],
+      "areas": areas,
       "nineSequences": getNineSequences(db),
       "tips": getTips(db),
       "characterCostumes": getCharacterCostumes(db),
