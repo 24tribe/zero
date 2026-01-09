@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <windows.h>
+#include <tlhelp32.h>
+#include <synchapi.h>
+
+int LoadGame(const char *path, const char *dll_path) {
+    unsigned int dll_path_len = strlen(dll_path) + 1;
+
+    HANDLE ph; // process handle
+    HANDLE rt; // remote thread
+    LPVOID rb; // remote buffer
+
+    HMODULE hKernel32 = GetModuleHandle("Kernel32");
+
+    if (!hKernel32) {
+        fputs("GetModuleHandle failed", stderr);
+        return 1;
+    }
+
+    LPTHREAD_START_ROUTINE lb = (LPTHREAD_START_ROUTINE)(uintptr_t)GetProcAddress(hKernel32, "LoadLibraryA");
+
+    if (!lb) {
+        fputs("GetProcAddress failed", stderr);
+        return 1;
+    }
+
+    STARTUPINFOA si = {0};
+    PROCESS_INFORMATION pi = {0};
+    si.cb = sizeof(si);
+    
+    BOOL ret = CreateProcessA(NULL, path, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &si, &pi);
+
+    if (!ret) {
+        fputs("CreateProcessA failed\n", stderr);
+        return 1;
+    }
+
+    ph = pi.hProcess;
+    rb = VirtualAllocEx(ph, NULL, dll_path_len, (MEM_RESERVE | MEM_COMMIT), PAGE_EXECUTE_READWRITE);
+
+    if (!rb) {
+        fputs("VirtualAllocEx failed", stderr);
+        return 1;
+    }
+
+    if (!WriteProcessMemory(ph, rb, dll_path, dll_path_len, NULL)) {
+        fputs("WriteProcessMemory failed", stderr);
+        return 1;
+    }
+
+    rt = CreateRemoteThread(ph, NULL, 0, lb, rb, 0, NULL);
+
+    if (!rt) {
+        fputs("CreateRemoteThread failed", stderr);
+        return 1;
+    }
+
+    Sleep(2000);
+
+    ResumeThread(pi.hThread);
+
+    CloseHandle(ph);
+
+    return 0;
+}

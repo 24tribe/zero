@@ -1,3 +1,7 @@
+extern "C" {
+#include "../LoaderAux.h"
+}
+
 #include "webview/webview.h"
 #include <stddef.h>
 
@@ -91,23 +95,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine,
     std::string dllPath{CURRENT_DIR};
     dllPath.append("/libzero.dll");
 
-    std::string cmd = "./loader.exe ";
-    cmd.append(EscapePath(exePath));
-    cmd.push_back(' ');
-    cmd.append(EscapePath(dllPath.c_str()));
-
-    STARTUPINFO info;
-    ZeroMemory(&info, sizeof(info));
-    info.cb = sizeof(info);
-
-    PROCESS_INFORMATION processInfo;
-
-    if (CreateProcessA(
-      NULL, const_cast<char *>(cmd.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo
-    )) {
-        CloseHandle(processInfo.hProcess);
-        CloseHandle(processInfo.hThread);
-    }
+    LoadGame(exePath, dllPath.c_str());
 
     webview_terminate(wv);
   }, w);
