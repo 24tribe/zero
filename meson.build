@@ -109,7 +109,7 @@ shared_library(
     install_dir : '.', include_directories : zero_demo_incdir
 )
 
-executable('loader', 'loader.c', 'LoaderAux.c', install : true, install_dir : '.')
+executable('loader', 'loader.c', 'LoaderAux.c')
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
 
 executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
