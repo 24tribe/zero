@@ -16,21 +16,6 @@ extern "C" {
 #define CURRENT_DIR_SIZE 4096
 #define EXE_PATH_SIZE 4096
 
-std::string EscapePath(const char *s) {
-  std::string res;
-
-  res.push_back('\"');
-  while (*s) {
-    if (*s == '\\' || *s == ' ') {
-      res.push_back('\\');
-    }
-    res.push_back(*s++);
-  }
-  res.push_back('\"');
-
-  return res;
-}
-
 static void initOpenInfo(OPENFILENAMEA* openInfo, char *exePath) {
   ZeroMemory(openInfo, sizeof(*openInfo));
   openInfo->lStructSize = sizeof(*openInfo);
