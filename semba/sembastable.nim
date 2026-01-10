@@ -3,6 +3,7 @@ import std/math
 import std/sequtils
 import std/strutils
 import std/times
+import std/sets
 
 import db_connector/db_sqlite
 import protojson
@@ -1293,7 +1294,10 @@ proc updateChallenges*(db: DbConn, challenges: seq[JsonNode]) =
     """, challengeId, state, clearedAt, expiresAt)
 
 proc updateResources(db: DbConn, changedResources: var JsonNode) =
+  var handledKeys = initHashSet[string]()
+
   if changedResources.getOrDefault("status") != nil:
+    handledKeys.incl("status")
     var status = getUserStatus(db)
     updateStatusFromStatusLocation(status, changedResources["status"])
     changedResources["status"] = status
@@ -1302,25 +1306,36 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
   let nineSequences = changedResources.getOrDefault("nineSequences")
 
   if nineSequences != nil:
+    handledKeys.incl("nineSequences")
     updateNineSequences(db, nineSequences)
 
   let adventureVariables = changedResources.getOrDefault("adventureVariables")
 
   if adventureVariables != nil:
+    handledKeys.incl("adventureVariables")
     updateAdventureVariables(db, adventureVariables)
 
   let challengeProgresses = changedResources.getOrDefault("challengeProgresses")
 
   if challengeProgresses != nil:
+    handledKeys.incl("challengeProgresses")
     updateChallengeProgresses(db, challengeProgresses)
 
   let challengeTasks = changedResources.getOrDefault("challengeTasks")
 
   if challengeTasks != nil:
+    handledKeys.incl("challengeTasks")
     updateChallengeTasks(db, challengeTasks)
 
   let challenges = changedResources.getOrDefault("challenges").getElems()
   updateChallenges(db, challenges)
+
+  if challenges.len > 0:
+    handledKeys.incl("challenges")
+
+  for key, _ in changedResources.pairs():
+    if not (key in handledKeys):
+      echo("WARNING: " & key & " not handled in updateResources")
 
 proc updateActionSequenceId(db: DbConn, areaId: int, actionSequenceId: int) =
   db.exec(
