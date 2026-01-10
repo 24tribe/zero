@@ -1293,6 +1293,13 @@ proc updateChallenges*(db: DbConn, challenges: seq[JsonNode]) =
                  expiresAt = excluded.expiresAt
     """, challengeId, state, clearedAt, expiresAt)
 
+proc updateTutorialState(db: DbConn, tutorialStatusKey: int, enabled: bool) =
+  db.exec(sql"""
+    INSERT INTO tutorialStates (tutorialStatusKey, enabled) VALUES
+    (?, ?)
+    ON CONFLICT (tutorialStatusKey) DO UPDATE SET enabled = excluded.enabled
+  """, tutorialStatusKey, $enabled)
+
 proc updateResources(db: DbConn, changedResources: var JsonNode) =
   var handledKeys = initHashSet[string]()
 
@@ -1332,6 +1339,16 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
 
   if challenges.len > 0:
     handledKeys.incl("challenges")
+
+  let tutorialStates = changedResources.getOrDefault("tutorialStates").getElems()
+
+  if tutorialStates.len > 0:
+    handledKeys.incl("tutorialStates")
+
+  for tutorialState in tutorialStates:
+    let tutorialStatusKey = tutorialState["tutorialStatusKey"].getInt()
+    let enabled = tutorialState.getOrDefault("enabled").getBool()
+    updateTutorialState(db, tutorialStatusKey, enabled)
 
   for key, _ in changedResources.pairs():
     if not (key in handledKeys):
@@ -2113,13 +2130,6 @@ proc getTutorialState(db: DbConn, tutorialStatusKey: int): bool =
     return false
 
   return row[0] == "true"
-
-proc updateTutorialState(db: DbConn, tutorialStatusKey: int, enabled: bool) =
-  db.exec(sql"""
-    INSERT INTO tutorialStates (tutorialStatusKey, enabled) VALUES
-    (?, ?)
-    ON CONFLICT (tutorialStatusKey) DO UPDATE SET enabled = excluded.enabled
-  """, tutorialStatusKey, $enabled)
 
 proc hasWarpPoint(db: DbConn, warpPointId: int): bool =
   let row = db.getRow(sql"SELECT warpPointId FROM warpPoints WHERE warpPointId=?", warpPointId)
