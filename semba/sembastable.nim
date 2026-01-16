@@ -1173,6 +1173,13 @@ proc getAreas(db: DbConn): seq[JsonNode] =
       "areaId": areaId
     })
 
+proc getAreaGroups(db: DbConn): seq[JsonNode] =
+  for row in db.getAllRows(sql"SELECT areaGroupId FROM areaGroups"):
+    let areaGroupId = parseInt(row[0])
+    result.add(%*{
+      "areaGroupId": areaGroupId
+    })
+
 proc user_LogIn*(db: DbConn): JsonNode =
   let formations = getFormations(db)
   let adventureVariables = getAdventureVariables(db)
@@ -1181,6 +1188,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let challenges = getChallenges(db)
   let warpPoints = getWarpPoints(db)
   let areas = getAreas(db)
+  let areaGroups = getAreaGroups(db)
 
   return %*{
     "resources": {
@@ -1206,6 +1214,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "tutorialStates": getTutorialStates(db),
       "questStates": questStates,
       "warpPoints": warpPoints,
+      "areaGroups": areaGroups,
     },
     "masterData": {"shopProducts": getShopProducts(db)}
   }
@@ -1300,6 +1309,13 @@ proc updateTutorialState(db: DbConn, tutorialStatusKey: int, enabled: bool) =
     ON CONFLICT (tutorialStatusKey) DO UPDATE SET enabled = excluded.enabled
   """, tutorialStatusKey, $enabled)
 
+proc addAreaGroup(db: DbConn, areaGroupId: int) =
+  db.exec(sql"""
+    INSERT INTO areaGroups (areaGroupId) VALUES
+    (?)
+    ON CONFLICT (areaGroupId) DO NOTHING
+  """, areaGroupId)
+
 proc updateResources(db: DbConn, changedResources: var JsonNode) =
   var handledKeys = initHashSet[string]()
 
@@ -1349,6 +1365,15 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
     let tutorialStatusKey = tutorialState["tutorialStatusKey"].getInt()
     let enabled = tutorialState.getOrDefault("enabled").getBool()
     updateTutorialState(db, tutorialStatusKey, enabled)
+
+  let areaGroups = changedResources.getOrDefault("areaGroups").getElems()
+
+  if areaGroups.len > 0:
+    handledKeys.incl("areaGroups")
+
+  for areaGroup in areaGroups:
+    let areaGroupId = areaGroup["areaGroupId"].getInt()
+    addAreaGroup(db, areaGroupId)
 
   for key, _ in changedResources.pairs():
     if not (key in handledKeys):

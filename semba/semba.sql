@@ -315,6 +315,11 @@ CREATE TABLE areas (
     areaId INTEGER PRIMARY KEY
 );
 
+DROP TABLE IF EXISTS areaGroups;
+CREATE TABLE areaGroups (
+    areaGroupId INTEGER PRIMARY KEY
+);
+
 INSERT INTO areas (areaId) VALUES
 (300401)
 ,(300402)
