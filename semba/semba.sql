@@ -320,6 +320,13 @@ CREATE TABLE areaGroups (
     areaGroupId INTEGER PRIMARY KEY
 );
 
+DROP TABLE IF EXISTS cities;
+CREATE TABLE cities (
+    cityId INTEGER PRIMARY KEY,
+    isGearShopReleased STRING,
+    releasedAt STRING
+);
+
 INSERT INTO areas (areaId) VALUES
 (300401)
 ,(300402)

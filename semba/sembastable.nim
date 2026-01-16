@@ -1180,6 +1180,17 @@ proc getAreaGroups(db: DbConn): seq[JsonNode] =
       "areaGroupId": areaGroupId
     })
 
+proc getCities(db: DbConn): seq[JsonNode] =
+  for row in db.getAllRows(sql"SELECT cityId, isGearShopReleased, releasedAt FROM cities"):
+    let cityId = parseInt(row[0])
+    let isGearShopReleased = row[1] == "true"
+    let releasedAt = row[2]
+    result.add(%*{
+      "cityId": cityId,
+      "isGearShopReleased": isGearShopReleased,
+      "releasedAt": releasedAt
+    })
+
 proc user_LogIn*(db: DbConn): JsonNode =
   let formations = getFormations(db)
   let adventureVariables = getAdventureVariables(db)
@@ -1189,6 +1200,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let warpPoints = getWarpPoints(db)
   let areas = getAreas(db)
   let areaGroups = getAreaGroups(db)
+  let cities = getCities(db)
 
   return %*{
     "resources": {
@@ -1215,6 +1227,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "questStates": questStates,
       "warpPoints": warpPoints,
       "areaGroups": areaGroups,
+      "cities": cities,
     },
     "masterData": {"shopProducts": getShopProducts(db)}
   }
@@ -1316,6 +1329,16 @@ proc addAreaGroup(db: DbConn, areaGroupId: int) =
     ON CONFLICT (areaGroupId) DO NOTHING
   """, areaGroupId)
 
+proc addCity(db: DbConn, city: JsonNode) =
+  let cityId = city["cityId"].getInt()
+  let isGearShopReleased = city.getOrDefault("isGearShopReleased").getBool()
+  let releasedAt = city["releasedAt"].getStr()
+  db.exec(sql"""
+    INSERT INTO cities (cityId, isGearShopReleased, releasedAt)
+    VALUES (?, ?, ?)
+    ON CONFLICT (cityId) DO UPDATE SET isGearShopReleased = excluded.isGearShopReleased
+  """, cityId, isGearShopReleased, releasedAt)
+
 proc updateResources(db: DbConn, changedResources: var JsonNode) =
   var handledKeys = initHashSet[string]()
 
@@ -1374,6 +1397,14 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
   for areaGroup in areaGroups:
     let areaGroupId = areaGroup["areaGroupId"].getInt()
     addAreaGroup(db, areaGroupId)
+
+  let cities = changedResources.getOrDefault("cities").getElems()
+
+  if cities.len > 0:
+    handledKeys.incl("cities")
+
+  for city in cities:
+    addCity(db, city)
 
   for key, _ in changedResources.pairs():
     if not (key in handledKeys):
