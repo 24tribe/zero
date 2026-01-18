@@ -409,7 +409,7 @@ proc tip_Release*(db: DbConn, jsonReq: JsonNode): JsonNode =
           areaObjectBehaviorId = t.newAreaObjectBehaviorId,
           action = t.newAction
       FROM tipRelease as t
-      WHERE t.tipId = ? AND areaObjects.areaId = t.areaId AND areaObjects.areaObjectId = t.areaObjectId
+      WHERE t.tipId = ? AND areaObjects.areaObjectId = t.areaObjectId
     """, tipId)
 
   return %*{

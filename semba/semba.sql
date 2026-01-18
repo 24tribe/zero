@@ -3378,8 +3378,11 @@ INSERT INTO areaBgm (areaId, id, eventName) VALUES
 , (101622, 3201, 'bgm_adv_01_underground')
 ;
 
-INSERT INTO tipRelease (tipId, areaId, areaObjectId, newAreaPointId, newAreaObjectBehaviorId, newAction)
-VALUES (3012, 300402, 309901, 300402991, 30990102, '{"type": 7, "id": 1}')
+INSERT INTO tipRelease (tipId, areaObjectId, newAreaPointId, newAreaObjectBehaviorId, newAction)
+VALUES
+
+(3012, 309901, 300402991, 30990102, '{"type": 7, "id": 1}')
+, (2017, 700128, 101316102, 7010142, '{"type": 7, "id": 1}')
 ;
 
 -- Area 300402
