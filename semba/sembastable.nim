@@ -681,6 +681,9 @@ proc getBattleParameters(db: DbConn, battleEntryIds: JsonNode): seq[JsonNode] =
       SELECT enemies FROM battleParameters WHERE id = ?
     """, id)
 
+    if battleParameterRow[0] == "":
+      raise newException(SembaError, "Couldn't find battleParameters for battleEntryId=" & $battleEntryId)
+
     let enemies = parseJson(battleParameterRow[0])
 
     result.add(%*{
