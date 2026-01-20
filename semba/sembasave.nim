@@ -18,30 +18,24 @@ proc loadSaveFileVer3(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
 
   db.exec(sql"DELETE FROM tips")
 
-  db.exec(sql"BEGIN")
   for tip in tips:
     addTip(db, tip)
-  db.exec(sql"COMMIT")
 
   let areaObjects = jsonData["areaObjects"]
 
   if not dontDeleteAllAreaObjects:
     db.exec(sql"DELETE FROM areaObjects")
 
-  db.exec(sql"BEGIN")
   for areaObject in areaObjects:
     addAreaObject(db, areaObject)
-  db.exec(sql"COMMIT")
 
   let areaEnemies = jsonData["areaEnemies"]
 
   if not dontDeleteAllAreaObjects:
     db.exec(sql"DELETE FROM areaEnemies")
 
-  db.exec(sql"BEGIN")
   for areaEnemy in areaEnemies:
     addAreaEnemy(db, areaEnemy)
-  db.exec(sql"COMMIT")
 
 #[
 version 5: (
@@ -52,8 +46,6 @@ version 5: (
 )
 ]#
 proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: bool) =
-  db.exec(sql"BEGIN")
-
   let offlineLogs = jsonData["offlineLogs"]
 
   db.exec(sql"DELETE FROM debugLogsOffline")
@@ -146,8 +138,6 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
   for clearedAchievement in clearedAchievements:
     addClearedAchievement(db, clearedAchievement)
 
-  db.exec(sql"COMMIT")
-
 #[
 version 2: formations
 version 4: userStatus
@@ -155,6 +145,8 @@ version 6: has new areaObjects
 version 7: challenges
 ]#
 proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
+  db.exec(sql"BEGIN")
+
   const baseError = "Couldn't load save file"
 
   if db == nil:
@@ -172,21 +164,17 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
 
   let formations = jsonData["formations"]
 
-  db.exec(sql"BEGIN")
   for formation in formations:
     updateFormation(db, formation)
-  db.exec(sql"COMMIT")
 
   # all saves until version 5 are stuck in the first three areas
   let dontDeleteAllAreaObjects = version <= 5
 
   if version >= 3:
     if dontDeleteAllAreaObjects:
-      db.exec(sql"BEGIN")
       db.exec(sql"DELETE FROM areaObjects WHERE areaId=300402 or areaId=300401 or areaId=101381")
       db.exec(sql"DELETE FROM areaEnemies WHERE areaId=300402 or areaId=300401 or areaId=101381")
       db.exec(sql"DELETE FROM areaBgm WHERE areaId=300402 or areaId=300401 or areaId=300501 or areaId=101381 or areaId=130801")
-      db.exec(sql"END")
 
     loadSaveFileVer3(db, jsonData, dontDeleteAllAreaObjects)
 
@@ -200,6 +188,8 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   if version >= 7:
     let challenges = jsonData["challenges"].getElems()
     updateChallenges(db, challenges)
+
+  db.exec(sql"COMMIT")
 
 proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't create save file"
