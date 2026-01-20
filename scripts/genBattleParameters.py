@@ -30,8 +30,14 @@ def write_sql(debug_logs, f):
 
             all_battle_parameters.append(battle_parameters)
 
+    seen_ids = set()
             
     for battle_parameter in itertools.chain.from_iterable(all_battle_parameters):
+        if battle_parameter["id"] in seen_ids:
+            continue
+
+        seen_ids.add(battle_parameter["id"])
+
         if first:
             first = False
         else:
