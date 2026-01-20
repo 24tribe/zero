@@ -175,7 +175,7 @@ CREATE TABLE shopProducts (
 
 DROP TABLE IF EXISTS battleParameters;
 CREATE TABLE battleParameters (
-    id INTEGER,
+    id INTEGER PRIMARY KEY,
     enemies STRING
 );
 
