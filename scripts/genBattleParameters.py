@@ -4,15 +4,14 @@ import json
 import sys
 import itertools
 
-from dump_semba_logs import get_debug_logs
-
 def main():
     parser = ArgumentParser()
-    parser.add_argument("semba_db")
+    parser.add_argument("online_logs_json")
     parser.add_argument("output_sql")
     args = parser.parse_args()
 
-    debug_logs = get_debug_logs(args.semba_db)
+    with open(args.online_logs_json, "r", encoding="utf-8") as f:
+        debug_logs = json.load(f)
 
     with open(args.output_sql, "w", encoding="utf-8") as f:
         write_sql(debug_logs, f)
