@@ -178,18 +178,15 @@ void DrawFunc::operator()(void) {
 
     if (active) {
         if (ImGui::Begin("Tribe Nine Zero", &active, 0)) {
-            ImGui::Checkbox("Show demo", &showDemo);
+            ImGui::Text("Result: %s", result);
 
-            if (gamePtrsReady && ImGui::Button("Run command") && runCommand) {
-                runCommand();
-            }
+            ImGui::Checkbox("Show saves window", &showSavesWindow);
+
+            ImGui::Separator();
 
             if (pausePositionPtr) {
                 ImGui::Checkbox("Pause position", pausePositionPtr);
             }
-
-            ImGui::Text("gamePtrsReady: %s\n", gamePtrsReady ? "true" : "false");
-            ImGui::Text(result);
 
             if (pos) {
                 ImGui::DragFloat3("pos", pos, 0.1f);
@@ -199,21 +196,30 @@ void DrawFunc::operator()(void) {
                 ImGui::DragFloat4("rotation", rotation, 0.1f);
             }
 
+            ImGui::Separator();
+
             if (customFovFlag) {
                 ImGui::Checkbox("Enable custom fov", customFovFlag);
             }
 
-            ImGui::Checkbox("Show saves window", &showSavesWindow);
-
             if (fov_scale) {
                 ImGui::DragFloat("fovScale", fov_scale, 0.1f);
             }
-        }
 
-        ImGui::Separator();
-        ImGui::InputInt("zone_area_id", &zone_area_id);
-        if (ImGui::Button("Move to zoneArea") && on_move_to_zone_area) {
-            on_move_to_zone_area(zone_area_id);
+            ImGui::Separator();
+
+            ImGui::InputInt("zone_area_id", &zone_area_id);
+            if (ImGui::Button("Move to zoneArea") && on_move_to_zone_area) {
+                on_move_to_zone_area(zone_area_id);
+            }
+
+            ImGui::Separator();
+
+            ImGui::Checkbox("Show demo", &showDemo);
+
+            if (ImGui::Button("Run command (Debug)") && gamePtrsReady && runCommand) {
+                runCommand();
+            }
         }
 
         ImGui::End();
