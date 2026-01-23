@@ -515,8 +515,11 @@ proc hasArea(db: DbConn, areaId: int): bool =
   let row = db.getRow(sql"SELECT areaId FROM areas WHERE areaId=?", areaId)
   return row[0] != ""
 
-proc addArea(db: DbConn, areaId: int) =
-  db.exec(sql"INSERT INTO areas (areaId) VALUES (?)", areaId)
+proc addArea*(db: DbConn, areaId: int) =
+  db.exec(sql"""
+    INSERT INTO areas (areaId) VALUES (?)
+    ON CONFLICT DO NOTHING
+  """, areaId)
 
 proc adventure_MoveToArea(db: DbConn, jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
@@ -1162,28 +1165,28 @@ proc getChallenges*(db: DbConn): seq[JsonNode] =
 
     result.add(challenge)
 
-proc getWarpPoints(db: DbConn): seq[JsonNode] =
+proc getWarpPoints*(db: DbConn): seq[JsonNode] =
   for row in db.getAllRows(sql"SELECT warpPointId FROM warpPoints"):
     let warpPointId = parseInt(row[0])
     result.add(%*{
       "warpPointId": warpPointId
     })
 
-proc getAreas(db: DbConn): seq[JsonNode] =
+proc getAreas*(db: DbConn): seq[JsonNode] =
   for row in db.getAllRows(sql"SELECT areaId FROM areas"):
     let areaId = parseInt(row[0])
     result.add(%*{
       "areaId": areaId
     })
 
-proc getAreaGroups(db: DbConn): seq[JsonNode] =
+proc getAreaGroups*(db: DbConn): seq[JsonNode] =
   for row in db.getAllRows(sql"SELECT areaGroupId FROM areaGroups"):
     let areaGroupId = parseInt(row[0])
     result.add(%*{
       "areaGroupId": areaGroupId
     })
 
-proc getCities(db: DbConn): seq[JsonNode] =
+proc getCities*(db: DbConn): seq[JsonNode] =
   for row in db.getAllRows(sql"SELECT cityId, isGearShopReleased, releasedAt FROM cities"):
     let cityId = parseInt(row[0])
     let isGearShopReleased = row[1] == "true"
@@ -1325,14 +1328,14 @@ proc updateTutorialState(db: DbConn, tutorialStatusKey: int, enabled: bool) =
     ON CONFLICT (tutorialStatusKey) DO UPDATE SET enabled = excluded.enabled
   """, tutorialStatusKey, $enabled)
 
-proc addAreaGroup(db: DbConn, areaGroupId: int) =
+proc addAreaGroup*(db: DbConn, areaGroupId: int) =
   db.exec(sql"""
     INSERT INTO areaGroups (areaGroupId) VALUES
     (?)
     ON CONFLICT (areaGroupId) DO NOTHING
   """, areaGroupId)
 
-proc addCity(db: DbConn, city: JsonNode) =
+proc addCity*(db: DbConn, city: JsonNode) =
   let cityId = city["cityId"].getInt()
   let isGearShopReleased = city.getOrDefault("isGearShopReleased").getBool()
   let releasedAt = city["releasedAt"].getStr()
@@ -2194,8 +2197,11 @@ proc hasWarpPoint(db: DbConn, warpPointId: int): bool =
   let row = db.getRow(sql"SELECT warpPointId FROM warpPoints WHERE warpPointId=?", warpPointId)
   return row[0] != ""
 
-proc addWarpPoint(db: DbConn, warpPointId: int) =
-  db.exec(sql"INSERT INTO warpPoints (warpPointId) VALUES (?)", warpPointId)
+proc addWarpPoint*(db: DbConn, warpPointId: int) =
+  db.exec(sql"""
+    INSERT INTO warpPoints (warpPointId) VALUES (?)
+    ON CONFLICT (warpPointId) DO NOTHING
+  """, warpPointId)
 
 proc adventure_AccessWarpPoint(db: DbConn, jsonReq: JsonNode): JsonNode =
   let warpPointId = jsonReq["warpPointId"].getInt()

@@ -138,6 +138,28 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
   for clearedAchievement in clearedAchievements:
     addClearedAchievement(db, clearedAchievement)
 
+# version 8: warpPoints, areas, areaGroups, cities
+proc loadSaveFileVer8(db: DbConn, jsonData: JsonNode) =
+  db.exec(sql"DELETE FROM warpPoints")
+  let warpPoints = jsonData["warpPoints"].getElems()
+  for warpPoint in warpPoints:
+    addWarpPoint(db, warpPoint["warpPointId"].getInt())
+
+  db.exec(sql"DELETE FROM areas")
+  let areas = jsonData["areas"].getElems()
+  for area in areas:
+    addArea(db, area["areaId"].getInt())
+
+  db.exec(sql"DELETE FROM areaGroups")
+  let areaGroups = jsonData["areaGroups"].getElems()
+  for areaGroup in areaGroups:
+    addAreaGroup(db, areaGroup["areaGroupId"].getInt())
+
+  db.exec(sql"DELETE FROM cities")
+  let cities = jsonData["cities"].getElems()
+  for city in cities:
+    addCity(db, city)
+
 #[
 version 2: formations
 version 4: userStatus
@@ -189,6 +211,9 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     let challenges = jsonData["challenges"].getElems()
     updateChallenges(db, challenges)
 
+  if version >= 8:
+    loadSaveFileVer8(db, jsonData)
+
   db.exec(sql"COMMIT")
 
 proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
@@ -216,9 +241,13 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   let questStates = getQuestStates(db)
   let clearedAchievements = getClearedAchievements(db)
   let challenges = getChallenges(db)
+  let warpPoints = getWarpPoints(db)
+  let areas = getAreas(db)
+  let areaGroups = getAreaGroups(db)
+  let cities = getCities(db)
 
   var jsonData = %*{
-    "version": 7,
+    "version": 8,
     "formations": formations,
     "tips": tips,
     "areaObjects": areaObjects,
@@ -237,7 +266,11 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     "areaActionSequenceIds": areaActionSequenceIds,
     "questStates": questStates,
     "clearedAchievements": clearedAchievements,
-    "challenges": challenges
+    "challenges": challenges,
+    "warpPoints": warpPoints,
+    "areas": areas,
+    "areaGroups": areaGroups,
+    "cities": cities,
   }
 
   writeFile(saves_dir & "/" & name & ".save", $jsonData)
