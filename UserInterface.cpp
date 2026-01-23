@@ -47,6 +47,10 @@ extern "C" int UIMainThread(LPVOID _1) {
         return SembaLoadSaveFile(ZERO_CONFIG.savesDir, name);
     };
 
+    draw_func.deleteSaveFile = [](const std::string& name) {
+        SembaDeleteSaveFile(ZERO_CONFIG.savesDir, name.c_str());
+    };
+
     draw_func.on_move_to_zone_area = [&draw_func](int zone_area_id) {
         const char *currentLocation = "{\"areaType\": 1, \"direction\": 5, \"positionCoordinates\": {\"x\": -6, \"y\": 53.59764, \"z\": -15.75}, \"areaKeyId\": 300402}";
 

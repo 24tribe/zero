@@ -28,6 +28,7 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   on_move_to_zone_area(),
                                   createSaveFile(),
                                   loadSaveFile(),
+                                  deleteSaveFile(),
                                   runCommand() {
 }
 
@@ -53,6 +54,7 @@ int CallLoadSaveFile(void *userData) {
 void DrawSaveTable(
     std::vector<std::string>& save_files,
     std::function<char *(const char *)> loadSaveFile,
+    std::function<void (const std::string&)> deleteSaveFile,
     const char **err
 ) {
     ImGuiTableFlags flags = (
@@ -115,11 +117,19 @@ void DrawSaveTable(
                 }
 
                 ImGui::SameLine();
-                ImGui::Button("Delete Game");
+
+                // FIXME: should ask for confirmation
+                if (ImGui::Button("Delete Game") && deleteSaveFile) {
+                    deleteSaveFile(save_file);
+                    save_files.erase(save_files.begin() + row_n);
+                    ImGui::PopID();
+                    goto endloop;
+                }
 
                 ImGui::PopID();
             }
         }
+        endloop:
         ImGui::EndTable();
     }
 }
@@ -127,6 +137,7 @@ void DrawSaveTable(
 void ShowSavesWindow(
     bool* p_open, std::vector<std::string>& save_files, char *saves_dir,
     std::function<char *(char *)> createSaveFile,
+    std::function<void (const std::string&)> deleteSaveFile,
     std::function<char *(const char *)> loadSaveFile
 ) {
     if (!ImGui::Begin("Saves", p_open)) {
@@ -162,7 +173,7 @@ void ShowSavesWindow(
         ImVec2(-FLT_MIN, ImGui::GetFontSize() * 20),
         ImGuiChildFlags_ResizeY)
     ) {
-        DrawSaveTable(save_files, loadSaveFile, &err);
+        DrawSaveTable(save_files, loadSaveFile, deleteSaveFile, &err);
     }
     ImGui::EndChild();
 
@@ -229,7 +240,9 @@ void DrawFunc::operator()(void) {
         }
 
         if (showSavesWindow) {
-            ShowSavesWindow(&showSavesWindow, save_files, saves_dir, createSaveFile, loadSaveFile);
+            ShowSavesWindow(
+                &showSavesWindow, save_files, saves_dir, createSaveFile, deleteSaveFile, loadSaveFile
+            );
         }
     }
 

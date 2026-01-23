@@ -1,4 +1,6 @@
 import std/json
+import std/files
+import std/paths
 
 import db_connector/db_sqlite
 
@@ -274,3 +276,6 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   }
 
   writeFile(saves_dir & "/" & name & ".save", $jsonData)
+
+proc deleteSaveFile*(saves_dir: string, name: string) =
+  removeFile((saves_dir & "/" & name & ".save").Path)

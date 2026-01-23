@@ -28,6 +28,7 @@ class DrawFunc {
     std::function<void(int)> on_move_to_zone_area;
     std::function<char*(char*)> createSaveFile;
     std::function<char*(const char*)> loadSaveFile;
+    std::function<void(const std::string&)> deleteSaveFile;
     std::function<void()> runCommand;
 
     DrawFunc(bool active);

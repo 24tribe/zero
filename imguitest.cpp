@@ -102,6 +102,10 @@ int main(int, char**)
         return nullptr;
     };
 
+    draw_func.deleteSaveFile = [](const std::string &name) {
+        std::cout << "Deleted save file with name: " << name << "\n";
+    };
+
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop

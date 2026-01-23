@@ -75,3 +75,12 @@ proc SembaCreateSaveFile(saves_dir: cstring, path: cstring): cstring {.exportc.}
     let e = getCurrentException()
     let msg = "[SembaCreateSaveFile] Nim Exception: " & getCurrentExceptionMsg() & e.getStackTrace()
     result = dupString(msg)
+
+proc SembaDeleteSaveFile(saves_dir: cstring, path: cstring): cstring {.exportc.} =
+  try:
+    deleteSaveFile($saves_dir, $path)
+    result = nil
+  except Exception:
+    let e = getCurrentException()
+    let msg = "[SembaDeleteSaveFile] Nim Exception: " & getCurrentExceptionMsg() & e.getStackTrace()
+    result = dupString(msg)
