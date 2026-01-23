@@ -37,9 +37,7 @@ extern "C" int UIMainThread(LPVOID _1) {
         draw_func.result = what.c_str();
     }
 
-    draw_func.togglePausePos = []() {
-        togglePausePosition();
-    };
+    draw_func.pausePositionPtr = getPausePositionPtr();
 
     draw_func.createSaveFile = [](char *name) {
         return SembaCreateSaveFile(ZERO_CONFIG.savesDir, name);

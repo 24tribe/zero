@@ -21,13 +21,13 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   rotation(nullptr),
                                   fov_scale(nullptr),
                                   customFovFlag(nullptr),
+                                  pausePositionPtr(nullptr),
                                   saves_dir(nullptr),
                                   zone_area_id(130801),
                                   save_files(),
                                   on_move_to_zone_area(),
                                   createSaveFile(),
                                   loadSaveFile(),
-                                  togglePausePos(),
                                   runCommand() {
 }
 
@@ -178,16 +178,14 @@ void DrawFunc::operator()(void) {
 
     if (active) {
         if (ImGui::Begin("Tribe Nine Zero", &active, 0)) {
-            if (ImGui::Button("Toggle demo")) {
-                showDemo = !showDemo;
-            }
+            ImGui::Checkbox("Show demo", &showDemo);
 
             if (gamePtrsReady && ImGui::Button("Run command") && runCommand) {
                 runCommand();
             }
 
-            if (ImGui::Button("Toggle pause position") && togglePausePos) {
-                togglePausePos();
+            if (pausePositionPtr) {
+                ImGui::Checkbox("Pause position", pausePositionPtr);
             }
 
             ImGui::Text("gamePtrsReady: %s\n", gamePtrsReady ? "true" : "false");

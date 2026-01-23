@@ -5,10 +5,10 @@
 
 void HookTN(void *GameAssembly);
 bool areGamePtrsReady(void);
-void togglePausePosition(void);
 float *getPosArray(void);
 float *getRotationArray(void);
 bool *getCustomFovFlag(void);
+bool *getPausePositionPtr(void);
 float *getFovScale(void);
 
 #endif

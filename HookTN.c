@@ -383,8 +383,8 @@ float *getRotationArray(void) {
     return rotation;
 }
 
-void togglePausePosition(void) {
-    pausePosition = !pausePosition;
+bool *getPausePositionPtr(void) {
+    return &pausePosition;
 }
 
 void Detour_UnityEngine_Transform__set_position (

@@ -17,6 +17,7 @@ class DrawFunc {
     float* rotation;
     float* fov_scale;
     bool* customFovFlag;
+    bool* pausePositionPtr;
 
     char *saves_dir;
 
@@ -27,7 +28,6 @@ class DrawFunc {
     std::function<void(int)> on_move_to_zone_area;
     std::function<char*(char*)> createSaveFile;
     std::function<char*(const char*)> loadSaveFile;
-    std::function<void()> togglePausePos;
     std::function<void()> runCommand;
 
     DrawFunc(bool active);
