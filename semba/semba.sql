@@ -327,6 +327,37 @@ CREATE TABLE cities (
     releasedAt STRING
 );
 
+DROP TABLE IF EXISTS gachas;
+CREATE TABLE gachas (
+    gachaId INTEGER PRIMARY KEY,
+    gachaCategoryId INTEGER,
+    guaranteedCount INTEGER,
+    isGuaranteedPickup STRING,
+    executionCount INTEGER,
+    isSelectable STRING
+);
+
+DROP TABLE IF EXISTS gachaButtonStates;
+CREATE TABLE gachaButtonStates (
+    gachaId INTEGER,
+    gachaButtonId INTEGER,
+    executionCount INTEGER,
+    lastExecutedAt STRING,
+    PRIMARY KEY (gachaId, gachaButtonId)
+);
+
+INSERT INTO gachas
+(gachaId, gachaCategoryId, guaranteedCount, isGuaranteedPickup, executionCount, isSelectable)
+VALUES
+
+(1, 1, 0, 'false', 0, 'true')
+;
+
+INSERT INTO gachaButtonStates (gachaId, gachaButtonId, executionCount, lastExecutedAt) VALUES
+(1, 1, 0, '')
+,(1, 2, 0, '')
+;
+
 INSERT INTO areas (areaId) VALUES
 (300401)
 ,(300402)
