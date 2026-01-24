@@ -799,10 +799,11 @@ proc getBattleFinishAreaObjects(db: DbConn, battleEntryId: int): JsonNode =
 
   return if row[0] != "": parseJson(row[0]) else: nil
 
-proc updateAreaObjects(db: DbConn, areaId: int, areaObjects: JsonNode) =
+proc updateAreaObjects(db: DbConn, areaObjects: JsonNode) =
   for areaObject in areaObjects:
     let areaObjectId = areaObject["areaObjectId"].getInt()
     let areaPointId = areaObject["areaPointId"].getInt()
+    let areaId = areaPointId div 1000
     let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
     let action = $(areaObject["action"])
 
@@ -877,7 +878,7 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
 
   if areaObjects != nil:
     result["areaObjects"] = areaObjects
-    updateAreaObjects(db, status["currentAreaKeyId"].getInt(), areaObjects)
+    updateAreaObjects(db, areaObjects)
 
 proc getNotifications(): JsonNode =
   return %*{
@@ -1459,7 +1460,7 @@ proc readSequenceHandleRow(db: DbConn, row: Row, areaKeyId: int): JsonNode =
 
   if row[0] != "":
     areaObjects = parseJson(row[0])
-    updateAreaObjects(db, areaKeyId, areaObjects)
+    updateAreaObjects(db, areaObjects)
 
   var changedResources = parseJson(row[1]) 
   updateResources(db, changedResources)  
