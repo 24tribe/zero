@@ -801,20 +801,31 @@ proc getBattleFinishAreaObjects(db: DbConn, battleEntryId: int): JsonNode =
 
 proc updateAreaObjects(db: DbConn, areaObjects: JsonNode) =
   for areaObject in areaObjects:
-    let areaObjectId = areaObject["areaObjectId"].getInt()
     let areaPointId = areaObject["areaPointId"].getInt()
     let areaId = areaPointId div 1000
-    let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
+    let areaEnemyRateSetId = areaObject.getOrDefault("areaEnemyRateSetId")
     let action = $(areaObject["action"])
 
-    db.exec(sql"""
-      INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
-      VALUES (?, ?, ?, ?, ?)
-      ON CONFLICT (areaId, areaObjectId) DO
-      UPDATE SET areaPointId = excluded.areaPointId,
-                 areaObjectBehaviorId = excluded.areaObjectBehaviorId,
-                 action = excluded.action
-    """, areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+    if areaEnemyRateSetId == nil:
+      let areaObjectId = areaObject["areaObjectId"].getInt()
+      let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
+
+      db.exec(sql"""
+        INSERT INTO areaObjects (areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT (areaId, areaObjectId) DO
+        UPDATE SET areaPointId = excluded.areaPointId,
+                  areaObjectBehaviorId = excluded.areaObjectBehaviorId,
+                  action = excluded.action
+      """, areaId, areaObjectId, areaPointId, areaObjectBehaviorId, action)
+    else:
+      db.exec(sql"""
+        INSERT INTO areaEnemies (areaId, areaPointId, areaEnemyRateSetId, action)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT (areaPointId) DO
+        UPDATE SET areaEnemyRateSetId = excluded.areaEnemyRateSetId,
+                   action = excluded.action
+      """, areaId, areaPointId, areaEnemyRateSetId, action)
 
 proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
   var characterExps = newSeq[JsonNode]()

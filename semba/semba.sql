@@ -41,7 +41,7 @@ CREATE TABLE tipRelease (
 DROP TABLE IF EXISTS areaEnemies;
 CREATE TABLE areaEnemies (
     areaId INTEGER,
-    areaPointId INTEGER,
+    areaPointId INTEGER PRIMARY KEY,
     areaEnemyRateSetId INTEGER,
     action STRING
 );
@@ -49,7 +49,7 @@ CREATE TABLE areaEnemies (
 DROP TABLE IF EXISTS areaEnemiesOriginal;
 CREATE TABLE areaEnemiesOriginal (
     areaId INTEGER,
-    areaPointId INTEGER,
+    areaPointId INTEGER PRIMARY KEY,
     areaEnemyRateSetId INTEGER,
     action STRING
 );
