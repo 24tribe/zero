@@ -1217,6 +1217,22 @@ proc getCities*(db: DbConn): seq[JsonNode] =
       "releasedAt": releasedAt
     })
 
+proc getWallet(db: DbConn): JsonNode =
+  let freeGemsRow = db.getRow(sql"SELECT val FROM userData WHERE keyName='freeGems'")
+  let freeGems = parseInt(freeGemsRow[0])
+  let paidGemsRow = db.getRow(sql"SELECT val FROM userData WHERE keyName='paidGems'")
+  let paidGems = parseInt(paidGemsRow[0])
+  return %*{
+    "free": freeGems,
+    "paid": paidGems
+  }
+
+proc setWallet(db: DbConn, wallet: JsonNode) =
+  let freeGems = wallet["free"].getInt()
+  let paidGems = wallet["paid"].getInt()
+  db.exec(sql"UPDATE userData SET val=? WHERE keyName='freeGems'", $freeGems)
+  db.exec(sql"UPDATE userData SET val=? WHERE keyName='paidGems'", $paidGems)
+
 proc user_LogIn*(db: DbConn): JsonNode =
   let formations = getFormations(db)
   let adventureVariables = getAdventureVariables(db)
@@ -1227,12 +1243,13 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let areas = getAreas(db)
   let areaGroups = getAreaGroups(db)
   let cities = getCities(db)
+  let wallet = getWallet(db)
 
   return %*{
     "resources": {
       "challengeTasks": challengeTasks,
       "adventureVariables": adventureVariables,
-      "wallet": {},
+      "wallet": wallet,
       "characters": getCharacters(db),
       "status": getUserStatus(db),
       "tensionCards": getTensionCards(db),
