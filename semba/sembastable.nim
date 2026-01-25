@@ -891,13 +891,21 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
     result["areaObjects"] = areaObjects
     updateAreaObjects(db, areaObjects)
 
-proc getNotifications(): JsonNode =
+proc getGachaNotification(db: DbConn): JsonNode =
+  let rows = db.getAllRows(sql"SELECT gachaId FROM gachas")
+  var ids = newSeq[int]()
+
+  for row in rows:
+    ids.add(parseInt(row[0]))
+
   return %*{
-    "gacha": {
-      "executableGachaIds": [
-        1
-      ]
-    },
+    "executableGachaIds": ids
+  }
+
+proc getNotifications(db: DbConn): JsonNode =
+  let gacha = getGachaNotification(db)
+  return %*{
+    "gacha": gacha,
     "mail": true,
     "itemRequest": false
   }
@@ -911,7 +919,7 @@ proc user_CrossDate*(db: DbConn, jsonReq: JsonNode): JsonNode =
   return %*{
     "changedResources": {
       "status": status,
-      "notifications": getNotifications()
+      "notifications": getNotifications(db)
     }
   }
 
@@ -1230,7 +1238,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "tensionCards": getTensionCards(db),
       "formations": formations,
       "characterMountingPowerCommon": {},
-      "notifications": getNotifications(),
+      "notifications": getNotifications(db),
       "challenges": challenges,
       "challengeProgresses": getChallengeProgresses(db),
       "areas": areas,
@@ -2163,7 +2171,7 @@ proc xb_Play(db: DbConn, jsonReq: JsonNode): JsonNode =
     result["result"] = %*"xb_result_lost" # xbId == 10001
 
 proc user_Notification(db: DbConn): JsonNode =
-  let notifications = getNotifications()
+  let notifications = getNotifications(db)
   return %*{
     "changedResources": {
       "notifications": notifications
@@ -2275,6 +2283,174 @@ proc news_UserList(): JsonNode =
     ]
   }
 
+proc characterIdToCostumeId(characterId: int): int = (characterId div 100)*1000 + 1
+
+proc getGachaCharacters(characterIds: seq[int]): seq[JsonNode] =
+  for characterId in characterIds:
+    let costumeId = characterIdToCostumeId(characterId)
+    result.add(%*{
+      "characterId": characterId,
+      "characterCostumeId": costumeId,
+      "exp": 4490000,
+      "hp": 1662, # FIXME: correct hp
+      "attack": 406, # FIXME: correct attack
+      "defense": 282, # FIXME: correct defense
+      "maxHp": 1662, # FIXME: corrent maxHp
+      "receivedAt": getDateNow(),
+      "characterOwnershipType": 1,
+      "criticalRate": 5,
+      "criticalDamageRate": 50,
+      "movementSpeed": 6,
+      "damageInflictedRate": 100,
+      "tensionIncreaseRate": 100,
+      "cpRecastRate": 100,
+      "spGaugeIncreaseRate": 100,
+      "attackSpeed": 100,
+      "abnormalityParamSet": {
+        "oily": {
+          "burstResistance": 100,
+          "burstResistanceLimit": 100
+        },
+        "pressure": {
+          "burstResistance": 100,
+          "burstResistanceLimit": 100
+        },
+        "scared": {
+          "burstResistance": 100,
+          "burstResistanceLimit": 100
+        },
+        "electric": {
+          "burstResistance": 100,
+          "burstResistanceLimit": 100
+        },
+        "unfortified": {
+          "burstResistance": 100,
+          "burstResistanceLimit": 100
+        }
+      },
+      "actionPointMax": 1000,
+      "actionPointRate": 3000,
+      "actionPointConsumption": 160,
+      "damageTakenRate": 1
+    })
+
+proc getGachaButtonStates(db: DbConn, gachaId: int): seq[JsonNode] =
+  let rows = db.getAllRows(sql"""
+    SELECT gachaButtonId, executionCount, lastExecutedAt FROM gachaButtonStates
+    WHERE gachaId=?
+  """, gachaId)
+
+  for row in rows:
+    let gachaButtonId = parseInt(row[0])
+    let executionCount = parseInt(row[1])
+    let lastExecutedAt = row[2]
+
+    let gachaButtonState = %*{
+      "gachaId": gachaId,
+      "gachaButtonId": gachaButtonId,
+      "executionCount": executionCount,
+    }
+
+    if lastExecutedAt != "":
+      gachaButtonState["lastExecutedAt"] = %*lastExecutedAt
+
+    result.add(gachaButtonState)
+
+proc getGachas(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"""
+    SELECT gachaId, gachaCategoryId, guaranteedCount, isGuaranteedPickup, executionCount, isSelectable
+    FROM gachas
+  """)
+
+  for row in rows:
+    let gachaId = parseInt(row[0])
+    let gachaCategoryId = parseInt(row[1])
+    let guaranteedCount = parseInt(row[2])
+    let isGuaranteedPickup = row[3] == "true"
+    let executionCount = parseInt(row[4])
+    let isSelectable = row[5] == "true"
+    let gachaButtonStates = getGachaButtonStates(db, gachaId)
+
+    result.add(%*{
+      "gachaId": gachaId,
+      "gachaButtonStates": gachaButtonStates,
+      "gachaCategoryState": {
+        "gachaCategoryId": gachaCategoryId,
+        "guaranteedCount": guaranteedCount,
+        "isGuaranteedPickup": isGuaranteedPickup,
+        "executionCount": executionCount,
+        "isSelectable": isSelectable
+      }
+    })
+
+proc getGachaRateSetIds(db: DbConn): seq[int] =
+  let rows = db.getAllRows(sql"SELECT DISTINCT gachaRateSetId FROM gachaRates")
+  for row in rows:
+    result.add(parseInt(row[0]))
+
+proc getGachaRateCards(db: DbConn, gachaRateId: int): seq[JsonNode] =
+  let rows = db.getAllRows(sql"""
+    SELECT cardType, cardId, isAttention, isSelectable, gachaCardId FROM gachaCards
+    WHERE gachaRateId=?
+  """, gachaRateId)
+
+  for row in rows:
+    let cardType = parseInt(row[0])
+    let cardId = parseInt(row[1])
+    let isAttention = row[2] == "true"
+    let isSelectable = row[3] == "true"
+    let gachaCardId = parseInt(row[4])
+    result.add(%*{
+      "cardType": cardType,
+      "cardId": cardId,
+      "isAttention": isAttention,
+      "isSelectable": isSelectable,
+      "gachaCardId": gachaCardId
+    })
+
+proc getGachaRateSetRows(db: DbConn, gachaRateSetId: int): seq[JsonNode] =
+  let rows = db.getAllRows(sql"""
+    SELECT gachaRateId, percentRate, percentRatePerCard FROM gachaRates
+    WHERE gachaRateSetId=?
+  """, gachaRateSetId)
+
+  for row in rows:
+    let gachaRateId = parseInt(row[0])
+    let percentRate = row[1]
+    let percentRatePerCard = row[2]
+    let cards = getGachaRateCards(db, gachaRateId)
+    result.add(%*{
+      "gachaRateId": gachaRateId,
+      "percentRate": percentRate,
+      "percentRatePerCard": percentRatePerCard,
+      "cards": cards
+    })
+
+proc getGachaRateSets(db: DbConn): seq[JsonNode] =
+  for gachaRateSetId in getGachaRateSetIds(db):
+    let rows = getGachaRateSetRows(db, gachaRateSetId)
+    result.add(%*{
+      "gachaRateSetId": gachaRateSetId,
+      "rows": rows
+    })
+
+proc gacha_List(db: DbConn): JsonNode =
+  let gachas = getGachas(db)
+  let gachaCharacters = getGachaCharacters(@[100301, 100401, 101101, 101301])
+  let gachaNotification = getGachaNotification(db)
+  let gachaRateSets = getGachaRateSets(db)
+
+  return %*{
+    "gachas": gachas,
+    "gachaCharacters": gachaCharacters,
+    "gachaRateSets": gachaRateSets,
+    "changedResources": {
+      "notifications": {
+        "gacha": gachaNotification
+      }
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -2335,5 +2511,7 @@ proc getJsonResultStable*(
     result = news_UserList()
   elif uri == "/news/list":
     result = news_UserList()
+  elif uri == "/gacha/list":
+    result = gacha_List(db)
   else:
     result = nil

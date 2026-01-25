@@ -14,11 +14,43 @@ def main():
 
     res = first["res"]
     print(res.keys())
-    pp(res["gachas"])
 
     with open(args.out_sql, "w", encoding="utf-8") as f:
         write_gachas(res["gachas"], f)
+        write_gacha_rate_sets(res["gachaRateSets"], f)
 
+
+def write_gacha_rate_sets(gacha_rate_sets, f):
+    gacha_rate_sql = []
+    gacha_cards_sql = []
+
+    for gacha_rate_set in gacha_rate_sets:
+        gacha_rate_set_id = gacha_rate_set["gachaRateSetId"]
+        for gacha_rate in gacha_rate_set["rows"]:
+            gacha_rate_id = gacha_rate["gachaRateId"]
+            percent_rate = gacha_rate["percentRate"]
+            percent_rate_per_card = gacha_rate["percentRatePerCard"]
+
+            vals = f"({gacha_rate_id}, {gacha_rate_set_id}, '{percent_rate}', '{percent_rate_per_card}')"
+            gacha_rate_sql.append(vals)
+
+            cards = gacha_rate["cards"]
+            for card in cards:
+                card_type = card["cardType"]
+                card_id = card["cardId"]
+                is_attention = json.dumps(card.get("isAttention", False))
+                is_selectable = json.dumps(card.get("isSelectable", False))
+                gacha_card_id = card["gachaCardId"]
+                vals = f"({card_type}, {card_id}, '{is_attention}', '{is_selectable}', {gacha_card_id}, {gacha_rate_id})"
+                gacha_cards_sql.append(vals)
+
+    xprint = lambda *args: print(*args, file=f)
+    xprint("INSERT INTO gachaRates (gachaRateId, gachaRateSetId, percentRate, percentRatePerCard) VALUES")
+    xprint("\n,".join(gacha_rate_sql))
+    xprint(";\n")
+    xprint("INSERT INTO gachaCards (cardType, cardId, isAttention, isSelectable, gachaCardId, gachaRateId) VALUES")
+    xprint("\n,".join(gacha_cards_sql))
+    xprint(";")
 
 def write_gachas(gachas, f):
     xprint = lambda *args: print(*args, file=f)
