@@ -25,6 +25,10 @@ type TensionData = object
   topTeamSkitIndex: int
   bottomTeamSkitIndex: int
 
+type GachaButton = enum
+  gachaButtonSingle = 1,
+  gachaButtonTen = 2
+
 const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
 
@@ -2373,6 +2377,27 @@ proc getGachaButtonStates(db: DbConn, gachaId: int): seq[JsonNode] =
 
     result.add(gachaButtonState)
 
+proc parseGachaRow(db: DbConn, row: Row): JsonNode =
+  let gachaId = parseInt(row[0])
+  let gachaCategoryId = parseInt(row[1])
+  let guaranteedCount = parseInt(row[2])
+  let isGuaranteedPickup = row[3] == "true"
+  let executionCount = parseInt(row[4])
+  let isSelectable = row[5] == "true"
+  let gachaButtonStates = getGachaButtonStates(db, gachaId)
+
+  return %*{
+    "gachaId": gachaId,
+    "gachaButtonStates": gachaButtonStates,
+    "gachaCategoryState": {
+      "gachaCategoryId": gachaCategoryId,
+      "guaranteedCount": guaranteedCount,
+      "isGuaranteedPickup": isGuaranteedPickup,
+      "executionCount": executionCount,
+      "isSelectable": isSelectable
+    }
+  }
+
 proc getGachas(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"""
     SELECT gachaId, gachaCategoryId, guaranteedCount, isGuaranteedPickup, executionCount, isSelectable
@@ -2380,25 +2405,7 @@ proc getGachas(db: DbConn): seq[JsonNode] =
   """)
 
   for row in rows:
-    let gachaId = parseInt(row[0])
-    let gachaCategoryId = parseInt(row[1])
-    let guaranteedCount = parseInt(row[2])
-    let isGuaranteedPickup = row[3] == "true"
-    let executionCount = parseInt(row[4])
-    let isSelectable = row[5] == "true"
-    let gachaButtonStates = getGachaButtonStates(db, gachaId)
-
-    result.add(%*{
-      "gachaId": gachaId,
-      "gachaButtonStates": gachaButtonStates,
-      "gachaCategoryState": {
-        "gachaCategoryId": gachaCategoryId,
-        "guaranteedCount": guaranteedCount,
-        "isGuaranteedPickup": isGuaranteedPickup,
-        "executionCount": executionCount,
-        "isSelectable": isSelectable
-      }
-    })
+    result.add(parseGachaRow(db, row))
 
 proc getGachaRateSetIds(db: DbConn): seq[int] =
   let rows = db.getAllRows(sql"SELECT DISTINCT gachaRateSetId FROM gachaRates")
@@ -2468,6 +2475,63 @@ proc gacha_List(db: DbConn): JsonNode =
     }
   }
 
+proc getGacha(db: DbConn, gachaId: int): JsonNode =
+  let row = db.getRow(sql"""
+    SELECT gachaId, gachaCategoryId, guaranteedCount, isGuaranteedPickup, executionCount, isSelectable
+    FROM gachas
+    WHERE gachaId=?
+  """, gachaId)
+
+  if row[0] == "":
+    raise newException(SembaError, "Couldn't find gacha for gachaId=" & $gachaId)
+
+  return parseGachaRow(db, row)
+
+proc gachaButtonToPulls(gachaButtonId: int): int =
+  case gachaButtonId.GachaButton:
+    of gachaButtonSingle:
+      result = 1
+    of gachaButtonTen:
+      result = 10
+
+proc updateGachaWithExecution(db: DbConn, gachaId: int, gachaButtonId: int, clientTimestamp: string): JsonNode =
+  let gacha = getGacha(db, gachaId)
+  let gachaCategoryState = gacha["gachaCategoryState"]
+  let pulls = gachaButtonToPulls(gachaButtonId)
+
+  let guaranteedCount = gachaCategoryState["guaranteedCount"].getInt() + pulls
+  let executionCount = gachaCategoryState["executionCount"].getInt() + pulls
+
+  gachaCategoryState["guaranteedCount"] = %*guaranteedCount
+  gachaCategoryState["executionCount"] = %*executionCount
+
+  db.exec(sql"""
+    UPDATE gachas SET guaranteedCount=?, executionCount=? WHERE gachaId=?
+  """, guaranteedCount, executionCount, gachaId)
+
+  for gachaButtonState in gacha["gachaButtonStates"]:
+    if gachaButtonState["gachaButtonId"].getInt() == gachaButtonId:
+      let buttonExecutionCount = protoJsonGetInt(gachaButtonState, "executionCount") + 1
+      gachaButtonState["executionCount"] = %*buttonExecutionCount
+      gachaButtonState["lastExecutedAt"] = %*clientTimestamp
+      db.exec(sql"""
+        UPDATE gachaButtonStates SET executionCount=?, lastExecutedAt=?
+        WHERE gachaId=? AND gachaButtonId=?
+      """, buttonExecutionCount, clientTimestamp, gachaId, gachaButtonId)
+
+  return gacha
+
+proc gacha_Execute(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let gachaId = jsonReq["gachaId"].getInt()
+  let gachaButtonId = jsonReq["gachaButtonId"].getInt()
+  let clientTimestamp = jsonReq["clientTimestamp"].getStr()
+
+  let gacha = updateGachaWithExecution(db, gachaId, gachaButtonId, clientTimestamp)
+
+  return %*{
+    "gacha": gacha
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -2530,5 +2594,7 @@ proc getJsonResultStable*(
     result = news_UserList()
   elif uri == "/gacha/list":
     result = gacha_List(db)
+  elif uri == "/gacha/execute":
+    result = gacha_Execute(db, jsonReq)
   else:
     result = nil
