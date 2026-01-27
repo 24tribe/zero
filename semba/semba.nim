@@ -5,6 +5,7 @@ import db_connector/db_sqlite
 
 import sembacore
 import sembasave
+import sembaprivate
 
 type SembaContext = object
   db: DbConn
@@ -57,15 +58,6 @@ proc SembaCall(uri: cstring, request: cstring): cstring {.exportc.} =
     echo "[SembaCall] Nim Exception: " & getCurrentExceptionMsg()
     echo e.getStackTrace()
     result = nil
-
-proc SembaLoadSaveFile(saves_dir: cstring, path: cstring): cstring {.exportc.} =
-  try:
-    let res = loadSaveFile(ctx.db, $saves_dir, $path)
-    result = if res != "": dupString(res) else: nil
-  except Exception:
-    let e = getCurrentException()
-    let msg = "[SembaLoadSaveFile] Nim Exception: " & getCurrentExceptionMsg() & e.getStackTrace()
-    result = dupString(msg)
 
 proc SembaCreateSaveFile(saves_dir: cstring, path: cstring): cstring {.exportc.} =
   try:
