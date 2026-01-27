@@ -30,6 +30,21 @@ std::string createSaveReq(const char* saves_dir, const char *name) {
     return result;
 }
 
+std::string unpackSaveResError(const char *res) {
+    json_error_t unused;
+    json_t *resJson = json_loads(res, 0, &unused);
+    if (!resJson) {
+        return "Couldn't load response json";
+    }
+    const char *err = json_string_value(json_object_get(resJson, "err"));
+    if (!err) {
+        return "Couldn't get the value of err key";
+    }
+    std::string errStr = err;
+    json_decref(resJson);
+    return errStr;
+}
+
 extern "C" int UIMainThread(LPVOID _1) {
     (void)_1;
 
@@ -50,19 +65,31 @@ extern "C" int UIMainThread(LPVOID _1) {
 
     draw_func.pausePositionPtr = getPausePositionPtr();
 
+    static std::string saveFileErr;
+
     draw_func.createSaveFile = [](char *name) {
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
-        return SembaCall("/semba/create_save_file", req.c_str());
+        char *res = SembaCall("/semba/create_save_file", req.c_str());
+        if (res) {
+            saveFileErr = unpackSaveResError(res);
+            res = (saveFileErr != "" ? (char *)saveFileErr.c_str() : NULL);
+        }
+        return res;
     };
 
     draw_func.loadSaveFile = [](const char *name) {
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
-        return SembaCall("/semba/load_save_file", req.c_str());
+        char *res = SembaCall("/semba/load_save_file", req.c_str());
+        if (res) {
+            saveFileErr = unpackSaveResError(res);
+            res = (saveFileErr != "" ? (char *)saveFileErr.c_str() : NULL);
+        }
+        return res;
     };
 
     draw_func.deleteSaveFile = [](const std::string& name) {
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name.c_str());
-        SembaCall("/semba/delete_save_file", req.c_str())
+        SembaCall("/semba/delete_save_file", req.c_str());
     };
 
     draw_func.on_move_to_zone_area = [&draw_func](int zone_area_id) {
