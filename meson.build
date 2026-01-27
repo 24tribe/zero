@@ -110,8 +110,5 @@ executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
 
 executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 
-executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
-
-
 subdir('dump_ga')
 subdir('launcher')
