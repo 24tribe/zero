@@ -49,4 +49,5 @@ proc test_xoshiro256pp() =
   doAssert results == expected
   echo "OK"
 
-test_xoshiro256pp()
+when isMainModule:
+  test_xoshiro256pp()
