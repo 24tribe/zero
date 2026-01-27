@@ -51,7 +51,8 @@ extern "C" int UIMainThread(LPVOID _1) {
     draw_func.pausePositionPtr = getPausePositionPtr();
 
     draw_func.createSaveFile = [](char *name) {
-        return SembaCreateSaveFile(ZERO_CONFIG.savesDir, name);
+        std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
+        return SembaCall("/semba/create_save_file", req.c_str());
     };
 
     draw_func.loadSaveFile = [](const char *name) {

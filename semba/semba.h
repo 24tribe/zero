@@ -4,7 +4,6 @@
 extern void NimMain(void);
 extern char *SembaCall(const char *uri, const char *request);
 extern char *SembaCallDemo(const char *uri, const char *request);
-extern char *SembaCreateSaveFile(const char *saves_dir, const char *path);
 extern char *SembaDeleteSaveFile(const char *saves_dir, const char *path);
 extern void SembaInitOfflineDb(const char *path);
 extern void SembaSetRemoteUrl(const char *url);
