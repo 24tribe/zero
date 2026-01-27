@@ -61,7 +61,8 @@ extern "C" int UIMainThread(LPVOID _1) {
     };
 
     draw_func.deleteSaveFile = [](const std::string& name) {
-        SembaDeleteSaveFile(ZERO_CONFIG.savesDir, name.c_str());
+        std::string req = createSaveReq(ZERO_CONFIG.savesDir, name.c_str());
+        SembaCall("/semba/delete_save_file", req.c_str())
     };
 
     draw_func.on_move_to_zone_area = [&draw_func](int zone_area_id) {
