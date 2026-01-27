@@ -8,7 +8,7 @@ int main(void) {
     const char *res;
 
     printf("calling hello world endpoint...\n");
-    res = SembaCall("echo", "{\"data\":\"Hello World!!!\"}");
+    res = SembaCall("/semba/echo", "{\"data\":\"Hello World!!!\"}");
     printf("%s\n\n", res);
 
     printf("calling missing endpoint...\n");

@@ -1,9 +1,11 @@
 import std/json
+import std/strutils
 
 import db_connector/db_sqlite
 
 import sembastable
 import sembademo
+import sembaprivate
 
 export sembastable
 
@@ -50,7 +52,9 @@ proc sembaCallImpl*(
   let jsonReq = if request != "": parseJson(request) else: nil
   var jsonRes: JsonNode
 
-  if version == gvDemo:
+  if uri.startsWith("/semba/"):
+    jsonRes = getJsonResultPrivateApi(uri, jsonReq, db)
+  elif version == gvDemo:
     jsonRes = getJsonResultDemo(uri, jsonReq, db)
   else:
     jsonRes = getJsonResultStable(uri, jsonReq, db, lastBattleStartReq)

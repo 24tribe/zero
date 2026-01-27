@@ -2279,10 +2279,7 @@ proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
 ): JsonNode =
-  if uri == "echo":
-    let dataUpper = jsonReq["data"].getStr().toUpperAscii()
-    result = %*{"data": dataUpper}
-  elif uri == "/auth/steam_user":
+  if uri == "/auth/steam_user":
     result = %*{"userId": "696969696969"}
   elif uri == "/auth/nonce":
     result = %*{"nonce": "6969696969696969"}
