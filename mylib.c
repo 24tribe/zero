@@ -1,7 +1,7 @@
 #include "load_library_hook.h"
 #include "NtQueryDirectoryFileHook.h"
 #include "Config.h"
-#include "UserInterface.h"
+#include "gui/UserInterface.h"
 #include "create_file_hook.h"
 
 #include <MinHook.h>

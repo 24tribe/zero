@@ -9,9 +9,6 @@ python3 = find_program('python3', required : true)
 webview_proj = subproject('webview-55b438dc11d0e46bc68526822380963ae9d362af')
 webview_dep = webview_proj.get_variable('webview_dep')
 
-d3d11_lib = cc.find_library('d3d11')
-imgui = dependency('imgui', default_options : 'default_library=static')
-
 ntdll_lib = cc.find_library('ntdll')
 shlwapi_lib = cc.find_library('shlwapi')
 
@@ -42,6 +39,7 @@ goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 subdir('semba')
 subdir('autogen')
 subdir('autogen_demo')
+subdir('gui')
 
 zero_src = [
     'mylib.c',
@@ -60,15 +58,13 @@ zero_src = [
     're.c',
     'sds_utf_conv.c',
     'Patterns.c',
-    'Backend.cpp',
-    'UserInterface.cpp',
-    'DrawFunc.cpp',
     'dump_ga/GameAssemblyDump.c',
     'dump_ga/MetadataDump.c',
     'version.c',
     'create_file_hook.c',
     'SavesHelper.cpp',
     'TimeUtil.c',
+    gui_src,
 ]
 
 zero_stable_incdir = include_directories('stable')
@@ -116,7 +112,6 @@ executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 
 executable('test_xoshiro256pp', 'test_xoshiro256pp.c', 'xoshiro256pp.c')
 
-executable('imguitest', 'imguitest.cpp', 'DrawFunc.cpp', 'TimeUtil.c', dependencies : [d3d11_lib, imgui])
 
 subdir('dump_ga')
 subdir('launcher')
