@@ -4,6 +4,7 @@ extern "C" {
 #include "HookTN.h"
 #include "Config.h"
 #include "semba/semba.h"
+#include <jansson.h>
 }
 
 #include "Backend.h"
@@ -17,6 +18,16 @@ extern "C" {
 
 static bool KeyPressed(int vKey) {
 	return (GetAsyncKeyState(vKey) & 1) != 0;
+}
+
+std::string createSaveReq(const char* saves_dir, const char *name) {
+    json_t *req = json_object();
+    json_object_set_new(req, "saves_dir", json_string(saves_dir));
+    json_object_set_new(req, "name", json_string(name));
+    char *req_s = json_dumps(req, 0);
+    std::string result = req_s;
+    free(req_s);
+    return result;
 }
 
 extern "C" int UIMainThread(LPVOID _1) {
@@ -44,7 +55,8 @@ extern "C" int UIMainThread(LPVOID _1) {
     };
 
     draw_func.loadSaveFile = [](const char *name) {
-        return SembaLoadSaveFile(ZERO_CONFIG.savesDir, name);
+        std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
+        return SembaCall("/semba/load_save_file", req.c_str());
     };
 
     draw_func.deleteSaveFile = [](const std::string& name) {
