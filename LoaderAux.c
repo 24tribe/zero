@@ -50,6 +50,9 @@ int LoadGame(const char *path, const char *dll_path) {
         return 1;
     }
 
+    HANDLE zeroHookFinishEvent = CreateEventA(NULL, TRUE, FALSE, "zeroHookFinishEvent");
+    ResetEvent(zeroHookFinishEvent);
+
     rt = CreateRemoteThread(ph, NULL, 0, lb, rb, 0, NULL);
 
     if (!rt) {
@@ -57,7 +60,8 @@ int LoadGame(const char *path, const char *dll_path) {
         return 1;
     }
 
-    Sleep(2000);
+    WaitForSingleObject(zeroHookFinishEvent, INFINITE);
+    CloseHandle(zeroHookFinishEvent);
 
     ResumeThread(pi.hThread);
 

@@ -10,6 +10,7 @@
 #include <processthreadsapi.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void MyMain(HMODULE hModule) {
     AllocConsole();
@@ -33,6 +34,10 @@ void MyMain(HMODULE hModule) {
     if (hMainThread) {
         CloseHandle(hMainThread);
     }
+
+    HANDLE zeroHookFinishEvent = CreateEventA(NULL, TRUE, FALSE, "zeroHookFinishEvent");
+    SetEvent(zeroHookFinishEvent);
+    CloseHandle(zeroHookFinishEvent);
 
     printf("OK! Reached end of MyMain!\n");
 }
