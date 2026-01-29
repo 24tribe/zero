@@ -2549,7 +2549,11 @@ proc getRandomIds(db: DbConn, pulls: int): seq[int] =
   let characterIds = getCharacterIds(db)
 
   for i in 0 ..< pulls:
-    result.add(characterIds[rand(0 ..< characterIds.len)])
+    let charId = characterIds[rand(0 ..< characterIds.len)]
+    if charId == 103101: # saizo card is bugged?
+      result.add(103001)
+    else:
+      result.add(charId)
 
 proc getDrawnRewards(ids: seq[int]): seq[JsonNode] =
   for char_id in ids:
