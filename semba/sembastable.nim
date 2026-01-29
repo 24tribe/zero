@@ -4,6 +4,7 @@ import std/sequtils
 import std/strutils
 import std/times
 import std/sets
+import std/random
 
 import db_connector/db_sqlite
 import protojson
@@ -28,6 +29,15 @@ type TensionData = object
 type GachaButton = enum
   gachaButtonSingle = 1,
   gachaButtonTen = 2
+
+type GachaCardType = enum 
+  gachaCardCharacter = 4,
+  gachaCardTensionCard = 9
+
+type RewardType = enum
+  rewardCharacter = 4,
+  rewardCharacterPiece = 5,
+  rewardItem = 7
 
 const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
@@ -2521,15 +2531,57 @@ proc updateGachaWithExecution(db: DbConn, gachaId: int, gachaButtonId: int, clie
 
   return gacha
 
+proc getDrawnCards(ids: seq[int]): seq[JsonNode] =
+  for char_id in ids:
+    result.add(%*{
+      "cardType": gachaCardCharacter.int,
+      "cardId": char_id,
+      "gachaCardId": 1091,
+    })
+
+let enigmaticRemnentId = 105
+
+proc getCharacterIds(db: DbConn): seq[int] =
+  for row in db.getAllRows(sql"SELECT characterId FROM characters"):
+    result.add(parseInt(row[0]))
+
+proc getRandomIds(db: DbConn, pulls: int): seq[int] =
+  let characterIds = getCharacterIds(db)
+
+  for i in 0 ..< pulls:
+    result.add(characterIds[rand(0 ..< characterIds.len)])
+
+proc getDrawnRewards(ids: seq[int]): seq[JsonNode] =
+  for char_id in ids:
+    result.add(%*{
+      "type": rewardCharacter.int,
+      "id": char_id,
+      "quantity": 1,
+      "otherRewards": [
+        {"type": rewardCharacterPiece.int, "id": char_id, "quantity": 1},
+        {"type": rewardItem.int, "id": enigmaticRemnentId, "quantity": 20}
+      ]
+    })
+
 proc gacha_Execute(db: DbConn, jsonReq: JsonNode): JsonNode =
+  randomize()
+
   let gachaId = jsonReq["gachaId"].getInt()
   let gachaButtonId = jsonReq["gachaButtonId"].getInt()
   let clientTimestamp = jsonReq["clientTimestamp"].getStr()
 
+  let pulls = gachaButtonToPulls(gachaButtonId)
+  let ids = getRandomIds(db, pulls)
+
   let gacha = updateGachaWithExecution(db, gachaId, gachaButtonId, clientTimestamp)
+  let drawnCards = getDrawnCards(ids)
+  let drawnRewards = getDrawnRewards(ids)
 
   return %*{
-    "gacha": gacha
+    "gacha": gacha,
+    "drawnCards": drawnCards,
+    "drawnRewards": drawnRewards,
+    "changedResources": {},
   }
 
 proc getJsonResultStable*(
