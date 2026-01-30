@@ -4,7 +4,6 @@ import system/ansi_c
 import db_connector/db_sqlite
 
 import sembacore
-import sembasave
 
 type SembaContext = object
   db: DbConn
