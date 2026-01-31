@@ -3,6 +3,7 @@ import std/math
 import std/sequtils
 import std/strutils
 import std/times
+import std/tables
 import std/sets
 import std/random
 
@@ -2606,8 +2607,6 @@ proc pickCard(gachaRateSet: JsonNode): JsonNode =
 
   var base: float = 0.0
 
-  var lastCard: JsonNode = nil
-
   for gachaRate in gachaRateSet["rows"]:
     let percentRatePerCard = parseFloat(gachaRate["percentRatePerCard"].getStr())
     for card in gachaRate["cards"]:
@@ -2619,6 +2618,40 @@ proc pickCard(gachaRateSet: JsonNode): JsonNode =
       base += percentRatePerCard
 
   echo("Warning: logic error in random card picking, returning last card")
+
+#[
+Update the db from drawnCards, returns the changedResources
+]#
+proc updateDbFromDrawnCards(db: DbConn, drawnCards: seq[JsonNode]): JsonNode =
+  var characterCount = initCountTable[int]()
+
+  for card in drawnCards:
+    let cardType = card["cardType"].getInt()
+    let cardId = card["cardId"].getInt()
+
+    if cardType == gachaCardCharacter.int:
+      characterCount.inc(cardId)
+    elif cardType == gachaCardTensionCard.int:
+      discard
+    else:
+      raise newException(SembaError, "Invalid cardType=" & $cardType)
+
+  # FIXME: should check if the character exists and add it to changedResources.characters if not
+  var characterPieces = newSeq[JsonNode]()
+
+  for characterId, count in characterCount.pairs():
+    var quantity: int
+    for i in 0 ..< count:
+      quantity = addCharacterPiece(db, characterId)
+
+    characterPieces.add(%*{
+      "characterId": characterId,
+      "quantity": quantity
+    })
+
+  result = %*{
+    "characterPieces": characterPieces,
+  }
 
 proc gacha_Execute(db: DbConn, jsonReq: JsonNode): JsonNode =
   randomize()
@@ -2636,7 +2669,6 @@ proc gacha_Execute(db: DbConn, jsonReq: JsonNode): JsonNode =
 
   var drawnCards = newSeq[JsonNode]()
   var drawnRewards = newSeq[JsonNode]()
-  let changedResources = %*{}
 
   for pullIdx in 0 ..< pulls:
     let gachaRateSet = getGachaRateSetForPull(gachaCategoryState, pullIdx, pulls, isPromised, gachaRateSets)
@@ -2646,6 +2678,8 @@ proc gacha_Execute(db: DbConn, jsonReq: JsonNode): JsonNode =
 
     let reward = getRewardFromCard(db, card)
     drawnRewards.add(reward)
+
+  let changedResources = updateDbFromDrawnCards(db, drawnCards)
 
   return %*{
     "gacha": gacha,
