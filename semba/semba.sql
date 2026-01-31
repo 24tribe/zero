@@ -365,6 +365,12 @@ CREATE TABLE gachaCards (
     PRIMARY KEY (gachaRateId, gachaCardId)
 );
 
+DROP TABLE IF EXISTS characterPieces;
+CREATE TABLE characterPieces (
+    characterId INTEGER PRIMARY KEY,
+    quantity INTEGER
+);
+
 INSERT INTO gachaRates (gachaRateId, gachaRateSetId, percentRate, percentRatePerCard) VALUES
 (101, 101, '1.000', '0.250')
 ,(102, 101, '1.000', '0.041')

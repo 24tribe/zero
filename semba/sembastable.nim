@@ -46,6 +46,34 @@ const respiteUnitTutorialStatusKey = 43
 
 proc getDateNow*(): string = $(now().utc)
 
+proc getCharacterPieces(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT characterId, quantity FROM characterPieces")
+  for row in rows:
+    let characterId = parseInt(row[0])
+    let quantity = parseInt(row[1])
+
+    result.add(%*{
+      "characterId": characterId,
+      "quantity": quantity
+    })
+
+#[
+Add one character piece to the db, returns the changed count of character pieces
+]#
+proc addCharacterPiece(db: DbConn, characterId: int): int =
+  let row = db.getRow(sql"SELECT quantity FROM characterPieces")
+
+  if row[0] == "":
+    result = 1
+  else:
+    result = parseInt(row[0]) + 1
+
+  db.exec(sql"""
+    INSERT INTO characterPieces (characterId, quantity) VALUES (?, ?)
+    ON CONFLICT (characterId) DO
+    UPDATE SET quantity = excluded.quantity
+  """, characterId, result)
+
 proc getAreaBgms*(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"SELECT areaId, id, eventName FROM areaBgm")
 
@@ -1258,6 +1286,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let areaGroups = getAreaGroups(db)
   let cities = getCities(db)
   let wallet = getWallet(db)
+  let characterPieces = getCharacterPieces(db)
 
   return %*{
     "resources": {
@@ -1285,6 +1314,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "warpPoints": warpPoints,
       "areaGroups": areaGroups,
       "cities": cities,
+      "characterPieces": characterPieces,
     },
     "masterData": {"shopProducts": getShopProducts(db)}
   }
