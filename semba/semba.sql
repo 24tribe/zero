@@ -5568,6 +5568,7 @@ VALUES
 ("status", '{"rank": 1, "staminaUpdatedAt": "2025-09-10T02:22:51Z", "formationNumber": 1, "currentAreaKeyId": 300402, "currentDirection": 5, "loggedInAt": "2025-09-17T00:18:05Z", "currentPositionCoordinates": {"x": -6, "y": 53.61689, "z": -15.75}, "currentAreaType": 1}')
 ,("freeGems", '9999999')
 ,("paidGems", '9999999')
+,("nextEntityId", '10000')
 ;
 
 INSERT INTO areaBgm (areaId, id, eventName) VALUES

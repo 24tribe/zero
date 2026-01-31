@@ -37,7 +37,13 @@ type GachaCardType = enum
 type RewardType = enum
   rewardCharacter = 4,
   rewardCharacterPiece = 5,
-  rewardItem = 7
+  rewardItem = 7,
+  rewardTensionCard = 9
+
+type GachaRateSetId = enum
+  normalGachaRateSetId = 101,
+  promisedGachaRateSetId = 102,
+  guaranteedGachaRateSetId = 103
 
 const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
@@ -2541,68 +2547,78 @@ proc gachaButtonToPulls(gachaButtonId: int): int =
     of gachaButtonTen:
       result = 10
 
-proc updateGachaWithExecution(db: DbConn, gachaId: int, gachaButtonId: int, clientTimestamp: string): JsonNode =
-  let gacha = getGacha(db, gachaId)
-  let gachaCategoryState = gacha["gachaCategoryState"]
-  let pulls = gachaButtonToPulls(gachaButtonId)
-
-  let guaranteedCount = gachaCategoryState["guaranteedCount"].getInt() + pulls
-  let executionCount = gachaCategoryState["executionCount"].getInt() + pulls
-
-  gachaCategoryState["guaranteedCount"] = %*guaranteedCount
-  gachaCategoryState["executionCount"] = %*executionCount
-
-  db.exec(sql"""
-    UPDATE gachas SET guaranteedCount=?, executionCount=? WHERE gachaId=?
-  """, guaranteedCount, executionCount, gachaId)
-
-  for gachaButtonState in gacha["gachaButtonStates"]:
-    if gachaButtonState["gachaButtonId"].getInt() == gachaButtonId:
-      let buttonExecutionCount = protoJsonGetInt(gachaButtonState, "executionCount") + 1
-      gachaButtonState["executionCount"] = %*buttonExecutionCount
-      gachaButtonState["lastExecutedAt"] = %*clientTimestamp
-      db.exec(sql"""
-        UPDATE gachaButtonStates SET executionCount=?, lastExecutedAt=?
-        WHERE gachaId=? AND gachaButtonId=?
-      """, buttonExecutionCount, clientTimestamp, gachaId, gachaButtonId)
-
-  return gacha
-
-proc getDrawnCards(ids: seq[int]): seq[JsonNode] =
-  for char_id in ids:
-    result.add(%*{
-      "cardType": gachaCardCharacter.int,
-      "cardId": char_id,
-      "gachaCardId": 1091,
-    })
-
 let enigmaticRemnentId = 105
 
-proc getCharacterIds(db: DbConn): seq[int] =
-  for row in db.getAllRows(sql"SELECT characterId FROM characters"):
-    result.add(parseInt(row[0]))
+proc popEntityId(db: DbConn): int =
+  let row = db.getRow(sql"SELECT val FROM userData WHERE keyName='nextEntityId'")
+  result = parseInt(row[0])
+  db.exec(sql"UPDATE userData SET val=? WHERE keyName='nextEntityId'", $(result + 1))
 
-proc getRandomIds(db: DbConn, pulls: int): seq[int] =
-  let characterIds = getCharacterIds(db)
+proc getRewardFromCard(db: DbConn, card: JsonNode): JsonNode =
+  let cardType = card["cardType"].getInt()
+  let cardId = card["cardId"].getInt()
 
-  for i in 0 ..< pulls:
-    let charId = characterIds[rand(0 ..< characterIds.len)]
-    if charId == 103101: # saizo card is bugged?
-      result.add(103001)
-    else:
-      result.add(charId)
-
-proc getDrawnRewards(ids: seq[int]): seq[JsonNode] =
-  for char_id in ids:
-    result.add(%*{
+  if cardType == gachaCardCharacter.int:
+    result = %*{
       "type": rewardCharacter.int,
-      "id": char_id,
+      "id": cardId,
       "quantity": 1,
       "otherRewards": [
-        {"type": rewardCharacterPiece.int, "id": char_id, "quantity": 1},
+        # FIXME: check if character exists in db and don't give more pieces at max dupes
+        {"type": rewardCharacterPiece.int, "id": cardId, "quantity": 1},
+        # FIXME: check character rarity and give the other type of remnent
         {"type": rewardItem.int, "id": enigmaticRemnentId, "quantity": 20}
       ]
-    })
+    }
+  elif cardType == gachaCardTensionCard.int:
+    let entityId = popEntityId(db)
+    result = %*{
+      "type": rewardTensionCard.int,
+      "id": cardId,
+      "quantity": 1,
+      "entityId": entityId,
+      # FIXME: check if tension card exists and set a correct value
+      "isNew": true
+    }
+  else:
+    raise newException(SembaError, "Invalid cardType=" & $cardType)
+
+proc getGachaRateSetForPull(
+  gachaCategoryState: JsonNode, pullIdx: int, pulls: int, isPromised: bool, gachaRateSets: seq[JsonNode]
+): JsonNode =
+  var gachaRateSetId: GachaRateSetId
+  if gachaCategoryState.getOrDefault("isGuaranteedPickup").getBool():
+    gachaRateSetId = guaranteedGachaRateSetId
+  elif pullIdx == pulls - 1 and isPromised:
+    gachaRateSetId = promisedGachaRateSetId
+  else:
+    gachaRateSetId = normalGachaRateSetId
+
+  for gachaRateSet in gachaRateSets:
+    if gachaRateSet["gachaRateSetId"].getInt() == gachaRateSetId.int:
+      result = gachaRateSet
+
+  if result == nil:
+    raise newException(SembaError, "Couldn't find gachaRateSet for gachaRateSetId=" & $gachaRateSetId)
+
+proc pickCard(gachaRateSet: JsonNode): JsonNode =
+  let choice = rand(100.0)
+
+  var base: float = 0.0
+
+  var lastCard: JsonNode = nil
+
+  for gachaRate in gachaRateSet["rows"]:
+    let percentRatePerCard = parseFloat(gachaRate["percentRatePerCard"].getStr())
+    for card in gachaRate["cards"]:
+      result = card
+
+      if (base <= choice) and (choice <= base + percentRatePerCard):
+        return card
+
+      base += percentRatePerCard
+
+  echo("Warning: logic error in random card picking, returning last card")
 
 proc gacha_Execute(db: DbConn, jsonReq: JsonNode): JsonNode =
   randomize()
@@ -2611,18 +2627,31 @@ proc gacha_Execute(db: DbConn, jsonReq: JsonNode): JsonNode =
   let gachaButtonId = jsonReq["gachaButtonId"].getInt()
   let clientTimestamp = jsonReq["clientTimestamp"].getStr()
 
+  let gacha = getGacha(db, gachaId)
+  let gachaCategoryState = gacha["gachaCategoryState"]
   let pulls = gachaButtonToPulls(gachaButtonId)
-  let ids = getRandomIds(db, pulls)
+  let isPromised = gachaButtonId == gachaButtonTen.int
 
-  let gacha = updateGachaWithExecution(db, gachaId, gachaButtonId, clientTimestamp)
-  let drawnCards = getDrawnCards(ids)
-  let drawnRewards = getDrawnRewards(ids)
+  let gachaRateSets = getGachaRateSets(db)
+
+  var drawnCards = newSeq[JsonNode]()
+  var drawnRewards = newSeq[JsonNode]()
+  let changedResources = %*{}
+
+  for pullIdx in 0 ..< pulls:
+    let gachaRateSet = getGachaRateSetForPull(gachaCategoryState, pullIdx, pulls, isPromised, gachaRateSets)
+
+    let card = pickCard(gachaRateSet)
+    drawnCards.add(card)
+
+    let reward = getRewardFromCard(db, card)
+    drawnRewards.add(reward)
 
   return %*{
     "gacha": gacha,
     "drawnCards": drawnCards,
     "drawnRewards": drawnRewards,
-    "changedResources": {},
+    "changedResources": changedResources,
   }
 
 proc getJsonResultStable*(
