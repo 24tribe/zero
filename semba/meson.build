@@ -13,6 +13,17 @@ else
     nim_release_args = []
 endif
 
+semba_db = custom_target(
+    'semba_db',
+    input : 'semba.sql',
+    output : 'semba.db',
+    command : [sqlite3, '@OUTPUT@'],
+    feed : true,
+    build_by_default : true,
+    install : true,
+    install_dir : '.'
+)
+
 libsemba = custom_target(
     'libsemba',
     depends : [sqlite3_c],
@@ -27,7 +38,7 @@ libsemba = custom_target(
 
 sembaserver = custom_target(
     'sembaserver',
-    depends : [sqlite3_c],
+    depends : [sqlite3_c, semba_db],
     depend_files : semba_core_files,
     input : ['sembaserver.nim'],
     output : 'sembaserver.exe',
@@ -36,17 +47,6 @@ sembaserver = custom_target(
         '-o:@OUTPUT@', '@INPUT@'
     ],
     build_by_default : true
-)
-
-semba_db = custom_target(
-    'semba_db',
-    input : 'semba.sql',
-    output : 'semba.db',
-    command : [sqlite3, '@OUTPUT@'],
-    feed : true,
-    build_by_default : true,
-    install : true,
-    install_dir : '.'
 )
 
 semba_dep = declare_dependency(
