@@ -15,8 +15,10 @@ extern "C" {
 DrawFunc::DrawFunc(bool active) : active(active),
                                   showSavesWindow(false),
                                   showDemo(false),
+                                  showGachaRates(false),
                                   gamePtrsReady(false),
                                   result("..."),
+                                  gachaRatesWindow(),
                                   pos(nullptr),
                                   rotation(nullptr),
                                   fov_scale(nullptr),
@@ -192,6 +194,7 @@ void DrawFunc::operator()(void) {
             ImGui::Text("Result: %s", result);
 
             ImGui::Checkbox("Show saves window", &showSavesWindow);
+            ImGui::Checkbox("Show gacha rates window", &showGachaRates);
 
             ImGui::Separator();
 
@@ -237,6 +240,10 @@ void DrawFunc::operator()(void) {
 
         if (showDemo) {
             ImGui::ShowDemoWindow(&showDemo);
+        }
+
+        if (showGachaRates) {
+            gachaRatesWindow.Show(&showGachaRates);
         }
 
         if (showSavesWindow) {

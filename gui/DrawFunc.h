@@ -1,6 +1,10 @@
 #ifndef DRAW_FUNC_H_10_11_2025_09_40_AM
 #define DRAW_FUNC_H_10_11_2025_09_40_AM
 
+#include "GachaRatesWindow.h"
+
+#include <jansson.h>
+
 #include <functional>
 #include <string>
 
@@ -10,8 +14,11 @@ class DrawFunc {
     bool active;
     bool showSavesWindow;
     bool showDemo;
+    bool showGachaRates;
     bool gamePtrsReady;
     const char* result;
+
+    GachaRatesWindow gachaRatesWindow;
 
     float* pos;
     float* rotation;

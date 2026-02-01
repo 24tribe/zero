@@ -6,6 +6,8 @@
 #include <d3d11.h>
 #include <tchar.h>
 
+#include <jansson.h>
+
 #include <iostream>
 
 // Data
@@ -104,6 +106,12 @@ int main(int, char**)
 
     draw_func.deleteSaveFile = [](const std::string &name) {
         std::cout << "Deleted save file with name: " << name << "\n";
+    };
+
+    draw_func.gachaRatesWindow.getGachaRates = []() {
+        const char *s = "{\"NormalPullThreeStarCharRateId\":3.0,\"NormalPullThreeStarTCRateId\":1.0,\"NormalPullTwoStarCharRateId\":4.0,\"NormalPullTwoStarTCRateId\":4.0,\"NormalPullOneStarTCRateId\":88.0,\"GuaranteedPullThreeStarCharRateId\":50.0,\"GuaranteedPullThreeStarTCRateId\":50.0,\"PromisedPullThreeStarCharRateId\":1.0,\"PromisedPullThreeStarTCRateId\":1.0,\"PromisedPullTwoStarCharRateId\":49.0,\"PromisedPullTwoStarTCRateId\":49.0}";
+        json_error_t unused;
+        return json_loads(s, 0, &unused);
     };
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
