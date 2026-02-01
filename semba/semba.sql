@@ -403,6 +403,18 @@ CREATE TABLE mdAbilityEfficacy (
     targetType INTEGER
 );
 
+DROP TABLE IF EXISTS gachaCharacterIds;
+CREATE TABLE gachaCharacterIds (
+    characterId INTEGER PRIMARY KEY
+);
+
+INSERT INTO gachaCharacterIds (characterId) VALUES
+(100301)
+,(100401)
+,(101101)
+,(101301)
+;
+
 INSERT INTO mdTensionCard (tensionCardId, abilityTensionCardId) VALUES
 (20001, 100200010)
 ,(20002, 100200020)

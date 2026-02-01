@@ -2346,7 +2346,14 @@ proc news_UserList(): JsonNode =
 
 proc characterIdToCostumeId(characterId: int): int = (characterId div 100)*1000 + 1
 
-proc getGachaCharacters(characterIds: seq[int]): seq[JsonNode] =
+proc getGachaCharacterIds(db: DbConn): seq[int] =
+  let rows = db.getAllRows(sql"SELECT characterId FROM gachaCharacterIds")
+  for row in rows:
+    result.add(parseInt(row[0]))
+
+proc getGachaCharacters(db: DbConn): seq[JsonNode] =
+  let characterIds = getGachaCharacterIds(db)
+
   for characterId in characterIds:
     let costumeId = characterIdToCostumeId(characterId)
     result.add(%*{
@@ -2500,7 +2507,7 @@ proc getGachaRateSets(db: DbConn): seq[JsonNode] =
 
 proc gacha_List(db: DbConn): JsonNode =
   let gachas = getGachas(db)
-  let gachaCharacters = getGachaCharacters(@[100301, 100401, 101101, 101301])
+  let gachaCharacters = getGachaCharacters(db)
   let gachaNotification = getGachaNotification(db)
   let gachaRateSets = getGachaRateSets(db)
 
