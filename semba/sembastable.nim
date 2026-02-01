@@ -65,6 +65,13 @@ const selectCharacterSql = """
   ON characters.characterId = characterLimitBreaks.characterId
 """
 
+const dbTensionCardsFields = """
+  tensionCardId, receivedAt, maxLevel, abilityEfficacies,
+  trainingScoreLevelScore, entityId, isLocked
+"""
+
+const selectTensionCardSql = "SELECT " & dbTensionCardsFields & " FROM tensionCards"
+
 proc getDateNow*(): string = $(now().utc)
 
 proc getCharacterPiece(db: DbConn, characterId: int): JsonNode =
@@ -704,11 +711,6 @@ proc adventure_MoveToArea(db: DbConn, jsonReq: JsonNode): JsonNode =
   if actionSequenceId != 0:
     result["areaBehavior"] = %*{"actionSequenceId": actionSequenceId}
 
-const dbTensionCardsFields = """
-  tensionCardId, receivedAt, maxLevel, abilityEfficacies,
-  trainingScoreLevelScore, entityId, isLocked
-"""
-
 proc parseTensionCardRow(tensionCardRow: Row): JsonNode =
   let tensionCardId = parseInt(tensionCardRow[0])
   let receivedAt = tensionCardRow[1]
@@ -729,10 +731,18 @@ proc parseTensionCardRow(tensionCardRow: Row): JsonNode =
   }
 
 proc getTensionCards*(db: DbConn): seq[JsonNode] =
-  let tensionCardsRows = db.getAllRows(sql("SELECT " & dbTensionCardsFields & " FROM tensionCards"))
+  let tensionCardsRows = db.getAllRows(sql(selectTensionCardSql))
 
   for tensionCardRow in tensionCardsRows:
     result.add(parseTensionCardRow(tensionCardRow))
+
+proc getTensionCard(db: DbConn, entityId: int): JsonNode =
+  let row = db.getRow(sql(selectTensionCardSql & " WHERE entityId = ?"), entityId)
+
+  if row[0] == "":
+    raise newException(SembaError, "Couldn't find tensionCard for entityId=" & $entityId)
+
+  result = parseTensionCardRow(row)
 
 proc addTensionCard*(db: DbConn, tensionCard: JsonNode) =
   let tensionCardId = tensionCard["tensionCardId"].getInt()
@@ -752,9 +762,7 @@ proc addTensionCard*(db: DbConn, tensionCard: JsonNode) =
 proc getEquippedTensionCards(db: DbConn): seq[JsonNode] =
   # FIXME: should return current formation tension cards
 
-  let tensionCardsRows = db.getAllRows(sql(
-    "SELECT " & dbTensionCardsFields & " FROM tensionCards LIMIT 5"
-  ))
+  let tensionCardsRows = db.getAllRows(sql(selectTensionCardSql & " LIMIT 5"))
 
   for tensionCardRow in tensionCardsRows:
     result.add(parseTensionCardRow(tensionCardRow))
