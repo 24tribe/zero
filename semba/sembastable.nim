@@ -70,9 +70,25 @@ const dbTensionCardsFields = """
   trainingScoreLevelScore, entityId, isLocked
 """
 
-const selectTensionCardSql = "SELECT " & dbTensionCardsFields & " FROM tensionCards"
+const dbTensionCardsFieldsJoin = """
+  tensionCardId, receivedAt, maxLevel, abilityEfficacies,
+  trainingScoreLevelScore, tensionCards.entityId, isLocked, limitBreak
+"""
+
+const selectTensionCardSql = """
+  SELECT """ & dbTensionCardsFieldsJoin & """
+  FROM tensionCards FULL JOIN tensionCardLimitBreaks
+  ON tensionCards.entityId = tensionCardLimitBreaks.entityId
+"""
 
 proc getDateNow*(): string = $(now().utc)
+
+proc updateTensionCardLimitBreak(db: DbConn, entityId: int, limitBreak: int) =
+  db.exec(sql"""
+    INSERT INTO tensionCardLimitBreaks (entityId, limitBreak) VALUES (?, ?)
+    ON CONFLICT (entityId) DO
+    UPDATE SET limitBreak = excluded.limitBreak
+  """, entityId, limitBreak)
 
 proc getCharacterPiece(db: DbConn, characterId: int): JsonNode =
   let row = db.getRow(
@@ -719,6 +735,7 @@ proc parseTensionCardRow(tensionCardRow: Row): JsonNode =
   let trainingScoreLevelScore = parseInt(tensionCardRow[4])
   let entityId = parseInt(tensionCardRow[5])
   let isLocked = if parseInt(tensionCardRow[6]) == 1: true else: false
+  let limitBreak = if tensionCardRow[7] == "": 0 else: parseInt(tensionCardRow[7])
 
   return %*{
     "tensionCardId": tensionCardId,
@@ -727,7 +744,8 @@ proc parseTensionCardRow(tensionCardRow: Row): JsonNode =
     "abilityEfficacies": abilityEfficacies,
     "trainingScoreLevelScore": trainingScoreLevelScore,
     "entityId": entityId,
-    "isLocked": isLocked
+    "isLocked": isLocked,
+    "limitBreak": limitBreak
   }
 
 proc getTensionCards*(db: DbConn): seq[JsonNode] =
@@ -737,7 +755,7 @@ proc getTensionCards*(db: DbConn): seq[JsonNode] =
     result.add(parseTensionCardRow(tensionCardRow))
 
 proc getTensionCard(db: DbConn, entityId: int): JsonNode =
-  let row = db.getRow(sql(selectTensionCardSql & " WHERE entityId = ?"), entityId)
+  let row = db.getRow(sql(selectTensionCardSql & " WHERE tensionCards.entityId = ?"), entityId)
 
   if row[0] == "":
     raise newException(SembaError, "Couldn't find tensionCard for entityId=" & $entityId)
@@ -752,12 +770,15 @@ proc addTensionCard*(db: DbConn, tensionCard: JsonNode) =
   let trainingScoreLevelScore = tensionCard["trainingScoreLevelScore"].getInt()
   let entityId = tensionCard["entityId"].getInt()
   let isLocked = if tensionCard["isLocked"].getBool(): 1 else: 0
+  let limitBreak = tensionCard.getOrDefault("limitBreak").getInt()
 
   db.exec(
     sql("INSERT INTO tensionCards (" & dbTensionCardsFields & ") VALUES (?, ?, ?, ?, ?, ?, ?)"),
     tensionCardId, receivedAt, maxLevel, abilityEfficacies,
     trainingScoreLevelScore, entityId, isLocked
   )
+
+  updateTensionCardLimitBreak(db, entityId, limitBreak)
 
 proc getEquippedTensionCards(db: DbConn): seq[JsonNode] =
   # FIXME: should return current formation tension cards
@@ -2847,6 +2868,30 @@ proc character_LimitBreak(db: DbConn, jsonReq: JsonNode): JsonNode =
     }
   }
 
+proc tensionCard_LimitBreakEnhance(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let entityId = jsonReq["entityId"].getInt()
+  let consumedEntityIds = jsonReq["consumedEntityIds"]
+
+  let tensionCard = getTensionCard(db, entityId)
+  let limitBreak = tensionCard.getOrDefault("limitBreak").getInt() + consumedEntityIds.len
+  tensionCard["limitBreak"] = %*limitBreak
+  updateTensionCardLimitBreak(db, entityId, limitBreak)
+
+  db.exec(sql"BEGIN")
+  for consumedEntityId in consumedEntityIds:
+    db.exec(sql"DELETE FROM tensionCards WHERE entityId = ?", consumedEntityId.getInt())
+    db.exec(sql"DELETE FROM tensionCardLimitBreaks WHERE entityId = ?", consumedEntityId.getInt())
+  db.exec(sql"COMMIT")
+
+  result = %*{
+    "changedResources": {
+      "tensionCards": [tensionCard],
+    },
+    "deletedResources": {
+      "tensionCardEntityIds": consumedEntityIds,
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -2913,5 +2958,7 @@ proc getJsonResultStable*(
     result = gacha_Execute(db, jsonReq)
   elif uri == "/character/limit_break":
     result = character_LimitBreak(db, jsonReq)
+  elif uri == "/tension_card/limit_break_enhance":
+    result = tensionCard_LimitBreakEnhance(db, jsonReq)
   else:
     result = nil

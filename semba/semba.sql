@@ -413,6 +413,12 @@ CREATE TABLE characterLimitBreaks (
     limitBreak INTEGER
 );
 
+DROP TABLE IF EXISTS tensionCardLimitBreaks;
+CREATE TABLE tensionCardLimitBreaks (
+    entityId INTEGER PRIMARY KEY,
+    limitBreak INTEGER
+);
+
 INSERT INTO gachaCharacterIds (characterId) VALUES
 (100301)
 ,(100401)
