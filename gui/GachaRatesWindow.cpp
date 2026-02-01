@@ -118,10 +118,41 @@ bool GachaRatesWindow::InitGachaRates() {
     return true;
 }
 
+void GachaRatesWindow::ApplyGachaRates() {
+    json_t* req = json_object();
+
+    json_object_set_new(req, "NormalPullThreeStarCharRateId", json_real(normalPullRates.threeStarCharRate));
+    json_object_set_new(req, "NormalPullThreeStarTCRateId", json_real(normalPullRates.threeStarTCRate));
+    json_object_set_new(req, "NormalPullTwoStarCharRateId", json_real(normalPullRates.twoStarCharRate));
+    json_object_set_new(req, "NormalPullTwoStarTCRateId", json_real(normalPullRates.twoStarTCRate));
+    json_object_set_new(req, "NormalPullOneStarTCRateId", json_real(normalPullRates.oneStarTCRate));
+
+    json_object_set_new(req, "GuaranteedPullThreeStarCharRateId", json_real(guaranteedPullRates.threeStarCharRate));
+    json_object_set_new(req, "GuaranteedPullThreeStarTCRateId", json_real(guaranteedPullRates.threeStarTCRate));
+
+    json_object_set_new(req, "PromisedPullThreeStarCharRateId", json_real(promisedPullRates.threeStarCharRate));
+    json_object_set_new(req, "PromisedPullThreeStarTCRateId", json_real(promisedPullRates.threeStarTCRate));
+    json_object_set_new(req, "PromisedPullTwoStarCharRateId", json_real(promisedPullRates.twoStarCharRate));
+    json_object_set_new(req, "PromisedPullTwoStarTCRateId", json_real(promisedPullRates.twoStarTCRate));
+
+    setGachaRates(req);
+    json_decref(req);
+
+    setGachaRatesResult = "Applied gacha rates!";
+}
+
 int initGachaRates(void *gachaRatesWindowPtr) {
     auto& gachaRatesWindow = *reinterpret_cast<GachaRatesWindow*>(gachaRatesWindowPtr);
 
     gachaRatesWindow.InitGachaRates();
+
+    return 0;
+}
+
+int setGachaRatesStart(void *gachaRatesWindowPtr) {
+    auto& gachaRatesWindow = *reinterpret_cast<GachaRatesWindow*>(gachaRatesWindowPtr);
+
+    gachaRatesWindow.ApplyGachaRates();
 
     return 0;
 }
@@ -194,6 +225,40 @@ void GachaRatesWindow::Show(bool* showGachaRates) {
     if (error != "") {
         ImGui::Text("Error: %s", error.c_str());
     } else if (initialized) {
+        if (result != "") {
+            ImGui::Text("Result: %s", result.c_str());
+        }
+
+        if (setGachaRatesThread) {
+            switch (WaitForSingleObject(setGachaRatesThread, 0)) {
+            case WAIT_TIMEOUT:
+                /* do nothing */
+                break;
+            case WAIT_OBJECT_0:
+                result = setGachaRatesResult;
+                CloseHandle(setGachaRatesThread);
+                setGachaRatesThread = nullptr;
+                break;
+            default:
+                error = "WaitForSingleObject failed!!";
+                break;
+            }
+        }
+
+        if (ImGui::Button("Apply gacha rates")) {
+            if (setGachaRates) {
+                setGachaRatesThread = CreateThread(
+                    NULL, 0, (LPTHREAD_START_ROUTINE)setGachaRatesStart, this, 0, NULL
+                );
+
+                if (!setGachaRatesThread) {
+                    result = "Failed to create setGachaRates thread";
+                }
+            } else {
+                result = "setGachaRates func ptr is missing!";
+            }
+        }
+
         ImGui::SeparatorText("Normal pull");
         if (ImGui::DragFloat("threeStarCharRate", &normalPullRates.threeStarCharRate, 1.0f, 0.0f, 100.0f)) {
             ensureHundredPercent(

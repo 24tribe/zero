@@ -114,6 +114,12 @@ int main(int, char**)
         return json_loads(s, 0, &unused);
     };
 
+    draw_func.gachaRatesWindow.setGachaRates = [](json_t* data) {
+        char *s = json_dumps(data, 0);
+        std::cout << s << '\n';
+        free(s);
+    };
+
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop

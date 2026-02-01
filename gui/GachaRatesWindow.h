@@ -39,6 +39,7 @@ class GachaRatesWindow {
     GachaRatesWindow();
     void Show(bool* showGachaRates);
     bool InitGachaRates();
+    void ApplyGachaRates();
 
     private:
 
@@ -47,9 +48,12 @@ class GachaRatesWindow {
     GuaranteedPullRates guaranteedPullRates;
     PromisedPullRates promisedPullRates;
     std::string error;
+    std::string result;
     std::string getGachaRatesError;
+    std::string setGachaRatesResult;
 
     HANDLE getGachaRatesThread;
+    HANDLE setGachaRatesThread;
 };
 
 #endif
