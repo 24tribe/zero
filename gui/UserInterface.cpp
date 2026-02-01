@@ -106,6 +106,20 @@ extern "C" int UIMainThread(LPVOID _1) {
         }
     };
 
+    draw_func.gachaRatesWindow.getGachaRates = []() {
+        char *resStr = SembaCall("/semba/get_std_gacha_rates", "");
+        json_error_t unused;
+        json_t *res = json_loads(resStr, 0, &unused);
+        free(resStr);
+        return res; 
+    };
+
+    draw_func.gachaRatesWindow.setGachaRates = [](json_t* req) {
+        char *reqStr = json_dumps(req, 0);
+        SembaCall("/semba/set_std_gacha_rates", reqStr);
+        free(reqStr);
+    };
+
     draw_func.runCommand = [&draw_func]() {
     };
 
