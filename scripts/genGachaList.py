@@ -29,9 +29,8 @@ def write_gacha_rate_sets(gacha_rate_sets, f):
         for gacha_rate in gacha_rate_set["rows"]:
             gacha_rate_id = gacha_rate["gachaRateId"]
             percent_rate = gacha_rate["percentRate"]
-            percent_rate_per_card = gacha_rate["percentRatePerCard"]
 
-            vals = f"({gacha_rate_id}, {gacha_rate_set_id}, '{percent_rate}', '{percent_rate_per_card}')"
+            vals = f"({gacha_rate_id}, {gacha_rate_set_id}, '{percent_rate}')"
             gacha_rate_sql.append(vals)
 
             cards = gacha_rate["cards"]
@@ -45,7 +44,7 @@ def write_gacha_rate_sets(gacha_rate_sets, f):
                 gacha_cards_sql.append(vals)
 
     xprint = lambda *args: print(*args, file=f)
-    xprint("INSERT INTO gachaRates (gachaRateId, gachaRateSetId, percentRate, percentRatePerCard) VALUES")
+    xprint("INSERT INTO gachaRates (gachaRateId, gachaRateSetId, percentRate) VALUES")
     xprint("\n,".join(gacha_rate_sql))
     xprint(";\n")
     xprint("INSERT INTO gachaCards (cardType, cardId, isAttention, isSelectable, gachaCardId, gachaRateId) VALUES")
