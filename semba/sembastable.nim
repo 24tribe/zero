@@ -51,6 +51,20 @@ const maxEventFloorNodeId = 113128
 
 const respiteUnitTutorialStatusKey = 43
 
+const dbCharacterFields* = """
+  characters.characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
+  criticalRate, criticalDamageRate, movementSpeed, damageInflictedRate, tensionIncreaseRate,
+  cpRecastRate, spGaugeIncreaseRate, attackSpeed, characterCostumeId, abnormalityParamSet,
+  trainingScoreLevelScore, trainingScoreRankScore, actionPointMax,
+  actionPointRate, actionPointConsumption, damageTakenRate, limitBreak
+"""
+
+const selectCharacterSql = """
+  SELECT """ & dbCharacterFields & """
+  FROM characters FULL JOIN characterLimitBreaks
+  ON characters.characterId = characterLimitBreaks.characterId
+"""
+
 proc getDateNow*(): string = $(now().utc)
 
 proc getCharacterPieces(db: DbConn): seq[JsonNode] =
@@ -63,6 +77,69 @@ proc getCharacterPieces(db: DbConn): seq[JsonNode] =
       "characterId": characterId,
       "quantity": quantity
     })
+
+proc parseCharacterRow*(characterRow: Row): JsonNode =
+  let characterId = parseInt(characterRow[0])
+  let exp = parseInt(characterRow[1])
+  let hp = parseInt(characterRow[2])
+  let attack = parseInt(characterRow[3])
+  let defense = parseInt(characterRow[4])
+  let maxHp = parseInt(characterRow[5])
+  let receivedAt = characterRow[6]
+  let characterOwnershipType = parseInt(characterRow[7])
+  let criticalRate = parseInt(characterRow[8])
+  let criticalDamageRate = parseInt(characterRow[9])
+  let movementSpeed = parseInt(characterRow[10])
+  let damageInflictedRate = parseInt(characterRow[11])
+  let tensionIncreaseRate = parseInt(characterRow[12])
+  let cpRecastRate = parseInt(characterRow[13])
+  let spGaugeIncreaseRate = parseInt(characterRow[14])
+  let attackSpeed = parseInt(characterRow[15])
+  let characterCostumeId = parseInt(characterRow[16])
+  let abnormalityParamSet = parseJson(characterRow[17])
+  let trainingScoreLevelScore = parseInt(characterRow[18])
+  let trainingScoreRankScore = parseInt(characterRow[19])
+  let actionPointMax = parseInt(characterRow[20])
+  let actionPointRate = parseInt(characterRow[21])
+  let actionPointConsumption = parseInt(characterRow[22])
+  let damageTakenRate = parseInt(characterRow[23])
+  let limitBreak = if characterRow[24] == "": 0 else: parseInt(characterRow[24])
+
+  return %*{
+    "characterId": characterId,
+    "exp": exp,
+    "hp": hp,
+    "attack": attack,
+    "defense": defense,
+    "maxHp": maxHp,
+    "receivedAt": receivedAt,
+    "characterOwnershipType": characterOwnershipType,
+    "criticalRate": criticalRate,
+    "criticalDamageRate": criticalDamageRate,
+    "movementSpeed": movementSpeed,
+    "damageInflictedRate": damageInflictedRate,
+    "tensionIncreaseRate": tensionIncreaseRate,
+    "cpRecastRate": cpRecastRate,
+    "spGaugeIncreaseRate": spGaugeIncreaseRate,
+    "attackSpeed": attackSpeed,
+    "characterCostumeId": characterCostumeId,
+    "abnormalityParamSet": abnormalityParamSet,
+    "trainingScoreLevelScore": trainingScoreLevelScore,
+    "trainingScoreRankScore": trainingScoreRankScore,
+    "actionPointMax": actionPointMax,
+    "actionPointRate": actionPointRate,
+    "actionPointConsumption": actionPointConsumption,
+    "damageTakenRate": damageTakenRate,
+    "limitBreak": limitBreak,
+  }
+
+proc getCharacter(db: DbConn, characterId: int): JsonNode =
+  let row = db.getRow(sql(selectCharacterSql & " WHERE characters.characterId = ?"), characterId)
+
+  if row[0] == "":
+    raise newException(SembaError, "Couldn't find character for characterId=" & $characterId)
+
+  result = parseCharacterRow(row)
 
 #[
 Add one character piece to the db, returns the changed count of character pieces
@@ -664,67 +741,6 @@ proc getEquippedTensionCards(db: DbConn): seq[JsonNode] =
   for tensionCardRow in tensionCardsRows:
     result.add(parseTensionCardRow(tensionCardRow))
 
-const dbCharacterFields* = """
-  characterId, exp, hp, attack, defense, maxHp, receivedAt, characterOwnershipType,
-  criticalRate, criticalDamageRate, movementSpeed, damageInflictedRate, tensionIncreaseRate,
-  cpRecastRate, spGaugeIncreaseRate, attackSpeed, characterCostumeId, abnormalityParamSet,
-  trainingScoreLevelScore, trainingScoreRankScore, actionPointMax,
-  actionPointRate, actionPointConsumption, damageTakenRate
-"""
-
-proc parseCharacterRow*(characterRow: Row): JsonNode =
-  let characterId = parseInt(characterRow[0])
-  let exp = parseInt(characterRow[1])
-  let hp = parseInt(characterRow[2])
-  let attack = parseInt(characterRow[3])
-  let defense = parseInt(characterRow[4])
-  let maxHp = parseInt(characterRow[5])
-  let receivedAt = characterRow[6]
-  let characterOwnershipType = parseInt(characterRow[7])
-  let criticalRate = parseInt(characterRow[8])
-  let criticalDamageRate = parseInt(characterRow[9])
-  let movementSpeed = parseInt(characterRow[10])
-  let damageInflictedRate = parseInt(characterRow[11])
-  let tensionIncreaseRate = parseInt(characterRow[12])
-  let cpRecastRate = parseInt(characterRow[13])
-  let spGaugeIncreaseRate = parseInt(characterRow[14])
-  let attackSpeed = parseInt(characterRow[15])
-  let characterCostumeId = parseInt(characterRow[16])
-  let abnormalityParamSet = parseJson(characterRow[17])
-  let trainingScoreLevelScore = parseInt(characterRow[18])
-  let trainingScoreRankScore = parseInt(characterRow[19])
-  let actionPointMax = parseInt(characterRow[20])
-  let actionPointRate = parseInt(characterRow[21])
-  let actionPointConsumption = parseInt(characterRow[22])
-  let damageTakenRate = parseInt(characterRow[23])
-
-  return %*{
-    "characterId": characterId,
-    "exp": exp,
-    "hp": hp,
-    "attack": attack,
-    "defense": defense,
-    "maxHp": maxHp,
-    "receivedAt": receivedAt,
-    "characterOwnershipType": characterOwnershipType,
-    "criticalRate": criticalRate,
-    "criticalDamageRate": criticalDamageRate,
-    "movementSpeed": movementSpeed,
-    "damageInflictedRate": damageInflictedRate,
-    "tensionIncreaseRate": tensionIncreaseRate,
-    "cpRecastRate": cpRecastRate,
-    "spGaugeIncreaseRate": spGaugeIncreaseRate,
-    "attackSpeed": attackSpeed,
-    "characterCostumeId": characterCostumeId,
-    "abnormalityParamSet": abnormalityParamSet,
-    "trainingScoreLevelScore": trainingScoreLevelScore,
-    "trainingScoreRankScore": trainingScoreRankScore,
-    "actionPointMax": actionPointMax,
-    "actionPointRate": actionPointRate,
-    "actionPointConsumption": actionPointConsumption,
-    "damageTakenRate": damageTakenRate
-  }
-
 proc getBattleParameters(db: DbConn, battleEntryIds: JsonNode): seq[JsonNode] =
   # FIXME: fix n+1
   for battleEntryId in battleEntryIds:
@@ -750,11 +766,8 @@ proc battle_Start(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonRe
 
   # FIXME: fix this n+1 problem
   for lineCharacterId in jsonReq["lineCharacterIds"]:
-    let characterRow = db.getRow(sql(
-      "SELECT " & dbCharacterFields & " FROM characters WHERE characterId = ?"
-    ), lineCharacterId.getInt())
-
-    characters.add(parseCharacterRow(characterRow))
+    let character = getCharacter(db, lineCharacterId.getInt())
+    characters.add(character)
 
   let status = getUserStatus(db)
 
@@ -788,7 +801,7 @@ proc setCharacterHp(db: DbConn, characterId: int, hp: int) =
   db.exec(sql"UPDATE characters SET hp = ? WHERE characterId = ?", hp, characterId)
 
 proc getCharacters*(db: DbConn): seq[JsonNode] =
-  let charactersRows = db.getAllRows(sql("SELECT " & dbCharacterFields & " FROM characters"))
+  let charactersRows = db.getAllRows(sql(selectCharacterSql))
 
   for characterRow in charactersRows:   
     result.add(parseCharacterRow(characterRow))
@@ -981,11 +994,8 @@ proc adventure_UpdateCharacterStatus(db: DbConn, jsonReq: JsonNode): JsonNode =
 
     setCharacterHp(db, characterId, hp)
 
-    let characterRow = db.getRow(sql(
-      "SELECT " & dbCharacterFields & " FROM characters WHERE characterId = ?"
-    ), characterId)
-
-    changedCharacters.add(parseCharacterRow(characterRow))
+    let character = getCharacter(db, characterId)
+    changedCharacters.add(character)
 
   return %*{
     "changedResources": {
@@ -1001,8 +1011,7 @@ proc character_CostumeUpdate(db: DbConn, jsonReq: JsonNode): JsonNode =
   let characterId = costumeIdToCharacterId(costumeId)
   var characters = newSeq[JsonNode]()
 
-  let characterRow = db.getRow(sql("SELECT " & dbCharacterFields & " FROM characters WHERE characterId = ?"), characterId)
-  let character = parseCharacterRow(characterRow)
+  let character = getCharacter(db, characterId)
   character["characterCostumeId"] = %*costumeId
   characters.add(character)
 

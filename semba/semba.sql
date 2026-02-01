@@ -407,6 +407,12 @@ CREATE TABLE gachaCharacterIds (
     characterId INTEGER PRIMARY KEY
 );
 
+DROP TABLE IF EXISTS characterLimitBreaks;
+CREATE TABLE characterLimitBreaks (
+    characterId INTEGER PRIMARY KEY,
+    limitBreak INTEGER
+);
+
 INSERT INTO gachaCharacterIds (characterId) VALUES
 (100301)
 ,(100401)
