@@ -2487,15 +2487,15 @@ proc getGachaRateCards(db: DbConn, gachaRateId: int): seq[JsonNode] =
 
 proc getGachaRateSetRows(db: DbConn, gachaRateSetId: int): seq[JsonNode] =
   let rows = db.getAllRows(sql"""
-    SELECT gachaRateId, percentRate, percentRatePerCard FROM gachaRates
+    SELECT gachaRateId, percentRate FROM gachaRates
     WHERE gachaRateSetId=?
   """, gachaRateSetId)
 
   for row in rows:
     let gachaRateId = parseInt(row[0])
     let percentRate = row[1]
-    let percentRatePerCard = row[2]
     let cards = getGachaRateCards(db, gachaRateId)
+    let percentRatePerCard = $(parseFloat(percentRate)/cards.len.float)
     result.add(%*{
       "gachaRateId": gachaRateId,
       "percentRate": percentRate,

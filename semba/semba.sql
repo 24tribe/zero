@@ -350,8 +350,7 @@ DROP TABLE IF EXISTS gachaRates;
 CREATE TABLE gachaRates (
     gachaRateId INTEGER PRIMARY KEY,
     gachaRateSetId INTEGER,
-    percentRate STRING,
-    percentRatePerCard STRING
+    percentRate STRING
 );
 
 DROP TABLE IF EXISTS gachaCards;
@@ -2142,18 +2141,18 @@ targetType) VALUES
 ,(900080000, 0, -1, -1, -1, 188, 100, '', '', '', '', '[]', '[]', 0, '[]', 7)
 ;
 
-INSERT INTO gachaRates (gachaRateId, gachaRateSetId, percentRate, percentRatePerCard) VALUES
-(101, 101, '1.000', '0.250')
-,(102, 101, '1.000', '0.041')
-,(103, 101, '4.000', '0.444')
-,(104, 101, '4.000', '0.266')
-,(105, 101, '90.000', '1.730')
-,(108, 102, '1.000', '0.250')
-,(109, 102, '1.000', '0.041')
-,(110, 102, '49.000', '5.444')
-,(111, 102, '49.000', '3.266')
-,(106, 103, '50.000', '12.500')
-,(107, 103, '50.000', '2.083')
+INSERT INTO gachaRates (gachaRateId, gachaRateSetId, percentRate) VALUES
+(101, 101, '1.000')
+,(102, 101, '1.000')
+,(103, 101, '4.000')
+,(104, 101, '4.000')
+,(105, 101, '90.000')
+,(108, 102, '1.000')
+,(109, 102, '1.000')
+,(110, 102, '49.000')
+,(111, 102, '49.000')
+,(106, 103, '50.000')
+,(107, 103, '50.000')
 ;
 
 INSERT INTO gachaCards (cardType, cardId, isAttention, isSelectable, gachaCardId, gachaRateId) VALUES
