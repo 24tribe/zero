@@ -67,6 +67,18 @@ const selectCharacterSql = """
 
 proc getDateNow*(): string = $(now().utc)
 
+proc getCharacterPiece(db: DbConn, characterId: int): JsonNode =
+  let row = db.getRow(
+    sql"SELECT characterId, quantity FROM characterPieces WHERE characterId = ?", characterId
+  )
+
+  let quantity = if row[0] == "": 0 else: parseInt(row[1])
+
+  result = %*{
+    "characterId": characterId,
+    "quantity": quantity,
+  }
+
 proc getCharacterPieces(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"SELECT characterId, quantity FROM characterPieces")
   for row in rows:
@@ -141,6 +153,16 @@ proc getCharacter(db: DbConn, characterId: int): JsonNode =
 
   result = parseCharacterRow(row)
 
+proc updateCharacterPiece(db: DbConn, characterPiece: JsonNode) =
+  let characterId = characterPiece["characterId"].getInt()
+  let quantity = characterPiece.getOrDefault("quantity").getInt()
+
+  db.exec(sql"""
+    INSERT INTO characterPieces (characterId, quantity) VALUES (?, ?)
+    ON CONFLICT (characterId) DO
+    UPDATE SET quantity = excluded.quantity
+  """, characterId, quantity)
+
 #[
 Add one character piece to the db, returns the changed count of character pieces
 ]#
@@ -152,11 +174,7 @@ proc addCharacterPiece(db: DbConn, characterId: int): int =
   else:
     result = parseInt(row[0]) + 1
 
-  db.exec(sql"""
-    INSERT INTO characterPieces (characterId, quantity) VALUES (?, ?)
-    ON CONFLICT (characterId) DO
-    UPDATE SET quantity = excluded.quantity
-  """, characterId, result)
+  updateCharacterPiece(db, %*{"characterId": characterId, "quantity": result})
 
 proc getAreaBgms*(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"SELECT areaId, id, eventName FROM areaBgm")
@@ -2796,6 +2814,31 @@ proc gacha_Execute(db: DbConn, jsonReq: JsonNode): JsonNode =
     "changedResources": changedResources,
   }
 
+proc character_LimitBreak(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let characterId = jsonReq["characterId"].getInt()
+  let limitBreakCount = jsonReq["limitBreakCount"].getInt()
+
+  let character = getCharacter(db, characterId)
+  let limitBreak = character.getOrDefault("limitBreak").getInt() + limitBreakCount
+  character["limitBreak"] = %*limitBreak
+  db.exec(sql"""
+    INSERT INTO characterLimitBreaks (characterId, limitBreak) VALUES (?, ?)
+    ON CONFLICT (characterId) DO
+    UPDATE SET limitBreak = excluded.limitBreak
+  """, characterId, limitBreak)
+
+  let characterPiece = getCharacterPiece(db, characterId)
+  let quantity = max(0, characterPiece.getOrDefault("quantity").getInt() - 1)
+  characterPiece["quantity"] = %*quantity
+  updateCharacterPiece(db, characterPiece)
+
+  result = %*{
+    "changedResources": {
+      "characters": [character],
+      "characterPieces": [characterPiece],
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -2860,5 +2903,7 @@ proc getJsonResultStable*(
     result = gacha_List(db)
   elif uri == "/gacha/execute":
     result = gacha_Execute(db, jsonReq)
+  elif uri == "/character/limit_break":
+    result = character_LimitBreak(db, jsonReq)
   else:
     result = nil
