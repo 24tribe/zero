@@ -2298,7 +2298,7 @@ proc createNextAtBatGameInfo(currentAtBatGameInfo: JsonNode, fakeNextAtBatGameIn
 
 proc xb_Play(db: DbConn, jsonReq: JsonNode): JsonNode =
   let xbId = jsonReq["xbId"].getInt()
-  let zoneAreaIndex = jsonReq["zoneAreaIndex"].getInt()
+  let zoneAreaIndex = jsonReq.getOrDefault("zoneAreaIndex").getInt()
 
   var fakeNextAtBatGameInfo: JsonNode = nil
   var changedResources: JsonNode = nil
