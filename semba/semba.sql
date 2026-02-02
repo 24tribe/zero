@@ -80,6 +80,12 @@ CREATE TABLE userData (
     val STRING
 );
 
+DROP TABLE IF EXISTS defaultUserData;
+CREATE TABLE defaultUserData (
+    keyName STRING PRIMARY KEY,
+    val STRING
+);
+
 DROP TABLE IF EXISTS gates;
 CREATE TABLE gates (
     fromAreaId INTEGER,
@@ -13085,5 +13091,6 @@ VALUES
 INSERT INTO areaObjectsOriginal SELECT * FROM areaObjects;
 INSERT INTO areaEnemiesOriginal SELECT * FROM areaEnemies;
 INSERT INTO areaBgmOriginal SELECT * FROM areaBgm;
+INSERT INTO defaultUserData SELECT * FROM userData;
 
 COMMIT;

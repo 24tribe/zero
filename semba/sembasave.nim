@@ -16,6 +16,7 @@ version 5: (
 version 6: has new areaObjects
 version 7: challenges
 version 8: warpPoints, areas, areaGroups, cities
+version 9: characterPieces, userData
 ]#
 
 import std/json
@@ -241,6 +242,18 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
 
     loadSaveFileVer3(db, jsonData, dontDeleteAllAreaObjects)
 
+  if version >= 9:
+    db.exec(sql"DELETE FROM characterPieces")
+    let characterPieces = jsonData["characterPieces"]
+    for characterPiece in characterPieces:
+      updateCharacterPiece(db, characterPiece)
+
+    db.exec(sql"DELETE FROM userData")
+    db.exec(sql"INSERT INTO userData SELECT * FROM defaultUserData")
+    let userData = jsonData["userData"]
+    for row in userData:
+      updateUserData(db, row["keyName"].getStr(), row["val"].getStr())
+
   if version >= 4:
     let status = jsonData["status"]
     setUserStatus(db, status)
@@ -287,9 +300,11 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   let areas = getAreas(db)
   let areaGroups = getAreaGroups(db)
   let cities = getCities(db)
+  let characterPieces = getCharacterPieces(db)
+  let userData = getUserData(db)
 
   var jsonData = %*{
-    "version": 8,
+    "version": 9,
     "formations": formations,
     "tips": tips,
     "areaObjects": areaObjects,
@@ -313,6 +328,8 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     "areas": areas,
     "areaGroups": areaGroups,
     "cities": cities,
+    "characterPieces": characterPieces,
+    "userData": userData,
   }
 
   writeFile(saves_dir & "/" & name & ".save", $jsonData)
