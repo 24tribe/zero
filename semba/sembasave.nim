@@ -1,3 +1,23 @@
+#[
+This module is in charge of the save files.
+Each version can save/load more tables from the db.
+Old save files should work on new versions of the offline mode,
+and if they don't, that's considered a bug.
+
+version 2: formations
+version 3: tips, areaObjects, areaEnemies
+version 4: userStatus
+version 5: (
+  debugLogsOffline, areaBgm, characters, tensionCards,
+  challengeProgresses, nineSequences, totalTasks, tutorialStates,
+  adventureVariables, challengeTasks, areaActionSequenceIds, questStates
+  clearedAchievements
+)
+version 6: has new areaObjects
+version 7: challenges
+version 8: warpPoints, areas, areaGroups, cities
+]#
+
 import std/json
 import std/files
 import std/paths
@@ -14,6 +34,7 @@ proc resetAreaObjects*(db: DbConn) =
   db.exec(sql"DELETE FROM areaBgm")
   db.exec(sql"INSERT INTO areaBgm SELECT * FROM areaBgmOriginal")
 
+
 proc addOfflineLog*(db: DbConn, offlineLog: JsonNode) =
   let receivedAt = offlineLog["receivedAt"].getStr()
   let uri = offlineLog["uri"].getStr()
@@ -24,6 +45,7 @@ proc addOfflineLog*(db: DbConn, offlineLog: JsonNode) =
     sql"INSERT INTO debugLogsOffline (receivedAt, uri, req, res) VALUES (?, ?, ?, ?)",
     receivedAt, uri, req, res
   )
+
 
 proc getOfflineLogs*(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"SELECT receivedAt, uri, req, res FROM debugLogsOffline")
@@ -41,7 +63,7 @@ proc getOfflineLogs*(db: DbConn): seq[JsonNode] =
       "res": res
     })
 
-# version 3: tips, areaObjects, areaEnemies
+
 proc loadSaveFileVer3(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: bool) =
   let tips = jsonData["tips"]
 
@@ -66,14 +88,7 @@ proc loadSaveFileVer3(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
   for areaEnemy in areaEnemies:
     addAreaEnemy(db, areaEnemy)
 
-#[
-version 5: (
-  debugLogsOffline, areaBgm, characters, tensionCards,
-  challengeProgresses, nineSequences, totalTasks, tutorialStates,
-  adventureVariables, challengeTasks, areaActionSequenceIds, questStates
-  clearedAchievements
-)
-]#
+
 proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: bool) =
   let offlineLogs = jsonData["offlineLogs"]
 
@@ -167,7 +182,7 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
   for clearedAchievement in clearedAchievements:
     addClearedAchievement(db, clearedAchievement)
 
-# version 8: warpPoints, areas, areaGroups, cities
+
 proc loadSaveFileVer8(db: DbConn, jsonData: JsonNode) =
   db.exec(sql"DELETE FROM warpPoints")
   let warpPoints = jsonData["warpPoints"].getElems()
@@ -189,12 +204,7 @@ proc loadSaveFileVer8(db: DbConn, jsonData: JsonNode) =
   for city in cities:
     addCity(db, city)
 
-#[
-version 2: formations
-version 4: userStatus
-version 6: has new areaObjects
-version 7: challenges
-]#
+
 proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   db.exec(sql"BEGIN")
 
@@ -244,6 +254,7 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     loadSaveFileVer8(db, jsonData)
 
   db.exec(sql"COMMIT")
+
 
 proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   const baseError = "Couldn't create save file"
@@ -303,6 +314,7 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   }
 
   writeFile(saves_dir & "/" & name & ".save", $jsonData)
+
 
 proc deleteSaveFile*(saves_dir: string, name: string) =
   removeFile((saves_dir & "/" & name & ".save").Path)
