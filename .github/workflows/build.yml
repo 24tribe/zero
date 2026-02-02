@@ -28,10 +28,15 @@ jobs:
         meson-version: 1.8.1
         action: install
         setup-options: -Dwarning_level=3
-        options: --destdir=tnz-x64
+        options: --destdir=tnz-${{ github.ref_name }}-x64
+
+    - name: Compress files
+      run: 7z a tnz-${{ github.ref_name }}-x64.zip build/tnz-${{ github.ref_name }}-x64
 
     - name: Upload Release
-      uses: actions/upload-artifact@v4
+      uses: svenstaro/upload-release-action@v2
       with:
-        name: tnz-x64
-        path: build/tnz-x64
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: tnz-${{ github.ref_name }}-x64.zip
+        tag: ${{ github.ref }}
+        overwrite: true
