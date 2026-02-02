@@ -108,6 +108,7 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
   let characters = jsonData["characters"]
 
   db.exec(sql"DELETE FROM characters")
+  db.exec(sql"DELETE FROM characterLimitBreaks")
 
   for character in characters:
     addCharacter(db, character)
@@ -115,6 +116,7 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
   let tensionCards = jsonData["tensionCards"]
 
   db.exec(sql"DELETE FROM tensionCards")
+  db.exec(sql"DELETE FROM tensionCardLimitBreaks")
 
   for tensionCard in tensionCards:
     addTensionCard(db, tensionCard)
