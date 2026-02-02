@@ -2892,6 +2892,17 @@ proc tensionCard_LimitBreakEnhance(db: DbConn, jsonReq: JsonNode): JsonNode =
     }
   }
 
+proc formation_Switch(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let formationNumber = jsonReq["formationNumber"].getInt()
+  let status = getUserStatus(db)
+  status["formationNumber"] = %*formationNumber
+  setUserStatus(db, status)
+  result = %*{
+    "changedResources": {
+      "status": status,
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -2960,5 +2971,7 @@ proc getJsonResultStable*(
     result = character_LimitBreak(db, jsonReq)
   elif uri == "/tension_card/limit_break_enhance":
     result = tensionCard_LimitBreakEnhance(db, jsonReq)
+  elif uri == "/formation/switch":
+    result = formation_Switch(db, jsonReq)
   else:
     result = nil
