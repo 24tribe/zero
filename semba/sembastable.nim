@@ -2928,6 +2928,28 @@ proc formation_Switch(db: DbConn, jsonReq: JsonNode): JsonNode =
     }
   }
 
+proc tensionCard_Lock(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let isLock = jsonReq.getOrDefault("isLock").getBool()
+  let entityIds = jsonReq["entityIds"]
+
+  var tensionCards = newSeq[JsonNode]()
+
+  for entityId in entityIds:
+    let tensionCard = getTensionCard(db, entityId.getInt())
+    tensionCard["isLocked"] = %*isLock
+    tensionCards.add(tensionCard)
+    let isLocked = if isLock: 1 else: 0
+    db.exec(
+      sql"UPDATE tensionCards SET isLocked = ? WHERE entityId = ?",
+      isLocked, entityId.getInt()
+    )
+
+  result = %*{
+    "changedResources": {
+      "tensionCards": tensionCards,
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -2998,5 +3020,7 @@ proc getJsonResultStable*(
     result = tensionCard_LimitBreakEnhance(db, jsonReq)
   elif uri == "/formation/switch":
     result = formation_Switch(db, jsonReq)
+  elif uri == "/tension_card/lock":
+    result = tensionCard_Lock(db, jsonReq)
   else:
     result = nil
