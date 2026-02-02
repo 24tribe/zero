@@ -878,6 +878,13 @@ proc getCharacters*(db: DbConn): seq[JsonNode] =
   for characterRow in charactersRows:   
     result.add(parseCharacterRow(characterRow))
 
+proc addCharacterLimitBreak(db: DbConn, characterId: int, limitBreak: int) =
+  db.exec(sql"""
+    INSERT INTO characterLimitBreaks (characterId, limitBreak) VALUES (?, ?)
+    ON CONFLICT (characterId) DO
+    UPDATE SET limitBreak = excluded.limitBreak
+  """, characterId, limitBreak)
+
 proc addCharacter*(db: DbConn, character: JsonNode) =
   let characterId = character["characterId"].getInt()
   let exp = character["exp"].getInt()
@@ -903,6 +910,7 @@ proc addCharacter*(db: DbConn, character: JsonNode) =
   let actionPointRate = character["actionPointRate"].getInt()
   let actionPointConsumption = character["actionPointConsumption"].getInt()
   let damageTakenRate = character["damageTakenRate"].getInt()
+  let limitBreak = character.getOrDefault("limitBreak").getInt()
 
   db.exec(sql"""
     INSERT INTO characters
@@ -919,6 +927,8 @@ proc addCharacter*(db: DbConn, character: JsonNode) =
      trainingScoreLevelScore, trainingScoreRankScore, actionPointMax, actionPointRate,
      actionPointConsumption, damageTakenRate
   )
+
+  addCharacterLimitBreak(db, characterId, limitBreak)
 
 proc removeAreaObject(db: DbConn, areaKeyId: int, triggerId: int) =
   db.exec(sql"DELETE FROM areaObjects WHERE areaId=? AND areaObjectBehaviorId=?", areaKeyId, triggerId);
@@ -2875,11 +2885,7 @@ proc character_LimitBreak(db: DbConn, jsonReq: JsonNode): JsonNode =
   let character = getCharacter(db, characterId)
   let limitBreak = character.getOrDefault("limitBreak").getInt() + limitBreakCount
   character["limitBreak"] = %*limitBreak
-  db.exec(sql"""
-    INSERT INTO characterLimitBreaks (characterId, limitBreak) VALUES (?, ?)
-    ON CONFLICT (characterId) DO
-    UPDATE SET limitBreak = excluded.limitBreak
-  """, characterId, limitBreak)
+  addCharacterLimitBreak(db, characterId, limitBreak)
 
   let characterPiece = getCharacterPiece(db, characterId)
   let quantity = max(0, characterPiece.getOrDefault("quantity").getInt() - 1)
