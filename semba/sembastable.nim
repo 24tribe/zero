@@ -780,13 +780,38 @@ proc addTensionCard*(db: DbConn, tensionCard: JsonNode) =
 
   updateTensionCardLimitBreak(db, entityId, limitBreak)
 
+proc getFormationCards(db: DbConn, formationNumber: int): JsonNode =
+  let row = db.getRow(sql"SELECT cards FROM formations WHERE number = ?", formationNumber)
+
+  if row[0] == "":
+    raise newException(SembaError, "Couldn't find formation cards for formationNumber=" & $formationNumber)
+
+  result = parseJson(row[0])
+
 proc getEquippedTensionCards(db: DbConn): seq[JsonNode] =
-  # FIXME: should return current formation tension cards
+  let status = getUserStatus(db)
+  let formationNumber = status.getOrDefault("formationNumber").getInt()
+  let cards = getFormationCards(db, formationNumber)
 
-  let tensionCardsRows = db.getAllRows(sql(selectTensionCardSql & " LIMIT 5"))
+  let tensionCard1Id = cards.getOrDefault("tensionCard1Id")
+  if tensionCard1Id != nil:
+    result.add(getTensionCard(db, tensionCard1Id.getInt()))
 
-  for tensionCardRow in tensionCardsRows:
-    result.add(parseTensionCardRow(tensionCardRow))
+  let tensionCard2Id = cards.getOrDefault("tensionCard2Id")
+  if tensionCard2Id != nil:
+    result.add(getTensionCard(db, tensionCard2Id.getInt()))
+
+  let tensionCard3Id = cards.getOrDefault("tensionCard3Id")
+  if tensionCard3Id != nil:
+    result.add(getTensionCard(db, tensionCard3Id.getInt()))
+
+  let tensionCard4Id = cards.getOrDefault("tensionCard4Id")
+  if tensionCard4Id != nil:
+    result.add(getTensionCard(db, tensionCard4Id.getInt()))
+
+  let tensionCard5Id = cards.getOrDefault("tensionCard5Id")
+  if tensionCard5Id != nil:
+    result.add(getTensionCard(db, tensionCard5Id.getInt()))
 
 proc getBattleParameters(db: DbConn, battleEntryIds: JsonNode): seq[JsonNode] =
   # FIXME: fix n+1
