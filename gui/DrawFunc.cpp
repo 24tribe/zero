@@ -142,6 +142,8 @@ void ShowSavesWindow(
     std::function<void (const std::string&)> deleteSaveFile,
     std::function<char *(const char *)> loadSaveFile
 ) {
+    ImGui::SetNextWindowSize(ImVec2(450,360), ImGuiCond_FirstUseEver);
+
     if (!ImGui::Begin("Saves", p_open)) {
         ImGui::End();
         return;
@@ -190,6 +192,7 @@ void DrawFunc::operator()(void) {
     ImGui::NewFrame();
 
     if (active) {
+        ImGui::SetNextWindowSize(ImVec2(300,320), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Tribe Nine Zero", &active, 0)) {
             ImGui::Text("Result: %s", result);
 

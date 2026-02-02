@@ -217,6 +217,8 @@ void ensureHundredPercent(
 }
 
 void GachaRatesWindow::Show(bool* showGachaRates) {
+    ImGui::SetNextWindowSize(ImVec2(400,400), ImGuiCond_FirstUseEver);
+
     if (!ImGui::Begin("GachaRates", showGachaRates)) {
         ImGui::End();
         return;
