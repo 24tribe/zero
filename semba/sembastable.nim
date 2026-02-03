@@ -1593,10 +1593,11 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
       echo("WARNING: " & key & " not handled in updateResources")
 
 proc updateActionSequenceId(db: DbConn, areaId: int, actionSequenceId: int) =
-  db.exec(
-    sql"UPDATE areaActionSequenceIds SET actionSequenceId = ? WHERE areaId = ?",
-    actionSequenceId, areaId
-  )
+  db.exec(sql"""
+    INSERT INTO areaActionSequenceIds (areaId, actionSequenceId) VALUES (?, ?)
+    ON CONFLICT (areaId) DO
+    UPDATE SET actionSequenceId = excluded.actionSequenceId
+  """, areaId, actionSequenceId)
 
 proc getReadSequenceAreaAction(db: DbConn, sequenceRequestId: int): tuple[areaId: int, actionSequenceId: int] =
   let row = db.getRow(
