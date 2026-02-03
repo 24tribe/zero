@@ -1,17 +1,18 @@
 from argparse import ArgumentParser
 from functools import partial
+import json
 
-from dumpSembaLogs import get_debug_logs
-from genArea import get_first_move_to_area
+from genAreaBgm  import get_first_move_to_area
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("semba_db")
+    parser.add_argument("online_logs_json")
     parser.add_argument("out_sql")
 
     args = parser.parse_args()
 
-    debug_logs = get_debug_logs(args.semba_db)
+    with open(args.online_logs_json, "r", encoding="utf-8") as f:
+        debug_logs = json.load(f)
 
     first_move_to_area = get_first_move_to_area(debug_logs)
 
@@ -36,11 +37,30 @@ def get_read_seq_move_to_area_pairs(debug_logs):
 
     return result
 
+"""
+TODO: Why these:
+(70012711, 300401, 1002, 'bgm_adv_00_basic_01')
+, (90000006, 300501, 1007, 'bgm_adv_00_basic_01')
+, (80100211, 101381, 1503, 'bgm_adv_01_hotel')
+Are not generated?
+"""
 def get_bgm_rows(read_seq_move_to_area_pairs):
     result = []
 
+    seenSequenceRequestIds = set()
+
     for read_seq, move_to_area in read_seq_move_to_area_pairs:
-        sequenceRequestId = read_seq["req"]['sequenceRequestIds'][0]
+        if "sequenceRequestIds" in read_seq["req"]:
+            sequenceRequestId = read_seq["req"]['sequenceRequestIds'][0]
+        else:
+            # FIXME: do the same for nineSequences
+            continue
+
+        if sequenceRequestId in seenSequenceRequestIds:
+            continue
+
+        seenSequenceRequestIds.add(sequenceRequestId)
+
         areaId = move_to_area["req"]["areaId"]
 
         id_ = move_to_area["res"]["areaBgm"]["id"]
@@ -71,13 +91,24 @@ def get_read_seq_area_action_rows(read_seq_move_to_area_pairs):
     result = []
 
     for read_seq, move_to_area in read_seq_move_to_area_pairs:
-        sequenceRequestId = read_seq["req"]['sequenceRequestIds'][0]
+        req = read_seq["req"]
+        sequenceRequestId = None
+        nineSequenceId = None
+        if "sequenceRequestIds" in req:
+            sequenceRequestId = req['sequenceRequestIds'][0]
+        else:
+            nineSequenceId = req["nineSequences"][0]
+
         areaId = move_to_area["req"]["areaId"]
 
         if "areaBehavior" in move_to_area["res"]:
+            assert sequenceRequestId is not None
             actionSequenceId = move_to_area["res"]["areaBehavior"]["actionSequenceId"]
         else:
             actionSequenceId = 0
+
+        if nineSequenceId is not None:
+            continue
 
         result.append((sequenceRequestId, areaId, actionSequenceId))
 
