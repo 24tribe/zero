@@ -2972,6 +2972,63 @@ proc updateUserData*(db: DbConn, keyName: string, val: string) =
     UPDATE SET val = excluded.val
   """, keyName, val)
 
+proc getMails(db: DbConn, opened: bool, bulkMails: var seq[JsonNode]): seq[JsonNode] =
+  let openedInt = if opened: 1 else: 0
+
+  let rows = db.getAllRows(sql"""
+    SELECT entityId, mailType, subject, body, sender, rewards, createdAt, endAt
+    FROM mails
+    WHERE opened = ?
+  """, openedInt)
+
+  for row in rows:
+    let entityId = parseInt(row[0])
+    let mailType = parseInt(row[1])
+    let subject = row[2]
+    let body = row[3]
+    let sender = row[4]
+    let rewards = parseJson(row[5])
+    let createdAt = row[6]
+    let endAt = row[7]
+    let bulkMailId = entityId*1000
+
+    result.add(%*{
+      "entityId": entityId,
+      "mailType": mailType,
+      "mailParams": {
+        "bulkMailId": bulkMailId,
+      },
+      "rewards": rewards,
+      "createdAt": createdAt,
+      "endAt": endAt
+    })
+
+    bulkMails.add(%*{
+      "id": bulkMailId,
+      "subject": subject,
+      "body": body,
+      "sender": sender,
+    })
+
+proc mail_List(db: DbConn): JsonNode =
+  var bulkMails = newSeq[JsonNode]()
+  let opened = getMails(db, #[ opened = ]# true, bulkMails)
+  let unopened = getMails(db, #[ opened = ]# false, bulkMails)
+  let mailNotification = unopened.len > 0
+
+  result = %*{
+    "list": {
+      "opened": opened,
+      "unopened": unopened,
+      "bulkMails": bulkMails
+    },
+    "changedResources": {
+      "notifications": {
+        "mail": mailNotification
+      }
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -3044,5 +3101,7 @@ proc getJsonResultStable*(
     result = formation_Switch(db, jsonReq)
   elif uri == "/tension_card/lock":
     result = tensionCard_Lock(db, jsonReq)
+  elif uri == "/mail/list":
+    result = mail_List(db)
   else:
     result = nil
