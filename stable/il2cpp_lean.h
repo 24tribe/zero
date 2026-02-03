@@ -11,6 +11,7 @@
 typedef struct MethodInfo_20B62E0 GetResultMethodInfo;
 typedef struct MethodInfo_F6CAF0 NeonApiGetResponse_MethodInfo;
 typedef struct LPCOHPIGHIN_o NeonApiGetResponse_ThirdParam;
+typedef struct Neon_Game_Scene_MailBox_MailBoxMailListItem_o Neon_Game_Scene_MailBox_MailBoxMailListItem_o;
 
 typedef struct System_Byte_array {
 	Il2CppObject obj;
@@ -9580,5 +9581,38 @@ typedef struct Neon_Model_Api_Model_AreaObject_array {
 	il2cpp_array_size_t max_length;
 	Neon_Model_Api_Model_AreaObject_o* m_Items[65535];
 } Neon_Model_Api_Model_AreaObject_array;
+
+typedef struct Neon_Model_UserData_UserMail_Fields {
+	int32_t _EntityId_k__BackingField;
+	struct System_String_o* _Sender_k__BackingField;
+	struct System_String_o* _Subject_k__BackingField;
+	struct System_String_o* _Body_k__BackingField;
+	struct Neon_Model_UserData_ResourceItem_array* _Rewards_k__BackingField;
+	struct System_DateTime_o _CreatedAt_k__BackingField;
+	struct System_DateTime_o _EndAt_k__BackingField;
+	bool Unread;
+	bool Unreceived;
+} Neon_Model_UserData_UserMail_Fields;
+
+typedef struct Neon_Model_UserData_UserMail_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+} Neon_Model_UserData_UserMail_VTable;
+
+typedef struct Neon_Model_UserData_UserMail_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	Neon_Model_UserData_UserMail_VTable vtable;
+} Neon_Model_UserData_UserMail_c;
+
+typedef struct Neon_Model_UserData_UserMail_o {
+	Neon_Model_UserData_UserMail_c *klass;
+	void *monitor;
+	Neon_Model_UserData_UserMail_Fields fields;
+} Neon_Model_UserData_UserMail_o;
 
 #endif
