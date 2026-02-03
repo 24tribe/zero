@@ -327,16 +327,13 @@ proc getUserStatus*(db: DbConn): JsonNode =
   return parseJson(statusRow[0])
 
 proc adventure_WarpAreaLocator(db: DbConn, jsonReq: JsonNode): JsonNode =
-  let warpAreaId = jsonReq["warpAreaId"].getInt()
+  let status = getUserStatus(db)
 
-  if warpAreaId == 101: # Mita's Hideout
-    return %*{
-      "changedResources": {
-        "status": getUserStatus(db)
-      }
+  return %*{
+    "changedResources": {
+      "status": status
     }
-  else:
-    return nil
+  }
 
 proc updateEventFloorNodes(db: DbConn, eventFloorNodeId: int, clearedAchievementIds: set[uint16]): seq[JsonNode] =
   let ids = clearedAchievementIds + getClearedAchievementIds(db, eventFloorNodeId)
