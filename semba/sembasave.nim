@@ -208,6 +208,24 @@ proc loadSaveFileVer8(db: DbConn, jsonData: JsonNode) =
     addCity(db, city)
 
 
+proc sanityChecks(db: DbConn) =
+  # https://github.com/24tribe/zero/issues/24
+  let challenge1010071Row = db.getRow(sql"""
+    SELECT challengeProgressId FROM challengeProgresses
+    WHERE challengeProgressId = 1010071 AND state = 3
+  """)
+  let challenge1010081Row = db.getRow(sql"""
+    SELECT challengeProgressId FROM challengeProgresses
+    WHERE challengeProgressId = 1010081 AND state = 3
+  """)
+  if challenge1010071Row[0] != "" and challenge1010081Row[0] == "":
+    db.exec(sql"""
+      INSERT INTO areaActionSequenceIds (areaId, actionSequenceId) VALUES (101311, 8010081)
+      ON CONFLICT (areaId) DO
+      UPDATE SET actionSequenceId = excluded.actionSequenceId
+    """)
+
+
 proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   db.exec(sql"BEGIN")
 
@@ -268,6 +286,10 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   if version >= 8:
     loadSaveFileVer8(db, jsonData)
 
+  db.exec(sql"COMMIT")
+
+  db.exec(sql"BEGIN")
+  sanityChecks(db)
   db.exec(sql"COMMIT")
 
 
