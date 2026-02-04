@@ -17,6 +17,7 @@ version 6: has new areaObjects
 version 7: challenges
 version 8: warpPoints, areas, areaGroups, cities
 version 9: characterPieces, userData
+version 10: dungeons
 ]#
 
 import std/json
@@ -290,6 +291,12 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   if version >= 8:
     loadSaveFileVer8(db, jsonData)
 
+  db.exec(sql"DELETE FROM dungeons")
+  if version >= 10:
+    let dungeons = jsonData["dungeons"]
+    for dungeon in dungeons:
+      addDungeon(db, dungeon)
+
   db.exec(sql"COMMIT")
 
   db.exec(sql"BEGIN")
@@ -328,9 +335,10 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   let cities = getCities(db)
   let characterPieces = getCharacterPieces(db)
   let userData = getUserData(db)
+  let dungeons = getDungeons(db)
 
   var jsonData = %*{
-    "version": 9,
+    "version": 10,
     "formations": formations,
     "tips": tips,
     "areaObjects": areaObjects,
@@ -356,6 +364,7 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     "cities": cities,
     "characterPieces": characterPieces,
     "userData": userData,
+    "dungeons": dungeons,
   }
 
   writeFile(saves_dir & "/" & name & ".save", $jsonData)
