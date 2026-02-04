@@ -210,24 +210,14 @@ proc loadSaveFileVer8(db: DbConn, jsonData: JsonNode) =
 
 proc sanityChecks(db: DbConn) =
   # https://github.com/24tribe/zero/issues/24
-  let challenge1010071Row = db.getRow(sql"""
-    SELECT challengeProgressId FROM challengeProgresses
-    WHERE challengeProgressId = 1010071 AND state = 3
-  """)
-  let challenge1010081Row = db.getRow(sql"""
-    SELECT challengeProgressId FROM challengeProgresses
-    WHERE challengeProgressId = 1010081 AND state = 3
-  """)
-  if challenge1010071Row[0] != "" and challenge1010081Row[0] == "":
-    db.exec(sql"""
-      INSERT INTO areaActionSequenceIds (areaId, actionSequenceId) VALUES (101311, 8010081)
-      ON CONFLICT (areaId) DO
-      UPDATE SET actionSequenceId = excluded.actionSequenceId
-    """)
+  if (
+    isChallengeProgressComplete(getChallengeProgress(db, 1010071)) and
+    not isChallengeProgressComplete(getChallengeProgress(db, 1010081))
+  ):
+    updateActionSequenceId(db, 101311, 8010081)
 
   # https://github.com/24tribe/zero/issues/26
-  let challenge1010042 = getChallengeProgress(db, 1010042)
-  if challenge1010042 != nil and challenge1010042.getOrDefault("state").getInt() == 3:
+  if isChallengeProgressComplete(getChallengeProgress(db, 1010042)):
     updateAreaObjects(db, %*[
       {
         "areaObjectId": 700058, "areaPointId": 101312102, "areaObjectBehaviorId": 7010712,

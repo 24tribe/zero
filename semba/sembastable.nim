@@ -940,6 +940,9 @@ proc getBattleFinishAreaObjects(db: DbConn, battleEntryId: int): JsonNode =
 
   return if row[0] != "": parseJson(row[0]) else: nil
 
+proc isChallengeProgressComplete*(challengeProgress: JsonNode): bool =
+  result = challengeProgress != nil and challengeProgress.getOrDefault("state").getInt() == 3
+
 proc updateAreaObjects*(db: DbConn, areaObjects: JsonNode) =
   for areaObject in areaObjects:
     let areaPointId = areaObject["areaPointId"].getInt()
@@ -1605,7 +1608,7 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
     if not (key in handledKeys):
       echo("WARNING: " & key & " not handled in updateResources")
 
-proc updateActionSequenceId(db: DbConn, areaId: int, actionSequenceId: int) =
+proc updateActionSequenceId*(db: DbConn, areaId: int, actionSequenceId: int) =
   db.exec(sql"""
     INSERT INTO areaActionSequenceIds (areaId, actionSequenceId) VALUES (?, ?)
     ON CONFLICT (areaId) DO
