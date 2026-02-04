@@ -83,6 +83,40 @@ const selectTensionCardSql = """
 
 proc getDateNow*(): string = $(now().utc)
 
+proc parseDungeonRow(row: Row): JsonNode =
+  let dungeonId = parseInt(row[0])
+  let isFinished = if parseInt(row[1]) == 1: true else: false
+  result = %*{
+    "dungeonId": dungeonId,
+    "isFinished": isFinished,
+  }
+
+proc getDungeons*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT dungeonId, isFinished FROM dungeons")
+
+  for row in rows:
+    let dungeon = parseDungeonRow(row)
+    result.add(dungeon)
+
+proc getDungeon(db: DbConn, dungeonId: int): JsonNode =
+  let row = db.getRow(sql"SELECT dungeonId, isFinished FROM dungeons WHERE dungeonId = ?", dungeonId)
+
+  if row[0] != "":
+    let isFinished = if parseInt(row[1]) == 1: true else: false
+    result = %*{
+      "dungeonId": dungeonId,
+      "isFinished": isFinished,
+    }
+
+proc addDungeon*(db: DbConn, dungeon: JsonNode) =
+  let dungeonId = dungeon["dungeonId"].getInt()
+  let isFinished = if dungeon.getOrDefault("isFinished").getBool(): 1 else: 0
+  db.exec(sql"""
+    INSERT INTO dungeons (dungeonId, isFinished) VALUES (?, ?)
+    ON CONFLICT (dungeonId) DO
+    UPDATE SET isFinished = excluded.isFinished
+  """, dungeonId, isFinished)
+
 proc updateTensionCardLimitBreak(db: DbConn, entityId: int, limitBreak: int) =
   db.exec(sql"""
     INSERT INTO tensionCardLimitBreaks (entityId, limitBreak) VALUES (?, ?)
@@ -3041,6 +3075,24 @@ proc mail_List(db: DbConn): JsonNode =
     }
   }
 
+proc dungeon_Entry(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let dungeonId = jsonReq["dungeonId"].getInt()
+
+  let status = getUserStatus(db)
+  var dungeons = newSeq[JsonNode]()
+
+  if getDungeon(db, dungeonId) == nil:
+    let dungeon = %*{"dungeonId": dungeonId, "isFinished": true}
+    addDungeon(db, dungeon)
+    dungeons.add(dungeon)
+
+  result = %*{
+    "changedResources": {
+      "status": status,
+      "dungeons": dungeons,
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -3115,5 +3167,7 @@ proc getJsonResultStable*(
     result = tensionCard_Lock(db, jsonReq)
   elif uri == "/mail/list":
     result = mail_List(db)
+  elif uri == "/dungeon/entry":
+    result = dungeon_Entry(db, jsonReq)
   else:
     result = nil
