@@ -1648,21 +1648,19 @@ proc updateAreaBgm(db: DbConn, areaId: int, id: int, eventName: string) =
   )
 
 proc readSequenceHandleRow(db: DbConn, row: Row, areaKeyId: int): JsonNode =
-  var areaObjects: JsonNode = nil
+  result = %*{}
 
   if row[0] != "":
-    areaObjects = parseJson(row[0])
+    let areaObjects = parseJson(row[0])
     updateAreaObjects(db, areaObjects)
-
-  var changedResources = parseJson(row[1]) 
-  updateResources(db, changedResources)  
-
-  result = %*{
-    "changedResources": changedResources
-  }
-
-  if areaObjects != nil:
     result["areaObjects"] = areaObjects
+
+  if row[1] != "":
+    var changedResources = parseJson(row[1]) 
+    updateResources(db, changedResources)  
+    result["changedResources"] = changedResources
+  else:
+    result["changedResources"] = %*{}
 
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
