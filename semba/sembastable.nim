@@ -1432,6 +1432,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let cities = getCities(db)
   let wallet = getWallet(db)
   let characterPieces = getCharacterPieces(db)
+  let dungeons = getDungeons(db)
 
   return %*{
     "resources": {
@@ -1460,6 +1461,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "areaGroups": areaGroups,
       "cities": cities,
       "characterPieces": characterPieces,
+      "dungeons": dungeons,
     },
     "masterData": {"shopProducts": getShopProducts(db)}
   }
