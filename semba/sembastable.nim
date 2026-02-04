@@ -940,7 +940,7 @@ proc getBattleFinishAreaObjects(db: DbConn, battleEntryId: int): JsonNode =
 
   return if row[0] != "": parseJson(row[0]) else: nil
 
-proc updateAreaObjects(db: DbConn, areaObjects: JsonNode) =
+proc updateAreaObjects*(db: DbConn, areaObjects: JsonNode) =
   for areaObject in areaObjects:
     let areaPointId = areaObject["areaPointId"].getInt()
     let areaId = areaPointId div 1000
@@ -1176,6 +1176,19 @@ proc getNineSequences*(db: DbConn): seq[JsonNode] =
     content["nineSequenceId"] = %*nineSequenceId
     
     result.add(content)
+
+proc getChallengeProgress*(db: DbConn, challengeProgressId: int): JsonNode =
+  let row = db.getRow(sql"""
+    SELECT challengeProgressId, clearedAt, state FROM challengeProgresses
+    WHERE challengeProgressId = ?
+  """, challengeProgressId)
+
+  if row[0] != "":
+    let clearedAt = row[1]
+    let state = parseInt(row[2])
+    result = %*{"challengeProgressId": challengeProgressId, "state": state}
+    if clearedAt != "":
+      result["clearedAt"] = %*clearedAt
 
 proc getTips*(db: DbConn): seq[JsonNode] =
   let tipsRows = db.getAllRows(sql"""
