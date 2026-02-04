@@ -225,6 +225,20 @@ proc sanityChecks(db: DbConn) =
       UPDATE SET actionSequenceId = excluded.actionSequenceId
     """)
 
+  # https://github.com/24tribe/zero/issues/26
+  let challenge1010042 = getChallengeProgress(db, 1010042)
+  if challenge1010042 != nil and challenge1010042.getOrDefault("state").getInt() == 3:
+    updateAreaObjects(db, %*[
+      {
+        "areaObjectId": 700058, "areaPointId": 101312102, "areaObjectBehaviorId": 7010712,
+        "action": {"type": 7, "id": 1}
+      },
+      {
+        "areaObjectId": 700053, "areaPointId": 101311120, "areaObjectBehaviorId": 7010714,
+        "action": {"type": 7, "id": 1}
+      }
+    ])
+
 
 proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   db.exec(sql"BEGIN")
