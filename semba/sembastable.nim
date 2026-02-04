@@ -83,6 +83,18 @@ const selectTensionCardSql = """
 
 proc getDateNow*(): string = $(now().utc)
 
+proc getItems*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT itemId, quantity FROM items")
+
+  for row in rows:
+    let itemId = parseInt(row[0])
+    let quantity = parseInt(row[1])
+
+    result.add(%*{
+      "itemId": itemId,
+      "quantity": quantity,
+    })
+
 proc parseDungeonRow(row: Row): JsonNode =
   let dungeonId = parseInt(row[0])
   let isFinished = if parseInt(row[1]) == 1: true else: false
@@ -1433,6 +1445,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let wallet = getWallet(db)
   let characterPieces = getCharacterPieces(db)
   let dungeons = getDungeons(db)
+  let items = getItems(db)
 
   return %*{
     "resources": {
@@ -1462,6 +1475,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "cities": cities,
       "characterPieces": characterPieces,
       "dungeons": dungeons,
+      "items": items,
     },
     "masterData": {"shopProducts": getShopProducts(db)}
   }

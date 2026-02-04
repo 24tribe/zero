@@ -444,6 +444,16 @@ CREATE TABLE dungeons (
     isFinished BOOLEAN
 );
 
+DROP TABLE IF EXISTS items;
+CREATE TABLE items (
+    itemId INTEGER PRIMARY KEY,
+    quantity INTEGER
+);
+
+INSERT INTO items (itemId, quantity) VALUES
+(15, 10)
+;
+
 INSERT INTO mails (entityId, mailType, subject, body, sender, rewards, createdAt, endAt, opened)
 VALUES
 (2, 3, "<-- Don't click there or you will be returned to the title!!", "For some reason the mails got from /mail/list are not listed in the left column... So press ESC if you want to go back.", "gyubid", "[]", "2025-03-13T10:00:00Z", "2100-09-13T20:20:25Z", false)
