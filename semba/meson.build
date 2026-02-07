@@ -5,7 +5,14 @@ sqlite3 = executable('sqlite3', 'shell.c', 'sqlite3.c')
 
 semba_extra = static_library('semba_extra', 'NimInit.c')
 
-semba_core_files = ['sembacore.nim', 'sembademo.nim', 'sembastable.nim', 'protojson.nim', 'sembaprivate.nim']
+semba_core_files = [
+    'sembacore.nim',
+    'sembademo.nim',
+    'sembastable.nim',
+    'protojson.nim',
+    'sembaprivate.nim',
+    'dungeongen.nim',
+]
 
 if get_option('buildtype') == 'release'
     nim_release_args = ['-d:release']

@@ -10,6 +10,8 @@ import std/random
 import db_connector/db_sqlite
 import protojson
 
+import dungeongen
+
 type BattleStartRequest* = object
     val*: JsonNode
 
@@ -734,6 +736,17 @@ proc addArea*(db: DbConn, areaId: int) =
 proc adventure_MoveToArea(db: DbConn, jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
 
+  var status = getUserStatus(db)
+
+  if areaId == 800010:
+    return %*{
+      "changedResources": {"status": status},
+      "areaBgm": {
+        "id": 1002,
+        "eventName": "bgm_adv_00_basic_01"
+      }
+    }
+
   var changedAreas = newSeq[JsonNode]()
 
   if not hasArea(db, areaId):
@@ -741,8 +754,6 @@ proc adventure_MoveToArea(db: DbConn, jsonReq: JsonNode): JsonNode =
     changedAreas.add(%*{"areaId": areaId})
 
   let currentLocation = jsonReq["currentLocation"]
-
-  var status = getUserStatus(db)
 
   let fromAreaId = currentLocation["areaKeyId"].getInt()
 
@@ -3109,6 +3120,66 @@ proc dungeon_Entry(db: DbConn, jsonReq: JsonNode): JsonNode =
     }
   }
 
+proc parseBlocks(blocksJson: JsonNode): seq[Block] =
+  for blockJson in blocksJson:
+    result.add(Block(
+      x: blockJson["x"].getInt(),
+      y: blockJson["y"].getInt(),
+      top: blockJson["top"].getInt(),
+      right: blockJson["right"].getInt(),
+      bottom: blockJson["bottom"].getInt(),
+      left: blockJson["left"].getInt(),
+    ))
+
+proc getDungeonData(db: DbConn): DungeonData =
+  let rows = db.getAllRows(sql"SELECT id, name, blocks, angle FROM dungeonData")
+
+  for row in rows:
+    let blocks = parseBlocks(parseJson(row[2]))
+    result.add(DungeonPart(
+      id: parseInt(row[0]),
+      name: row[1],
+      blocks: blocks,
+      angle: parseInt(row[3])
+    ))
+
+proc dungeonDifficultyIdToDungeonId(dungeonDifficultyId: int): int = dungeonDifficultyId div 100
+
+proc dungeon_Start(db: DbConn, jsonReq: JsonNode): JsonNode = 
+  let dungeonDifficultyId = jsonReq["dungeonDifficultyId"].getInt()
+  let bulkConsumeCount = jsonReq["bulkConsumeCount"].getInt()
+
+  let cityId = dungeonDifficultyId div 1_000_000
+  let dungeonData = getDungeonData(db)
+  let dungeonPieces = genDungeon(dungeonData, cityId)
+  let dungeonId = dungeonDifficultyIdToDungeonId(dungeonDifficultyId)
+
+  return %*{
+    "dungeonState": {
+      "dungeonDifficultyId": dungeonDifficultyId,
+      "dungeonPieces": dungeonPieces,
+    },
+    "dungeonEnemies": [],
+    "changedResources": {
+      "dungeons": [
+        {
+          "dungeonId": dungeonId
+        }
+      ]
+    },
+    "dungeonAreaItems": [],
+  }
+
+proc dungeon_Finish(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let dungeonDifficultyId = jsonReq["dungeonDifficultyId"].getInt()
+  let dungeonId = dungeonDifficultyIdToDungeonId(dungeonDifficultyId)
+
+  result = %*{
+    "changedResources": {
+      "dungeons": [{"dungeonId": dungeonId, "isFinished": true}]
+    }
+  }
+
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
   db: DbConn, lastBattleStartReq: var BattleStartRequest
@@ -3185,5 +3256,9 @@ proc getJsonResultStable*(
     result = mail_List(db)
   elif uri == "/dungeon/entry":
     result = dungeon_Entry(db, jsonReq)
+  elif uri == "/dungeon/start":
+    result = dungeon_Start(db, jsonReq)
+  elif uri == "/dungeon/finish":
+    result = dungeon_Finish(db, jsonReq)
   else:
     result = nil
