@@ -51,6 +51,9 @@ type GachaRateSetId = enum
 const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
 
+const healthyOutlawsDungeonId = 109202
+const clearHealthyOutlawsChallengeProgressId = 1010173
+
 const respiteUnitTutorialStatusKey = 43
 
 const dbCharacterFields* = """
@@ -3174,9 +3177,33 @@ proc dungeon_Finish(db: DbConn, jsonReq: JsonNode): JsonNode =
   let dungeonDifficultyId = jsonReq["dungeonDifficultyId"].getInt()
   let dungeonId = dungeonDifficultyIdToDungeonId(dungeonDifficultyId)
 
+  var challengeProgresses = %*[]
+  var challengeTasks = %*[]
+
+  let healthyOutlawsChallengeProgress = getChallengeProgress(db, clearHealthyOutlawsChallengeProgressId)
+
+  if (
+    dungeonId == healthyOutlawsDungeonId and
+    not isChallengeProgressComplete(healthyOutlawsChallengeProgress)
+  ):
+    let rightNow = getDateNow()
+
+    challengeProgresses = %*[
+      {"challengeProgressId": clearHealthyOutlawsChallengeProgressId.int, "clearedAt": rightNow, "state": 3},
+      {"challengeProgressId": 1010181, "state": 2}
+    ]
+
+    updateChallengeProgresses(db, challengeProgresses)
+
+    challengeTasks = %*[{"challengeTaskId": 10101731, "clearedAt": rightNow, "count": 1}]
+
+    updateChallengeTasks(db, challengeTasks)
+
   result = %*{
     "changedResources": {
-      "dungeons": [{"dungeonId": dungeonId, "isFinished": true}]
+      "dungeons": [{"dungeonId": dungeonId, "isFinished": true}],
+      "challengeProgresses": challengeProgresses,
+      "challengeTasks": challengeTasks,
     }
   }
 
