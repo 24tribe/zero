@@ -168,6 +168,7 @@ proc loadSaveFileVer5(db: DbConn, jsonData: JsonNode, dontDeleteAllAreaObjects: 
   let areaActionSequenceIds = jsonData["areaActionSequenceIds"]
 
   db.exec(sql"DELETE FROM areaActionSequenceIds")
+  db.exec(sql"INSERT INTO areaActionSequenceIds SELECT * FROM defaultAreaActionSequenceIds")
 
   for areaActionSequenceId in areaActionSequenceIds:
     addAreaActionSequenceId(db, areaActionSequenceId)

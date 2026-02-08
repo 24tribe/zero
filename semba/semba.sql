@@ -225,6 +225,12 @@ CREATE TABLE areaActionSequenceIds (
     actionSequenceId INTEGER
 );
 
+DROP TABLE IF EXISTS defaultAreaActionSequenceIds;
+CREATE TABLE defaultAreaActionSequenceIds (
+    areaId INTEGER PRIMARY KEY,
+    actionSequenceId INTEGER
+);
+
 DROP TABLE IF EXISTS readSequenceAreaAction;
 CREATE TABLE readSequenceAreaAction (
     sequenceRequestId INTEGER PRIMARY KEY,
@@ -14456,5 +14462,6 @@ INSERT INTO areaObjectsOriginal SELECT * FROM areaObjects;
 INSERT INTO areaEnemiesOriginal SELECT * FROM areaEnemies;
 INSERT INTO areaBgmOriginal SELECT * FROM areaBgm;
 INSERT INTO defaultUserData SELECT * FROM userData;
+INSERT INTO defaultAreaActionSequenceIds SELECT * FROM areaActionSequenceIds;
 
 COMMIT;

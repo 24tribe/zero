@@ -703,10 +703,11 @@ proc addAreaActionSequenceId*(db: DbConn, areaActionSequenceId: JsonNode) =
   let areaId = areaActionSequenceId["areaId"].getInt()
   let actionSequenceId = areaActionSequenceId["actionSequenceId"].getInt()
 
-  db.exec(
-    sql"INSERT INTO areaActionSequenceIds (areaId, actionSequenceId) VALUES (?, ?)",
-    areaId, actionSequenceId
-  )
+  db.exec(sql"""
+    INSERT INTO areaActionSequenceIds (areaId, actionSequenceId) VALUES (?, ?)
+    ON CONFLICT (areaId) DO
+    UPDATE SET actionSequenceId = excluded.actionSequenceId
+  """, areaId, actionSequenceId)
 
 proc getActionSequenceId(db: DbConn, areaId: int): int =
   let row = db.getRow(sql"SELECT actionSequenceId FROM areaActionSequenceIds WHERE areaId = ?", areaId)
