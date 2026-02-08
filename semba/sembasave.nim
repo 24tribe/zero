@@ -18,6 +18,7 @@ version 7: challenges
 version 8: warpPoints, areas, areaGroups, cities
 version 9: characterPieces, userData
 version 10: dungeons
+version 11: magicOrbs, items, areaChangeLocks
 ]#
 
 import std/json
@@ -307,6 +308,20 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     for dungeon in dungeons:
       addDungeon(db, dungeon)
 
+  db.exec(sql"DELETE FROM magicOrbs")
+  db.exec(sql"DELETE FROM items")
+  db.exec(sql"DELETE FROM areaChangeLocks")
+
+  if version >= 11:
+    let magicOrbs = jsonData["magicOrbs"].getElems()
+    updateMagicOrbs(db, magicOrbs)
+
+    let areaChangeLocks = jsonData["areaChangeLocks"].getElems()
+    updateAreaChangeLocks(db, areaChangeLocks)
+
+    let items = jsonData["items"].getElems()
+    updateItems(db, items)
+
   db.exec(sql"COMMIT")
 
   db.exec(sql"BEGIN")
@@ -346,9 +361,12 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   let characterPieces = getCharacterPieces(db)
   let userData = getUserData(db)
   let dungeons = getDungeons(db)
+  let magicOrbs = getMagicOrbs(db)
+  let areaChangeLocks = getAreaChangeLocks(db)
+  let items = getItems(db)
 
   var jsonData = %*{
-    "version": 10,
+    "version": 11,
     "formations": formations,
     "tips": tips,
     "areaObjects": areaObjects,
@@ -375,6 +393,9 @@ proc createSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     "characterPieces": characterPieces,
     "userData": userData,
     "dungeons": dungeons,
+    "magicOrbs": magicOrbs,
+    "areaChangeLocks": areaChangeLocks,
+    "items": items,
   }
 
   writeFile(saves_dir & "/" & name & ".save", $jsonData)
