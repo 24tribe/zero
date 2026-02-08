@@ -88,6 +88,26 @@ const selectTensionCardSql = """
 
 proc getDateNow*(): string = $(now().utc)
 
+proc addAreaChangeLock*(db: DbConn, areaChangeLockId: int) =
+  db.exec(sql"""
+    INSERT INTO areaChangeLocks (areaChangeLockId) VALUES (?)
+    ON CONFLICT DO NOTHING
+  """, areaChangeLockId)
+
+proc getAreaChangeLocks*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT areaChangeLockId FROM areaChangeLocks")
+
+  for row in rows:
+    let areaChangeLockId = parseInt(row[0])
+    result.add(%*{
+      "areaChangeLockId": areaChangeLockId,
+    })
+
+proc updateAreaChangeLocks*(db: DbConn, areaChangeLocks: seq[JsonNode]) =
+  for areaChangeLock in areaChangeLocks:
+    let areaChangeLockId = areaChangeLock["areaChangeLockId"].getInt()
+    addAreaChangeLock(db, areaChangeLockId)
+
 proc addItem*(db: DbConn, item: JsonNode) =
   let itemId = item["itemId"].getInt()
   let quantity = item.getOrDefault("quantity").getInt()
@@ -1496,6 +1516,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let dungeons = getDungeons(db)
   let items = getItems(db)
   let magicOrbs = getMagicOrbs(db)
+  let areaChangeLocks = getAreaChangeLocks(db)
 
   return %*{
     "resources": {
@@ -1527,6 +1548,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "dungeons": dungeons,
       "items": items,
       "magicOrbs": magicOrbs,
+      "areaChangeLocks": areaChangeLocks,
     },
     "masterData": {"shopProducts": getShopProducts(db)}
   }
@@ -1718,6 +1740,13 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
     handledKeys.incl("items")
   
   updateItems(db, items)
+
+  let areaChangeLocks = changedResources.getOrDefault("areaChangeLocks").getElems()
+
+  if areaChangeLocks.len > 0:
+    handledKeys.incl("areaChangeLocks")
+
+  updateAreaChangeLocks(db, areaChangeLocks)
 
   for key, _ in changedResources.pairs():
     if not (key in handledKeys):
