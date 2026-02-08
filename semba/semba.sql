@@ -464,6 +464,11 @@ CREATE TABLE dungeonData (
     angle INTEGER
 );
 
+DROP TABLE IF EXISTS magicOrbs;
+CREATE TABLE magicOrbs (
+    magicOrbId INTEGER PRIMARY KEY
+);
+
 INSERT INTO dungeonData (id, name, blocks, angle) VALUES
 (101, 'DungeonParts_Start', '[{"x": 0, "y": 0, "top": 1, "right": 0, "bottom": 0, "left": 0}]', 0)
 ,(201, 'DungeonParts_Boss', '[{"x": 0, "y": 0, "top": 0, "right": 0, "bottom": 1, "left": 0}]', 0)

@@ -88,6 +88,26 @@ const selectTensionCardSql = """
 
 proc getDateNow*(): string = $(now().utc)
 
+proc getMagicOrbs*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"SELECT magicOrbId FROM magicOrbs")
+
+  for row in rows:
+    let magicOrbId = parseInt(row[0])
+    result.add(%*{
+      "magicOrbId": magicOrbId,
+    })
+
+proc addMagicOrb*(db: DbConn, magicOrbId: int) =
+  db.exec(sql"""
+    INSERT INTO magicOrbs (magicOrbId) VALUES (?)
+    ON CONFLICT DO NOTHING
+  """, magicOrbId)
+
+proc updateMagicOrbs*(db: DbConn, magicOrbs: seq[JsonNode]) =
+  for magicOrb in magicOrbs:
+    let magicOrbId = magicOrb["magicOrbId"].getInt()
+    addMagicOrb(db, magicOrbId)
+
 proc getItems*(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"SELECT itemId, quantity FROM items")
 
@@ -1461,6 +1481,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let characterPieces = getCharacterPieces(db)
   let dungeons = getDungeons(db)
   let items = getItems(db)
+  let magicOrbs = getMagicOrbs(db)
 
   return %*{
     "resources": {
@@ -1491,6 +1512,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "characterPieces": characterPieces,
       "dungeons": dungeons,
       "items": items,
+      "magicOrbs": magicOrbs,
     },
     "masterData": {"shopProducts": getShopProducts(db)}
   }
@@ -1668,6 +1690,13 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
 
   for city in cities:
     addCity(db, city)
+
+  let magicOrbs = changedResources.getOrDefault("magicOrbs").getElems()
+
+  if magicOrbs.len > 0:
+    handledKeys.incl("magicOrbs")
+
+  updateMagicOrbs(db, magicOrbs)
 
   for key, _ in changedResources.pairs():
     if not (key in handledKeys):
