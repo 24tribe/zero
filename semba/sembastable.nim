@@ -88,6 +88,20 @@ const selectTensionCardSql = """
 
 proc getDateNow*(): string = $(now().utc)
 
+proc addItem*(db: DbConn, item: JsonNode) =
+  let itemId = item["itemId"].getInt()
+  let quantity = item.getOrDefault("quantity").getInt()
+
+  db.exec(sql"""
+    INSERT INTO items (itemId, quantity) VALUES (?, ?)
+    ON CONFLICT DO
+    UPDATE SET quantity = excluded.quantity
+  """, itemId, quantity)
+
+proc updateItems*(db: DbConn, items: seq[JsonNode]) =
+  for item in items:
+    addItem(db, item)
+
 proc getMagicOrbs*(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"SELECT magicOrbId FROM magicOrbs")
 
@@ -1697,6 +1711,13 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
     handledKeys.incl("magicOrbs")
 
   updateMagicOrbs(db, magicOrbs)
+
+  let items = changedResources.getOrDefault("items").getElems()
+  
+  if items.len > 0:
+    handledKeys.incl("items")
+  
+  updateItems(db, items)
 
   for key, _ in changedResources.pairs():
     if not (key in handledKeys):
