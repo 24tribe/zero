@@ -231,6 +231,15 @@ proc sanityChecks(db: DbConn) =
       }
     ])
 
+  # https://github.com/24tribe/zero/issues/28
+  if isChallengeProgressComplete(getChallengeProgress(db, clearHealthyOutlawsChallengeProgressId)):
+    updateAreaObjects(db, %*[
+      {
+        "areaObjectId": 700110, "areaPointId": 101001101, "areaObjectBehaviorId": 7010709,
+        "action": {"type": 7, "id": 1}
+      }
+    ])
+
 
 proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
   db.exec(sql"BEGIN")

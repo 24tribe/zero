@@ -52,7 +52,7 @@ const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
 
 const healthyOutlawsDungeonId = 109202
-const clearHealthyOutlawsChallengeProgressId = 1010173
+const clearHealthyOutlawsChallengeProgressId* = 1010173
 
 const respiteUnitTutorialStatusKey = 43
 
@@ -3199,6 +3199,13 @@ proc dungeon_Finish(db: DbConn, jsonReq: JsonNode): JsonNode =
     challengeTasks = %*[{"challengeTaskId": 10101731, "clearedAt": rightNow, "count": 1}]
 
     updateChallengeTasks(db, challengeTasks)
+
+    updateAreaObjects(db, %*[
+      {
+        "areaObjectId": 700110, "areaPointId": 101001101, "areaObjectBehaviorId": 7010709,
+        "action": {"type": 7, "id": 1}
+      }
+    ])
 
   result = %*{
     "changedResources": {
