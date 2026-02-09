@@ -23,10 +23,35 @@ def main():
     with open(args.masterdata_dir/"ability_efficacy.json", "r", encoding="utf-8") as f:
         md_ability_efficacy_json = json.load(f)
 
+    with open(args.masterdata_dir/"area_change_lock.json", "r", encoding="utf-8") as f:
+        md_area_change_lock_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
         gen_md_ability_efficacy(md_ability_efficacy_json, f)
+        gen_md_area_change_lock(md_area_change_lock_json, f)
+
+
+def gen_md_area_change_lock(md_area_change_lock_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("INSERT INTO mdAreaChangeLock (id, areaId) VALUES")
+
+    first = True
+    for area_change_lock in md_area_change_lock_json:
+        id_ = area_change_lock["id"]
+        for area_id in area_change_lock["area_ids"]:
+            if first:
+                first = False
+            else:
+                f.write(",")
+
+            row = (id_, area_id)
+            row = list(map(convert_to_sql, row))
+            xprint(f"({', '.join(row)})")
+
+    xprint(";")
 
 
 def convert_to_sql(val):

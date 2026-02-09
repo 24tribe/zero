@@ -791,6 +791,19 @@ proc addArea*(db: DbConn, areaId: int) =
     ON CONFLICT DO NOTHING
   """, areaId)
 
+proc getAreaChangeLocksForAreaId(db: DbConn, areaId: int): seq[JsonNode] =
+  let rows = db.getAllRows(sql"""
+    SELECT areaChangeLockId
+    FROM areaChangeLocks INNER JOIN mdAreaChangeLock ON areaChangeLockId = id
+    WHERE areaId = ?;
+  """, areaId)
+
+  for row in rows:
+    let areaChangeLockId = parseInt(row[0])
+    result.add(%*{
+      "areaChangeLockId": areaChangeLockId
+    })
+
 proc adventure_MoveToArea(db: DbConn, jsonReq: JsonNode): JsonNode =
   let areaId = jsonReq["areaId"].getInt()
 
@@ -826,8 +839,11 @@ proc adventure_MoveToArea(db: DbConn, jsonReq: JsonNode): JsonNode =
 
   let areaBgm = getAreaBgm(db, areaId)
 
+  let areaChangeLocks = getAreaChangeLocksForAreaId(db, areaId)
+
   result = %*{
     "areaBgm": areaBgm,
+    "areaChangeLocks": areaChangeLocks,
     "changedResources": {
       "status": status,
       "areas": changedAreas
