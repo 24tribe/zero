@@ -481,6 +481,19 @@ CREATE TABLE mdAreaChangeLock (
     PRIMARY KEY (id, areaId)
 );
 
+DROP TABLE IF EXISTS missions;
+CREATE TABLE missions (
+    missionId INTEGER PRIMARY KEY,
+    count INTEGER,
+    receivedStepCount INTEGER,
+    resetAt STRING,
+    clearedAt STRING
+);
+
+INSERT INTO missions (missionId, count, receivedStepCount, resetAt, clearedAt) VALUES
+(105002, 1, 0, '', '2025-09-10T02:22:53Z')
+;
+
 INSERT INTO mdAreaChangeLock (id, areaId) VALUES
 (10837701, 101316)
 ,(10837801, 101316)

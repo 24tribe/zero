@@ -88,6 +88,32 @@ const selectTensionCardSql = """
 
 proc getDateNow*(): string = $(now().utc)
 
+proc getMissions*(db: DbConn): seq[JsonNode] =
+  let rows = db.getAllRows(sql"""
+    SELECT missionId, count, receivedStepCount, resetAt, clearedAt FROM missions
+  """)
+
+  for row in rows:
+    let missionId = parseInt(row[0])
+    let count = parseInt(row[1])
+    let receivedStepCount = parseInt(row[2])
+    let resetAt = row[3]
+    let clearedAt = row[4]
+
+    let mission = %*{
+      "missionId": missionId,
+      "count": count,
+      "receivedStepCount": receivedStepCount,
+    }
+
+    if resetAt != "":
+      mission["resetAt"] = %*resetAt
+
+    if clearedAt != "":
+      mission["clearedAt"] = %*clearedAt
+
+    result.add(mission)
+
 proc addAreaChangeLock*(db: DbConn, areaChangeLockId: int) =
   db.exec(sql"""
     INSERT INTO areaChangeLocks (areaChangeLockId) VALUES (?)
@@ -1533,6 +1559,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
   let items = getItems(db)
   let magicOrbs = getMagicOrbs(db)
   let areaChangeLocks = getAreaChangeLocks(db)
+  let missions = getMissions(db)
 
   return %*{
     "resources": {
@@ -1551,7 +1578,7 @@ proc user_LogIn*(db: DbConn): JsonNode =
       "nineSequences": getNineSequences(db),
       "tips": getTips(db),
       "characterCostumes": getCharacterCostumes(db),
-      "missions": [{"missionId": 105002, "count": 1, "clearedAt": "2025-09-10T02:22:53Z"}],
+      "missions": missions,
       "totalTasks": getTotalTasks(db),
       "profile": {"name": "Yo Kuronaka3", "profileBannerId": 2010011, "characterLikabilityScale": 500},
       "profileBanners": [{"profileBannerId": 2010011, "receivedAt": "2025-09-10T02:22:51Z"}],
