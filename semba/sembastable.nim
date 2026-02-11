@@ -1233,7 +1233,7 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
     for reward in rewards:
       allRewards.add(reward)
 
-  let itemsTable = getItemsTable(db)
+  var itemsTable = getItemsTable(db)
   var changedItems: Table[int, JsonNode]
 
   for reward in allRewards:
@@ -1242,6 +1242,7 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
       item = itemsTable[reward.id]
     else:
       item = %*{"itemId": reward.id, "quantity": 0}
+      itemsTable[reward.id] = item
 
     var quantity = item.getOrDefault("quantity").getInt()
     quantity += reward.quantity
