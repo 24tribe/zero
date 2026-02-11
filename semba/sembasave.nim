@@ -322,6 +322,9 @@ proc loadSaveFile*(db: DbConn, saves_dir: string, name: string): string =
     let items = jsonData["items"].getElems()
     updateItems(db, items)
 
+  db.exec(sql"DELETE FROM missions")
+  # load missions from savefile
+
   db.exec(sql"COMMIT")
 
   db.exec(sql"BEGIN")
