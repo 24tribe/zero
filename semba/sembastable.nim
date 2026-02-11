@@ -80,6 +80,8 @@ const dbCharacterFields* = """
   actionPointRate, actionPointConsumption, damageTakenRate, limitBreak
 """
 
+const selectItemsSql = "SELECT itemId, quantity FROM items"
+
 const selectCharacterSql = """
   SELECT """ & dbCharacterFields & """
   FROM characters FULL JOIN characterLimitBreaks
@@ -184,17 +186,32 @@ proc updateMagicOrbs*(db: DbConn, magicOrbs: seq[JsonNode]) =
     let magicOrbId = magicOrb["magicOrbId"].getInt()
     addMagicOrb(db, magicOrbId)
 
+proc parseItemRow(row: Row): JsonNode =
+  let itemId = parseInt(row[0])
+  let quantity = parseInt(row[1])
+
+  result = %*{
+    "itemId": itemId,
+    "quantity": quantity,
+  }
+
 proc getItems*(db: DbConn): seq[JsonNode] =
-  let rows = db.getAllRows(sql"SELECT itemId, quantity FROM items")
+  let rows = db.getAllRows(sql(selectItemsSql))
 
   for row in rows:
-    let itemId = parseInt(row[0])
-    let quantity = parseInt(row[1])
+    let item = parseItemRow(row)
+    result.add(item)
 
-    result.add(%*{
-      "itemId": itemId,
-      "quantity": quantity,
-    })
+proc getItemsTable(db: DbConn): Table[int, JsonNode] =
+  let rows = db.getAllRows(sql(selectItemsSql))
+
+  for row in rows:
+    let item = parseItemRow(row)
+    result[item["itemId"].getInt()] = item
+
+proc itemsTableToItemsSeq(itemsTable: Table[int, JsonNode]): seq[JsonNode] =
+  for item in itemsTable.values():
+    result.add(item)
 
 proc parseDungeonRow(row: Row): JsonNode =
   let dungeonId = parseInt(row[0])
@@ -1216,6 +1233,27 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
     for reward in rewards:
       allRewards.add(reward)
 
+  let itemsTable = getItemsTable(db)
+  var changedItems: Table[int, JsonNode]
+
+  for reward in allRewards:
+    var item: JsonNode
+    if reward.id in itemsTable:
+      item = itemsTable[reward.id]
+    else:
+      item = %*{"itemId": reward.id, "quantity": 0}
+
+    var quantity = item.getOrDefault("quantity").getInt()
+    quantity += reward.quantity
+    item["quantity"] = %*quantity
+    if not (reward.id in changedItems):
+      changedItems[reward.id] = item
+
+  let items = itemsTableToItemsSeq(changedItems)
+
+  for item in items:
+    addItem(db, item)
+
   result = %*{
     "characterExps": characterExps,
     "rewards": [
@@ -1226,7 +1264,8 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
     ],
     "changedResources": {
       "status": status,
-      "characters": getCharacters(db)
+      "characters": getCharacters(db),
+      "items": items,
     }
   }
 
