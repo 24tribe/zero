@@ -490,6 +490,28 @@ CREATE TABLE missions (
     clearedAt STRING
 );
 
+DROP TABLE IF EXISTS enemyRewards;
+CREATE TABLE enemyRewards (
+    enemyId INTEGER,
+    itemId INTEGER,
+    PRIMARY KEY (enemyId, itemId)
+);
+
+INSERT INTO enemyRewards VALUES
+(224303, 50021)
+,(224303, 50022)
+,(224303, 50023)
+,(224105, 50011)
+,(224105, 50012)
+,(224105, 50013)
+,(250106, 50051)
+,(250106, 50052)
+,(250106, 50053)
+,(250108, 50051)
+,(250108, 50052)
+,(250108, 50053)
+;
+
 INSERT INTO missions (missionId, count, receivedStepCount, resetAt, clearedAt) VALUES
 (105002, 1, 0, '', '2025-09-10T02:22:53Z')
 ;

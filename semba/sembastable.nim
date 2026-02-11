@@ -48,6 +48,22 @@ type GachaRateSetId = enum
   promisedGachaRateSetId = 102,
   guaranteedGachaRateSetId = 103
 
+type Reward = object
+  rewardType: int
+  id: int
+  quantity: int
+
+proc `%`(reward: Reward): JsonNode =
+  result = %*{"type": reward.rewardType, "id": reward.id, "quantity": reward.quantity}
+
+proc `%`(rewards: seq[Reward]): JsonNode =
+  var res = newSeq[JsonNode]()
+
+  for reward in rewards:
+    res.add(%reward)
+
+  result = %*res
+
 const minEventFloorNodeId = 113101
 const maxEventFloorNodeId = 113128
 
@@ -1128,7 +1144,32 @@ proc updateAreaObjects*(db: DbConn, areaObjects: JsonNode) =
                    action = excluded.action
       """, areaId, areaPointId, areaEnemyRateSetId, action)
 
+proc getEnemyRewardItemIds(db: DbConn, enemyId: int): seq[int] =
+  let rows = db.getAllRows(sql"SELECT itemId FROM enemyRewards WHERE enemyId = ?", enemyId)
+
+  for row in rows:
+    let itemId = parseInt(row[0])
+    result.add(itemId)
+
+proc getRandomRewards(db: DbConn, itemsIds: seq[int]): seq[Reward] =
+  var min = 1
+  var max = 6
+
+  for itemId in itemsIds:
+    let quantity = rand(min .. max)
+
+    if quantity > 0:
+      result.add(Reward(rewardType: rewardItem.int, id: itemId, quantity: quantity))
+
+    if min > 0:
+      min -= 1
+
+    if max > 2:
+      max -= 2
+
 proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
+  let encounteredEnemyIds = jsonReq.getOrDefault("encounteredEnemyIds").getElems()
+
   var characterExps = newSeq[JsonNode]()
 
   for characterUpdate in jsonReq["characterUpdates"]:
@@ -1167,19 +1208,20 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
 
   let status = getUserStatus(db)
 
+  var allRewards = newSeq[Reward]()
+
+  for enemyId in encounteredEnemyIds:
+    let rewardItemIds = getEnemyRewardItemIds(db, enemyId.getInt())
+    let rewards = getRandomRewards(db, rewardItemIds)
+    for reward in rewards:
+      allRewards.add(reward)
+
   result = %*{
     "characterExps": characterExps,
     "rewards": [
       {
         "type": 6,
-        "contents": [
-          {
-            "type": 7,
-            "id": 50021,
-            "quantity": 1,
-            "isNew": true
-          }
-        ]
+        "contents": allRewards
       }
     ],
     "changedResources": {
