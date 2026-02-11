@@ -1791,6 +1791,13 @@ proc updateResources(db: DbConn, changedResources: var JsonNode) =
 
   updateAreaChangeLocks(db, areaChangeLocks)
 
+  let missions = changedResources.getOrDefault("missions")
+
+  if missions != nil:
+    # Don't return (zero sensei) missions from online logs
+    changedResources.delete("missions")
+    handledKeys.incl("missions")
+
   for key, _ in changedResources.pairs():
     if not (key in handledKeys):
       echo("WARNING: " & key & " not handled in updateResources")
