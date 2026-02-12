@@ -1220,14 +1220,18 @@ proc getRandomRewards(db: DbConn, itemsIds: seq[int]): seq[Reward] =
     if max > 2:
       max -= 2
 
+proc getBattleExp(): int = 462
+
 proc getCharacterExps(characters: seq[JsonNode]): seq[JsonNode] =
+  let dropExp = getBattleExp()
+  let expPerCharacter = dropExp div characters.len
+
   for character in characters:
     let characterId = character["characterId"].getInt()
     result.add(%*{
       "characterId": characterId,
-      # FIXME: calculate exp
-      "exp": 154,
-      "dropExp": 154
+      "exp": expPerCharacter,
+      "dropExp": expPerCharacter
     })
 
 proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
