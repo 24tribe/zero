@@ -26,11 +26,35 @@ def main():
     with open(args.masterdata_dir/"area_change_lock.json", "r", encoding="utf-8") as f:
         md_area_change_lock_json = json.load(f)
 
+    with open(args.masterdata_dir/"flower_mark_level.json", "r", encoding="utf-8") as f:
+        md_flower_mark_level_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
         gen_md_ability_efficacy(md_ability_efficacy_json, f)
         gen_md_area_change_lock(md_area_change_lock_json, f)
+        gen_md_flower_mark_level(md_flower_mark_level_json, f)
+
+
+def gen_md_flower_mark_level(md_flower_mark_level_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("INSERT INTO mdFlowerMarkLevel (requiredFlowerMark, characterMaxLevel) VALUES")
+
+    first = True
+    for flower_mark_level in md_flower_mark_level_json:
+        required_flower_mark = flower_mark_level["required_flower_mark"]
+        character_max_level = flower_mark_level["character_max_level"]
+
+        if character_max_level is not None:
+            if first:
+                first = False
+            else:
+                f.write(",")
+            xprint(f"({required_flower_mark}, {character_max_level})")
+
+    xprint(";")
 
 
 def gen_md_area_change_lock(md_area_change_lock_json, f):

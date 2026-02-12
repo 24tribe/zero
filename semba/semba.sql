@@ -497,6 +497,22 @@ CREATE TABLE enemyRewards (
     PRIMARY KEY (enemyId, itemId)
 );
 
+DROP TABLE IF EXISTS mdFlowerMarkLevel;
+CREATE TABLE mdFlowerMarkLevel (
+    requiredFlowerMark INTEGER PRIMARY KEY,
+    characterMaxLevel INTEGER
+);
+
+INSERT INTO mdFlowerMarkLevel (requiredFlowerMark, characterMaxLevel) VALUES
+(0, 10)
+,(17, 15)
+,(25, 20)
+,(43, 30)
+,(71, 40)
+,(86, 50)
+,(115, 60)
+;
+
 INSERT INTO enemyRewards VALUES
 (224303, 50021)
 ,(224303, 50022)
