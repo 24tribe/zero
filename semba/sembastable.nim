@@ -1220,6 +1220,16 @@ proc getRandomRewards(db: DbConn, itemsIds: seq[int]): seq[Reward] =
     if max > 2:
       max -= 2
 
+proc getCharacterExps(characters: seq[JsonNode]): seq[JsonNode] =
+  for character in characters:
+    let characterId = character["characterId"].getInt()
+    result.add(%*{
+      "characterId": characterId,
+      # FIXME: calculate exp
+      "exp": 154,
+      "dropExp": 154
+    })
+
 proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
   if lastBattleStartReq.val == nil:
     raise newException(SembaError, "lastBattleStartReq.val == nil")
@@ -1232,20 +1242,11 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
   for lineCharacterId in lineCharacterIds:
     characterIds.add(lineCharacterId.getInt())
 
-  var characterExps = newSeq[JsonNode]()
-
   for characterUpdate in jsonReq["characterUpdates"]:
     let characterId = characterUpdate["characterId"].getInt()
     let hp = characterUpdate["hp"].getInt()
 
     setCharacterHp(db, characterId, hp)
-
-    characterExps.add(%*{
-      "characterId": characterId,
-      # FIXME: calculate exp
-      "exp": 154,
-      "dropExp": 154
-    })
 
   let areaKeyId = lastBattleStartReq.val["currentLocation"]["areaKeyId"].getInt()
 
@@ -1298,6 +1299,8 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
     addItem(db, item)
 
   let characters = getCharactersWithId(db, characterIds)
+
+  let characterExps = getCharacterExps(characters)
 
   result = %*{
     "characterExps": characterExps,
