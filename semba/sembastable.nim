@@ -1216,6 +1216,9 @@ proc getRandomRewards(db: DbConn, itemsIds: seq[int]): seq[Reward] =
       max -= 2
 
 proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
+  if lastBattleStartReq.val == nil:
+    raise newException(SembaError, "lastBattleStartReq.val == nil")
+
   let encounteredEnemyIds = jsonReq.getOrDefault("encounteredEnemyIds").getElems()
 
   var characterExps = newSeq[JsonNode]()
@@ -1233,26 +1236,23 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
       "dropExp": 154
     })
 
-  var areaObjects: JsonNode = nil
+  let areaKeyId = lastBattleStartReq.val["currentLocation"]["areaKeyId"].getInt()
 
-  if lastBattleStartReq.val != nil:
-    let areaKeyId = lastBattleStartReq.val["currentLocation"]["areaKeyId"].getInt()
+  for battleTrigger in lastBattleStartReq.val["battleTriggers"]:
+    let triggerType = battleTrigger.getOrDefault("triggerType")
+    var isAreaObject = triggerType != nil and triggerType.getStr() == "area_object"
+    var isActionSequence = triggerType != nil and triggerType.getStr() == "action_sequence"
 
-    for battleTrigger in lastBattleStartReq.val["battleTriggers"]:
-      let triggerType = battleTrigger.getOrDefault("triggerType")
-      var isAreaObject = triggerType != nil and triggerType.getStr() == "area_object"
-      var isActionSequence = triggerType != nil and triggerType.getStr() == "action_sequence"
+    if not isActionSequence:
+      for triggerId in battleTrigger["triggerIds"]:
+        if isAreaObject:
+          removeAreaObject(db, areaKeyId, triggerId.getInt())
+        else:
+          removeAreaEnemy(db, areaKeyId, triggerId.getInt())
 
-      if not isActionSequence:
-        for triggerId in battleTrigger["triggerIds"]:
-          if isAreaObject:
-            removeAreaObject(db, areaKeyId, triggerId.getInt())
-          else:
-            removeAreaEnemy(db, areaKeyId, triggerId.getInt())
+  let areaObjects = getBattleFinishAreaObjects(db, lastBattleStartReq.val["battleEntryIds"][0].getInt())
 
-    areaObjects = getBattleFinishAreaObjects(db, lastBattleStartReq.val["battleEntryIds"][0].getInt())
-
-    lastBattleStartReq.val = nil
+  lastBattleStartReq.val = nil
 
   let status = getUserStatus(db)
 
