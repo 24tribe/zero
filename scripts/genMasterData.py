@@ -29,12 +29,99 @@ def main():
     with open(args.masterdata_dir/"flower_mark_level.json", "r", encoding="utf-8") as f:
         md_flower_mark_level_json = json.load(f)
 
+    with open(args.masterdata_dir/"battle_entry.json", "r", encoding="utf-8") as f:
+        md_battle_entry_json = json.load(f)
+
+    with open(args.masterdata_dir/"battle_parameter.json", "r", encoding="utf-8") as f:
+        md_battle_parameter_json = json.load(f)
+
+    with open(args.masterdata_dir/"battle_wave.json", "r", encoding="utf-8") as f:
+        md_battle_wave_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
         gen_md_ability_efficacy(md_ability_efficacy_json, f)
         gen_md_area_change_lock(md_area_change_lock_json, f)
         gen_md_flower_mark_level(md_flower_mark_level_json, f)
+        gen_md_battle_entry(md_battle_entry_json, f)
+        gen_md_battle_parameter(md_battle_parameter_json, f)
+        gen_md_battle_wave(md_battle_wave_json, f)
+
+
+def gen_md_battle_wave(md_battle_wave_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("INSERT INTO mdBattleWave (id, enemyId) VALUES")
+    first = True
+    for battle_wave in md_battle_wave_json:
+        battle_wave_id = battle_wave["id"]
+        for enemy_id in battle_wave["enemies"]:
+            if first:
+                first = False
+            else:
+                f.write(",")
+
+            xprint(f"({battle_wave_id}, {enemy_id})")
+
+    xprint(";")
+
+
+def gen_md_battle_parameter(md_battle_parameter_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    battle_parameters = []
+    battle_parameter_waves = []
+
+    for battle_parameter in md_battle_parameter_json:
+        battle_parameter_id = battle_parameter["id"]
+        drop_exp_factor = battle_parameter["drop_exp_factor"]
+        battle_parameters.append((battle_parameter_id, drop_exp_factor))
+        for battle_wave_id in battle_parameter["enemy_waves"]:
+            battle_parameter_waves.append((battle_parameter_id, battle_wave_id))
+
+    xprint("INSERT INTO mdBattleParameter (id, dropExpFactor) VALUES")
+    first = True
+    for battle_parameter_id, drop_exp_factor in battle_parameters:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        xprint(f"({battle_parameter_id}, {drop_exp_factor})")
+    xprint(";\n")
+
+    xprint("INSERT INTO mdBattleParameterWave (battleParameterId, battleWaveId) VALUES")
+    first = True
+    for battle_parameter_id, battle_wave_id in battle_parameter_waves:
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        xprint(f"({battle_parameter_id}, {battle_wave_id})")
+
+    xprint(";")
+
+def gen_md_battle_entry(md_battle_entry_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("INSERT INTO mdBattleEntry (id, enemyLevel, battleParameterId) VALUES")
+
+    first = True
+    for battle_entry in md_battle_entry_json:
+        battle_entry_id = battle_entry["id"]
+        enemy_level = battle_entry["enemy_level"]
+        battle_parameter_id = battle_entry["battle_parameter_id"]
+
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        xprint(f"({battle_entry_id}, {enemy_level}, {battle_parameter_id})")
+
+    xprint(";")
 
 
 def gen_md_flower_mark_level(md_flower_mark_level_json, f):
