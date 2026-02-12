@@ -6,6 +6,7 @@ import std/times
 import std/tables
 import std/sets
 import std/random
+import std/options
 
 import db_connector/db_sqlite
 import protojson
@@ -52,6 +53,10 @@ type Reward = object
   rewardType: int
   id: int
   quantity: int
+
+type FlowerMarkLevel = object
+  requiredFlowerMark: int
+  characterMaxLevel: int
 
 proc `%`(reward: Reward): JsonNode =
   result = %*{"type": reward.rewardType, "id": reward.id, "quantity": reward.quantity}
@@ -489,6 +494,32 @@ proc getQuestStates*(db: DbConn): seq[JsonNode] =
 proc getUserStatus*(db: DbConn): JsonNode =
   let statusRow = db.getRow(sql"SELECT val FROM userData WHERE keyName = ?", "status")
   return parseJson(statusRow[0])
+
+proc getFlowerMarkLevels(db: DbConn): seq[FlowerMarkLevel] =
+  let rows = db.getAllRows(sql"""
+  SELECT requiredFlowerMark, characterMaxLevel FROM mdFlowerMarkLevel
+  ORDER BY requiredFlowerMark DESC
+  """)
+
+  for row in rows:
+    let requiredFlowerMark = parseInt(row[0])
+    let characterMaxLevel = parseInt(row[1])
+    result.add(FlowerMarkLevel(
+      requiredFlowerMark: requiredFlowerMark,
+      characterMaxLevel: characterMaxLevel
+    ))
+
+proc getCharacterMaxLevel(db: DbConn): int =
+  let status = getUserStatus(db)
+  let flowerMarks = status.getOrDefault("flowerMark").getInt()
+
+  let flowerMarkLevels = getFlowerMarkLevels(db)
+
+  for flowerMarkLevel in flowerMarkLevels:
+    if flowerMarks >= flowerMarkLevel.requiredFlowerMark:
+      return flowerMarkLevel.characterMaxLevel
+
+  raise newException(SembaError, "Got to unreachable part in getCharacterMaxLevel")
 
 proc adventure_WarpAreaLocator(db: DbConn, jsonReq: JsonNode): JsonNode =
   let status = getUserStatus(db)
