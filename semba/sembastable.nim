@@ -1096,6 +1096,11 @@ proc getCharacters*(db: DbConn): seq[JsonNode] =
   for characterRow in charactersRows:   
     result.add(parseCharacterRow(characterRow))
 
+proc getCharactersWithId(db: DbConn, ids: seq[int]): seq[JsonNode] =
+  for id in ids:
+    let character = getCharacter(db, id)
+    result.add(character)
+
 proc addCharacterLimitBreak(db: DbConn, characterId: int, limitBreak: int) =
   db.exec(sql"""
     INSERT INTO characterLimitBreaks (characterId, limitBreak) VALUES (?, ?)
@@ -1221,6 +1226,12 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
 
   let encounteredEnemyIds = jsonReq.getOrDefault("encounteredEnemyIds").getElems()
 
+  let lineCharacterIds = lastBattleStartReq.val["lineCharacterIds"].getElems()
+  var characterIds = newSeq[int]()
+
+  for lineCharacterId in lineCharacterIds:
+    characterIds.add(lineCharacterId.getInt())
+
   var characterExps = newSeq[JsonNode]()
 
   for characterUpdate in jsonReq["characterUpdates"]:
@@ -1286,6 +1297,8 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
   for item in items:
     addItem(db, item)
 
+  let characters = getCharactersWithId(db, characterIds)
+
   result = %*{
     "characterExps": characterExps,
     "rewards": [
@@ -1296,7 +1309,7 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
     ],
     "changedResources": {
       "status": status,
-      "characters": getCharacters(db),
+      "characters": characters,
       "items": items,
     }
   }
