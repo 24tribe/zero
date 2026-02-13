@@ -50,6 +50,9 @@ def main():
     with open(args.masterdata_dir/"character_level.json", "r", encoding="utf-8") as f:
         md_character_level = json.load(f)
 
+    with open(args.masterdata_dir/"item.json", "r", encoding="utf-8") as f:
+        md_item = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -63,6 +66,36 @@ def main():
         gen_md_enemy(md_enemy_json, f)
         gen_md_battle_enemy(md_battle_enemy_json, f)
         gen_md_character_level(md_character_level, f)
+        gen_md_item(md_item, f)
+
+
+def gen_md_item(md_item, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("INSERT INTO mdItem (id, itemType, maxQuantity, rarity, soldGold, value) VALUES")
+
+    first = True
+
+    for item in md_item:
+        row = (
+            item["id"],
+            item["item_type"],
+            item["max_quantity"],
+            item["rarity"],
+            str(item["sold_gold"]) if item["sold_gold"] is not None else "",
+            item["value"],
+        )
+
+        content = ", ".join(map(convert_to_sql, row))
+
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        xprint(f"({content})")
+
+    xprint(";")
 
 
 def gen_md_character_level(md_character_level, f):
@@ -270,6 +303,7 @@ def convert_to_sql(val):
     elif isinstance(val, (dict, list)):
         return f"'{json.dumps(val)}'"
     else:
+        print(f"bad val: {repr(val)}")
         assert False
 
 
