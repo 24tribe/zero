@@ -1,71 +1,83 @@
+"""
+Not found:  2562 U-DX Robot
+Not found:  2572 Deadly Red Alert
+Not found:  2601 S.H.A.R.K / Backgammon
+Not found:  2602 Brave Diver / Solitaire
+Not found:  1002 Tsuki Iroha
+Not found:  2421 Ooze (slimes)
+Not found:  1016 Sui Yakumo
+"""
+
 from argparse import ArgumentParser
+import json
 
-SHIKOKU_X_ITEM_IDS = [
-    50021,
-    50022,
-    50023,
-]
 
-STRANGE_X_ITEM_IDS = [
-    50011,
-    50012,
-    50013,
-]
+def main():
+    parser = ArgumentParser()
+    parser.add_argument("online_logs_json")
+    parser.add_argument("out_sql")
+    args = parser.parse_args()
 
-X_SERVO_ITEM_IDS = [
-    50051,
-    50052,
-    50053,
-]
+    with open(args.online_logs_json, "r", encoding="utf-8") as f:
+        online_logs = json.load(f)
 
-def get_enemy_rewards(enemy_ids, item_ids):
-    result = []
+    enemyGroupRewards = getEnemyGroupRewards(online_logs)
 
-    for enemy_id in enemy_ids:
-        for item_id in item_ids:
-            result.append((enemy_id, item_id))
+    with open(args.out_sql, "w", encoding="utf-8") as f:
+        write_enemy_group_rewards(enemyGroupRewards, f)
 
-    return result
 
-def write_enemy_rewards_sql(enemy_rewards, f):
+def write_enemy_group_rewards(enemyGroupRewards, f):
     xprint = lambda *args: print(*args, file=f)
-    xprint("INSERT INTO enemyRewards VALUES")
+
+    xprint("INSERT INTO enemyGroupRewards (enemyGroupId, rewardGroupId) VALUES")
 
     first = True
-    for enemy_id, item_id in enemy_rewards:
+
+    for enemy_group_id, reward_group_id in enemyGroupRewards.items():
         if first:
             first = False
         else:
             f.write(",")
 
-        xprint(f"({enemy_id}, {item_id})")
+        xprint(f"({enemy_group_id}, {reward_group_id})")
 
     xprint(";")
 
-def main():
-    parser = ArgumentParser()
-    parser.add_argument("out_sql")
-    args = parser.parse_args()
 
-    shikoku_x_enemy_ids = [
-        224303,
-    ]
+def getEnemyGroupRewards(online_logs):
+    battle_finish_logs = filter(lambda x: x["uri"] == "/battle/finish", online_logs)
+    battle_finish_logs = list(battle_finish_logs)
 
-    strange_x_enemy_ids = [
-        224105,
-    ]
+    rewardData = []
 
-    x_servo_enemy_ids = [
-        250106,
-        250108,
-    ]
+    for battle_finish_log in battle_finish_logs:
+        req = battle_finish_log["req"]
+        res = battle_finish_log["res"]
+        encounteredEnemyIds = req["encounteredEnemyIds"]
+        if "rewards" in res:
+            rewards = res["rewards"]
+            if rewards[0]["type"] == 6:
+                contents = rewards[0]["contents"]
+                item_set = set()
+                for content in contents:
+                    if content["type"] == 7:
+                        item_set.add(content["id"])
 
-    enemy_rewards = get_enemy_rewards(shikoku_x_enemy_ids, SHIKOKU_X_ITEM_IDS)
-    enemy_rewards += get_enemy_rewards(strange_x_enemy_ids, STRANGE_X_ITEM_IDS)
-    enemy_rewards += get_enemy_rewards(x_servo_enemy_ids, X_SERVO_ITEM_IDS)
+                rewardData.append((encounteredEnemyIds, item_set))
 
-    with open(args.out_sql, "w", encoding="utf-8") as f:
-        write_enemy_rewards_sql(enemy_rewards, f)
+    rewardData.sort(key=lambda x: x[0])
+
+    enemyGroupRewards = {}
+
+    for enemyIds, rewardIds in rewardData:
+        for enemyId in enemyIds:
+            enemyGroupId = enemyId//100
+            if enemyGroupId not in enemyGroupRewards and len(rewardIds) == 1:
+                enemyGroupRewards[enemyGroupId] = list(rewardIds)[0]//10
+
+    return enemyGroupRewards
+
 
 if __name__ == "__main__":
     main()

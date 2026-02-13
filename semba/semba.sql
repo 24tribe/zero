@@ -546,6 +546,35 @@ CREATE TABLE mdCharacterLevel (
     statusFactor REAL
 );
 
+DROP TABLE IF EXISTS enemyGroupRewards;
+CREATE TABLE enemyGroupRewards (
+    enemyGroupId INTEGER PRIMARY KEY,
+    rewardGroupId INTEGER
+);
+
+INSERT INTO enemyGroupRewards (enemyGroupId, rewardGroupId) VALUES
+(2011, 5001)
+,(2012, 5002)
+,(2013, 5008)
+,(2091, 5001)
+,(2092, 5001)
+,(2241, 5001)
+,(2242, 5006)
+,(2243, 5002)
+,(2261, 5001)
+,(2262, 5001)
+,(2263, 5002)
+,(2501, 5001)
+,(2511, 5003)
+,(2512, 5003)
+,(2521, 5001)
+,(2541, 6001)
+,(2571, 6002)
+,(2573, 6005)
+,(2574, 6003)
+,(2603, 7031)
+;
+
 INSERT INTO mdCharacterLevel (level, exp, statusFactor) VALUES
 (1, 0, 0.1)
 ,(2, 240, 0.104)
