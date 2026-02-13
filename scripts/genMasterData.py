@@ -41,6 +41,9 @@ def main():
     with open(args.masterdata_dir/"enemy_level.json", "r", encoding="utf-8") as f:
         md_enemy_level_json = json.load(f)
 
+    with open(args.masterdata_dir/"enemy.json", "r", encoding="utf-8") as f:
+        md_enemy_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -51,6 +54,27 @@ def main():
         gen_md_battle_parameter(md_battle_parameter_json, f)
         gen_md_battle_wave(md_battle_wave_json, f)
         gen_md_enemy_level(md_enemy_level_json, f)
+        gen_md_enemy(md_enemy_json, f)
+
+def gen_md_enemy(md_enemy_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("INSERT INTO mdEnemy (id, dropExp) VALUES")
+
+    first = True
+
+    for enemy in md_enemy_json:
+        enemy_id = enemy["id"]
+        drop_exp = enemy["drop_exp"]
+
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        xprint(f"({enemy_id}, {drop_exp})")
+
+    xprint(";")
 
 def gen_md_enemy_level(md_enemy_level_json, f):
     xprint = lambda *args: print(*args, file=f)
