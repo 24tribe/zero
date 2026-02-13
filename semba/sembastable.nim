@@ -58,6 +58,20 @@ type FlowerMarkLevel = object
   requiredFlowerMark: int
   characterMaxLevel: int
 
+type MdBattleEntry = object
+  id: int
+  enemyLevel: int
+  battleParameterId: int
+
+type MdBattleParameter = object
+  id: int
+  dropExpFactor: float
+  battleWaveIds: seq[int]
+
+type MdBattleWave = object
+  id: int
+  battleEnemyIds: seq[int]
+
 proc `%`(reward: Reward): JsonNode =
   result = %*{"type": reward.rewardType, "id": reward.id, "quantity": reward.quantity}
 
@@ -108,6 +122,66 @@ const selectTensionCardSql = """
   FROM tensionCards FULL JOIN tensionCardLimitBreaks
   ON tensionCards.entityId = tensionCardLimitBreaks.entityId
 """
+
+proc getMdBattleEntry(db: DbConn, battleEntryId: int): MdBattleEntry =
+  let row = db.getRow(sql"""
+    SELECT enemyLevel, battleParameterId FROM mdBattleEntry
+    WHERE id = ?
+  """, battleEntryId)
+
+  result = MdBattleEntry(
+    id: battleEntryId,
+    enemyLevel: parseInt(row[0]),
+    battleParameterId: parseInt(row[1])
+  )
+
+proc getMdBattleParameter(db: DbConn, battleParameterId: int): MdBattleParameter =
+  let battleParameterRow = db.getRow(
+    sql"SELECT dropExpFactor FROM mdBattleParameter WHERE id = ?", battleParameterId
+  )
+
+  let dropExpFactor = parseFloat(battleParameterRow[0])
+
+  let battleParameterWaveRows = db.getAllRows(sql"""
+    SELECT battleWaveId FROM mdBattleParameterWave
+    WHERE battleParameterId = ?
+  """, battleParameterId)
+
+  var battleWaveIds = newSeq[int]()
+
+  for row in battleParameterWaveRows:
+    let battleWaveId = parseInt(row[0])
+    battleWaveIds.add(battleWaveId)
+
+  result = MdBattleParameter(
+    id: battleParameterId,
+    dropExpFactor: dropExpFactor,
+    battleWaveIds: battleWaveIds
+  )
+
+proc getMdBattleWave(db: DbConn, battleWaveId: int): MdBattleWave =
+  var battleEnemyIds = newSeq[int]()
+
+  let rows = db.getAllRows(sql"SELECT battleEnemyId FROM mdBattleWave WHERE id = ?", battleWaveId)
+
+  for row in rows:
+    let battleEnemyId = parseInt(row[0])
+    battleEnemyIds.add(battleEnemyId)
+
+  result = MdBattleWave(id: battleWaveId, battleEnemyIds: battleEnemyIds)
+
+proc getMdBattleEnemyDropExp(db: DbConn, battleEnemyId: int): int =
+  let row = db.getRow(sql"""
+    SELECT dropExp
+    FROM mdEnemy INNER JOIN mdBattleEnemy ON mdEnemy.id == enemyId
+    WHERE mdBattleEnemy.id = ?
+  """, battleEnemyId)
+
+  result = parseInt(row[0])
+
+proc getMdEnemyLevelDropExpFactor(db: DbConn, level: int): float =
+  let row = db.getRow(sql"SELECT dropExpFactor FROM mdEnemyLevel WHERE level = ?", level)
+  result = parseFloat(row[0])
 
 proc getDateNow*(): string = $(now().utc)
 
@@ -1220,18 +1294,32 @@ proc getRandomRewards(db: DbConn, itemsIds: seq[int]): seq[Reward] =
     if max > 2:
       max -= 2
 
-proc getBattleExp(): int = 462
+proc getBattleExp(db: DbConn, battleEntryIds: seq[int]): float =
+  for battleEntryId in battleEntryIds:
+    var dropExp = 0.0
 
-proc getCharacterExps(characters: seq[JsonNode]): seq[JsonNode] =
-  let dropExp = getBattleExp()
-  let expPerCharacter = dropExp div characters.len
+    let battleEntry = getMdBattleEntry(db, battleEntryId)
+    let enemyLevelDropExpFactor = getMdEnemyLevelDropExpFactor(db, battleEntry.enemyLevel)
+    let battleParameter = getMdBattleParameter(db, battleEntry.battleParameterId)
+
+    for battleWaveId in battleParameter.battleWaveIds:
+      let battleWave = getMdBattleWave(db, battleWaveId)
+
+      for battleEnemyId in battleWave.battleEnemyIds:
+        dropExp += getMdBattleEnemyDropExp(db, battleEnemyId).float
+
+    dropExp *= battleParameter.dropExpFactor*enemyLevelDropExpFactor
+    result += dropExp
+
+proc getCharacterExps(db: DbConn, characters: seq[JsonNode], battleEntryIds: seq[int]): seq[JsonNode] =
+  let dropExp = round(getBattleExp(db, battleEntryIds)).int
 
   for character in characters:
     let characterId = character["characterId"].getInt()
     result.add(%*{
       "characterId": characterId,
-      "exp": expPerCharacter,
-      "dropExp": expPerCharacter
+      "exp": dropExp,
+      "dropExp": dropExp
     })
 
 proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
@@ -1267,6 +1355,12 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
           removeAreaEnemy(db, areaKeyId, triggerId.getInt())
 
   let areaObjects = getBattleFinishAreaObjects(db, lastBattleStartReq.val["battleEntryIds"][0].getInt())
+
+  let battleEntryIdsJson = lastBattleStartReq.val["battleEntryIds"]
+  var battleEntryIds = newSeq[int]()
+
+  for battleEntryId in battleEntryIdsJson:
+    battleEntryIds.add(battleEntryId.getInt())
 
   lastBattleStartReq.val = nil
 
@@ -1304,7 +1398,7 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
 
   let characters = getCharactersWithId(db, characterIds)
 
-  let characterExps = getCharacterExps(characters)
+  let characterExps = getCharacterExps(db, characters, battleEntryIds)
 
   result = %*{
     "characterExps": characterExps,
