@@ -1311,11 +1311,10 @@ proc getBattleExp(db: DbConn, battleEntryIds: seq[int]): float =
     dropExp *= battleParameter.dropExpFactor*enemyLevelDropExpFactor
     result += dropExp
 
-proc getCharacterExps(db: DbConn, characters: seq[JsonNode], battleEntryIds: seq[int]): seq[JsonNode] =
+proc getCharacterExps(db: DbConn, characterIds: seq[int], battleEntryIds: seq[int]): seq[JsonNode] =
   let dropExp = round(getBattleExp(db, battleEntryIds)).int
 
-  for character in characters:
-    let characterId = character["characterId"].getInt()
+  for characterId in characterIds:
     result.add(%*{
       "characterId": characterId,
       "exp": dropExp,
@@ -1396,9 +1395,9 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
   for item in items:
     addItem(db, item)
 
+  let characterExps = getCharacterExps(db, characterIds, battleEntryIds)
+  
   let characters = getCharactersWithId(db, characterIds)
-
-  let characterExps = getCharacterExps(db, characters, battleEntryIds)
 
   result = %*{
     "characterExps": characterExps,
