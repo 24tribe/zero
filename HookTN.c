@@ -598,6 +598,48 @@ void Hook_OJLLOCJDBLM___ctor(void) {
         return;
     }
 }
+#else
+typedef struct Neon_Battle_Character_LoadRequest_o Neon_Battle_Character_LoadRequest_o;
+typedef struct OJLLOCJDBLM_o OJLLOCJDBLM_o;
+typedef struct MNHJNDFAPMD_o MNHJNDFAPMD_o;
+typedef struct NMLAKINLNFO_o NMLAKINLNFO_o;
+
+typedef void (*Neon_Battle_Character_LoadRequest___ctor_FuncPtr)(
+    Neon_Battle_Character_LoadRequest_o* __this, OJLLOCJDBLM_o* enemy,
+    NMLAKINLNFO_o* asset, int32_t aiId, MNHJNDFAPMD_o* masterDataManager,
+    const MethodInfo* method
+);
+
+Neon_Battle_Character_LoadRequest___ctor_FuncPtr Neon_Battle_Character_LoadRequest___ctor = NULL;
+Neon_Battle_Character_LoadRequest___ctor_FuncPtr fpNeon_Battle_Character_LoadRequest___ctor = NULL;
+
+void Detour_Neon_Battle_Character_LoadRequest___ctor(
+    Neon_Battle_Character_LoadRequest_o* __this, OJLLOCJDBLM_o* enemy,
+    NMLAKINLNFO_o* asset, int32_t aiId, MNHJNDFAPMD_o* masterDataManager,
+    const MethodInfo* method
+) {
+    printf("aiId: %d\n", aiId);
+    fpNeon_Battle_Character_LoadRequest___ctor(
+        __this, enemy, asset, aiId, masterDataManager, method
+    );
+}
+
+void Hook_Neon_Battle_Character_LoadRequest___ctor(void) {
+    printf("Hook_Neon_Battle_Character_LoadRequest___ctor called\n");
+    if (MH_CreateHook(
+        (void *)(uintptr_t)Neon_Battle_Character_LoadRequest___ctor,
+        (LPVOID)(uintptr_t)&Detour_Neon_Battle_Character_LoadRequest___ctor,
+        (LPVOID *)&fpNeon_Battle_Character_LoadRequest___ctor
+    ) != MH_OK) {
+        printf("Failed to create Neon_Battle_Character_LoadRequest___ctor hook\n");
+        return;
+    }
+
+    if (MH_EnableHook((void *)(uintptr_t)Neon_Battle_Character_LoadRequest___ctor, /* changePermissions = */ FALSE) != MH_OK) {
+        printf("Failed to enable Neon_Battle_Character_LoadRequest___ctor hook\n");
+        return;
+    }
+}
 #endif
 
 void HookTN(void *GameAssembly) {
@@ -619,6 +661,9 @@ void HookTN(void *GameAssembly) {
 #ifdef TRIBE_NINE_DEMO
     OJLLOCJDBLM___ctor = (OJLLOCJDBLM___ctor_FuncPtr)((uintptr_t)GameAssembly + 60351888ull);
     Hook_OJLLOCJDBLM___ctor();
+#else
+    Neon_Battle_Character_LoadRequest___ctor = (Neon_Battle_Character_LoadRequest___ctor_FuncPtr)((uintptr_t)GameAssembly + 57544560ull);
+    Hook_Neon_Battle_Character_LoadRequest___ctor();
 #endif
 
     RunNimMainOnce();
