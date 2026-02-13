@@ -836,6 +836,20 @@ INSERT INTO mdItem (id, itemType, maxQuantity, rarity, soldGold, value) VALUES
 ,(9000087, 10, 9999, 1, '', 0)
 ;
 
+-- 5001 strange x
+-- 5002 shikoku x
+-- 5003 x cheese
+-- 5005 x servo
+-- 5006 cheerz x
+-- 5008 moe x
+-- 6001 x of vengeance
+-- 6002 x headpiece
+-- 6003 x eraser mk - 4
+-- 6004 deadeye/chiphead/furious commander
+-- 6005 x joint
+-- 7031 meluskea     v ???
+-- 7032 limpid pouch ^ ???
+
 INSERT INTO enemyGroupRewards (enemyGroupId, rewardGroupId) VALUES
 (2011, 5001)
 ,(2012, 5002)
@@ -848,7 +862,7 @@ INSERT INTO enemyGroupRewards (enemyGroupId, rewardGroupId) VALUES
 ,(2261, 5001)
 ,(2262, 5001)
 ,(2263, 5002)
-,(2501, 5001)
+,(2501, 5005)
 ,(2511, 5003)
 ,(2512, 5003)
 ,(2521, 5001)
