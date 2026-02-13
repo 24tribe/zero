@@ -123,6 +123,18 @@ const selectTensionCardSql = """
   ON tensionCards.entityId = tensionCardLimitBreaks.entityId
 """
 
+proc enemyIdToEnemyGroupId(enemyId: int): int = enemyId div 100
+
+proc getRewardGroupIdFromEnemyGroupId(db: DbConn, enemyGroupId: int): Option[int] =
+  let row = db.getRow(
+    sql"SELECT rewardGroupId FROM enemyGroupRewards WHERE enemyGroupId = ?", enemyGroupId
+  )
+
+  if row[0] != "":
+    result = some(parseInt(row[0]))
+  else:
+    result = none(int)
+
 proc getLevelExp(db: DbConn, level: int): int =
   let row = db.getRow(sql"SELECT exp FROM mdCharacterLevel WHERE level = ?", level)
   result = parseInt(row[0])
@@ -1276,11 +1288,15 @@ proc updateAreaObjects*(db: DbConn, areaObjects: JsonNode) =
       """, areaId, areaPointId, areaEnemyRateSetId, action)
 
 proc getEnemyRewardItemIds(db: DbConn, enemyId: int): seq[int] =
-  let rows = db.getAllRows(sql"SELECT itemId FROM enemyRewards WHERE enemyId = ?", enemyId)
+  let rewardGroupId = getRewardGroupIdFromEnemyGroupId(db, enemyIdToEnemyGroupId(enemyId))
 
-  for row in rows:
-    let itemId = parseInt(row[0])
-    result.add(itemId)
+  if rewardGroupId.isSome():
+    let pat = $rewardGroupId.get() & "_"
+    let rows = db.getAllRows(sql"SELECT id FROM mdItem WHERE id LIKE ?", pat)
+
+    for row in rows:
+      let itemId = parseInt(row[0])
+      result.add(itemId)
 
 proc getRandomRewards(db: DbConn, itemsIds: seq[int]): seq[Reward] =
   var min = 1
@@ -1388,6 +1404,10 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
 
   for enemyId in encounteredEnemyIds:
     let rewardItemIds = getEnemyRewardItemIds(db, enemyId.getInt())
+
+    if rewardItemIds.len == 0:
+      echo("Warning: rewardItemIds for enemyId=" & $enemyId & " is empty!!")
+
     let rewards = getRandomRewards(db, rewardItemIds)
     for reward in rewards:
       allRewards.add(reward)
