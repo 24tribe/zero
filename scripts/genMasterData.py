@@ -123,17 +123,17 @@ def gen_md_enemy_level(md_enemy_level_json, f):
 def gen_md_battle_wave(md_battle_wave_json, f):
     xprint = lambda *args: print(*args, file=f)
 
-    xprint("INSERT INTO mdBattleWave (id, enemyId) VALUES")
+    xprint("INSERT INTO mdBattleWave (id, battleEnemyId) VALUES")
     first = True
     for battle_wave in md_battle_wave_json:
         battle_wave_id = battle_wave["id"]
-        for enemy_id in battle_wave["enemies"]:
+        for battle_enemy_id in battle_wave["enemies"]:
             if first:
                 first = False
             else:
                 f.write(",")
 
-            xprint(f"({battle_wave_id}, {enemy_id})")
+            xprint(f"({battle_wave_id}, {battle_enemy_id})")
 
     xprint(";")
 

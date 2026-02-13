@@ -525,7 +525,7 @@ CREATE TABLE mdBattleParameterWave (
 DROP TABLE IF EXISTS mdBattleWave;
 CREATE TABLE mdBattleWave (
     id INTEGER,
-    enemyId INTEGER
+    battleEnemyId INTEGER
 );
 
 DROP TABLE IF EXISTS mdEnemyLevel;
@@ -9359,7 +9359,7 @@ INSERT INTO mdBattleParameterWave (battleParameterId, battleWaveId) VALUES
 ,(7000009, 70000092)
 ,(9254103, 92541030)
 ;
-INSERT INTO mdBattleWave (id, enemyId) VALUES
+INSERT INTO mdBattleWave (id, battleEnemyId) VALUES
 (9999991, 9999901)
 ,(9999992, 9999901)
 ,(9999992, 9999902)
