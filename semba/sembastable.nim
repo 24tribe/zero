@@ -123,6 +123,10 @@ const selectTensionCardSql = """
   ON tensionCards.entityId = tensionCardLimitBreaks.entityId
 """
 
+proc getLevelExp(db: DbConn, level: int): int =
+  let row = db.getRow(sql"SELECT exp FROM mdCharacterLevel WHERE level = ?", level)
+  result = parseInt(row[0])
+
 proc getMdBattleEntry(db: DbConn, battleEntryId: int): MdBattleEntry =
   let row = db.getRow(sql"""
     SELECT enemyLevel, battleParameterId FROM mdBattleEntry
@@ -1321,6 +1325,21 @@ proc getCharacterExps(db: DbConn, characterIds: seq[int], battleEntryIds: seq[in
       "dropExp": dropExp
     })
 
+proc updateCharacterExps(db: DbConn, characterExps: seq[JsonNode], characters: seq[JsonNode]) =
+  let charMaxLevel = getCharacterMaxLevel(db)
+  let maxExp = getLevelExp(db, charMaxLevel)
+
+  for character in characters:
+    let characterId = character["characterId"].getInt()
+    let exp = character.getOrDefault("exp").getInt()
+    for characterExp in characterExps:
+      if characterExp["characterId"] == character["characterId"]:
+        let sum = exp + characterExp["dropExp"].getInt()
+        let finalExp = if sum <= maxExp: sum else: maxExp
+        character["exp"] = %*finalExp
+        db.exec(sql"UPDATE characters SET exp = ? WHERE characterId = ?", finalExp, characterId)
+        break
+
 proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
   if lastBattleStartReq.val == nil:
     raise newException(SembaError, "lastBattleStartReq.val == nil")
@@ -1398,6 +1417,7 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
   let characterExps = getCharacterExps(db, characterIds, battleEntryIds)
   
   let characters = getCharactersWithId(db, characterIds)
+  updateCharacterExps(db, characterExps, characters)
 
   result = %*{
     "characterExps": characterExps,
