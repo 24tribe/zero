@@ -15,7 +15,7 @@ type DungeonPartId* = enum
     startDungeonPartId = 101,
     endDungeonPartId = 201
 
-type DungeonPiece = object
+type DungeonPiece* = object
     x*: int
     y*: int
     rotate*: int
