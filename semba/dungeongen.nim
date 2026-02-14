@@ -40,6 +40,7 @@ type DungeonPart* = ref object
     name*: string
     blocks*: seq[Block]
     angle*: int
+    canHaveMobs*: bool
 
 type DungeonData* = seq[DungeonPart]
 
@@ -249,6 +250,24 @@ proc getPossibleParts(
             result.add(part)
 
 
+proc filterPartsThatCanHaveMobs(possibleParts: seq[DungeonPart]): seq[DungeonPart] =
+    for part in possibleParts:
+        if part.canHaveMobs:
+            result.add(part)
+
+
+proc pickPart(possibleParts: seq[DungeonPart]): DungeonPart =
+    let partsThatCanHaveMobs = filterPartsThatCanHaveMobs(possibleParts)
+
+    if partsThatCanHaveMobs.len > 0:
+        return partsThatCanHaveMobs[getRandomInt(partsThatCanHaveMobs.len)]
+
+    if possibleParts.len == 0:
+        raise newException(ValueError, "error: couldn't get a part that fit")
+
+    return possibleParts[getRandomInt(possibleParts.len)]
+
+
 proc genDungeon*(dungeonData: DungeonData, cityId: int): seq[DungeonPiece] =
     let (startPart, middleParts, endPart) = splitDungeonParts(dungeonData)
 
@@ -268,10 +287,7 @@ proc genDungeon*(dungeonData: DungeonData, cityId: int): seq[DungeonPiece] =
     while i < path.len - 1:
         let possibleParts = getPossibleParts(middleParts, i, path, middleNodesEntrances)
 
-        if possibleParts.len == 0:
-            raise newException(ValueError, "error: couldn't get a part that fit")
-
-        let foundPart = possibleParts[getRandomInt(possibleParts.len)]
+        let foundPart = pickPart(possibleParts)
 
         result.add(dungeonPartToDungeonPiece(foundPart, cityId, path[i]))
 
