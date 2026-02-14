@@ -56,6 +56,9 @@ def main():
     with open(args.masterdata_dir/"rated_reward_set.json", "r", encoding="utf-8") as f:
         md_rated_reward_set = json.load(f)
 
+    with open(args.masterdata_dir/"dungeon_difficulty.json", "r", encoding="utf-8") as f:
+        md_dungeon_difficulty_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -71,6 +74,40 @@ def main():
         gen_md_character_level(md_character_level, f)
         gen_md_item(md_item, f)
         gen_md_rated_reward_set(md_rated_reward_set, f)
+        gen_md_dungeon_difficulty(md_dungeon_difficulty_json, f)
+
+
+def gen_md_dungeon_difficulty(md_dungeon_difficulty_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("""
+INSERT INTO mdDungeonDifficulty
+(id, bonusRatedRewardSetIds, bossRatedRewardSetIds, enemyLevel, enemyTrainingScoreId, goalEnemyRateSetId)
+VALUES
+""")
+
+    first = True
+
+    for dungeon_difficulty in md_dungeon_difficulty_json:
+        row = (
+            dungeon_difficulty["id"],
+            dungeon_difficulty["bonus_rated_reward_set_ids"],
+            dungeon_difficulty["boss_rated_reward_set_ids"],
+            dungeon_difficulty["enemy_level"],
+            dungeon_difficulty["enemy_training_score_id"],
+            dungeon_difficulty["goal_enemy_rate_set_id"]
+        )
+
+        content = ", ".join(map(convert_to_sql, row))
+
+        if first:
+            first = False
+        else:
+            f.write(", ")
+
+        xprint(f"({content})")
+
+    xprint(";")
 
 
 def gen_md_rated_reward_set(md_rated_reward_set, f):
