@@ -53,6 +53,9 @@ def main():
     with open(args.masterdata_dir/"item.json", "r", encoding="utf-8") as f:
         md_item = json.load(f)
 
+    with open(args.masterdata_dir/"rated_reward_set.json", "r", encoding="utf-8") as f:
+        md_rated_reward_set = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -67,6 +70,29 @@ def main():
         gen_md_battle_enemy(md_battle_enemy_json, f)
         gen_md_character_level(md_character_level, f)
         gen_md_item(md_item, f)
+        gen_md_rated_reward_set(md_rated_reward_set, f)
+
+
+def gen_md_rated_reward_set(md_rated_reward_set, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("INSERT INTO mdRatedRewardSet (id, rewardId, rewardQuantity, rewardType) VALUES")
+
+    first = True
+
+    for rated_reward_set in md_rated_reward_set:
+        id_ = rated_reward_set["id"]
+        for reward in rated_reward_set["rewards"]:
+            row = (id_, reward["id"], reward["quantity"], reward["type"])
+            content = ", ".join(map(convert_to_sql, row))
+            if first:
+                first = False
+            else:
+                f.write(", ")
+
+            xprint(f"({content})")
+
+    xprint(";")
 
 
 def gen_md_item(md_item, f):
