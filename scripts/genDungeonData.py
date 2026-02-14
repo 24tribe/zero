@@ -19,20 +19,21 @@ def write_dungeon_data_sql(dungeon_data, f):
 
     first = True
 
-    xprint("INSERT INTO dungeonData (id, name, blocks, angle) VALUES")
+    xprint("INSERT INTO dungeonData (id, name, blocks, angle, canHaveMobs) VALUES")
 
     for dungeon_part in dungeon_data:
         id_ = dungeon_part["id"]
         name = dungeon_part["name"]
         blocks = json.dumps(dungeon_part["blocks"])
         angle = dungeon_part["angle"]
+        canHaveMobs = 1 if dungeon_part["canHaveMobs"] else 0
 
         if first:
             first = False
         else:
             f.write(",")
 
-        xprint(f"({id_}, '{name}', '{blocks}', {angle})")
+        xprint(f"({id_}, '{name}', '{blocks}', {angle}, {canHaveMobs})")
 
     xprint(";")
 
