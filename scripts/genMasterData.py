@@ -59,6 +59,9 @@ def main():
     with open(args.masterdata_dir/"dungeon_difficulty.json", "r", encoding="utf-8") as f:
         md_dungeon_difficulty_json = json.load(f)
 
+    with open(args.masterdata_dir/"dungeon_enemy_rate.json", "r", encoding="utf-8") as f:
+        md_dungeon_enemy_rate_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -75,6 +78,38 @@ def main():
         gen_md_item(md_item, f)
         gen_md_rated_reward_set(md_rated_reward_set, f)
         gen_md_dungeon_difficulty(md_dungeon_difficulty_json, f)
+        gen_md_dungeon_enemy_rate(md_dungeon_enemy_rate_json, f)
+
+
+def gen_md_dungeon_enemy_rate(md_dungeon_enemy_rate_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("""
+INSERT INTO mdDungeonEnemyRate
+(id, dungeonEnemyRateSetId, areaEnemyId, battleEntryId)
+VALUES
+""")
+
+    first = True
+
+    for dungeon_enemy_rate in md_dungeon_enemy_rate_json:
+        row = (
+            dungeon_enemy_rate["id"],
+            dungeon_enemy_rate["dungeon_enemy_rate_set_id"],
+            dungeon_enemy_rate["area_enemy_id"],
+            dungeon_enemy_rate["battle_entry_id"],
+        )
+
+        content = ", ".join(map(convert_to_sql, row))
+
+        if first:
+            first = False
+        else:
+            f.write(", ")
+
+        xprint(f"({content})")
+
+    xprint(";")
 
 
 def gen_md_dungeon_difficulty(md_dungeon_difficulty_json, f):
