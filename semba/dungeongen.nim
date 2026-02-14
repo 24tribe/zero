@@ -11,7 +11,7 @@ type Grid = seq[seq[string]]
 type Position = array[2, int]
 type Path = seq[Position]
 
-type DungeonPartId = enum
+type DungeonPartId* = enum
     startDungeonPartId = 101,
     endDungeonPartId = 201
 
