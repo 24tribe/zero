@@ -16,10 +16,10 @@ type DungeonPartId = enum
     endDungeonPartId = 201
 
 type DungeonPiece = object
-    x: int
-    y: int
-    rotate: int
-    dungeonPieceId: int
+    x*: int
+    y*: int
+    rotate*: int
+    dungeonPieceId*: int
 
 type Block* = object
     x*: int
