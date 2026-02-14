@@ -72,6 +72,30 @@ type MdBattleWave = object
   id: int
   battleEnemyIds: seq[int]
 
+type MdDungeonEnemyRate = object
+  id: int
+  dungeonEnemyRateSetId: int
+  areaEnemyId: int
+  battleEntryId: int
+
+type MdDungeonDifficulty = object
+  id: int
+  bonusRatedRewardSetIds: seq[int]
+  bossRatedRewardSetIds: seq[int]
+  enemyLevel: int
+  enemyTrainingScoreId: int
+  goalEnemyRateSetId: int
+
+type DungeonEnemy = object
+  entityId: int
+  dungeonEnemyRateId: int
+  isBoss: bool
+  dungeonPieceId: int
+  dungeonPieceX: int
+  dungeonPieceY: int
+  dungeonPieceIndex: int
+  defeatedAt: Option[string]
+
 proc `%`(reward: Reward): JsonNode =
   result = %*{"type": reward.rewardType, "id": reward.id, "quantity": reward.quantity}
 
@@ -122,6 +146,44 @@ const selectTensionCardSql = """
   FROM tensionCards FULL JOIN tensionCardLimitBreaks
   ON tensionCards.entityId = tensionCardLimitBreaks.entityId
 """
+
+proc getDungeonDifficulty(db: DbConn, dungeonDifficultyId: int): MdDungeonDifficulty =
+  let row = db.getRow(sql"""
+    SELECT bonusRatedRewardSetIds, bossRatedRewardSetIds,
+           enemyLevel, enemyTrainingScoreId, goalEnemyRateSetId
+    FROM mdDungeonDifficulty
+    WHERE id = ?
+  """, dungeonDifficultyId)
+
+  result = MdDungeonDifficulty(
+    id: dungeonDifficultyId,
+    bonusRatedRewardSetIds: to(parseJson(row[0]), seq[int]),
+    bossRatedRewardSetIds: to(parseJson(row[1]), seq[int]),
+    enemyLevel: parseInt(row[2]),
+    enemyTrainingScoreId: parseInt(row[3]),
+    goalEnemyRateSetId: parseInt(row[4]),
+  )
+
+proc getMdDungeonEnemyRates(db: DbConn, dungeonEnemyRateSetId: int): seq[MdDungeonEnemyRate] =
+  let rows = db.getAllRows(sql"""
+    SELECT id, areaEnemyId, battleEntryId FROM mdDungeonEnemyRate WHERE dungeonEnemyRateSetId = ?
+  """, dungeonEnemyRateSetId)
+
+  for row in rows:
+    result.add(MdDungeonEnemyRate(
+      id: parseInt(row[0]),
+      areaEnemyId: parseInt(row[1]),
+      battleEntryId: parseInt(row[2]),
+      dungeonEnemyRateSetId: dungeonEnemyRateSetId,
+    ))
+
+proc getNotGoalEnemyRateSetId(cityId: int, dungeonId: int): int =
+  if cityId == 10 or cityId == 13:
+    # in shinagawa and minato every dungeon has a enemyRateSetId
+    result = dungeonId*100 + 1
+  else:
+    # in chiyoda there is only one enemyRateSetId
+    result = (dungeonId div 100) * 10000 + 1
 
 proc enemyIdToEnemyGroupId(enemyId: int): int = enemyId div 100
 
@@ -3531,7 +3593,7 @@ proc parseBlocks(blocksJson: JsonNode): seq[Block] =
     ))
 
 proc getDungeonData(db: DbConn): DungeonData =
-  let rows = db.getAllRows(sql"SELECT id, name, blocks, angle FROM dungeonData")
+  let rows = db.getAllRows(sql"SELECT id, name, blocks, angle, canHaveMobs FROM dungeonData")
 
   for row in rows:
     let blocks = parseBlocks(parseJson(row[2]))
@@ -3539,26 +3601,82 @@ proc getDungeonData(db: DbConn): DungeonData =
       id: parseInt(row[0]),
       name: row[1],
       blocks: blocks,
-      angle: parseInt(row[3])
+      angle: parseInt(row[3]),
+      canHaveMobs: parseInt(row[4]) == 1
     ))
 
 proc dungeonDifficultyIdToDungeonId(dungeonDifficultyId: int): int = dungeonDifficultyId div 100
+proc dungeonDifficultyIdToCityId(dungeonDifficultyId: int): int = dungeonDifficultyId div 1_000_000
+proc dungeonPieceIdToDungeonPartId(dungeonPieceId: int): int = dungeonPieceId mod 10_000
+
+proc findDungeonPart(dungeonData: seq[DungeonPart], dungeonPieceId: int): Option[DungeonPart] =
+  for dungeonPart in dungeonData:
+    if dungeonPart.id == dungeonPieceIdToDungeonPartId(dungeonPieceId):
+      result = some(dungeonPart)
+      break
+
+proc genDungeonEnemies(
+  db: DbConn, notGoalEnemyRateSetId: int, dungeonDifficultyId: int,
+  dungeonPieces: seq[DungeonPiece], dungeonData: seq[DungeonPart]
+): seq[DungeonEnemy] =
+  let dungeonDifficulty = getDungeonDifficulty(db, dungeonDifficultyId)
+  let notGoalEnemyRates = getMdDungeonEnemyRates(db, notGoalEnemyRateSetId)
+  let goalEnemyRates = getMdDungeonEnemyRates(db, dungeonDifficulty.goalEnemyRateSetId)
+
+  var entityId = 1
+
+  for i in 1 ..< dungeonPieces.len - 1:
+    let dungeonPiece = dungeonPieces[i]
+
+    let foundDungeonPart = findDungeonPart(dungeonData, dungeonPiece.dungeonPieceId)
+
+    if foundDungeonPart.isNone():
+      raise newException(SembaError, "Couldn't find dungeonPiece blocks len")
+
+    if foundDungeonPart.get().canHaveMobs:
+      for j in 0 ..< foundDungeonPart.get().blocks.len:
+        result.add(DungeonEnemy(
+          entityId: entityId,
+          dungeonEnemyRateId: notGoalEnemyRates[rand(0 ..< notGoalEnemyRates.len)].id,
+          dungeonPieceId: dungeonPiece.dungeonPieceId,
+          dungeonPieceX: dungeonPiece.x,
+          dungeonPieceY: dungeonPiece.y,
+          dungeonPieceIndex: j,
+        ))
+
+        entityId += 1
+
+  let lastDungeonPiece = dungeonPieces[dungeonPieces.len - 1]
+
+  result.add(DungeonEnemy(
+    entityId: entityId,
+    isBoss: true,
+    dungeonEnemyRateId: goalEnemyRates[0].id,
+    dungeonPieceId: lastDungeonPiece.dungeonPieceId,
+    dungeonPieceX: lastDungeonPiece.x,
+    dungeonPieceY: lastDungeonPiece.y
+  ))
 
 proc dungeon_Start(db: DbConn, jsonReq: JsonNode): JsonNode = 
   let dungeonDifficultyId = jsonReq["dungeonDifficultyId"].getInt()
   let bulkConsumeCount = jsonReq["bulkConsumeCount"].getInt()
 
-  let cityId = dungeonDifficultyId div 1_000_000
+  let cityId = dungeonDifficultyIdToCityId(dungeonDifficultyId)
   let dungeonData = getDungeonData(db)
   let dungeonPieces = genDungeon(dungeonData, cityId)
   let dungeonId = dungeonDifficultyIdToDungeonId(dungeonDifficultyId)
+
+  let notGoalEnemyRateSetId = getNotGoalEnemyRateSetId(cityId, dungeonId)
+  let dungeonEnemies = genDungeonEnemies(
+    db, notGoalEnemyRateSetId, dungeonDifficultyId, dungeonPieces, dungeonData
+  )
 
   return %*{
     "dungeonState": {
       "dungeonDifficultyId": dungeonDifficultyId,
       "dungeonPieces": dungeonPieces,
     },
-    "dungeonEnemies": [],
+    "dungeonEnemies": dungeonEnemies,
     "changedResources": {
       "dungeons": [
         {
