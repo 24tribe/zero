@@ -147,6 +147,20 @@ const selectTensionCardSql = """
   ON tensionCards.entityId = tensionCardLimitBreaks.entityId
 """
 
+proc updateDungeonEnemies(db: DbConn, dungeonId: int, dungeonEnemies: seq[DungeonEnemy]) =
+  db.exec(sql"DELETE FROM dungeonEnemies WHERE dungeonId = ?", dungeonId)
+
+  for dungeonEnemy in dungeonEnemies:
+    db.exec(
+      sql"""
+        INSERT INTO dungeonEnemies
+        (dungeonId, entityId, dungeonEnemyRateId, dungeonPieceId, dungeonPieceX, dungeonPieceY, dungeonPieceIndex)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      """,
+      dungeonId, dungeonEnemy.entityId, dungeonEnemy.dungeonEnemyRateId, dungeonEnemy.dungeonPieceId,
+      dungeonEnemy.dungeonPieceX, dungeonEnemy.dungeonPieceY, dungeonEnemy.dungeonPieceIndex
+    )
+
 proc getDungeonDifficulty(db: DbConn, dungeonDifficultyId: int): MdDungeonDifficulty =
   let row = db.getRow(sql"""
     SELECT bonusRatedRewardSetIds, bossRatedRewardSetIds,
@@ -3666,6 +3680,8 @@ proc dungeon_Start(db: DbConn, jsonReq: JsonNode): JsonNode =
   let dungeonEnemies = genDungeonEnemies(
     db, notGoalEnemyRateSetId, dungeonDifficultyId, dungeonPieces, dungeonData
   )
+
+  updateDungeonEnemies(db, dungeonId, dungeonEnemies)
 
   return %*{
     "dungeonState": {
