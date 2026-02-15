@@ -265,17 +265,20 @@ def gen_md_enemy(md_enemy_json, f):
 def gen_md_enemy_level(md_enemy_level_json, f):
     xprint = lambda *args: print(*args, file=f)
 
-    xprint("INSERT INTO mdEnemyLevel (level, dropExpFactor) VALUES")
+    xprint("INSERT INTO mdEnemyLevel (level, dropExpFactor, atkStatusFactor, defenseStatusFactor, hpStatusFactor) VALUES")
 
     first = True
     for enemy_level in md_enemy_level_json:
         level = enemy_level["level"]
         drop_exp_factor = enemy_level["drop_exp_factor"]
+        atk_status_factor = enemy_level["atk_status_factor"]
+        def_status_factor = enemy_level["def_status_factor"]
+        hp_status_factor = enemy_level["hp_status_factor"]
         if first:
             first = False
         else:
             f.write(",")
-        xprint(f"({level}, {drop_exp_factor})")
+        xprint(f"({level}, {drop_exp_factor}, {atk_status_factor}, {def_status_factor}, {hp_status_factor})")
 
     xprint(";")
 
