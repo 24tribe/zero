@@ -28,8 +28,15 @@ type BattleFinishRequest = object
   characterUpdates: seq[CharacterUpdate]
   encounteredEnemyIds: seq[int]
 
-type BattleStartRequest* = object
-    val*: JsonNode
+type BattleTrigger* = object
+  triggerType: string
+  triggerIds: seq[int]
+
+type BattleInfo* = object
+  battleEntryIds: seq[int]
+  lineCharacterIds: seq[int]
+  currentLocation: JsonNode
+  battleTriggers: seq[BattleTrigger]
 
 type SembaError = object of CatchableError
 
@@ -1288,9 +1295,7 @@ proc getBattleParameters(db: DbConn, battleEntryIds: JsonNode): seq[JsonNode] =
       "enemies": enemies
     })
 
-proc battle_Start(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
-  lastBattleStartReq.val = jsonReq
-
+proc battle_Start(db: DbConn, lastBattleInfo: var Option[BattleInfo], jsonReq: JsonNode): JsonNode =
   let lineCharacterIds = to(jsonReq["lineCharacterIds"], seq[int])
   let characters = getCharactersWithId(db, lineCharacterIds)
 
@@ -1318,6 +1323,13 @@ proc battle_Start(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonRe
     "battleParameters": battleParameters,
     "battleTriggers": jsonReq["battleTriggers"]
   }
+
+  lastBattleInfo = some(BattleInfo(
+    battleEntryIds: to(jsonReq["battleEntryIds"], seq[int]),
+    lineCharacterIds: lineCharacterIds,
+    currentLocation: currentLocation,
+    battleTriggers: to(jsonReq["battleTriggers"], seq[BattleTrigger])
+  ))
 
   if advantageType != nil:
     result["advantageType"] = advantageType
@@ -1496,40 +1508,36 @@ proc updateCharacterExps(db: DbConn, characterExps: seq[JsonNode], characters: s
         db.exec(sql"UPDATE characters SET exp = ? WHERE characterId = ?", finalExp, characterId)
         break
 
-proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
-  if lastBattleStartReq.val == nil:
-    raise newException(SembaError, "lastBattleStartReq.val == nil")
+proc battle_Finish(db: DbConn, lastBattleInfo: var Option[BattleInfo], jsonReq: JsonNode): JsonNode =
+  if lastBattleInfo.isNone():
+    raise newException(SembaError, "lastBattleInfo.isNone()")
+
+  let characterIds = lastBattleInfo.get().lineCharacterIds
+  let battleTriggers = lastBattleInfo.get().battleTriggers
+  let currentLocation = lastBattleInfo.get().currentLocation
+  let battleEntryIds = lastBattleInfo.get().battleEntryIds
+
+  lastBattleInfo = none(BattleInfo)
 
   let req = to(jsonReq, BattleFinishRequest)
-
-  var characterIds = to(lastBattleStartReq.val["lineCharacterIds"], seq[int])
 
   for characterUpdate in req.characterUpdates:
     setCharacterHp(db, characterUpdate.characterId, characterUpdate.hp)
 
-  let areaKeyId = lastBattleStartReq.val["currentLocation"]["areaKeyId"].getInt()
+  for battleTrigger in battleTriggers:
+    var isAreaObject = battleTrigger.triggerType == "area_object"
+    var isActionSequence = battleTrigger.triggerType == "action_sequence"
+    var isDungeon = battleTrigger.triggerType == "dungeon"
 
-  for battleTrigger in lastBattleStartReq.val["battleTriggers"]:
-    let triggerType = battleTrigger.getOrDefault("triggerType")
-    var isAreaObject = triggerType != nil and triggerType.getStr() == "area_object"
-    var isActionSequence = triggerType != nil and triggerType.getStr() == "action_sequence"
-
-    if not isActionSequence:
-      for triggerId in battleTrigger["triggerIds"]:
+    if not isActionSequence and not isDungeon:
+      let areaKeyId = currentLocation["areaKeyId"].getInt()
+      for triggerId in battleTrigger.triggerIds:
         if isAreaObject:
-          removeAreaObject(db, areaKeyId, triggerId.getInt())
+          removeAreaObject(db, areaKeyId, triggerId)
         else:
-          removeAreaEnemy(db, areaKeyId, triggerId.getInt())
+          removeAreaEnemy(db, areaKeyId, triggerId)
 
-  let areaObjects = getBattleFinishAreaObjects(db, lastBattleStartReq.val["battleEntryIds"][0].getInt())
-
-  let battleEntryIdsJson = lastBattleStartReq.val["battleEntryIds"]
-  var battleEntryIds = newSeq[int]()
-
-  for battleEntryId in battleEntryIdsJson:
-    battleEntryIds.add(battleEntryId.getInt())
-
-  lastBattleStartReq.val = nil
+  let areaObjects = getBattleFinishAreaObjects(db, battleEntryIds[0])
 
   let status = getUserStatus(db)
 
@@ -1568,7 +1576,7 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
     addItem(db, item)
 
   let characterExps = getCharacterExps(db, characterIds, battleEntryIds)
-  
+
   let characters = getCharactersWithId(db, characterIds)
   updateCharacterExps(db, characterExps, characters)
 
@@ -3882,7 +3890,7 @@ proc dungeon_BattleStart(db: DbConn, jsonReq: JsonNode): JsonNode =
 
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
-  db: DbConn, lastBattleStartReq: var BattleStartRequest
+  db: DbConn, lastBattleInfo: var Option[BattleInfo]
 ): JsonNode =
   if uri == "/auth/steam_user":
     result = %*{"userId": "696969696969"}
@@ -3897,9 +3905,9 @@ proc getJsonResultStable*(
   elif uri == "/adventure/move_to_area":
     result = adventure_MoveToArea(db, jsonReq)
   elif uri == "/battle/start":
-    result = battle_Start(db, lastBattleStartReq, jsonReq)
+    result = battle_Start(db, lastBattleInfo, jsonReq)
   elif uri == "/battle/finish":
-    result = battle_Finish(db, lastBattleStartReq, jsonReq)
+    result = battle_Finish(db, lastBattleInfo, jsonReq)
   elif uri == "/user/cross_date":
     result = user_CrossDate(db, jsonReq)
   elif uri == "/adventure/update_character_status":

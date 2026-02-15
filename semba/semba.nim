@@ -1,4 +1,5 @@
 import std/httpclient
+import std/options
 import system/ansi_c
 
 import db_connector/db_sqlite
@@ -8,9 +9,9 @@ import sembacore
 type SembaContext = object
   db: DbConn
   remoteUrl: string
-  lastBattleStartReq: BattleStartRequest
+  lastBattleInfo: Option[BattleInfo]
 
-var ctx = SembaContext(db: nil, remoteUrl: "", lastBattleStartReq: BattleStartRequest(val : nil))
+var ctx = SembaContext(db: nil, remoteUrl: "", lastBattleInfo: none(BattleInfo))
 
 proc dupString(str: string): cstring =
   let s = str.cstring
@@ -35,7 +36,7 @@ proc sembaCallUnsafe*(uri: string, request: string, version: GameVersion): strin
   if ctx.remoteUrl != "":
     return sembaCallRemote(uri, request, version, ctx.remoteUrl)
 
-  return sembaCallImpl(uri, request, version, ctx.db, ctx.lastBattleStartReq)
+  return sembaCallImpl(uri, request, version, ctx.db, ctx.lastBattleInfo)
 
 proc SembaCallDemo(uri: cstring, request: cstring): cstring {.exportc.} =
   try:

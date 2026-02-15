@@ -3,6 +3,7 @@ import std/asyncdispatch
 import std/cmdline
 import std/parseutils
 import std/strutils
+import std/options
 
 import db_connector/db_sqlite
 
@@ -25,7 +26,7 @@ proc main {.async.} =
     return
 
   var db = open(dbPath, "", "", "")
-  var lastBattleStartReq = BattleStartRequest(val : nil)
+  var lastBattleInfo = none(BattleInfo)
 
   var server = newAsyncHttpServer()
 
@@ -37,7 +38,7 @@ proc main {.async.} =
     echo("req: ", body)
     try:
       let version = parseEnum[GameVersion](req.headers["user-agent"])
-      let res = sembaCallImpl(path, body, version, db, lastBattleStartReq)
+      let res = sembaCallImpl(path, body, version, db, lastBattleInfo)
       await req.respond(Http200, res, headers)
     except Exception:
       let e = getCurrentException()
