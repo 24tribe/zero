@@ -20,6 +20,14 @@ type DungeonBattleStartRequest = object
   advantageType: string
   isAttackHit: bool
 
+type CharacterUpdate = object
+  characterId: int
+  hp: int
+
+type BattleFinishRequest = object
+  characterUpdates: seq[CharacterUpdate]
+  encounteredEnemyIds: seq[int]
+
 type BattleStartRequest* = object
     val*: JsonNode
 
@@ -1492,19 +1500,12 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
   if lastBattleStartReq.val == nil:
     raise newException(SembaError, "lastBattleStartReq.val == nil")
 
-  let encounteredEnemyIds = jsonReq.getOrDefault("encounteredEnemyIds").getElems()
+  let req = to(jsonReq, BattleFinishRequest)
 
-  let lineCharacterIds = lastBattleStartReq.val["lineCharacterIds"].getElems()
-  var characterIds = newSeq[int]()
+  var characterIds = to(lastBattleStartReq.val["lineCharacterIds"], seq[int])
 
-  for lineCharacterId in lineCharacterIds:
-    characterIds.add(lineCharacterId.getInt())
-
-  for characterUpdate in jsonReq["characterUpdates"]:
-    let characterId = characterUpdate["characterId"].getInt()
-    let hp = characterUpdate["hp"].getInt()
-
-    setCharacterHp(db, characterId, hp)
+  for characterUpdate in req.characterUpdates:
+    setCharacterHp(db, characterUpdate.characterId, characterUpdate.hp)
 
   let areaKeyId = lastBattleStartReq.val["currentLocation"]["areaKeyId"].getInt()
 
@@ -1534,8 +1535,8 @@ proc battle_Finish(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonR
 
   var allRewards = newSeq[Reward]()
 
-  for enemyId in encounteredEnemyIds:
-    let rewardItemIds = getEnemyRewardItemIds(db, enemyId.getInt())
+  for enemyId in req.encounteredEnemyIds:
+    let rewardItemIds = getEnemyRewardItemIds(db, enemyId)
 
     if rewardItemIds.len == 0:
       echo("Warning: rewardItemIds for enemyId=" & $enemyId & " is empty!!")
