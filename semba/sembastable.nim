@@ -13,6 +13,13 @@ import protojson
 
 import dungeongen
 
+type DungeonBattleStartRequest = object
+  dungeonDifficultyId: int
+  entityIds: seq[int]
+  lineCharacterIds: seq[int]
+  advantageType: string
+  isAttackHit: bool
+
 type BattleStartRequest* = object
     val*: JsonNode
 
@@ -96,6 +103,32 @@ type DungeonEnemy = object
   dungeonPieceIndex: int
   defeatedAt: Option[string]
 
+type MdEnemy = object
+  id: int
+  dropExp: int
+  attack: int
+  defense: int
+  hp: int
+
+type Enemy = object
+  id: int
+  attack: int
+  defense: int
+  hp: int
+  isSkipEncounterAnimation: bool
+  hpStackCount: Option[int]
+
+type BattleParameter = object
+  id: int
+  enemies: seq[Enemy]
+
+type MdEnemyLevel = object
+  level: int
+  dropExpFactor: float
+  atkStatusFactor: float
+  defStatusFactor: float
+  hpStatusFactor: float
+
 proc `%`(reward: Reward): JsonNode =
   result = %*{"type": reward.rewardType, "id": reward.id, "quantity": reward.quantity}
 
@@ -176,6 +209,19 @@ proc getDungeonDifficulty(db: DbConn, dungeonDifficultyId: int): MdDungeonDiffic
     enemyLevel: parseInt(row[2]),
     enemyTrainingScoreId: parseInt(row[3]),
     goalEnemyRateSetId: parseInt(row[4]),
+  )
+
+proc getMdDungeonEnemyRate(db: DbConn, dungeonEnemyRateId: int): MdDungeonEnemyRate =
+  let row = db.getRow(
+    sql"SELECT areaEnemyId, battleEntryId, dungeonEnemyRateSetId FROM mdDungeonEnemyRate WHERE id = ?",
+    dungeonEnemyRateId
+  )
+
+  result = MdDungeonEnemyRate(
+    id: dungeonEnemyRateId,
+    areaEnemyId: parseInt(row[0]),
+    battleEntryId: parseInt(row[1]),
+    dungeonEnemyRateSetId: parseInt(row[2]),
   )
 
 proc getMdDungeonEnemyRates(db: DbConn, dungeonEnemyRateSetId: int): seq[MdDungeonEnemyRate] =
@@ -274,6 +320,20 @@ proc getMdBattleEnemyDropExp(db: DbConn, battleEnemyId: int): int =
 proc getMdEnemyLevelDropExpFactor(db: DbConn, level: int): float =
   let row = db.getRow(sql"SELECT dropExpFactor FROM mdEnemyLevel WHERE level = ?", level)
   result = parseFloat(row[0])
+
+proc getMdEnemyLevel(db: DbConn, level: int): MdEnemyLevel =
+  let row = db.getRow(
+    sql"SELECT dropExpFactor, atkStatusFactor, defStatusFactor, hpStatusFactor FROM mdEnemyLevel WHERE level = ?",
+    level
+  )
+
+  result = MdEnemyLevel(
+    level: level,
+    dropExpFactor: parseFloat(row[0]),
+    atkStatusFactor: parseFloat(row[1]),
+    defStatusFactor: parseFloat(row[2]),
+    hpStatusFactor: parseFloat(row[3]),
+  )
 
 proc getDateNow*(): string = $(now().utc)
 
@@ -3615,6 +3675,22 @@ proc getDungeonData(db: DbConn): DungeonData =
       canHaveMobs: parseInt(row[4]) == 1
     ))
 
+proc getDungeonEnemy(db: DbConn, dungeonId: int, entityId: int): DungeonEnemy =
+  let row = db.getRow(sql"""
+    SELECT dungeonEnemyRateId, dungeonPieceId, dungeonPieceX, dungeonPieceY, dungeonPieceIndex
+    FROM dungeonEnemies
+    WHERE dungeonId = ? AND entityId = ?
+  """, dungeonId, entityId)
+
+  result = DungeonEnemy(
+    entityId: entityId,
+    dungeonEnemyRateId: parseInt(row[0]),
+    dungeonPieceId: parseInt(row[1]),
+    dungeonPieceX: parseInt(row[2]),
+    dungeonPieceY: parseInt(row[3]),
+    dungeonPieceIndex: parseInt(row[4]),
+  )
+
 proc dungeonDifficultyIdToDungeonId(dungeonDifficultyId: int): int = dungeonDifficultyId div 100
 proc dungeonDifficultyIdToCityId(dungeonDifficultyId: int): int = dungeonDifficultyId div 1_000_000
 proc dungeonPieceIdToDungeonPartId(dungeonPieceId: int): int = dungeonPieceId mod 10_000
@@ -3666,6 +3742,49 @@ proc genDungeonEnemies(
     dungeonPieceX: lastDungeonPiece.x,
     dungeonPieceY: lastDungeonPiece.y
   ))
+
+proc getMdEnemyFromBattleEnemyId(db: DbConn, battleEnemyId: int): MdEnemy =
+  let row = db.getRow(sql"""
+    SELECT mdEnemy.id, attack, defense, hp, dropExp
+    FROM mdEnemy INNER JOIN mdBattleEnemy ON mdEnemy.id = mdBattleEnemy.enemyId
+    WHERE mdBattleEnemy.id = ?
+  """, battleEnemyId)
+
+  result = MdEnemy(
+    id: parseInt(row[0]),
+    attack: parseInt(row[1]),
+    defense: parseInt(row[2]),
+    hp: parseInt(row[3]),
+    dropExp: parseInt(row[4])
+  )
+
+proc getBattleParametersFromDungeonEntityIds(db: DbConn, dungeonId: int, entityIds: seq[int]): seq[BattleParameter] =
+  for entityId in entityIds:
+    let dungeonEnemy = getDungeonEnemy(db, dungeonId, entityId)
+    let dungeonEnemyRate = getMdDungeonEnemyRate(db, dungeonEnemy.dungeonEnemyRateId)
+    let battleEntry = getMdBattleEntry(db, dungeonEnemyRate.battleEntryId)
+    let battleParameter = getMdBattleParameter(db, battleEntry.battleParameterId)
+
+    var enemies = newSeq[Enemy]()
+
+    let enemyLevel = getMdEnemyLevel(db, battleEntry.enemyLevel)
+
+    for battleWaveId in battleParameter.battleWaveIds:
+      let battleWave = getMdBattleWave(db, battleWaveId)
+
+      for battleEnemyId in battleWave.battleEnemyIds:
+        let enemy = getMdEnemyFromBattleEnemyId(db, battleEnemyId)
+        enemies.add(Enemy(
+          id: enemy.id,
+          attack: (enemy.attack.float*enemyLevel.atkStatusFactor).int,
+          defense: (enemy.defense.float*enemyLevel.defStatusFactor).int,
+          hp: (enemy.hp.float*enemyLevel.hpStatusFactor).int,
+        ))
+
+    result.add(BattleParameter(
+      id: battleParameter.id,
+      enemies: enemies,
+    ))
 
 proc dungeon_Start(db: DbConn, jsonReq: JsonNode): JsonNode = 
   let dungeonDifficultyId = jsonReq["dungeonDifficultyId"].getInt()
@@ -3738,6 +3857,26 @@ proc dungeon_Finish(db: DbConn, jsonReq: JsonNode): JsonNode =
       "challengeProgresses": challengeProgresses,
       "challengeTasks": challengeTasks,
     }
+  }
+
+proc dungeon_BattleStart(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let req = to(jsonReq, DungeonBattleStartRequest)
+  let dungeonId = dungeonDifficultyIdToDungeonId(req.dungeonDifficultyId)
+
+  let characters = getCharactersWithId(db, req.lineCharacterIds)
+  let tensionCards = getEquippedTensionCards(db)
+  let battleParameters = getBattleParametersFromDungeonEntityIds(db, dungeonId, req.entityIds)
+
+  result = %*{
+    "characters": characters,
+    "tensionCards": tensionCards,
+    "changedResources": {},
+    "battleParameters": battleParameters,
+    "battleTriggers": [{
+      "triggerType": "dungeon",
+      "triggerIds": req.entityIds,
+    }],
+    "advantageType": req.advantageType,
   }
 
 proc getJsonResultStable*(
@@ -3820,5 +3959,7 @@ proc getJsonResultStable*(
     result = dungeon_Start(db, jsonReq)
   elif uri == "/dungeon/finish":
     result = dungeon_Finish(db, jsonReq)
+  elif uri == "/dungeon/battle_start":
+    result = dungeon_BattleStart(db, jsonReq)
   else:
     result = nil
