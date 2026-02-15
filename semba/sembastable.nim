@@ -3767,11 +3767,15 @@ proc getMdEnemyFromBattleEnemyId(db: DbConn, battleEnemyId: int): MdEnemy =
     dropExp: parseInt(row[4])
   )
 
-proc getBattleParametersFromDungeonEntityIds(db: DbConn, dungeonId: int, entityIds: seq[int]): seq[BattleParameter] =
+proc getBattleEntryIdsFromDungeonEntityIds(db: DbConn, dungeonId: int, entityIds: seq[int]): seq[int] =
   for entityId in entityIds:
     let dungeonEnemy = getDungeonEnemy(db, dungeonId, entityId)
     let dungeonEnemyRate = getMdDungeonEnemyRate(db, dungeonEnemy.dungeonEnemyRateId)
-    let battleEntry = getMdBattleEntry(db, dungeonEnemyRate.battleEntryId)
+    result.add(dungeonEnemyRate.battleEntryId)
+
+proc getBattleParametersFromBattleEntryIds(db: DbConn, battleEntryIds: seq[int]): seq[BattleParameter] =
+  for battleEntryId in battleEntryIds:
+    let battleEntry = getMdBattleEntry(db, battleEntryId)
     let battleParameter = getMdBattleParameter(db, battleEntry.battleParameterId)
 
     var enemies = newSeq[Enemy]()
@@ -3868,25 +3872,30 @@ proc dungeon_Finish(db: DbConn, jsonReq: JsonNode): JsonNode =
     }
   }
 
-proc dungeon_BattleStart(db: DbConn, jsonReq: JsonNode): JsonNode =
+proc dungeon_BattleStart(db: DbConn, jsonReq: JsonNode, lastBattleInfo: var Option[BattleInfo]): JsonNode =
   let req = to(jsonReq, DungeonBattleStartRequest)
   let dungeonId = dungeonDifficultyIdToDungeonId(req.dungeonDifficultyId)
 
   let characters = getCharactersWithId(db, req.lineCharacterIds)
   let tensionCards = getEquippedTensionCards(db)
-  let battleParameters = getBattleParametersFromDungeonEntityIds(db, dungeonId, req.entityIds)
+  let battleEntryIds = getBattleEntryIdsFromDungeonEntityIds(db, dungeonId, req.entityIds)
+  let battleParameters = getBattleParametersFromBattleEntryIds(db, battleEntryIds)
+  let battleTriggers = @[BattleTrigger(triggerType: "dungeon", triggerIds: req.entityIds)]
 
   result = %*{
     "characters": characters,
     "tensionCards": tensionCards,
     "changedResources": {},
     "battleParameters": battleParameters,
-    "battleTriggers": [{
-      "triggerType": "dungeon",
-      "triggerIds": req.entityIds,
-    }],
+    "battleTriggers": battleTriggers,
     "advantageType": req.advantageType,
   }
+
+  lastBattleInfo = some(BattleInfo(
+    battleEntryIds: battleEntryIds,
+    battleTriggers: battleTriggers,
+    lineCharacterIds: req.lineCharacterIds
+  ))
 
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
@@ -3969,6 +3978,6 @@ proc getJsonResultStable*(
   elif uri == "/dungeon/finish":
     result = dungeon_Finish(db, jsonReq)
   elif uri == "/dungeon/battle_start":
-    result = dungeon_BattleStart(db, jsonReq)
+    result = dungeon_BattleStart(db, jsonReq, lastBattleInfo)
   else:
     result = nil
