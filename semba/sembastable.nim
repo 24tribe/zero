@@ -497,6 +497,11 @@ proc getCharacter(db: DbConn, characterId: int): JsonNode =
 
   result = parseCharacterRow(row)
 
+proc getCharactersWithId(db: DbConn, ids: seq[int]): seq[JsonNode] =
+  for id in ids:
+    let character = getCharacter(db, id)
+    result.add(character)
+
 proc updateCharacterPiece*(db: DbConn, characterPiece: JsonNode) =
   let characterId = characterPiece["characterId"].getInt()
   let quantity = characterPiece.getOrDefault("quantity").getInt()
@@ -1204,12 +1209,8 @@ proc getBattleParameters(db: DbConn, battleEntryIds: JsonNode): seq[JsonNode] =
 proc battle_Start(db: DbConn, lastBattleStartReq: var BattleStartRequest, jsonReq: JsonNode): JsonNode =
   lastBattleStartReq.val = jsonReq
 
-  var characters = newSeq[JsonNode]()
-
-  # FIXME: fix this n+1 problem
-  for lineCharacterId in jsonReq["lineCharacterIds"]:
-    let character = getCharacter(db, lineCharacterId.getInt())
-    characters.add(character)
+  let lineCharacterIds = to(jsonReq["lineCharacterIds"], seq[int])
+  let characters = getCharactersWithId(db, lineCharacterIds)
 
   let status = getUserStatus(db)
 
@@ -1247,11 +1248,6 @@ proc getCharacters*(db: DbConn): seq[JsonNode] =
 
   for characterRow in charactersRows:   
     result.add(parseCharacterRow(characterRow))
-
-proc getCharactersWithId(db: DbConn, ids: seq[int]): seq[JsonNode] =
-  for id in ids:
-    let character = getCharacter(db, id)
-    result.add(character)
 
 proc addCharacterLimitBreak(db: DbConn, characterId: int, limitBreak: int) =
   db.exec(sql"""
