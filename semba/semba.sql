@@ -527,7 +527,7 @@ CREATE TABLE mdEnemyLevel (
     level INTEGER PRIMARY KEY,
     dropExpFactor REAL,
     atkStatusFactor REAL,
-    defenseStatusFactor REAL,
+    defStatusFactor REAL,
     hpStatusFactor REAL
 );
 
@@ -6430,7 +6430,7 @@ INSERT INTO mdEnemy (id, dropExp, attack, defense, hp) VALUES
 ,(260301, 1000, 5000, 1000, 130000)
 ;
 
-INSERT INTO mdEnemyLevel (level, dropExpFactor, atkStatusFactor, defenseStatusFactor, hpStatusFactor) VALUES
+INSERT INTO mdEnemyLevel (level, dropExpFactor, atkStatusFactor, defStatusFactor, hpStatusFactor) VALUES
 (1, 0.1, 0.05, 0.1, 1.32)
 ,(2, 0.11, 0.0541, 0.1, 1.3728)
 ,(3, 0.121, 0.0583, 0.1, 1.4256)
