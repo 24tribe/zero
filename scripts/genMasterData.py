@@ -242,20 +242,23 @@ def gen_md_battle_enemy(md_battle_enemy_json, f):
 def gen_md_enemy(md_enemy_json, f):
     xprint = lambda *args: print(*args, file=f)
 
-    xprint("INSERT INTO mdEnemy (id, dropExp) VALUES")
+    xprint("INSERT INTO mdEnemy (id, dropExp, attack, defense, hp) VALUES")
 
     first = True
 
     for enemy in md_enemy_json:
         enemy_id = enemy["id"]
         drop_exp = enemy["drop_exp"]
+        attack = enemy["attack"]
+        defense = enemy["defense"]
+        hp = enemy["hp"]
 
         if first:
             first = False
         else:
             f.write(",")
 
-        xprint(f"({enemy_id}, {drop_exp})")
+        xprint(f"({enemy_id}, {drop_exp}, {attack}, {defense}, {hp})")
 
     xprint(";")
 
