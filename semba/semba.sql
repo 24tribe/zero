@@ -607,6 +607,16 @@ CREATE TABLE dungeonEnemies (
     PRIMARY KEY (dungeonId, entityId)
 );
 
+DROP TABLE IF EXISTS dungeonStates;
+CREATE TABLE dungeonStates (
+    dungeonId INTEGER,
+    dungeonDifficultyId INTEGER,
+    dungeonPieceX INTEGER,
+    dungeonPieceY INTEGER,
+    dungeonPieceRotate INTEGER,
+    dungeonPieceId INTEGER
+);
+
 INSERT INTO mdDungeonEnemyRate
 (id, dungeonEnemyRateSetId, areaEnemyId, battleEntryId)
 VALUES
