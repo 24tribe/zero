@@ -215,6 +215,21 @@ proc updateDungeonEnemies(db: DbConn, dungeonId: int, dungeonEnemies: seq[Dungeo
       dungeonEnemy.dungeonPieceX, dungeonEnemy.dungeonPieceY, dungeonEnemy.dungeonPieceIndex
     )
 
+proc updateDungeonState(db: DbConn, dungeonId: int, dungeonState: DungeonState) =
+  db.exec(sql"DELETE FROM dungeonStates WHERE dungeonId = ?", dungeonId)
+
+  for dungeonPiece in dungeonState.dungeonPieces:
+    db.exec(
+      sql"""
+        INSERT INTO dungeonStates
+        (dungeonId, dungeonDifficultyId, dungeonPieceX, dungeonPieceY, dungeonPieceRotate, dungeonPieceId)
+        VALUES
+        (?, ?, ?, ?, ?, ?)
+      """,
+      dungeonId, dungeonState.dungeonDifficultyId,
+      dungeonPiece.x, dungeonPiece.y, dungeonPiece.rotate, dungeonPiece.dungeonPieceId
+    )
+
 proc getDungeonDifficulty(db: DbConn, dungeonDifficultyId: int): MdDungeonDifficulty =
   let row = db.getRow(sql"""
     SELECT bonusRatedRewardSetIds, bossRatedRewardSetIds,
@@ -3819,12 +3834,13 @@ proc dungeon_Start(db: DbConn, jsonReq: JsonNode): JsonNode =
     db, notGoalEnemyRateSetId, dungeonDifficultyId, dungeonPieces, dungeonData
   )
 
-  updateDungeonEnemies(db, dungeonId, dungeonEnemies)
-
   let dungeonState = DungeonState(
     dungeonDifficultyId: dungeonDifficultyId,
     dungeonPieces: dungeonPieces,
   )
+
+  updateDungeonEnemies(db, dungeonId, dungeonEnemies)
+  updateDungeonState(db, dungeonId, dungeonState)
 
   return %*{
     "dungeonState": dungeonState,
