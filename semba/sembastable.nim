@@ -20,6 +20,12 @@ type DungeonBattleStartRequest = object
   advantageType: string
   isAttackHit: bool
 
+type DungeonDifficultyPiece = DungeonPiece
+
+type DungeonState = object
+  dungeonDifficultyId: int
+  dungeonPieces: seq[DungeonDifficultyPiece]
+
 type CharacterUpdate = object
   characterId: int
   hp: int
@@ -3815,11 +3821,13 @@ proc dungeon_Start(db: DbConn, jsonReq: JsonNode): JsonNode =
 
   updateDungeonEnemies(db, dungeonId, dungeonEnemies)
 
+  let dungeonState = DungeonState(
+    dungeonDifficultyId: dungeonDifficultyId,
+    dungeonPieces: dungeonPieces,
+  )
+
   return %*{
-    "dungeonState": {
-      "dungeonDifficultyId": dungeonDifficultyId,
-      "dungeonPieces": dungeonPieces,
-    },
+    "dungeonState": dungeonState,
     "dungeonEnemies": dungeonEnemies,
     "changedResources": {
       "dungeons": [
