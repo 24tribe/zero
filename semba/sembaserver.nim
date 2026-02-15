@@ -35,9 +35,15 @@ proc main {.async.} =
     let headers = newHttpHeaders({"Content-type": "text/plain; charset=utf-8"})
     echo("uri: ", path)
     echo("req: ", body)
-    let version = parseEnum[GameVersion](req.headers["user-agent"])
-    let res = sembaCallImpl(path, body, version, db, lastBattleStartReq)
-    await req.respond(Http200, res, headers)
+    try:
+      let version = parseEnum[GameVersion](req.headers["user-agent"])
+      let res = sembaCallImpl(path, body, version, db, lastBattleStartReq)
+      await req.respond(Http200, res, headers)
+    except Exception:
+      let e = getCurrentException()
+      echo "[SembaServer cb] Nim Exception: " & getCurrentExceptionMsg()
+      echo e.getStackTrace()
+      await req.respond(Http500, "", headers)
 
   server.listen(Port(port), "127.0.0.1")
 
