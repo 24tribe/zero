@@ -604,6 +604,8 @@ CREATE TABLE dungeonEnemies (
     dungeonPieceX INTEGER,
     dungeonPieceY INTEGER,
     dungeonPieceIndex INTEGER,
+    defeatedAt STRING,
+    isBoss BOOL,
     PRIMARY KEY (dungeonId, entityId)
 );
 
