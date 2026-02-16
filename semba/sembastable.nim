@@ -20,6 +20,9 @@ type DungeonBattleStartRequest = object
   advantageType: string
   isAttackHit: bool
 
+type DungeonResumeRequest = object
+  dungeonDifficultyId: int
+
 type DungeonDifficultyPiece = DungeonPiece
 
 type DungeonState = object
@@ -43,6 +46,7 @@ type BattleInfo* = object
   lineCharacterIds: seq[int]
   currentLocation: JsonNode
   battleTriggers: seq[BattleTrigger]
+  dungeonId: Option[int]
 
 type SembaError = object of CatchableError
 
@@ -124,6 +128,11 @@ type DungeonEnemy = object
   dungeonPieceIndex: int
   defeatedAt: Option[string]
 
+type DungeonResumeResponse = object
+  dungeonState: DungeonState
+  dungeonEnemies: seq[DungeonEnemy]
+  dungeonAreaItems: seq[JsonNode]
+
 type MdEnemy = object
   id: int
   dropExp: int
@@ -149,6 +158,8 @@ type MdEnemyLevel = object
   atkStatusFactor: float
   defStatusFactor: float
   hpStatusFactor: float
+
+proc getDateNow*(): string = $(now().utc)
 
 proc `%`(reward: Reward): JsonNode =
   result = %*{"type": reward.rewardType, "id": reward.id, "quantity": reward.quantity}
@@ -208,12 +219,42 @@ proc updateDungeonEnemies(db: DbConn, dungeonId: int, dungeonEnemies: seq[Dungeo
     db.exec(
       sql"""
         INSERT INTO dungeonEnemies
-        (dungeonId, entityId, dungeonEnemyRateId, dungeonPieceId, dungeonPieceX, dungeonPieceY, dungeonPieceIndex)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        (dungeonId, entityId, dungeonEnemyRateId, dungeonPieceId,
+         dungeonPieceX, dungeonPieceY, dungeonPieceIndex, defeatedAt, isBoss)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       """,
       dungeonId, dungeonEnemy.entityId, dungeonEnemy.dungeonEnemyRateId, dungeonEnemy.dungeonPieceId,
-      dungeonEnemy.dungeonPieceX, dungeonEnemy.dungeonPieceY, dungeonEnemy.dungeonPieceIndex
+      dungeonEnemy.dungeonPieceX, dungeonEnemy.dungeonPieceY, dungeonEnemy.dungeonPieceIndex,
+      if dungeonEnemy.defeatedAt.isSome(): dungeonEnemy.defeatedAt.get() else: "",
+      dungeonEnemy.isBoss
     )
+
+proc getDungeonEnemies(db: DbConn, dungeonId: int): seq[DungeonEnemy] =
+  let rows = db.getAllRows(sql"""
+    SELECT entityId, dungeonEnemyRateId, dungeonPieceId,
+           dungeonPieceX, dungeonPieceY, dungeonPieceIndex, defeatedAt, isBoss
+    FROM dungeonEnemies
+    WHERE dungeonId = ?
+  """, dungeonId)
+
+  for row in rows:
+    result.add(DungeonEnemy(
+      entityId: parseInt(row[0]),
+      dungeonEnemyRateId: parseInt(row[1]),
+      dungeonPieceId: parseInt(row[2]),
+      dungeonPieceX: parseInt(row[3]),
+      dungeonPieceY: parseInt(row[4]),
+      dungeonPieceIndex: parseInt(row[5]),
+      defeatedAt: if row[6] != "": some(row[6]) else: none(string),
+      isBoss: row[7] == "true",
+    ))
+
+proc removeDungeonEnemy(db: DbConn, dungeonId: int, triggerId: int) =
+  db.exec(sql"""
+    UPDATE dungeonEnemies
+    SET defeatedAt = ?
+    WHERE dungeonId = ? AND entityId = ?
+  """, getDateNow(), dungeonId, triggerId)
 
 proc updateDungeonState(db: DbConn, dungeonId: int, dungeonState: DungeonState) =
   db.exec(sql"DELETE FROM dungeonStates WHERE dungeonId = ?", dungeonId)
@@ -229,6 +270,30 @@ proc updateDungeonState(db: DbConn, dungeonId: int, dungeonState: DungeonState) 
       dungeonId, dungeonState.dungeonDifficultyId,
       dungeonPiece.x, dungeonPiece.y, dungeonPiece.rotate, dungeonPiece.dungeonPieceId
     )
+
+proc getDungeonState(db: DbConn, dungeonId: int): DungeonState =
+  let rows = db.getAllRows(sql"""
+    SELECT dungeonDifficultyId, dungeonPieceX, dungeonPieceY, dungeonPieceRotate, dungeonPieceId
+    FROM dungeonStates
+    WHERE dungeonId = ?
+  """, dungeonId)
+
+  var dungeonPieces = newSeq[DungeonDifficultyPiece]()
+  var dungeonDifficultyId = 0
+
+  for row in rows:
+    dungeonDifficultyId = parseInt(row[0])
+    dungeonPieces.add(DungeonDifficultyPiece(
+      x: parseInt(row[1]),
+      y: parseInt(row[2]),
+      rotate: parseInt(row[3]),
+      dungeonPieceId: parseInt(row[4]),
+    ))
+
+  result = DungeonState(
+    dungeonDifficultyId: dungeonDifficultyId,
+    dungeonPieces: dungeonPieces
+  )
 
 proc getDungeonDifficulty(db: DbConn, dungeonDifficultyId: int): MdDungeonDifficulty =
   let row = db.getRow(sql"""
@@ -370,8 +435,6 @@ proc getMdEnemyLevel(db: DbConn, level: int): MdEnemyLevel =
     defStatusFactor: parseFloat(row[2]),
     hpStatusFactor: parseFloat(row[3]),
   )
-
-proc getDateNow*(): string = $(now().utc)
 
 proc getMissions*(db: DbConn): seq[JsonNode] =
   let rows = db.getAllRows(sql"""
@@ -1537,6 +1600,7 @@ proc battle_Finish(db: DbConn, lastBattleInfo: var Option[BattleInfo], jsonReq: 
   let battleTriggers = lastBattleInfo.get().battleTriggers
   let currentLocation = lastBattleInfo.get().currentLocation
   let battleEntryIds = lastBattleInfo.get().battleEntryIds
+  let dungeonId = lastBattleInfo.get().dungeonId
 
   lastBattleInfo = none(BattleInfo)
 
@@ -1550,13 +1614,16 @@ proc battle_Finish(db: DbConn, lastBattleInfo: var Option[BattleInfo], jsonReq: 
     var isActionSequence = battleTrigger.triggerType == "action_sequence"
     var isDungeon = battleTrigger.triggerType == "dungeon"
 
-    if not isActionSequence and not isDungeon:
-      let areaKeyId = currentLocation["areaKeyId"].getInt()
+    if not isActionSequence:
       for triggerId in battleTrigger.triggerIds:
-        if isAreaObject:
-          removeAreaObject(db, areaKeyId, triggerId)
+        if isDungeon:
+          removeDungeonEnemy(db, dungeonId.get(), triggerId)
         else:
-          removeAreaEnemy(db, areaKeyId, triggerId)
+          let areaKeyId = currentLocation["areaKeyId"].getInt()
+          if isAreaObject:
+            removeAreaObject(db, areaKeyId, triggerId)
+          else:
+            removeAreaEnemy(db, areaKeyId, triggerId)
 
   let areaObjects = getBattleFinishAreaObjects(db, battleEntryIds[0])
 
@@ -3707,7 +3774,8 @@ proc getDungeonData(db: DbConn): DungeonData =
 
 proc getDungeonEnemy(db: DbConn, dungeonId: int, entityId: int): DungeonEnemy =
   let row = db.getRow(sql"""
-    SELECT dungeonEnemyRateId, dungeonPieceId, dungeonPieceX, dungeonPieceY, dungeonPieceIndex
+    SELECT dungeonEnemyRateId, dungeonPieceId, dungeonPieceX, dungeonPieceY,
+           dungeonPieceIndex, defeatedAt, isBoss
     FROM dungeonEnemies
     WHERE dungeonId = ? AND entityId = ?
   """, dungeonId, entityId)
@@ -3719,6 +3787,8 @@ proc getDungeonEnemy(db: DbConn, dungeonId: int, entityId: int): DungeonEnemy =
     dungeonPieceX: parseInt(row[2]),
     dungeonPieceY: parseInt(row[3]),
     dungeonPieceIndex: parseInt(row[4]),
+    defeatedAt: if row[5] != "": some(row[5]) else: none(string),
+    isBoss: row[6] == "true",
   )
 
 proc dungeonDifficultyIdToDungeonId(dungeonDifficultyId: int): int = dungeonDifficultyId div 100
@@ -3918,8 +3988,20 @@ proc dungeon_BattleStart(db: DbConn, jsonReq: JsonNode, lastBattleInfo: var Opti
   lastBattleInfo = some(BattleInfo(
     battleEntryIds: battleEntryIds,
     battleTriggers: battleTriggers,
-    lineCharacterIds: req.lineCharacterIds
+    lineCharacterIds: req.lineCharacterIds,
+    dungeonId: some(dungeonId)
   ))
+
+proc dungeon_Resume(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let req = to(jsonReq, DungeonResumeRequest)
+  let dungeonId = dungeonDifficultyIdToDungeonId(req.dungeonDifficultyId)
+
+  let res = DungeonResumeResponse(
+    dungeonEnemies: getDungeonEnemies(db, dungeonId),
+    dungeonState: getDungeonState(db, dungeonId),
+  )
+
+  result = %*res
 
 proc getJsonResultStable*(
   uri: string, jsonReq: JsonNode,
@@ -4003,5 +4085,7 @@ proc getJsonResultStable*(
     result = dungeon_Finish(db, jsonReq)
   elif uri == "/dungeon/battle_start":
     result = dungeon_BattleStart(db, jsonReq, lastBattleInfo)
+  elif uri == "/dungeon/resume":
+    result = dungeon_Resume(db, jsonReq)
   else:
     result = nil
