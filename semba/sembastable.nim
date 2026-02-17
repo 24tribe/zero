@@ -2336,7 +2336,7 @@ proc updateAreaBgm(db: DbConn, areaId: int, id: int, eventName: string) =
     id, eventName, areaId
   )
 
-proc readSequenceHandleRow(db: DbConn, row: Row, areaKeyId: int): JsonNode =
+proc readSequenceHandleRow(db: DbConn, row: Row): JsonNode =
   result = %*{}
 
   if row[0] != "":
@@ -2362,7 +2362,7 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
       SELECT areaObjects, changedResources FROM readSequence WHERE sequenceRequestId=?
     """, seqReqId);
 
-    result = readSequenceHandleRow(db, row, areaKeyId)
+    result = readSequenceHandleRow(db, row)
 
     let readSequenceAreaAction = getReadSequenceAreaAction(db, seqReqId)
 
@@ -2378,7 +2378,7 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
     let row = db.getRow(sql"""
       SELECT areaObjects, changedResources FROM readSequence WHERE nineSequenceId=?
     """, nineSequenceId);
-    result = readSequenceHandleRow(db, row, areaKeyId)
+    result = readSequenceHandleRow(db, row)
 
 proc getAreaItemRewards(db: DbConn, areaItemId: int): JsonNode =
   let row = db.getRow(sql"SELECT rewards FROM areaItemRewards WHERE areaItemId = ?", areaItemId);
