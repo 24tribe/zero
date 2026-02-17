@@ -65,6 +65,9 @@ def main():
     with open(args.masterdata_dir/"challenge_task.json", "r", encoding="utf-8") as f:
         md_challenge_task_json = json.load(f)
 
+    with open(args.masterdata_dir/"area_object_behavior.json", "r", encoding="utf-8") as f:
+        md_area_object_behavior_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -83,6 +86,100 @@ def main():
         gen_md_dungeon_difficulty(md_dungeon_difficulty_json, f)
         gen_md_dungeon_enemy_rate(md_dungeon_enemy_rate_json, f)
         gen_md_challenge_task(md_challenge_task_json, f)
+        gen_md_area_object_behavior(md_area_object_behavior_json, f)
+
+
+def write_rows(xprint, f, rows):
+    first = True
+    for row in rows:
+        content = ", ".join(map(convert_to_sql, row))
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        xprint(f"({content})")
+
+
+def gen_md_area_object_behavior(md_area_object_behavior_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    area_object_behaviors = []
+    area_object_behavior_actions = []
+    area_object_behavior_conditions = []
+
+    for area_object_behavior in md_area_object_behavior_json:
+        aob_row = (
+            area_object_behavior["area_object_id"],
+            area_object_behavior["area_point_id"],
+            area_object_behavior["challenge_progress_id"],
+            area_object_behavior["id"],
+        )
+
+        area_object_behaviors.append(aob_row)
+
+        if area_object_behavior["action"] is not None:
+            action_label = area_object_behavior["action"].get("label")
+            aob_action_row = (
+                area_object_behavior["id"],
+                area_object_behavior["action"]["area_enemy_id"],
+                area_object_behavior["action"]["area_item_id"],
+                area_object_behavior["action"]["battle_entry_id"],
+                area_object_behavior["action"]["dungeon_id"],
+                area_object_behavior["action"]["event_lift_id"],
+                area_object_behavior["action"]["field_boss_id"],
+                area_object_behavior["action"]["graffiti_art_id"],
+                area_object_behavior["action"]["id"],
+                action_label["en"] if action_label else None,
+                area_object_behavior["action"]["sequence_id"],
+                area_object_behavior["action"]["sequence_request_id"],
+                area_object_behavior["action"]["type"],
+                area_object_behavior["action"]["warp_point_id"],
+            )
+
+            area_object_behavior_actions.append(aob_action_row)
+
+        if area_object_behavior["condition"] is not None:
+            aob_condition_row = (
+                area_object_behavior["id"],
+                area_object_behavior["condition"]["area_object_id"],
+                area_object_behavior["condition"]["area_object_state"],
+                area_object_behavior["condition"]["id"],
+                area_object_behavior["condition"]["type"],
+            )
+
+            area_object_behavior_conditions.append(aob_condition_row)
+
+    xprint("""
+INSERT INTO mdAreaObjectBehavior (areaObjectId, areaPointId, challengeProgressId, id)
+VALUES
+""")
+
+    write_rows(xprint, f, area_object_behaviors)
+
+    xprint(";")
+
+    xprint("""
+INSERT INTO mdAreaObjectBehaviorAction
+(areaObjectBehaviorId, areaEnemyId, areaItemId, battleEntryId,
+ dungeonId, eventLiftId, fieldBossId, graffitiArtId, id, label_en,
+ sequenceId, sequenceRequestId, type, warpPointId)
+VALUES
+""")
+
+    write_rows(xprint, f, area_object_behavior_actions)
+
+    xprint(";")
+
+    xprint("""
+INSERT INTO mdAreaObjectBehaviorCondition
+(areaObjectBehaviorId, areaObjectId, areaObjectState, id, type)
+VALUES
+""")
+
+    write_rows(xprint, f, area_object_behavior_conditions)
+
+    xprint(";")
 
 
 def gen_md_challenge_task(md_challenge_task_json, f):
@@ -448,6 +545,7 @@ def convert_to_sql(val):
     if isinstance(val, int):
         return str(val)
     elif isinstance(val, str):
+        val = val.replace("'", "''")
         return f"'{val}'"
     elif isinstance(val, (dict, list)):
         return f"'{json.dumps(val)}'"
