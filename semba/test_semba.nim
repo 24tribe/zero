@@ -73,14 +73,16 @@ proc test_talk_hoimi_read_sequence() =
 
   doAssert(res != nil)
 
-  doAssert(res["areaObjects"] == %*[
-    {
-      "areaObjectId": 109005,
-      "areaPointId": 109903902,
-      "areaObjectBehaviorId": 10900501,
-      "action": {"type": 3, "id": 1, "sequenceId": 10900501, "label": "Hoimi"}
-    }
-  ])
+  let areaObjects = to(res["areaObjects"], seq[AreaObject])
+  doAssert(areaObjects.len == 1)
+  let expected = to(%*{
+    "areaObjectId": 109005,
+    "areaPointId": 109903902,
+    "areaObjectBehaviorId": 10900501,
+    "action": {"type": 3, "id": 1, "sequenceId": 10900501, "label": "Hoimi"}
+  }, AreaObject)
+
+  doAssert(areaObjects[0] == expected)
 
   let changedResources = res["changedResources"]
   doAssert(changedResources["challengeProgresses"] == %*[{"challengeProgressId": 1010042, "state": 2}])
