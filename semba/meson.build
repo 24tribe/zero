@@ -58,6 +58,22 @@ sembaserver = custom_target(
     build_by_default : true
 )
 
+test_semba = custom_target(
+    depends : [sqlite3_c, semba_db],
+    depend_files : semba_core_files,
+    input : ['test_semba.nim'],
+    output : 'test_semba.exe',
+    command : [
+        nim, 'c', '-d:staticSqlite', '--app:console', nim_release_args,
+        '-o:@OUTPUT@', '@INPUT@'
+    ],
+    build_by_default : true
+)
+
+test_wrapper = executable('test_wrapper', 'test_wrapper.c')
+
+test('test semba', test_wrapper, args: test_semba)
+
 semba_dep = declare_dependency(
     link_with : [libsemba, semba_extra]
 )
