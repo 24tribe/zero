@@ -2336,20 +2336,22 @@ proc updateAreaBgm(db: DbConn, areaId: int, id: int, eventName: string) =
     id, eventName, areaId
   )
 
-proc readSequenceHandleRow(db: DbConn, row: Row): JsonNode =
-  result = %*{}
+proc parseReadSequenceRow(row: Row): JsonNode =
+  result = %*{
+    "changedResources": {},
+    "areaObjects": [],
+  }
 
   if row[0] != "":
-    let areaObjects = parseJson(row[0])
-    updateAreaObjects(db, areaObjects)
-    result["areaObjects"] = areaObjects
+    result["areaObjects"] = parseJson(row[0])
 
   if row[1] != "":
-    var changedResources = parseJson(row[1]) 
-    updateResources(db, changedResources)  
-    result["changedResources"] = changedResources
-  else:
-    result["changedResources"] = %*{}
+    result["changedResources"] = parseJson(row[1])
+
+proc updateFromReadSequenceResponse(db: DbConn, response: JsonNode) =
+  updateAreaObjects(db, response["areaObjects"])
+  var changedResources = response["changedResources"]
+  updateResources(db, changedResources) 
 
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
@@ -2362,7 +2364,8 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
       SELECT areaObjects, changedResources FROM readSequence WHERE sequenceRequestId=?
     """, seqReqId);
 
-    result = readSequenceHandleRow(db, row)
+    result = parseReadSequenceRow(row)
+    updateFromReadSequenceResponse(db, result)
 
     let readSequenceAreaAction = getReadSequenceAreaAction(db, seqReqId)
 
@@ -2378,7 +2381,10 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
     let row = db.getRow(sql"""
       SELECT areaObjects, changedResources FROM readSequence WHERE nineSequenceId=?
     """, nineSequenceId);
-    result = readSequenceHandleRow(db, row)
+    result = parseReadSequenceRow(row)
+    updateFromReadSequenceResponse(db, result)
+
+    # TODO: does a nineSequence change an area action like in the other branch of the if?
 
 proc getAreaItemRewards(db: DbConn, areaItemId: int): JsonNode =
   let row = db.getRow(sql"SELECT rewards FROM areaItemRewards WHERE areaItemId = ?", areaItemId);
