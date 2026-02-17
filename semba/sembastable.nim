@@ -48,6 +48,32 @@ type BattleInfo* = object
   battleTriggers: seq[BattleTrigger]
   dungeonId: Option[int]
 
+type ChallengeTask = object
+  challengeTaskId: int
+  count: int
+  clearedAt: Option[string]
+
+type AreaObjectAction* = object
+  `type`*: int
+  id*: int
+  label*: string
+  areaItemId*: Option[int]
+  areaEnemyId*: Option[int]
+  battleEntryId*: Option[int]
+  sequenceId*: Option[int]
+  graffitiArtId*: Option[int]
+  warpPointId*: Option[int]
+  fieldBossId*: Option[int]
+  dungeonId*: Option[int]
+  eventLiftId*: Option[int]
+
+type AreaObject* = object
+  areaObjectId*: Option[int]
+  areaPointId*: int
+  areaObjectBehaviorId*: Option[int]
+  areaEnemyRateSetId*: Option[int]
+  action*: Option[AreaObjectAction]
+
 type SembaError = object of CatchableError
 
 type AreaItemContentType = enum
@@ -2353,6 +2379,74 @@ proc updateFromReadSequenceResponse(db: DbConn, response: JsonNode) =
   var changedResources = response["changedResources"]
   updateResources(db, changedResources) 
 
+proc getChallengeTaskIdForSequenceRequestId(db: DbConn, seqReqId: int): Option[int] =
+  let row = db.getRow(sql"""
+    SELECT id FROM mdChallengeTask
+    WHERE taskConditionType = 1 AND taskConditionKeyId = ?
+  """, seqReqId)
+
+  if row[0] != "":
+    result = some(parseInt(row[0]))
+
+proc tryParseInt(s: string): Option[int] = (if s != "": some(parseInt(s)) else: none(int))
+
+proc getAreaObjectAction(db: DbConn, areaObjectBehaviorId: int): Option[AreaObjectAction] =
+  let row = db.getRow(sql"""
+    SELECT areaObjectBehaviorId, areaEnemyId, areaItemId, battleEntryId,
+           dungeonId, eventLiftId, fieldBossId, graffitiArtId, id, label_en,
+           sequenceId, type, warpPointId
+    FROM mdAreaObjectBehaviorAction
+    WHERE areaObjectBehaviorId = ?
+  """, areaObjectBehaviorId)
+
+  if row[0] != "":
+    result = some(AreaObjectAction(
+      areaEnemyId: tryParseInt(row[1]),
+      areaItemId: tryParseInt(row[2]),
+      battleEntryId: tryParseInt(row[3]),
+      dungeonId: tryParseInt(row[4]),
+      eventLiftId: tryParseInt(row[5]),
+      fieldBossId: tryParseInt(row[6]),
+      graffitiArtId: tryParseInt(row[7]),
+      id: parseInt(row[8]),
+      label: row[9],
+      sequenceId: tryParseInt(row[10]),
+      `type`: parseInt(row[11]),
+      warpPointId: tryParseInt(row[12]),
+    ))
+
+proc getAreaObjectsForCompletedChallengeTask(db: DbConn, challengeTaskId: int): seq[AreaObject] =
+  let rows = db.getAllRows(sql"""
+    SELECT mdAreaObjectBehavior.id, mdAreaObjectBehavior.areaObjectId, mdAreaObjectBehavior.areaPointId
+    FROM mdAreaObjectBehavior
+    INNER JOIN mdAreaObjectBehaviorCondition
+    ON mdAreaObjectBehavior.id = mdAreaObjectBehaviorCondition.areaObjectBehaviorId
+    WHERE mdAreaObjectBehaviorCondition.type = 3 AND mdAreaObjectBehaviorCondition.id = ?
+  """, challengeTaskId)
+
+  for row in rows:
+    let areaObjectBehaviorId = parseInt(row[0])
+    result.add(AreaObject(
+      areaObjectId: tryParseInt(row[1]),
+      areaPointId: parseInt(row[2]),
+      areaObjectBehaviorId: some(areaObjectBehaviorId),
+      action: getAreaObjectAction(db, areaObjectBehaviorId)
+    ))
+
+proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
+  response["areaObjects"] = %*[]
+
+  let changedResources = response["changedResources"]
+  changedResources["challengeTasks"] = %*[]
+  # changedResources["challengeProgresses"] = %*[]
+
+  let challengeTaskId = getChallengeTaskIdForSequenceRequestId(db, seqReqId)
+  if challengeTaskId.isSome():
+    changedResources["challengeTasks"] = %*[
+      ChallengeTask(challengeTaskId: challengeTaskId.get(), count: 1, clearedAt: some(getDateNow()))
+    ]
+    response["areaObjects"] = %*getAreaObjectsForCompletedChallengeTask(db, challengeTaskId.get())
+
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
   let nineSequences = jsonReq.getOrDefault("nineSequences").getElems()
@@ -2365,6 +2459,10 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
     """, seqReqId);
 
     result = parseReadSequenceRow(row)
+
+    if seqReqId == 80100422:
+      changeReadSequenceResponse(db, seqReqId, result)
+
     updateFromReadSequenceResponse(db, result)
 
     let readSequenceAreaAction = getReadSequenceAreaAction(db, seqReqId)
