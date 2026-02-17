@@ -13,6 +13,7 @@ semba_core_files = [
     'sembaprivate.nim',
     'dungeongen.nim',
     'extsqlite.nim',
+    'sembasave.nim',
 ]
 
 if get_option('buildtype') == 'release'
@@ -35,7 +36,7 @@ semba_db = custom_target(
 libsemba = custom_target(
     'libsemba',
     depends : [sqlite3_c],
-    depend_files : [semba_core_files, 'sembasave.nim'],
+    depend_files : semba_core_files,
     input : ['semba.nim'],
     output : 'libsemba.a',
     command : [
