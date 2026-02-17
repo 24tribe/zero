@@ -62,6 +62,9 @@ def main():
     with open(args.masterdata_dir/"dungeon_enemy_rate.json", "r", encoding="utf-8") as f:
         md_dungeon_enemy_rate_json = json.load(f)
 
+    with open(args.masterdata_dir/"challenge_task.json", "r", encoding="utf-8") as f:
+        md_challenge_task_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -79,6 +82,48 @@ def main():
         gen_md_rated_reward_set(md_rated_reward_set, f)
         gen_md_dungeon_difficulty(md_dungeon_difficulty_json, f)
         gen_md_dungeon_enemy_rate(md_dungeon_enemy_rate_json, f)
+        gen_md_challenge_task(md_challenge_task_json, f)
+
+
+def gen_md_challenge_task(md_challenge_task_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("""
+INSERT INTO mdChallengeTask
+(challengeProgressId, count, id, summaryChallengeId,
+ targetAreaObjectBehaviorId, targetAreaPointId, targetNineSequenceId,
+ targetRadius, taskConditionKeyId, taskConditionType, totalTaskConditionId)
+VALUES
+""")
+
+    first = True
+
+    for challenge_task in md_challenge_task_json:
+        task_condition = challenge_task["task_condition"]
+        row = (
+            challenge_task["challenge_progress_id"],
+            challenge_task["count"],
+            challenge_task["id"],
+            challenge_task["summary_challenge_id"],
+            challenge_task["target_area_object_behavior_id"],
+            challenge_task["target_area_point_id"],
+            challenge_task["target_nine_sequence_id"],
+            challenge_task["target_radius"],
+            task_condition["key_id"] if task_condition is not None else None,
+            task_condition["type"] if task_condition is not None else None,
+            challenge_task["total_task_condition_id"]
+        )
+
+        content = ", ".join(map(convert_to_sql, row))
+
+        if first:
+            first = False
+        else:
+            f.write(",")
+
+        xprint(f"({content})")
+
+    xprint(";")
 
 
 def gen_md_dungeon_enemy_rate(md_dungeon_enemy_rate_json, f):
@@ -406,6 +451,8 @@ def convert_to_sql(val):
         return f"'{val}'"
     elif isinstance(val, (dict, list)):
         return f"'{json.dumps(val)}'"
+    elif val is None:
+        return "null"
     else:
         print(f"bad val: {repr(val)}")
         assert False
