@@ -41,6 +41,16 @@ proc test_reset_db(): int =
   doAssert(itemsTableExists(ctx.db))
 
 
+proc test_null() =
+  let db = initMemoryDb()
+  db.exec(sql"CREATE TABLE asd (x INTEGER, y INTEGER)")
+  db.exec(sql"INSERT INTO asd (x, y) VALUES (null, 10)")
+
+  let row = db.getRow(sql"SELECT x, y FROM asd")
+  doAssert(row[0] == "")
+  doAssert(row[1] == "10")
+
+
 proc test_talk_hoimi_read_sequence() =
   var ctx = getInMemorySembaCtx()
 
@@ -82,6 +92,7 @@ proc test_talk_hoimi_read_sequence() =
   doAssert(challengeTask["count"].getInt() == 1)
 
 
+test_null()
 let retval = test_reset_db()
 test_talk_hoimi_read_sequence()
 
