@@ -26,6 +26,11 @@ proc itemsTableExists(db: DbConn): bool =
   result = db.getRow(sql"SELECT name FROM sqlite_schema WHERE name = 'items'")[0] == "items"
 
 
+proc getInMemorySembaCtx(): SembaCtx =
+  result = SembaCtx(version: gvStable, db: initMemoryDb(), lastBattleInfo: none(BattleInfo))
+  discard sembaCall(result, "/semba/reset_db", nil)
+
+
 proc test_reset_db(): int =
   var ctx = SembaCtx(version: gvStable, db: initMemoryDb(), lastBattleInfo: none(BattleInfo))
 
@@ -36,7 +41,49 @@ proc test_reset_db(): int =
   doAssert(itemsTableExists(ctx.db))
 
 
+proc test_talk_hoimi_read_sequence() =
+  var ctx = getInMemorySembaCtx()
+
+  discard sembaCall(ctx, "/semba/load_save_file", %*{
+    "saves_dir": "../test_saves",
+    "name": "before talk hoimi first",
+  })
+
+  let res = sembaCall(ctx, "/adventure/read_sequence", %*{
+    "sequenceRequestIds": [80100422, 8011592],
+    "currentLocation": {
+      "areaType": 1,
+      "direction": 5,
+      "positionCoordinates": {"x": 1.75, "y": 0.0104166679,"z": -1.5},
+      "areaKeyId": 109903
+    },
+    "areaType": 1,
+    "areaKeyId": 109903
+  })
+
+  doAssert(res != nil)
+
+  doAssert(res["areaObjects"] == %*[
+    {
+      "areaObjectId": 109005,
+      "areaPointId": 109903902,
+      "areaObjectBehaviorId": 10900501,
+      "action": {"type": 3, "id": 1, "sequenceId": 10900501, "label": "Hoimi"}
+    }
+  ])
+
+  let changedResources = res["changedResources"]
+  doAssert(changedResources["challengeProgresses"] == %*[{"challengeProgressId": 1010042, "state": 2}])
+  doAssert(changedResources["challengeTasks"].getElems().len == 1)
+
+  let challengeTask = changedResources["challengeTasks"][0]
+  doAssert(challengeTask["challengeTaskId"].getInt() == 10100422)
+  doAssert(challengeTask.hasKey("clearedAt"))
+  doAssert(challengeTask["count"].getInt() == 1)
+
+
 let retval = test_reset_db()
+test_talk_hoimi_read_sequence()
 
 echo("End of test_semba.nim")
 
