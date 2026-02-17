@@ -12,6 +12,7 @@ semba_core_files = [
     'protojson.nim',
     'sembaprivate.nim',
     'dungeongen.nim',
+    'extsqlite.nim',
 ]
 
 if get_option('buildtype') == 'release'
@@ -60,5 +61,4 @@ semba_dep = declare_dependency(
     link_with : [libsemba, semba_extra]
 )
 
-executable('test_semba', 'test_semba.c', dependencies : [semba_dep])
 executable('semba', 'semba.c', dependencies : [semba_dep])
