@@ -4,6 +4,9 @@ import std/json
 import db_connector/db_sqlite
 
 import sembasave
+import extsqlite
+
+const sembaSql = slurp("semba.sql")
 
 type GachaRateId = enum
   NormalPullThreeStarCharRateId = 101,
@@ -86,6 +89,10 @@ proc semba_SetStdGachaRates(db: DbConn, jsonReq: JsonNode) =
   db.exec(sql"COMMIT")
 
 
+proc semba_ResetDb(db: DbConn) =
+  loadSql(db, sembaSql)
+
+
 proc getJsonResultPrivateApi*(uri: string, jsonReq: JsonNode, db: DbConn): JsonNode =
   if uri == "/semba/echo":
     let dataUpper = jsonReq["data"].getStr().toUpperAscii()
@@ -100,3 +107,5 @@ proc getJsonResultPrivateApi*(uri: string, jsonReq: JsonNode, db: DbConn): JsonN
     result = semba_GetStdGachaRates(db)
   elif uri == "/semba/set_std_gacha_rates":
     semba_SetStdGachaRates(db, jsonReq)
+  elif uri == "/semba/reset_db":
+    semba_ResetDb(db)
