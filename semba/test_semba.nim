@@ -85,9 +85,12 @@ proc test_talk_hoimi_read_sequence() =
   doAssert(areaObjects[0] == expected)
 
   let changedResources = res["changedResources"]
-  doAssert(changedResources["challengeProgresses"] == %*[{"challengeProgressId": 1010042, "state": 2}])
-  doAssert(changedResources["challengeTasks"].getElems().len == 1)
 
+  let challengeProgresses = to(changedResources["challengeProgresses"], seq[ChallengeProgress])
+  doAssert(challengeProgresses.len == 1)
+  doAssert(challengeProgresses[0] == ChallengeProgress(challengeProgressId: 1010042, state: 2))
+
+  doAssert(changedResources["challengeTasks"].getElems().len == 1)
   let challengeTask = changedResources["challengeTasks"][0]
   doAssert(challengeTask["challengeTaskId"].getInt() == 10100422)
   doAssert(challengeTask.hasKey("clearedAt"))

@@ -22,6 +22,10 @@ type DungeonBattleStartRequest = object
   advantageType: string
   isAttackHit: bool
 
+type ChallengeProgressState = enum 
+  challengeProgressStateStarted = 2,
+  challengeProgressStateCleared = 3
+
 type TaskConditionType = enum
   taskConditionTypeSequenceRequest = 1
 
@@ -54,9 +58,9 @@ type BattleInfo* = object
   dungeonId: Option[int]
 
 type ChallengeProgress* = object
-  challengeProgressId: int
-  state: int
-  clearedAt: Option[Timestamp]
+  challengeProgressId*: int
+  state*: int
+  clearedAt*: Option[Timestamp]
 
 type MdChallengeTask = object
   challengeProgressId: int
@@ -211,6 +215,9 @@ type MdEnemyLevel = object
 proc getDateNow*(): string = $(now().utc)
 proc getTimestampNow*(): Timestamp = getDateNow().Timestamp
 
+proc `%`*(timestamp: Timestamp): JsonNode {.borrow.}
+proc `==`*(a, b: Timestamp): bool {.borrow.}
+
 proc `%`(reward: Reward): JsonNode =
   result = %*{"type": reward.rewardType, "id": reward.id, "quantity": reward.quantity}
 
@@ -261,6 +268,14 @@ const selectTensionCardSql = """
   FROM tensionCards FULL JOIN tensionCardLimitBreaks
   ON tensionCards.entityId = tensionCardLimitBreaks.entityId
 """
+
+proc isChallengeTaskComplete(db: DbConn, challengeTaskId: int): bool =
+  # Note: challengeTaskStateCleared == 3
+  let row = db.getRow(
+    sql"SELECT challengeTaskId FROM challengeTasks WHERE challengeTaskId = ? AND clearedAt != ''",
+    challengeTaskId
+  )
+  result = row[0] != ""
 
 proc updateDungeonEnemies(db: DbConn, dungeonId: int, dungeonEnemies: seq[DungeonEnemy]) =
   db.exec(sql"DELETE FROM dungeonEnemies WHERE dungeonId = ?", dungeonId)
@@ -2429,6 +2444,30 @@ proc getMdChallengeTaskForSequenceRequestId(db: DbConn, seqReqId: int): Option[M
       taskConditionKeyId: some(seqReqId),
     ))
 
+proc getOtherChallengeTasks(db: DbConn, challengeTask: MdChallengeTask): seq[MdChallengeTask] =
+  let rows = db.getAllRows(sql"""
+    SELECT count, id, summaryChallengeId, targetAreaObjectBehaviorId,
+           targetAreaPointId, targetNineSequenceId, targetRadius, totalTaskConditionId,
+           taskConditionType, taskConditionKeyId
+    FROM mdChallengeTask
+    WHERE challengeProgressId = ? AND id != ?
+  """, challengeTask.challengeProgressId, challengeTask.id)
+
+  for row in rows:
+    result.add(MdChallengeTask(
+      challengeProgressId: challengeTask.challengeProgressId,
+      count: tryParseInt(row[0]),
+      id: parseInt(row[1]),
+      summaryChallengeId: tryParseInt(row[2]),
+      targetAreaObjectBehaviorId: tryParseInt(row[3]),
+      targetAreaPointId: tryParseInt(row[4]),
+      targetNineSequenceId: tryParseInt(row[5]),
+      targetRadius: tryParseInt(row[6]),
+      totalTaskConditionId: tryParseInt(row[7]),
+      taskConditionType: tryParseInt(row[8]),
+      taskConditionKeyId: tryParseInt(row[9]),
+    ))
+
 proc getAreaObjectAction(db: DbConn, areaObjectBehaviorId: int): Option[AreaObjectAction] =
   let row = db.getRow(sql"""
     SELECT areaObjectBehaviorId, areaEnemyId, areaItemId, battleEntryId,
@@ -2477,7 +2516,7 @@ proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
 
   let changedResources = response["changedResources"]
   changedResources["challengeTasks"] = %*[]
-  # changedResources["challengeProgresses"] = %*[]
+  changedResources["challengeProgresses"] = %*[]
 
   let challengeTask = getMdChallengeTaskForSequenceRequestId(db, seqReqId)
   if challengeTask.isSome():
@@ -2485,6 +2524,18 @@ proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
       ChallengeTask(challengeTaskId: challengeTask.get().id, count: 1, clearedAt: some(getDateNow()))
     ]
     response["areaObjects"] = %*getAreaObjectsForCompletedChallengeTask(db, challengeTask.get().id)
+
+    let otherChallengeTasks = getOtherChallengeTasks(db, challengeTask.get())
+
+    if all(otherChallengeTasks, proc (x: MdChallengeTask): bool = isChallengeTaskComplete(db, x.id)):
+      discard
+    else:
+      changedResources["challengeProgresses"] = %*[
+        ChallengeProgress(
+          challengeProgressId: challengeTask.get().challengeProgressId,
+          state: challengeProgressStateStarted.int,
+        )
+      ]
 
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
