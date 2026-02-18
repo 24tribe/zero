@@ -22,7 +22,7 @@ type DungeonBattleStartRequest = object
   advantageType: string
   isAttackHit: bool
 
-type ChallengeProgressState = enum 
+type ChallengeProgressState* = enum 
   challengeProgressStateStarted = 2,
   challengeProgressStateCleared = 3
 
@@ -75,10 +75,10 @@ type MdChallengeTask = object
   taskConditionType: Option[int]
   totalTaskConditionId: Option[int]
 
-type ChallengeTask = object
-  challengeTaskId: int
-  count: int
-  clearedAt: Option[string]
+type ChallengeTask* = object
+  challengeTaskId*: int
+  count*: int
+  clearedAt*: Option[string]
 
 type AreaObjectAction* = object
   `type`*: int
