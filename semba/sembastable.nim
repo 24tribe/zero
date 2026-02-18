@@ -15,6 +15,11 @@ import dungeongen
 
 type Timestamp* = distinct string
 
+type AreaObjectBehaviorConditionType = enum
+  areaObjectConditionTypeStartedChallengeProgress = 1
+  areaObjectConditionTypeClearedChallengeProgress = 2
+  areaObjectConditionTypeClearedChallengeTask = 3
+
 type DungeonBattleStartRequest = object
   dungeonDifficultyId: int
   entityIds: seq[int]
@@ -2493,14 +2498,16 @@ proc getAreaObjectAction(db: DbConn, areaObjectBehaviorId: int): Option[AreaObje
       warpPointId: tryParseInt(row[12]),
     ))
 
-proc getAreaObjectsForCompletedChallengeTask(db: DbConn, challengeTaskId: int): seq[AreaObject] =
+proc getAreaObjectsWithCondition(
+  db: DbConn, conditionType: AreaObjectBehaviorConditionType, id: int
+): seq[AreaObject] =
   let rows = db.getAllRows(sql"""
     SELECT mdAreaObjectBehavior.id, mdAreaObjectBehavior.areaObjectId, mdAreaObjectBehavior.areaPointId
     FROM mdAreaObjectBehavior
     INNER JOIN mdAreaObjectBehaviorCondition
     ON mdAreaObjectBehavior.id = mdAreaObjectBehaviorCondition.areaObjectBehaviorId
-    WHERE mdAreaObjectBehaviorCondition.type = 3 AND mdAreaObjectBehaviorCondition.id = ?
-  """, challengeTaskId)
+    WHERE mdAreaObjectBehaviorCondition.type = ? AND mdAreaObjectBehaviorCondition.id = ?
+  """, conditionType.int, id)
 
   for row in rows:
     let areaObjectBehaviorId = parseInt(row[0])
@@ -2510,6 +2517,17 @@ proc getAreaObjectsForCompletedChallengeTask(db: DbConn, challengeTaskId: int): 
       areaObjectBehaviorId: some(areaObjectBehaviorId),
       action: getAreaObjectAction(db, areaObjectBehaviorId)
     ))
+
+
+proc getNextChallengeProgress(db: DbConn, challengeProgressId: int): Option[int] =
+  let row = db.getRow(
+    sql"SELECT nextProgressId FROM mdChallengeRoute WHERE currentProgressId = ?",
+    challengeProgressId
+  )
+
+  if row[0] != "":
+    result = some(parseInt(row[0]))
+
 
 proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
   response["areaObjects"] = %*[]
@@ -2523,12 +2541,39 @@ proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
     changedResources["challengeTasks"] = %*[
       ChallengeTask(challengeTaskId: challengeTask.get().id, count: 1, clearedAt: some(getDateNow()))
     ]
-    response["areaObjects"] = %*getAreaObjectsForCompletedChallengeTask(db, challengeTask.get().id)
+
+    var areaObjects = getAreaObjectsWithCondition(
+      db, areaObjectConditionTypeClearedChallengeTask, challengeTask.get().id
+    )
 
     let otherChallengeTasks = getOtherChallengeTasks(db, challengeTask.get())
 
     if all(otherChallengeTasks, proc (x: MdChallengeTask): bool = isChallengeTaskComplete(db, x.id)):
-      discard
+      var challengeProgresses = @[
+        ChallengeProgress(
+          challengeProgressId: challengeTask.get().challengeProgressId,
+          state: challengeProgressStateCleared.int,
+          clearedAt: some(getTimestampNow()),
+        )
+      ]
+
+      areaObjects.insert(getAreaObjectsWithCondition(
+        db, areaObjectConditionTypeClearedChallengeProgress, challengeTask.get().challengeProgressId
+      ), areaObjects.len)
+
+      let nextChallengeProgressId = getNextChallengeProgress(db, challengeTask.get().challengeProgressId)
+
+      if nextChallengeProgressId.isSome():
+        challengeProgresses.add(ChallengeProgress(
+          challengeProgressId: nextChallengeProgressId.get(),
+          state: challengeProgressStateStarted.int,
+        ))
+
+        areaObjects.insert(getAreaObjectsWithCondition(
+          db, areaObjectConditionTypeStartedChallengeProgress, nextChallengeProgressId.get()
+        ), areaObjects.len)
+
+      changedResources["challengeProgresses"] = %*challengeProgresses
     else:
       changedResources["challengeProgresses"] = %*[
         ChallengeProgress(
@@ -2536,6 +2581,8 @@ proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
           state: challengeProgressStateStarted.int,
         )
       ]
+
+    response["areaObjects"] = %*areaObjects
 
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
@@ -2550,7 +2597,7 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
 
     result = parseReadSequenceRow(row)
 
-    if seqReqId == 80100422:
+    if seqReqId == 80100421 or seqReqId == 80100422:
       changeReadSequenceResponse(db, seqReqId, result)
 
     updateFromReadSequenceResponse(db, result)
