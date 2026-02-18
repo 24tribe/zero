@@ -68,6 +68,9 @@ def main():
     with open(args.masterdata_dir/"area_object_behavior.json", "r", encoding="utf-8") as f:
         md_area_object_behavior_json = json.load(f)
 
+    with open(args.masterdata_dir/"challenge_route.json", "r", encoding="utf-8") as f:
+        md_challenge_route_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -87,6 +90,20 @@ def main():
         gen_md_dungeon_enemy_rate(md_dungeon_enemy_rate_json, f)
         gen_md_challenge_task(md_challenge_task_json, f)
         gen_md_area_object_behavior(md_area_object_behavior_json, f)
+        gen_md_challenge_route_json(md_challenge_route_json, f)
+
+
+def gen_md_challenge_route_json(md_challenge_route_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("INSERT INTO mdChallengeRoute (currentProgressId, id, nextProgressId) VALUES")
+
+    write_rows(xprint, f, [
+        (challenge_route["current_progress_id"], challenge_route["id"], challenge_route["next_progress_id"])
+        for challenge_route in md_challenge_route_json
+    ])
+
+    xprint(";")
 
 
 def write_rows(xprint, f, rows):
