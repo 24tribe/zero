@@ -13,12 +13,17 @@ import protojson
 
 import dungeongen
 
+type Timestamp* = distinct string
+
 type DungeonBattleStartRequest = object
   dungeonDifficultyId: int
   entityIds: seq[int]
   lineCharacterIds: seq[int]
   advantageType: string
   isAttackHit: bool
+
+type TaskConditionType = enum
+  taskConditionTypeSequenceRequest = 1
 
 type DungeonResumeRequest = object
   dungeonDifficultyId: int
@@ -47,6 +52,24 @@ type BattleInfo* = object
   currentLocation: JsonNode
   battleTriggers: seq[BattleTrigger]
   dungeonId: Option[int]
+
+type ChallengeProgress* = object
+  challengeProgressId: int
+  state: int
+  clearedAt: Option[Timestamp]
+
+type MdChallengeTask = object
+  challengeProgressId: int
+  count: Option[int]
+  id: int
+  summaryChallengeId: Option[int]
+  targetAreaObjectBehaviorId: Option[int]
+  targetAreaPointId: Option[int]
+  targetNineSequenceId: Option[int]
+  targetRadius: Option[int]
+  taskConditionKeyId: Option[int]
+  taskConditionType: Option[int]
+  totalTaskConditionId: Option[int]
 
 type ChallengeTask = object
   challengeTaskId: int
@@ -186,6 +209,7 @@ type MdEnemyLevel = object
   hpStatusFactor: float
 
 proc getDateNow*(): string = $(now().utc)
+proc getTimestampNow*(): Timestamp = getDateNow().Timestamp
 
 proc `%`(reward: Reward): JsonNode =
   result = %*{"type": reward.rewardType, "id": reward.id, "quantity": reward.quantity}
@@ -2379,16 +2403,31 @@ proc updateFromReadSequenceResponse(db: DbConn, response: JsonNode) =
   var changedResources = response["changedResources"]
   updateResources(db, changedResources) 
 
-proc getChallengeTaskIdForSequenceRequestId(db: DbConn, seqReqId: int): Option[int] =
+proc tryParseInt(s: string): Option[int] = (if s != "": some(parseInt(s)) else: none(int))
+
+proc getMdChallengeTaskForSequenceRequestId(db: DbConn, seqReqId: int): Option[MdChallengeTask] =
+  # Note: taskConditionTypeSequenceRequest == 1
   let row = db.getRow(sql"""
-    SELECT id FROM mdChallengeTask
+    SELECT challengeProgressId, count, id, summaryChallengeId, targetAreaObjectBehaviorId,
+           targetAreaPointId, targetNineSequenceId, targetRadius, totalTaskConditionId
+    FROM mdChallengeTask
     WHERE taskConditionType = 1 AND taskConditionKeyId = ?
   """, seqReqId)
 
   if row[0] != "":
-    result = some(parseInt(row[0]))
-
-proc tryParseInt(s: string): Option[int] = (if s != "": some(parseInt(s)) else: none(int))
+    result = some(MdChallengeTask(
+      challengeProgressId: parseInt(row[0]),
+      count: tryParseInt(row[1]),
+      id: parseInt(row[2]),
+      summaryChallengeId: tryParseInt(row[3]),
+      targetAreaObjectBehaviorId: tryParseInt(row[4]),
+      targetAreaPointId: tryParseInt(row[5]),
+      targetNineSequenceId: tryParseInt(row[6]),
+      targetRadius: tryParseInt(row[7]),
+      totalTaskConditionId: tryParseInt(row[8]),
+      taskConditionType: some(taskConditionTypeSequenceRequest.int),
+      taskConditionKeyId: some(seqReqId),
+    ))
 
 proc getAreaObjectAction(db: DbConn, areaObjectBehaviorId: int): Option[AreaObjectAction] =
   let row = db.getRow(sql"""
@@ -2440,12 +2479,12 @@ proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
   changedResources["challengeTasks"] = %*[]
   # changedResources["challengeProgresses"] = %*[]
 
-  let challengeTaskId = getChallengeTaskIdForSequenceRequestId(db, seqReqId)
-  if challengeTaskId.isSome():
+  let challengeTask = getMdChallengeTaskForSequenceRequestId(db, seqReqId)
+  if challengeTask.isSome():
     changedResources["challengeTasks"] = %*[
-      ChallengeTask(challengeTaskId: challengeTaskId.get(), count: 1, clearedAt: some(getDateNow()))
+      ChallengeTask(challengeTaskId: challengeTask.get().id, count: 1, clearedAt: some(getDateNow()))
     ]
-    response["areaObjects"] = %*getAreaObjectsForCompletedChallengeTask(db, challengeTaskId.get())
+    response["areaObjects"] = %*getAreaObjectsForCompletedChallengeTask(db, challengeTask.get().id)
 
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
