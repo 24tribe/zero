@@ -83,7 +83,7 @@ type ChallengeTask = object
 type AreaObjectAction* = object
   `type`*: int
   id*: int
-  label*: string
+  label*: Option[string]
   areaItemId*: Option[int]
   areaEnemyId*: Option[int]
   battleEntryId*: Option[int]
@@ -2487,7 +2487,7 @@ proc getAreaObjectAction(db: DbConn, areaObjectBehaviorId: int): Option[AreaObje
       fieldBossId: tryParseInt(row[6]),
       graffitiArtId: tryParseInt(row[7]),
       id: parseInt(row[8]),
-      label: row[9],
+      label: if row[9] != "": some(row[9]) else: none(string),
       sequenceId: tryParseInt(row[10]),
       `type`: parseInt(row[11]),
       warpPointId: tryParseInt(row[12]),
