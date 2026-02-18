@@ -1567,7 +1567,7 @@ proc updateAreaObjects*(db: DbConn, areaObjects: JsonNode) =
     let areaEnemyRateSetId = areaObject.getOrDefault("areaEnemyRateSetId")
     let action = $(areaObject["action"])
 
-    if areaEnemyRateSetId == nil:
+    if areaEnemyRateSetId == nil or areaEnemyRateSetId.kind == JNull:
       let areaObjectId = areaObject["areaObjectId"].getInt()
       let areaObjectBehaviorId = areaObject["areaObjectBehaviorId"].getInt()
 
