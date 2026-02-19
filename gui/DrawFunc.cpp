@@ -17,6 +17,7 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   showDemo(false),
                                   showGachaRates(false),
                                   gamePtrsReady(false),
+                                  showCustomColorWindow(false),
                                   result("..."),
                                   gachaRatesWindow(),
                                   pos(nullptr),
@@ -198,6 +199,7 @@ void DrawFunc::operator()(void) {
 
             ImGui::Checkbox("Show saves window", &showSavesWindow);
             ImGui::Checkbox("Show gacha rates window", &showGachaRates);
+            ImGui::Checkbox("Show custom color window", &showCustomColorWindow);
 
             ImGui::Separator();
 

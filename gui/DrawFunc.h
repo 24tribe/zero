@@ -16,6 +16,7 @@ class DrawFunc {
     bool showDemo;
     bool showGachaRates;
     bool gamePtrsReady;
+    bool showCustomColorWindow;
     const char* result;
 
     GachaRatesWindow gachaRatesWindow;
