@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>helloworld</AssemblyName>
+    <AssemblyName>bundlemod</AssemblyName>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 

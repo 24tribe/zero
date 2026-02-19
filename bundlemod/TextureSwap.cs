@@ -9,16 +9,11 @@ using SixLabors.ImageSharp.Processing;
 using System.Runtime.CompilerServices;
 
 public class TextureSwap {
-    public void SwapTexture(string bundleInPath, string texturePath, string bundleOutPath) {
-        Console.WriteLine($"bundleInPath: {bundleInPath}");
-        Console.WriteLine($"texturePath: {texturePath}");
-        Console.WriteLine($"bundleOutPath: {bundleOutPath}");
-
-        var textureName = Path.GetFileName(texturePath).Split(".")[0];
-        Console.WriteLine($"textureName: {textureName}");
-
+    public static void ChangeTextures(
+        FileStream bundleIn, FileStream bundleOut, Dictionary<string, TextureChange> textureChanges
+    ) {
         var manager = new AssetsManager();
-        var bundleInstance = manager.LoadBundleFile(bundleInPath, true);
+        var bundleInstance = manager.LoadBundleFile(bundleIn, true);
         var bundle = bundleInstance.file;
         var fileIndex = 0;
         var assetsFileInstance = manager.LoadAssetsFileFromBundle(bundleInstance, fileIndex, false);
@@ -26,16 +21,16 @@ public class TextureSwap {
 
         foreach (var textureInfo in assetsFile.GetAssetsOfType(AssetClassID.Texture2D)) {
             var textureBase = manager.GetBaseField(assetsFileInstance, textureInfo);
-            if (textureBase["m_Name"].AsString == textureName) {
-                Console.WriteLine("Found!!");
+            var textureName = textureBase["m_Name"].AsString;
+            if (textureChanges.ContainsKey(textureName)) {
+                var textureChange = textureChanges[textureName];
+
                 var texture = TextureFile.ReadTextureFile(textureBase);
-                Console.WriteLine($"{(TextureFormat)texture.m_TextureFormat}");
                 var rawTexDat = texture.FillPictureData(assetsFileInstance);
                 var texDat = texture.DecodeTextureRaw(rawTexDat);
-                var image = Image.LoadPixelData<Bgra32>(texDat, texture.m_Width, texture.m_Height);
-                image.Mutate(i => i.Rotate(RotateMode.Rotate90));
-                image.SaveAsPng("texture.png");
 
+                var image = Image.LoadPixelData<Bgra32>(texDat, texture.m_Width, texture.m_Height);
+                ImageSharpColorize.Colorize(image, textureChange.H, textureChange.S, textureChange.V);
                 byte[] pixelBytes = new byte[image.Width * image.Height * Unsafe.SizeOf<Rgba32>()];
                 image.CopyPixelDataTo(pixelBytes);
 
@@ -44,13 +39,12 @@ public class TextureSwap {
                 texture.WriteTo(textureBase);
 
                 textureInfo.SetNewData(textureBase);
-                break;
             }
         }
 
         bundle.BlockAndDirInfo.DirectoryInfos[fileIndex].SetNewData(assetsFile);
 
-        using (AssetsFileWriter writer = new AssetsFileWriter(bundleOutPath)) {
+        using (AssetsFileWriter writer = new AssetsFileWriter(bundleOut)) {
             bundleInstance.file.Write(writer);
         }
     }
