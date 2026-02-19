@@ -6,9 +6,9 @@ using SixLabors.ImageSharp.PixelFormats;
 
 // [Inspirated by Gimp colorize](https://github.com/GNOME/gimp/blob/master/app/operations/gimpoperationcolorize.c)
 
-public class Program {
+public class ImageSharpColorize {
     // [Formula to determine perceived brightness of RGB color](https://stackoverflow.com/a/56678483)
-    static public float CalcLum(ref Rgba32 pixel) {
+    static public float CalcLum(ref Bgra32 pixel) {
         var vR = (float)pixel.R / 255;
         var vG = (float)pixel.G / 255;
         var vB = (float)pixel.B / 255;
@@ -17,7 +17,7 @@ public class Program {
     }
 
     // [math behind hsv to rgb conversion of colors](https://stackoverflow.com/q/51203917)
-    static public Rgba32 HsvToRgb(float h, float s, float v) {
+    static public Bgra32 HsvToRgb(float h, float s, float v) {
         var r = 0f;
         var g = 0f;
         var b = 0f;
@@ -36,16 +36,16 @@ public class Program {
         case 4: {r = t; g = p; b = v; break;}
         case 5: {r = v; g = p; b = q; break;}
         }
-        return new Rgba32((byte)(r*255f), (byte)(g*255f), (byte)(b*255f));
+        return new Bgra32((byte)(r*255f), (byte)(g*255f), (byte)(b*255f));
     }
 
     // hue=0.5f saturation=1f lightness=0f
-    static public void Colorize(Image<Rgba32> image, float hue, float saturation, float lightness) {
+    static public void Colorize(Image<Bgra32> image, float hue, float saturation, float lightness) {
         image.ProcessPixelRows(accessor => {
             for (int y = 0; y < accessor.Height; ++y) {
-                Span<Rgba32> pixelRow = accessor.GetRowSpan(y);
+                Span<Bgra32> pixelRow = accessor.GetRowSpan(y);
                 for (int x = 0; x < pixelRow.Length; ++x) {
-                    ref Rgba32 pixel = ref pixelRow[x];
+                    ref Bgra32 pixel = ref pixelRow[x];
                     var lum = CalcLum(ref pixel);
                     pixel.R = (byte)(255*lum);
                     pixel.G = (byte)(255*lum);
@@ -62,12 +62,5 @@ public class Program {
                 }
             }
         });
-    }
-
-    static public void Main() {
-        using (Image<Rgba32> image = Image.Load<Rgba32>("texture.png")) {
-            Colorize(image, 0.5f, 1f, 0f);
-            image.Save("out.png"); 
-        } 
     }
 }

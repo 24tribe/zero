@@ -1,19 +1,28 @@
 #include <windows.h>
 
-extern void hellorld(char *s);
+extern void BundleMod_ChangeTextures(
+    HANDLE fromFile, HANDLE toFile, const char *textureChanges
+);
 
 #include <stdio.h>
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        fputs("usage: hello bundle_file\n", stderr);
+    if (argc != 4) {
+        fputs("usage: hello in_bundle out_bundle textureChanges\n", stderr);
         return 1;
     }
 
-    HANDLE h = CreateFileA(argv[1], GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (h == INVALID_HANDLE_VALUE) {
+    HANDLE in_bundle = CreateFileA(argv[1], GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (in_bundle == INVALID_HANDLE_VALUE) {
         fputs("createfilew failed\n", stderr);
         return 1;
     }
-    hellorld(h);
+
+    HANDLE out_bundle = CreateFileA(argv[2], GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (out_bundle == INVALID_HANDLE_VALUE) {
+        fputs("createfilew failed\n", stderr);
+        return 1;
+    }   
+
+    BundleMod_ChangeTextures(in_bundle, out_bundle, argv[3]);
 }
