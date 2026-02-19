@@ -47,9 +47,6 @@ public class ImageSharpColorize {
                 for (int x = 0; x < pixelRow.Length; ++x) {
                     ref Bgra32 pixel = ref pixelRow[x];
                     var lum = CalcLum(ref pixel);
-                    pixel.R = (byte)(255*lum);
-                    pixel.G = (byte)(255*lum);
-                    pixel.B = (byte)(255*lum);
 
                     if (lightness > 0f) {
                         lum *= (1.0f - lightness);
