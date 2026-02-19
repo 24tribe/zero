@@ -9,7 +9,7 @@ using SixLabors.ImageSharp.Processing;
 using System.Runtime.CompilerServices;
 
 public class TextureSwap {
-    public SwapTexture(string bundleInPath, string texturePath, string bundleOutPath) {
+    public void SwapTexture(string bundleInPath, string texturePath, string bundleOutPath) {
         Console.WriteLine($"bundleInPath: {bundleInPath}");
         Console.WriteLine($"texturePath: {texturePath}");
         Console.WriteLine($"bundleOutPath: {bundleOutPath}");
