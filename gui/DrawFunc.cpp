@@ -20,6 +20,7 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   showCustomColorWindow(false),
                                   result("..."),
                                   gachaRatesWindow(),
+                                  customColorWindow(),
                                   pos(nullptr),
                                   rotation(nullptr),
                                   fov_scale(nullptr),
@@ -249,6 +250,10 @@ void DrawFunc::operator()(void) {
 
         if (showGachaRates) {
             gachaRatesWindow.Show(&showGachaRates);
+        }
+
+        if (showCustomColorWindow) {
+            customColorWindow.Show(&showCustomColorWindow);
         }
 
         if (showSavesWindow) {

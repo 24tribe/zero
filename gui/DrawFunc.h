@@ -2,6 +2,7 @@
 #define DRAW_FUNC_H_10_11_2025_09_40_AM
 
 #include "GachaRatesWindow.h"
+#include "CustomColorWindow.h"
 
 #include <jansson.h>
 
@@ -20,6 +21,7 @@ class DrawFunc {
     const char* result;
 
     GachaRatesWindow gachaRatesWindow;
+    CustomColorWindow customColorWindow;
 
     float* pos;
     float* rotation;
