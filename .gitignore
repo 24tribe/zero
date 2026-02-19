@@ -30,5 +30,7 @@ imgui.ini
 
 zeromod/bin
 zeromod/obj
+bundlemod/bin
+bundlemod/obj
 
 *.swp
