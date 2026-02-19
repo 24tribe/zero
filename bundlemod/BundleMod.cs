@@ -1,4 +1,4 @@
-﻿namespace hellorld;
+﻿namespace bundlemod;
 
 using System.Runtime.InteropServices;
 using AssetsTools.NET;
@@ -8,8 +8,7 @@ using System.IO;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 
-
-public class Class1
+public class BundleMod
 {
     static void LoadBundleFile(FileStream fs)
     {
