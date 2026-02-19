@@ -45,11 +45,7 @@ std::string unpackSaveResError(const char *res) {
     return errStr;
 }
 
-extern "C" int UIMainThread(LPVOID _1) {
-    (void)_1;
-
-    DrawFunc draw_func{false};
-
+void InitDrawFunc(DrawFunc& draw_func) {
     draw_func.saves_dir = ZERO_CONFIG.savesDir;
 
     std::string what;
@@ -128,15 +124,29 @@ extern "C" int UIMainThread(LPVOID _1) {
 
     draw_func.pos = getPosArray();
     draw_func.rotation = getRotationArray();
+}
 
-    Backend_Load([&draw_func]{ draw_func(); });
+extern "C" int UIMainThread(LPVOID _1) {
+    (void)_1;
+
+    DrawFunc *draw_func = nullptr;
+
+    Backend_Load([&draw_func]{
+        if (!draw_func) {
+            draw_func = new DrawFunc(false);
+            InitDrawFunc(*draw_func);
+        }
+        (*draw_func)(); 
+    });
 
 	while (1) {
-        if (KeyPressed(VK_INSERT)) {
-            draw_func.active = !draw_func.active;
+        if (KeyPressed(VK_INSERT) && draw_func) {
+            draw_func->active = !draw_func->active;
         }
 
-        draw_func.gamePtrsReady = areGamePtrsReady();
+        if (draw_func) {
+            draw_func->gamePtrsReady = areGamePtrsReady();
+        }
 
         Sleep(100);
     }
