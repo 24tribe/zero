@@ -4,7 +4,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 
-// [Inspirated by Gimp colorize](https://github.com/GNOME/gimp/blob/master/app/operations/gimpoperationcolorize.c)
+// [Inspired by Gimp colorize](https://github.com/GNOME/gimp/blob/master/app/operations/gimpoperationcolorize.c)
 
 public class ImageSharpColorize {
     // [Formula to determine perceived brightness of RGB color](https://stackoverflow.com/a/56678483)
