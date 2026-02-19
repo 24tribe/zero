@@ -19,10 +19,12 @@ HANDLE WINAPI DetourCreateFileW(
 
     sds filename = sds16to8(filenameW, wcslen(filenameW));
 
+#ifdef TRIBE_NINE_DEMO
     // FIXME: change abcache.json contents to {"IgnoreCatalogCache":false,"IgnoreRemoteCatalog":true}
     if (strstr(filename, "abcache.json")) {
         printf("CreateFileW: %s\n", filename);
     }
+#endif
 
     sdsfree(filename);
 
