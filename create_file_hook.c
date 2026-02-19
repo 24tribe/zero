@@ -13,6 +13,12 @@ typedef HANDLE (WINAPI *CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTE
 
 CREATEFILEW fpCreateFileW = NULL;
 
+float *hairColorPtr = NULL;
+
+void CreateFileHook_SetHairColorPtr(float *color) {
+    hairColorPtr = color;
+}
+
 HANDLE WINAPI DetourCreateFileW(
     LPCWSTR filenameW,  DWORD access, DWORD shareMode,
     LPSECURITY_ATTRIBUTES attrs, DWORD creationDisp, DWORD flags, HANDLE template) {
