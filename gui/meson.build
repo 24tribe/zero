@@ -8,9 +8,11 @@ gui_src = files(
     'DrawFunc.cpp',
     'UserInterface.cpp',
     'GachaRatesWindow.cpp',
+    'CustomColorWindow.cpp',
 )
 
 executable(
-    'imguitest', 'imguitest.cpp', 'DrawFunc.cpp', '../TimeUtil.c', 'GachaRatesWindow.cpp',
+    'imguitest',
+    'imguitest.cpp', 'DrawFunc.cpp', '../TimeUtil.c', 'GachaRatesWindow.cpp', 'CustomColorWindow.cpp',
     dependencies : gui_deps
 )
