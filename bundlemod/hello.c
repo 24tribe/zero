@@ -1,8 +1,6 @@
-#include <windows.h>
+#include "BundleMod.h"
 
-extern void BundleMod_ChangeTextures(
-    HANDLE fromFile, HANDLE toFile, const char *textureChanges
-);
+#include <windows.h>
 
 #include <stdio.h>
 
