@@ -39,39 +39,34 @@ public class Program {
         return new Rgba32((byte)(r*255f), (byte)(g*255f), (byte)(b*255f));
     }
 
+    // hue=0.5f saturation=1f lightness=0f
+    static public void Colorize(Image<Rgba32> image, float hue, float saturation, float lightness) {
+        image.ProcessPixelRows(accessor => {
+            for (int y = 0; y < accessor.Height; ++y) {
+                Span<Rgba32> pixelRow = accessor.GetRowSpan(y);
+                for (int x = 0; x < pixelRow.Length; ++x) {
+                    ref Rgba32 pixel = ref pixelRow[x];
+                    var lum = CalcLum(ref pixel);
+                    pixel.R = (byte)(255*lum);
+                    pixel.G = (byte)(255*lum);
+                    pixel.B = (byte)(255*lum);
+
+                    if (lightness > 0f) {
+                        lum *= (1.0f - lightness);
+                        lum += 1.0f - (1.0f - lightness);
+                    } else if (lightness < 0f) {
+                        lum *= (lightness + 1);
+                    }
+
+                    pixel = HsvToRgb(hue, saturation, lum);
+                }
+            }
+        });
+    }
+
     static public void Main() {
         using (Image<Rgba32> image = Image.Load<Rgba32>("texture.png")) {
-            // [0, 1]
-            var hue = 0.5f;
-
-            // [0, 1]
-            var saturation = 1f;
-
-            // [-1, 1]
-            var lightness = 0.0f; 
-
-            image.ProcessPixelRows(accessor => {
-                for (int y = 0; y < accessor.Height; ++y) {
-                    Span<Rgba32> pixelRow = accessor.GetRowSpan(y);
-                    for (int x = 0; x < pixelRow.Length; ++x) {
-                        ref Rgba32 pixel = ref pixelRow[x];
-                        var lum = CalcLum(ref pixel);
-                        pixel.R = (byte)(255*lum);
-                        pixel.G = (byte)(255*lum);
-                        pixel.B = (byte)(255*lum);
-
-                        if (lightness > 0f) {
-                            lum *= (1.0f - lightness);
-                            lum += 1.0f - (1.0f - lightness);
-                        } else if (lightness < 0f) {
-                            lum *= (lightness + 1);
-                        }
-
-                        pixel = HsvToRgb(hue, saturation, lum);
-                    }
-                }
-            });
-
+            Colorize(image, 0.5f, 1f, 0f);
             image.Save("out.png"); 
         } 
     }
