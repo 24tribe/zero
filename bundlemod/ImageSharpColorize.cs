@@ -39,18 +39,18 @@ public class ImageSharpColorize {
         return new Bgra32((byte)(r*255f), (byte)(g*255f), (byte)(b*255f));
     }
 
-    // hue=0.5f saturation=1f lightness=0f
-    static public void Colorize(Image<Bgra32> image, float hue, float saturation, float lightness) {
+    static public void Colorize(Image<Bgra32> image, float hue, float saturation, float value) {
         image.ProcessPixelRows(accessor => {
             for (int y = 0; y < accessor.Height; ++y) {
                 Span<Bgra32> pixelRow = accessor.GetRowSpan(y);
                 for (int x = 0; x < pixelRow.Length; ++x) {
                     ref Bgra32 pixel = ref pixelRow[x];
                     var lum = CalcLum(ref pixel);
+                    var lightness = value*2 - 1;
 
                     if (lightness > 0f) {
                         lum *= (1.0f - lightness);
-                        lum += 1.0f - (1.0f - lightness);
+                        lum += lightness;
                     } else if (lightness < 0f) {
                         lum *= (lightness + 1);
                     }
