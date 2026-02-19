@@ -5,6 +5,7 @@ extern "C" {
 #include "Config.h"
 #include "semba/semba.h"
 #include <jansson.h>
+#include "create_file_hook.h"
 }
 
 #include "Backend.h"
@@ -124,6 +125,8 @@ void InitDrawFunc(DrawFunc& draw_func) {
 
     draw_func.pos = getPosArray();
     draw_func.rotation = getRotationArray();
+
+    CreateFileHook_SetHairColorPtr(draw_func.customColorWindow.hairColor);
 }
 
 extern "C" int UIMainThread(LPVOID _1) {
