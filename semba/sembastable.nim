@@ -52,7 +52,7 @@ type BattleFinishRequest = object
   encounteredEnemyIds: seq[int]
 
 type BattleTrigger* = object
-  triggerType: string
+  triggerType: Option[string]
   triggerIds: seq[int]
 
 type BattleInfo* = object
@@ -1680,9 +1680,9 @@ proc battle_Finish(db: DbConn, lastBattleInfo: var Option[BattleInfo], jsonReq: 
     setCharacterHp(db, characterUpdate.characterId, characterUpdate.hp)
 
   for battleTrigger in battleTriggers:
-    var isAreaObject = battleTrigger.triggerType == "area_object"
-    var isActionSequence = battleTrigger.triggerType == "action_sequence"
-    var isDungeon = battleTrigger.triggerType == "dungeon"
+    var isAreaObject = battleTrigger.triggerType.get("") == "area_object"
+    var isActionSequence = battleTrigger.triggerType.get("") == "action_sequence"
+    var isDungeon = battleTrigger.triggerType.get("") == "dungeon"
 
     if not isActionSequence:
       for triggerId in battleTrigger.triggerIds:
@@ -4215,7 +4215,7 @@ proc dungeon_BattleStart(db: DbConn, jsonReq: JsonNode, lastBattleInfo: var Opti
   let tensionCards = getEquippedTensionCards(db)
   let battleEntryIds = getBattleEntryIdsFromDungeonEntityIds(db, dungeonId, req.entityIds)
   let battleParameters = getBattleParametersFromBattleEntryIds(db, battleEntryIds)
-  let battleTriggers = @[BattleTrigger(triggerType: "dungeon", triggerIds: req.entityIds)]
+  let battleTriggers = @[BattleTrigger(triggerType: some("dungeon"), triggerIds: req.entityIds)]
 
   result = %*{
     "characters": characters,
