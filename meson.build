@@ -40,6 +40,7 @@ subdir('semba')
 subdir('autogen')
 subdir('autogen_demo')
 subdir('gui')
+subdir('bundlemod')
 
 zero_src = [
     'mylib.c',
@@ -97,12 +98,14 @@ zero_deps = [
 
 shared_library(
     'zero', zero_stable_src, dependencies : zero_deps, install : true,
-    install_dir : '.', include_directories : zero_stable_incdir
+    install_dir : '.', include_directories : zero_stable_incdir,
+    link_with : bundlemod
 )
 
 shared_library(
     'zerodemo', zero_demo_src, dependencies : zero_deps, install : true,
-    install_dir : '.', include_directories : zero_demo_incdir
+    install_dir : '.', include_directories : zero_demo_incdir,
+    link_with : bundlemod
 )
 
 executable('loader', 'loader.c', 'LoaderAux.c')
