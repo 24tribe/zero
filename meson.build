@@ -1,5 +1,6 @@
 project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'], meson_version : '>=1.4.0')
 
+add_project_arguments('-Wno-pedantic', language : ['c', 'cpp'])
 add_global_link_arguments('-static', language : ['c', 'cpp'])
 
 cc = meson.get_compiler('c')
