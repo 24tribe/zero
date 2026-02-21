@@ -32,6 +32,12 @@ void CreateFileHook_SetEnableHairColorPtr(bool *enableHairColor) {
     enableHairColorPtr = enableHairColor;
 }
 
+HANDLE createReadHandle(CREATEFILEW createFileW, const wchar_t *path) {
+    return createFileW(
+        path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
+    );
+}
+
 char *EncodeTextureChanges(const struct TextureChange textureChanges[], size_t len) {
     json_t *res = json_object();
     defer { json_decref(res); }
@@ -74,9 +80,7 @@ HANDLE WINAPI DetourCreateFileW(
         }, 1);
         defer { free(textureChanges); }
 
-        HANDLE inBundle = fpCreateFileW(
-            filenameW, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
-        );
+        HANDLE inBundle = createReadHandle(fpCreateFileW, filenameW);
 
 #define TEMP_PATH_SIZE 261
 
