@@ -34,3 +34,5 @@ bundlemod/bin
 bundlemod/obj
 
 *.swp
+
+/mods
