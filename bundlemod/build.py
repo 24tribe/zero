@@ -11,7 +11,7 @@ def main():
 
     out_dll = os.path.realpath(args.out_dll)
     os.chdir(args.project_path)
-    subprocess.run(["dotnet", "publish"])
+    subprocess.run(["dotnet", "publish"], check=True)
     shutil.copy("bin/Release/net9.0/win-x64/publish/bundlemod.dll", out_dll)
 
 if __name__ == "__main__":
