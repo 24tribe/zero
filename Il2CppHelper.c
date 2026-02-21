@@ -110,3 +110,58 @@ void HelperPrintMethods(Il2CppClass* klass) {
 		il2cpp_free(returnTypeName);
 	}
 }
+
+Il2CppObject **FindInstances(const char *assembly, const char *ns, const char *className, uint32_t* len_out) {
+    const Il2CppImage *targetAssembly = HelperGetImage(assembly);
+    if (!targetAssembly) {
+        printf("[FindInstances] Failed to get targetAssembly\n");
+        return NULL;
+    }
+    const Il2CppClass *targetClass = HelperGetClass(targetAssembly, className, ns);
+    if (!targetClass) {
+        printf("[FindInstances] Failed to get targetClass\n");
+        return NULL;
+    }
+    const Il2CppImage *coreModule = HelperGetImage("UnityEngine.CoreModule.dll");
+    if (!coreModule) {
+        printf("[FindInstances] Failed to get coreModule\n");
+        return NULL;
+    }
+    const Il2CppClass *unityObjClass = HelperGetClass(coreModule, "Object", "UnityEngine");
+    if (!unityObjClass) {
+        printf("[FindInstances] Failed to get unityObjClass\n");
+        return NULL;
+    }
+    const MethodInfo* findMethod = il2cpp_class_get_method_from_name(
+        (Il2CppClass*)unityObjClass, "FindObjectsOfType", 1
+    );
+
+    if (!findMethod) {
+        printf("[FindInstances] Failed to get findMethod\n");
+        return NULL;
+    }
+
+    void *typeObj = il2cpp_type_get_object(il2cpp_class_get_type((Il2CppClass*)targetClass));
+
+    if (!typeObj) {
+        printf("[FindInstances] Failed to get typeObj\n");
+        return NULL;
+    }
+
+    void *params[] = {typeObj};
+
+    Il2CppArray *array = (Il2CppArray *)il2cpp_runtime_invoke(findMethod, NULL, params, NULL);
+
+    uint32_t len = il2cpp_array_length(array);
+
+    *len_out = len;
+
+    /**
+    * @brief Direct Memory Access to Managed Array Elements.
+    * * In 64-bit IL2CPP, an Il2CppArray has a header of 32 bytes (0x20). 
+    * This includes the base Il2CppObject (16 bytes) and array-specific bounds/length metadata (16 bytes).
+    * After this header, the raw pointers to the elements begin.
+    */
+
+    return (Il2CppObject**)((char *)array + 0x20);
+}

@@ -35,6 +35,7 @@ IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS il2cpp_type_get_class_or_element_class = 
 IL2CPP_OBJECT_GET_CLASS il2cpp_object_get_class = NULL;
 IL2CPP_CLASS_GET_TYPE il2cpp_class_get_type = NULL;
 IL2CPP_CLASS_FROM_NAME il2cpp_class_from_name = NULL;
+IL2CPP_ARRAY_LENGTH il2cpp_array_length = NULL;
 
 void HookIl2Cpp(void *GameAssembly) {
     il2cpp_domain_get = (IL2CPPDOMAINGET)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_domain_get");
@@ -105,6 +106,9 @@ void HookIl2Cpp(void *GameAssembly) {
 
     il2cpp_class_from_name = (IL2CPP_CLASS_FROM_NAME)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_class_from_name");
     printf("il2cpp_class_from_name: 0x%llx\n", (unsigned long long)il2cpp_class_from_name);
+
+    il2cpp_array_length = (IL2CPP_ARRAY_LENGTH)(uintptr_t)GetProcAddress(GameAssembly, "il2cpp_array_length");
+    printf("il2cpp_array_length: 0x%llx\n", (unsigned long long)il2cpp_array_length);
 
     HookTN(GameAssembly);
 }

@@ -6,6 +6,7 @@
 
 typedef struct Il2CppType Il2CppType;
 typedef struct MethodInfo MethodInfo;
+typedef struct Il2CppArray Il2CppArray;
 
 typedef struct Il2CppDomain Il2CppDomain;
 
@@ -142,6 +143,8 @@ typedef Il2CppClass* (*IL2CPP_OBJECT_GET_CLASS)(const Il2CppObject *obj);
 typedef const Il2CppType* (*IL2CPP_CLASS_GET_TYPE)(Il2CppClass * klass);
 typedef Il2CppClass* (*IL2CPP_CLASS_FROM_NAME)(const Il2CppImage * image, const char* namespaze, const char *name);
 
+typedef uint32_t (*IL2CPP_ARRAY_LENGTH)(Il2CppArray * array);
+
 extern IL2CPP_METHOD_GET_RETURN_TYPE il2cpp_method_get_return_type;
 extern IL2CPP_METHOD_GET_NAME il2cpp_method_get_name;
 extern IL2CPP_CLASS_GET_METHODS il2cpp_class_get_methods;
@@ -154,6 +157,7 @@ extern IL2CPP_TYPE_GET_CLASS_OR_ELEMENT_CLASS il2cpp_type_get_class_or_element_c
 extern IL2CPP_OBJECT_GET_CLASS il2cpp_object_get_class;
 extern IL2CPP_CLASS_GET_TYPE il2cpp_class_get_type;
 extern IL2CPP_CLASS_FROM_NAME il2cpp_class_from_name;
+extern IL2CPP_ARRAY_LENGTH il2cpp_array_length;
 
 typedef void(*Il2CppMethodPointer)();
 
