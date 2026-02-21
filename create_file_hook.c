@@ -38,6 +38,12 @@ HANDLE createReadHandle(CREATEFILEW createFileW, const wchar_t *path) {
     );
 }
 
+HANDLE createWriteHandle(CREATEFILEW createFileW, const wchar_t *path) {
+    return createFileW(
+        path, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL
+    );
+}
+
 char *EncodeTextureChanges(const struct TextureChange textureChanges[], size_t len) {
     json_t *res = json_object();
     defer { json_decref(res); }
@@ -90,9 +96,7 @@ HANDLE WINAPI DetourCreateFileW(
 
         if (size != 0 && size + bundleLen < TEMP_PATH_SIZE) {
             memcpy(tempPath + size, bundleNameW, bundleLen*2);
-            HANDLE outBundle = fpCreateFileW(
-                tempPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL
-            );
+            HANDLE outBundle = createWriteHandle(fpCreateFileW, tempPath);
 
             BundleMod_ChangeTextures(inBundle, outBundle, textureChanges);
             return fpCreateFileW(tempPath, access, shareMode, attrs, creationDisp, flags, template);
