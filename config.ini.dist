@@ -12,3 +12,6 @@ savesDir=saves
 
 # if set, dumps the unpacked gameassembly from program memory
 #dumpGameAssembly=false
+
+# path to texture mods location
+modsDir=mods

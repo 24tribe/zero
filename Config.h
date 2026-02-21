@@ -10,6 +10,7 @@ struct Config {
     char *remoteUrl;
     bool dumpGameAssembly;
     char *savesDir;
+    char *modsDir;
 };
 
 extern struct Config ZERO_CONFIG;
