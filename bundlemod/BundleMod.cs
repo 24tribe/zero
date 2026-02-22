@@ -11,15 +11,14 @@ using System.Collections.Generic;
 
 public partial class BundleMod
 {
-    [JsonSerializable(typeof(TextureChange))]
-    [JsonSerializable(typeof(Dictionary<string, TextureChange>))]
+    [JsonSerializable(typeof(Dictionary<string, string>))]
     internal partial class SourceGenerationContext : JsonSerializerContext {}
 
     public static void ChangeTextures(
         SafeFileHandle fromFile, SafeFileHandle toFile, string textureChangesJson
     ) {
-        Dictionary<string, TextureChange>? textureChanges = JsonSerializer.Deserialize(
-            textureChangesJson, SourceGenerationContext.Default.DictionaryStringTextureChange
+        Dictionary<string, string>? textureChanges = JsonSerializer.Deserialize(
+            textureChangesJson, SourceGenerationContext.Default.DictionaryStringString
         );
 
         if (textureChanges != null) {

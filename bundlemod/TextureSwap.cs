@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 public class TextureSwap {
     public static void ChangeTextures(
-        FileStream bundleIn, FileStream bundleOut, Dictionary<string, TextureChange> textureChanges
+        FileStream bundleIn, FileStream bundleOut, Dictionary<string, string> textureChanges
     ) {
         var manager = new AssetsManager();
         var bundleInstance = manager.LoadBundleFile(bundleIn, true);
@@ -23,15 +23,13 @@ public class TextureSwap {
             var textureBase = manager.GetBaseField(assetsFileInstance, textureInfo);
             var textureName = textureBase["m_Name"].AsString;
             if (textureChanges.ContainsKey(textureName)) {
-                var textureChange = textureChanges[textureName];
+                var texturePath = textureChanges[textureName];
 
                 var texture = TextureFile.ReadTextureFile(textureBase);
-                var rawTexDat = texture.FillPictureData(assetsFileInstance);
-                var texDat = texture.DecodeTextureRaw(rawTexDat);
 
-                var image = Image.LoadPixelData<Bgra32>(texDat, texture.m_Width, texture.m_Height);
-                ImageSharpColorize.Colorize(image, textureChange.H, textureChange.S, textureChange.V);
-                byte[] pixelBytes = new byte[image.Width * image.Height * Unsafe.SizeOf<Rgba32>()];
+                var image = Image.Load<Bgra32>(texturePath);
+                image.Mutate(i => i.Flip(FlipMode.Vertical));
+                byte[] pixelBytes = new byte[image.Width * image.Height * Unsafe.SizeOf<Bgra32>()];
                 image.CopyPixelDataTo(pixelBytes);
 
                 texture.m_TextureFormat = (int)TextureFormat.BGRA32;

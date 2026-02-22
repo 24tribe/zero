@@ -3,7 +3,6 @@ bundlemod_files = files(
     'BundleMod.csproj',
     'BundleMod.h',
     'ImageSharpColorize.cs',
-    'TextureChange.cs',
     'TextureSwap.cs',
 )
 
