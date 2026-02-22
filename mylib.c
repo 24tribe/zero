@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "gui/UserInterface.h"
 #include "create_file_hook.h"
+#include "ModHelper.h"
 
 #include <MinHook.h>
 
@@ -34,6 +35,8 @@ void MyMain(HMODULE hModule) {
     if (hMainThread) {
         CloseHandle(hMainThread);
     }
+
+    SetGlobalModManager(ModHelper_ParseMods(ZERO_CONFIG.modsDir));
 
     HANDLE zeroHookFinishEvent = CreateEventA(NULL, TRUE, FALSE, "zeroHookFinishEvent");
     SetEvent(zeroHookFinishEvent);

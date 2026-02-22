@@ -125,9 +125,6 @@ void InitDrawFunc(DrawFunc& draw_func) {
 
     draw_func.pos = getPosArray();
     draw_func.rotation = getRotationArray();
-
-    CreateFileHook_SetHairColorPtr(draw_func.customColorWindow.hairColor);
-    CreateFileHook_SetEnableHairColorPtr(&draw_func.customColorWindow.enableHairColor);
 }
 
 extern "C" int UIMainThread(LPVOID _1) {

@@ -66,6 +66,7 @@ zero_src = [
     'create_file_hook.c',
     'SavesHelper.cpp',
     'TimeUtil.c',
+    'ModHelper.cpp',
     gui_src,
 ]
 
