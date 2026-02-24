@@ -1,0 +1,12 @@
+---
+config:
+  theme: dark
+---
+flowchart TD
+    F("Resume the game") --> |game tries to load GameAssembly.dll|G
+    G("DetourLoadLibraryW (load_library_hook.c)") --> H
+    H("GameAssemblyCallback") --> I
+    I("HookIl2Cpp (HookIl2Cpp.c)") --> J
+    J("HookTN (HookTN.c)") --> K
+    K("Apply hooks to game api functions") --> |game tries to call a game api function|L
+    L("SembaCall (semba.nim)") --> M("getJsonResultStable (sembastable.nim)")

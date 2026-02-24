@@ -1,0 +1,13 @@
+---
+config:
+  theme: dark
+---
+flowchart TD
+    A["Launcher (launcher.cpp)"] --> C
+    B["Loader (loader.c)"] --> C
+    C("LoadGame (LoaderAux.c)") --> D1
+    D1("Launch the game in a paused state") --> D2
+    D2("Create and wait for zeroHookFinishEvent") --> |inside the game process|D3
+    D3("MyMain (mylib.c)") --> E1
+    E1("HookLoadLibrary (load_library_hook.c)") --> E2
+    E2("Set zeroHookFinishEvent") --> |back to LoadGame|F("Resume the game")
