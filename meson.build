@@ -117,3 +117,6 @@ executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
 
 subdir('dump_ga')
 subdir('launcher')
+
+fs.copyfile('LICENSE', 'LICENSE.txt', install : true, install_dir : '.')
+fs.copyfile('THIRD_PARTY_LICENSES.txt', install : true, install_dir : '.')
