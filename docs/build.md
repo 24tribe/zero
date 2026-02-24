@@ -1,14 +1,41 @@
-- Install [w64devkit](https://github.com/skeeto/w64devkit)
+- Install [w64devkit-x64](https://github.com/skeeto/w64devkit/releases)
 - Install git
-- Install python
-- Install [Meson 1.7.0](https://github.com/mesonbuild/meson/releases/tag/1.7.0)
-  (newer versions aren't compatible with w64devkit's busybox)
+- Delete patch.exe from w64devkit/bin to avoid old version complains from Meson
+- Install [Python](https://www.python.org/downloads/windows/)
+- Install [Meson](https://mesonbuild.com/Getting-meson.html)
 - Install [Ninja](https://ninja-build.org/)
 - Install [Nim](https://nim-lang.org/install.html)
+- Install [dotnet](https://dotnet.microsoft.com/en-us/download/dotnet)
 - Clone and change to the source dir. Then setup the build dir and compile the project with Meson
 ```
 git clone https://github.com/gyubid/zero
 cd zero
 meson setup build -Dwarning_level=3
-meson compile -C build
+meson compile -C build -j4
+```
+
+- Run cmd.exe as Administrator and make a symbolic link from
+  build/bundlemod/bundlemod.dll to build/bundlemod.dll
+```
+cd /D D:\tribenine\zero\build
+mklink bundlemod.dll bundlemod\bundlemod.dll
+```
+
+- In the build/config.ini change the sembaDbPath and goldbergPath to:
+```
+sembaDbPath=semba/semba.db
+goldbergPath=subprojects/goldberg_steam/steam_api64.dll
+```
+
+- To run the game use the loader (use parentheses to run the command in a subshell and
+  to not change the working directory)
+```
+cd D:/tribenine/zero
+(cd build && ./loader "E:\SteamLibrary\steamapps\common\TRIBENINE\tribenine.exe" libzero.dll)
+```
+
+- To recompile, run meson compile again (be careful that any change to semba.sql wipes the db
+and any change to config.ini.dist clears the config.ini):
+```
+meson compile -C build -j4
 ```
