@@ -1,0 +1,3 @@
+- [JSON Schema generator](https://app.quicktype.io/?l=schema)
+- [JSON Diff Kit](https://json-diff-kit.js.org)
+- [jq manual](https://jqlang.org/manual)
