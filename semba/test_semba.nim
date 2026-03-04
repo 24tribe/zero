@@ -5,6 +5,8 @@ import std/json
 
 import db_connector/db_sqlite
 import sembacore
+import sembaprivate
+
 
 type SembaCtx = object
   version: GameVersion
@@ -199,10 +201,69 @@ proc test_talk_hoimi_read_sequence() =
   doAssert(challengeTask["count"].getInt() == 1)
 
 
+proc test_update_hair_color() =
+  var ctx = getInMemorySembaCtx()
+
+  let res1 = sembaCall(ctx, "/semba/update_hair_color", %*{
+    "charId": 1,
+    "r": 0.5,
+    "g": 0.5,
+    "b": 0.5,
+    "enabled": true
+  })
+
+  doAssert res1 != nil
+  doAssert res1["status"].getStr() == "ok"
+
+  let res2 = sembaCall(ctx, "/semba/update_hair_color", %*{
+    "charId": 2,
+    "r": 0.5,
+    "g": 0.5,
+    "b": 0.5,
+    "enabled": false
+  })
+
+  doAssert res2 != nil
+  doAssert res2["status"].getStr() == "ok"
+
+  let res4 = sembaCall(ctx, "/semba/update_hair_color", %*{
+    "charId": 2,
+    "r": 0.8,
+    "g": 0.8,
+    "b": 0.8,
+    "enabled": false
+  })
+
+  doAssert res4 != nil
+  doAssert res4["status"].getStr() == "ok"
+
+  let res3 = sembaCall(ctx, "/semba/get_hair_colors", nil)
+
+  doAssert res3 != nil
+
+  let hairColors = to(res3, seq[HairColor])
+
+  doAssert(hairColors.len == 2)
+
+  for hairColor in hairColors:
+    doAssert(hairColor.charId == 1 or hairColor.charId == 2)
+    if hairColor.charId == 1:
+      doAssert(hairColor.enabled)
+      doAssert(hairColor.r == 0.5)
+      doAssert(hairColor.g == 0.5)
+      doAssert(hairColor.b == 0.5)
+    else: # hairColor.charId == 2
+      doAssert(not hairColor.enabled)
+      doAssert(hairColor.r == 0.8)
+      doAssert(hairColor.g == 0.8)
+      doAssert(hairColor.b == 0.8)
+
+
 test_null()
 let retval = test_reset_db()
 test_talk_hoimi_read_sequence()
 test_talk_to_branch_manager_after_hoimi_read_sequence()
+test_update_hair_color()
 
 echo("End of test_semba.nim")
 

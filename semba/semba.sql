@@ -676,6 +676,15 @@ CREATE TABLE mdChallengeRoute (
     nextProgressId INTEGER NOT NULL
 );
 
+DROP TABLE IF EXISTS hairColors;
+CREATE TABLE hairColors (
+    charId INTEGER PRIMARY KEY,
+    r REAL,
+    g REAL,
+    b REAL,
+    enabled BOOLEAN
+);
+
 INSERT INTO mdChallengeRoute (currentProgressId, id, nextProgressId) VALUES
 (1000011, 10000111, 1000021)
 ,(1000021, 10000211, 1000031)

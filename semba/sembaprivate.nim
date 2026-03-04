@@ -8,6 +8,13 @@ import extsqlite
 
 const sembaSql = slurp("semba.sql")
 
+type HairColor* = object
+  charId*: int
+  r*: float
+  g*: float
+  b*: float
+  enabled*: bool
+
 type GachaRateId = enum
   NormalPullThreeStarCharRateId = 101,
   NormalPullThreeStarTCRateId = 102,
@@ -93,6 +100,33 @@ proc semba_ResetDb(db: DbConn) =
   loadSql(db, sembaSql)
 
 
+proc semba_UpdateHairColor(db: DbConn, jsonReq: JsonNode): JsonNode =
+  let req = to(jsonReq, HairColor)
+  db.exec(sql"""
+    INSERT INTO hairColors (charId, r, g, b, enabled)
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT (charId) DO
+    UPDATE SET r = excluded.r, g = excluded.g, b = excluded.b, enabled = excluded.enabled
+  """, req.charId, req.r, req.g, req.b, req.enabled)
+
+  result = %*{
+    "status": "ok"
+  }
+
+
+proc semba_GetHairColors(db: DbConn): seq[HairColor] =
+  let rows = db.getAllRows(sql"SELECT charId, r, g, b, enabled FROM hairColors")
+
+  for row in rows:
+    result.add(HairColor(
+      charId: parseInt(row[0]),
+      r: parseFloat(row[1]),
+      g: parseFloat(row[2]),
+      b: parseFloat(row[3]),
+      enabled: row[4] == "true"
+    ))
+
+
 proc getJsonResultPrivateApi*(uri: string, jsonReq: JsonNode, db: DbConn): JsonNode =
   if uri == "/semba/echo":
     let dataUpper = jsonReq["data"].getStr().toUpperAscii()
@@ -109,3 +143,7 @@ proc getJsonResultPrivateApi*(uri: string, jsonReq: JsonNode, db: DbConn): JsonN
     semba_SetStdGachaRates(db, jsonReq)
   elif uri == "/semba/reset_db":
     semba_ResetDb(db)
+  elif uri == "/semba/update_hair_color":
+    result = semba_UpdateHairColor(db, jsonReq)
+  elif uri == "/semba/get_hair_colors":
+    result = %*semba_GetHairColors(db)
