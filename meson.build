@@ -67,6 +67,7 @@ zero_src = [
     'SavesHelper.cpp',
     'TimeUtil.c',
     'ModHelper.cpp',
+    'HairColorHelper.cpp',
     gui_src,
 ]
 
@@ -114,6 +115,11 @@ executable('loader', 'loader.c', 'LoaderAux.c')
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
 
 executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
+
+test_hair_color_helper = executable(
+    'test_hair_color_helper', 'test_hair_color_helper.cpp', 'HairColorHelper.cpp'
+)
+test('test hair color helper', test_hair_color_helper)
 
 subdir('dump_ga')
 subdir('launcher')
