@@ -14,5 +14,6 @@ gui_src = files(
 executable(
     'imguitest',
     'imguitest.cpp', 'DrawFunc.cpp', '../TimeUtil.c', 'GachaRatesWindow.cpp', 'CustomColorWindow.cpp',
+    '../HairColorHelper.cpp',
     dependencies : gui_deps
 )

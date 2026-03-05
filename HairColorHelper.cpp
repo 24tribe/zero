@@ -6,18 +6,30 @@
 #include <regex>
 #include <cstdlib>
 
-struct HairColorHelper {
-    CharHairColorMap hairColorMap;
-};
+CharHairColor::CharHairColor(int charId, std::string charName)
+ : hairColor(), charName(charName), charId(charId),
+   enable(false), material(nullptr), texture(nullptr) {}
 
-CharHairColor::CharHairColor(
-    float *col, std::string charName, int charId, bool enable, void *material
-) : hairColor{col[0], col[1], col[2]}, charName(charName), charId(charId), enable(enable), material(material) {
-
-    this->hairColor[0] = hairColor[0];
-    this->hairColor[1] = hairColor[1];
-    this->hairColor[2] = hairColor[2];
-}
+HairColorHelper::HairColorHelper() : hairColorMap{
+    {1, CharHairColor(1, "Yo Kuronaka")},
+    {2, CharHairColor(2, "Tsuki Iroha")},
+    {3, CharHairColor(3, "Jio Takinogawa")},
+    {4, CharHairColor(4, "Miu Jujo")},
+    {5, CharHairColor(5, "Koishi Kohinata")},
+    {6, CharHairColor(6, "Minami Oi")},
+    {7, CharHairColor(7, "Hyakuichitaro Senju")},
+    {8, CharHairColor(8, "Tsuruko Semba")},
+    {9, CharHairColor(9, "Eiji Todoroki")},
+    {10, CharHairColor(10, "Roku Saigo")},
+    {11, CharHairColor(11, "Enoki Yukigaya")},
+    {12, CharHairColor(12, "Yutaka Gotanda")},
+    {13, CharHairColor(13, "Q")},
+    {14, CharHairColor(14, "Kazuki Aoyama")},
+    {15, CharHairColor(15, "Santaro Mita")},
+    {29, CharHairColor(29, "Ichinosuke Akiba")},
+    {30, CharHairColor(30, "Hinagiku Akiba")},
+    {31, CharHairColor(31, "Saizo Akiba")},
+} {}
 
 extern "C" bool HairColorHelper_IsHairColorEnabled(HairColorHelper *hairColorHelper, int charId) {
     auto& hairColorMap = hairColorHelper->hairColorMap;
@@ -52,15 +64,6 @@ extern "C" void *HairColorHelper_GetMaterial(HairColorHelper *hairColorHelper, i
     }
 }
 
-extern "C" void HairColorHelper_AddChar(
-    HairColorHelper *hairColorHelper,
-    float hairColor[3], const char *charName, int charId, bool enable
-) {
-    CharHairColor charHairColor(hairColor, std::string(charName), charId, enable, nullptr);
-
-    hairColorHelper->hairColorMap.insert({charId, charHairColor});
-}
-
 extern "C" int HairColorHelper_GetCharIdFromMaterialName(const char *materialName) {
     std::string matName = materialName;
     std::smatch m;
@@ -72,4 +75,16 @@ extern "C" int HairColorHelper_GetCharIdFromMaterialName(const char *materialNam
     }
 
     return -1;
+}
+
+extern "C" void HairColorHelper_SetMaterial(
+    HairColorHelper *hairColorHelper, int charId, void *material, void *texture
+) {
+    auto& hairColorMap = hairColorHelper->hairColorMap;
+    if (auto search = hairColorMap.find(charId); search != hairColorMap.end()) {
+        search->second.material = material;
+        search->second.texture = texture;
+    } else {
+        std::cout << "Warning: charId=" << charId << " not found is hairColorMap\n";
+    }
 }

@@ -94,6 +94,11 @@ int main(int, char**)
         std::cout << "Hello World!!\n";
     };
 
+    draw_func.customColorWindow.onEndHairColorChange = [](CharHairColor& hairColor) {
+        (void)hairColor;
+        std::cout << "onEndHairColorChange called!!!\n";
+    };
+
     draw_func.createSaveFile = [](char *name) {
         std::cout << "Created (/s) save file with name: " << name << "\n";
         return nullptr;

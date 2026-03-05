@@ -194,13 +194,13 @@ void DrawFunc::operator()(void) {
     ImGui::NewFrame();
 
     if (active) {
-        ImGui::SetNextWindowSize(ImVec2(300,320), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(300,345), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Tribe Nine Zero", &active, 0)) {
             ImGui::Text("Result: %s", result);
 
             ImGui::Checkbox("Show saves window", &showSavesWindow);
             ImGui::Checkbox("Show gacha rates window", &showGachaRates);
-            ImGui::Checkbox("Show custom color window", &showCustomColorWindow);
+            ImGui::Checkbox("Show hair colors window", &showCustomColorWindow);
 
             ImGui::Separator();
 
