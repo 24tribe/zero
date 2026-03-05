@@ -5,9 +5,9 @@
 
 #include <cmath>
 
-GachaRatesWindow::GachaRatesWindow() : getGachaRates(),
+GachaRatesWindow::GachaRatesWindow() : state(GACHA_RATES_STATE_START),
+                                       getGachaRates(),
                                        setGachaRates(),
-                                       initialized(false),
                                        error(""),
                                        getGachaRatesError(""),
                                        getGachaRatesThread(nullptr)
@@ -141,7 +141,7 @@ void GachaRatesWindow::ApplyGachaRates() {
     setGachaRatesResult = "Applied gacha rates!";
 }
 
-int initGachaRates(void *gachaRatesWindowPtr) {
+int initGachaRatesStart(void *gachaRatesWindowPtr) {
     auto& gachaRatesWindow = *reinterpret_cast<GachaRatesWindow*>(gachaRatesWindowPtr);
 
     gachaRatesWindow.InitGachaRates();
@@ -216,6 +216,90 @@ void ensureHundredPercent(
     }
 }
 
+GachaRatesWindowState GachaRatesWindow::HandleStartState() {
+    if (!getGachaRates) {
+        error = "getGachaRates callback is not set";
+        return GACHA_RATES_STATE_ERROR;
+    }
+
+    getGachaRatesThread = CreateThread(
+        NULL, 0, (LPTHREAD_START_ROUTINE)initGachaRatesStart, this, 0, NULL
+    );
+
+    if (!getGachaRatesThread) {
+        error = "Failed to create getGachaRates thread!!";
+        return GACHA_RATES_STATE_ERROR;
+    }
+
+    return GACHA_RATES_STATE_LOADING;
+}
+
+GachaRatesWindowState GachaRatesWindow::HandleLoadingState() {
+    ImGui::Text("Initializing window...");
+
+    GachaRatesWindowState nextState = GACHA_RATES_STATE_LOADING;
+
+    switch (WaitForSingleObject(getGachaRatesThread, 0)) {
+    case WAIT_TIMEOUT:
+        /* do nothing */
+        break;
+    case WAIT_OBJECT_0:
+        if (getGachaRatesError != "") {
+            error = getGachaRatesError;
+            nextState = GACHA_RATES_STATE_ERROR;
+        } else {
+            nextState = GACHA_RATES_STATE_INITIALIZED;
+        }
+        CloseHandle(getGachaRatesThread);
+        getGachaRatesThread = nullptr;
+        break;
+    default:
+        error = "WaitForSingleObject failed!!";
+        nextState = GACHA_RATES_STATE_ERROR;
+        break;
+    }
+
+    return nextState;
+}
+
+void GachaRatesWindow::HandleInitializedState() {
+    if (result != "") {
+        ImGui::Text("Result: %s", result.c_str());
+    }
+
+    if (setGachaRatesThread) {
+        switch (WaitForSingleObject(setGachaRatesThread, 0)) {
+        case WAIT_TIMEOUT:
+            /* do nothing */
+            break;
+        case WAIT_OBJECT_0:
+            result = setGachaRatesResult;
+            CloseHandle(setGachaRatesThread);
+            setGachaRatesThread = nullptr;
+            break;
+        default:
+            error = "WaitForSingleObject failed!!";
+            break;
+        }
+    }
+
+    if (ImGui::Button("Apply gacha rates")) {
+        if (setGachaRates) {
+            setGachaRatesThread = CreateThread(
+                NULL, 0, (LPTHREAD_START_ROUTINE)setGachaRatesStart, this, 0, NULL
+            );
+
+            if (!setGachaRatesThread) {
+                result = "Failed to create setGachaRates thread";
+            }
+        } else {
+            result = "setGachaRates func ptr is missing!";
+        }
+    }
+
+    DrawGachaRateSliders();
+}
+
 void GachaRatesWindow::Show(bool* showGachaRates) {
     ImGui::SetNextWindowSize(ImVec2(400,400), ImGuiCond_FirstUseEver);
 
@@ -224,193 +308,138 @@ void GachaRatesWindow::Show(bool* showGachaRates) {
         return;
     }
 
-    if (error != "") {
+    switch (state) {
+    case GACHA_RATES_STATE_START:
+        state = HandleStartState();
+        break;
+    case GACHA_RATES_STATE_ERROR:
         ImGui::Text("Error: %s", error.c_str());
-    } else if (initialized) {
-        if (result != "") {
-            ImGui::Text("Result: %s", result.c_str());
-        }
-
-        if (setGachaRatesThread) {
-            switch (WaitForSingleObject(setGachaRatesThread, 0)) {
-            case WAIT_TIMEOUT:
-                /* do nothing */
-                break;
-            case WAIT_OBJECT_0:
-                result = setGachaRatesResult;
-                CloseHandle(setGachaRatesThread);
-                setGachaRatesThread = nullptr;
-                break;
-            default:
-                error = "WaitForSingleObject failed!!";
-                break;
-            }
-        }
-
-        if (ImGui::Button("Apply gacha rates")) {
-            if (setGachaRates) {
-                setGachaRatesThread = CreateThread(
-                    NULL, 0, (LPTHREAD_START_ROUTINE)setGachaRatesStart, this, 0, NULL
-                );
-
-                if (!setGachaRatesThread) {
-                    result = "Failed to create setGachaRates thread";
-                }
-            } else {
-                result = "setGachaRates func ptr is missing!";
-            }
-        }
-
-        ImGui::SeparatorText("Normal pull");
-        if (ImGui::DragFloat("threeStarCharRate", &normalPullRates.threeStarCharRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &normalPullRates.threeStarCharRate,
-                &normalPullRates.threeStarCharRate,
-                &normalPullRates.threeStarTCRate,
-                &normalPullRates.twoStarCharRate,
-                &normalPullRates.twoStarTCRate,
-                &normalPullRates.oneStarTCRate
-            );
-        }
-        if (ImGui::DragFloat("threeStarTCRate", &normalPullRates.threeStarTCRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &normalPullRates.threeStarTCRate,
-                &normalPullRates.threeStarCharRate,
-                &normalPullRates.threeStarTCRate,
-                &normalPullRates.twoStarCharRate,
-                &normalPullRates.twoStarTCRate,
-                &normalPullRates.oneStarTCRate
-            );
-        }
-        if (ImGui::DragFloat("twoStarCharRate", &normalPullRates.twoStarCharRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &normalPullRates.twoStarCharRate,
-                &normalPullRates.threeStarCharRate,
-                &normalPullRates.threeStarTCRate,
-                &normalPullRates.twoStarCharRate,
-                &normalPullRates.twoStarTCRate,
-                &normalPullRates.oneStarTCRate
-            );
-        }
-        if (ImGui::DragFloat("twoStarTCRate", &normalPullRates.twoStarTCRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &normalPullRates.twoStarTCRate,
-                &normalPullRates.threeStarCharRate,
-                &normalPullRates.threeStarTCRate,
-                &normalPullRates.twoStarCharRate,
-                &normalPullRates.twoStarTCRate,
-                &normalPullRates.oneStarTCRate
-            );
-        }
-        if (ImGui::DragFloat("oneStarTCRate", &normalPullRates.oneStarTCRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &normalPullRates.oneStarTCRate,
-                &normalPullRates.threeStarCharRate,
-                &normalPullRates.threeStarTCRate,
-                &normalPullRates.twoStarCharRate,
-                &normalPullRates.twoStarTCRate,
-                &normalPullRates.oneStarTCRate
-            );
-        }
-
-        ImGui::SeparatorText("Promised pull (every 10 pulls)");
-        if (ImGui::DragFloat("threeStarCharRate##1", &promisedPullRates.threeStarCharRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &promisedPullRates.threeStarCharRate,
-                &promisedPullRates.threeStarCharRate,
-                &promisedPullRates.threeStarTCRate,
-                &promisedPullRates.twoStarCharRate,
-                &promisedPullRates.twoStarTCRate,
-                nullptr
-            );
-        }
-        if (ImGui::DragFloat("threeStarTCRate##1", &promisedPullRates.threeStarTCRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &promisedPullRates.threeStarTCRate,
-                &promisedPullRates.threeStarCharRate,
-                &promisedPullRates.threeStarTCRate,
-                &promisedPullRates.twoStarCharRate,
-                &promisedPullRates.twoStarTCRate,
-                nullptr
-            );
-        }
-        if (ImGui::DragFloat("twoStarCharRate##1", &promisedPullRates.twoStarCharRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &promisedPullRates.twoStarCharRate,
-                &promisedPullRates.threeStarCharRate,
-                &promisedPullRates.threeStarTCRate,
-                &promisedPullRates.twoStarCharRate,
-                &promisedPullRates.twoStarTCRate,
-                nullptr
-            );
-        }
-        if (ImGui::DragFloat("twoStarTCRate##1", &promisedPullRates.twoStarTCRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &promisedPullRates.twoStarTCRate,
-                &promisedPullRates.threeStarCharRate,
-                &promisedPullRates.threeStarTCRate,
-                &promisedPullRates.twoStarCharRate,
-                &promisedPullRates.twoStarTCRate,
-                nullptr
-            );
-        }
-
-        ImGui::SeparatorText("Guaranteed pull (every 80 pulls)");
-        if (ImGui::DragFloat("threeStarCharRate##2", &guaranteedPullRates.threeStarCharRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &guaranteedPullRates.threeStarCharRate,
-                &guaranteedPullRates.threeStarCharRate,
-                &guaranteedPullRates.threeStarTCRate,
-                nullptr,
-                nullptr,
-                nullptr
-            );
-        }
-        if (ImGui::DragFloat("threeStarTCRate##2", &guaranteedPullRates.threeStarTCRate, 1.0f, 0.0f, 100.0f)) {
-            ensureHundredPercent(
-                &guaranteedPullRates.threeStarTCRate,
-                &guaranteedPullRates.threeStarCharRate,
-                &guaranteedPullRates.threeStarTCRate,
-                nullptr,
-                nullptr,
-                nullptr
-            );
-        }
-    } else {
-        if (getGachaRates) {
-            if (getGachaRatesThread) {
-                switch (WaitForSingleObject(getGachaRatesThread, 0)) {
-                case WAIT_TIMEOUT:
-                    /* do nothing */
-                    break;
-                case WAIT_OBJECT_0:
-                    if (getGachaRatesError != "") {
-                        error = getGachaRatesError;
-                    } else {
-                        initialized = true;
-                    }
-                    CloseHandle(getGachaRatesThread);
-                    getGachaRatesThread = nullptr;
-                    break;
-                default:
-                    error = "WaitForSingleObject failed!!";
-                    break;
-                }
-            } else {
-                getGachaRatesThread = CreateThread(
-                    NULL, 0, (LPTHREAD_START_ROUTINE)initGachaRates, this, 0, NULL
-                );
-
-                if (!getGachaRatesThread) {
-                    error = "Failed to create getGachaRates thread!!";
-                }
-            }
-
-            ImGui::Text("Initializing window...");
-        } else {
-            ImGui::Text("getGachaRates not set!!!");
-        }
+        break;
+    case GACHA_RATES_STATE_LOADING:
+        state = HandleLoadingState();
+        break;
+    case GACHA_RATES_STATE_INITIALIZED:
+        HandleInitializedState();
+        break;
     }
 
     ImGui::End();
+}
+
+void GachaRatesWindow::DrawGachaRateSliders() {
+    ImGui::SeparatorText("Normal pull");
+    if (ImGui::DragFloat("threeStarCharRate", &normalPullRates.threeStarCharRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &normalPullRates.threeStarCharRate,
+            &normalPullRates.threeStarCharRate,
+            &normalPullRates.threeStarTCRate,
+            &normalPullRates.twoStarCharRate,
+            &normalPullRates.twoStarTCRate,
+            &normalPullRates.oneStarTCRate
+        );
+    }
+    if (ImGui::DragFloat("threeStarTCRate", &normalPullRates.threeStarTCRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &normalPullRates.threeStarTCRate,
+            &normalPullRates.threeStarCharRate,
+            &normalPullRates.threeStarTCRate,
+            &normalPullRates.twoStarCharRate,
+            &normalPullRates.twoStarTCRate,
+            &normalPullRates.oneStarTCRate
+        );
+    }
+    if (ImGui::DragFloat("twoStarCharRate", &normalPullRates.twoStarCharRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &normalPullRates.twoStarCharRate,
+            &normalPullRates.threeStarCharRate,
+            &normalPullRates.threeStarTCRate,
+            &normalPullRates.twoStarCharRate,
+            &normalPullRates.twoStarTCRate,
+            &normalPullRates.oneStarTCRate
+        );
+    }
+    if (ImGui::DragFloat("twoStarTCRate", &normalPullRates.twoStarTCRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &normalPullRates.twoStarTCRate,
+            &normalPullRates.threeStarCharRate,
+            &normalPullRates.threeStarTCRate,
+            &normalPullRates.twoStarCharRate,
+            &normalPullRates.twoStarTCRate,
+            &normalPullRates.oneStarTCRate
+        );
+    }
+    if (ImGui::DragFloat("oneStarTCRate", &normalPullRates.oneStarTCRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &normalPullRates.oneStarTCRate,
+            &normalPullRates.threeStarCharRate,
+            &normalPullRates.threeStarTCRate,
+            &normalPullRates.twoStarCharRate,
+            &normalPullRates.twoStarTCRate,
+            &normalPullRates.oneStarTCRate
+        );
+    }
+
+    ImGui::SeparatorText("Promised pull (every 10 pulls)");
+    if (ImGui::DragFloat("threeStarCharRate##1", &promisedPullRates.threeStarCharRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &promisedPullRates.threeStarCharRate,
+            &promisedPullRates.threeStarCharRate,
+            &promisedPullRates.threeStarTCRate,
+            &promisedPullRates.twoStarCharRate,
+            &promisedPullRates.twoStarTCRate,
+            nullptr
+        );
+    }
+    if (ImGui::DragFloat("threeStarTCRate##1", &promisedPullRates.threeStarTCRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &promisedPullRates.threeStarTCRate,
+            &promisedPullRates.threeStarCharRate,
+            &promisedPullRates.threeStarTCRate,
+            &promisedPullRates.twoStarCharRate,
+            &promisedPullRates.twoStarTCRate,
+            nullptr
+        );
+    }
+    if (ImGui::DragFloat("twoStarCharRate##1", &promisedPullRates.twoStarCharRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &promisedPullRates.twoStarCharRate,
+            &promisedPullRates.threeStarCharRate,
+            &promisedPullRates.threeStarTCRate,
+            &promisedPullRates.twoStarCharRate,
+            &promisedPullRates.twoStarTCRate,
+            nullptr
+        );
+    }
+    if (ImGui::DragFloat("twoStarTCRate##1", &promisedPullRates.twoStarTCRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &promisedPullRates.twoStarTCRate,
+            &promisedPullRates.threeStarCharRate,
+            &promisedPullRates.threeStarTCRate,
+            &promisedPullRates.twoStarCharRate,
+            &promisedPullRates.twoStarTCRate,
+            nullptr
+        );
+    }
+
+    ImGui::SeparatorText("Guaranteed pull (every 80 pulls)");
+    if (ImGui::DragFloat("threeStarCharRate##2", &guaranteedPullRates.threeStarCharRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &guaranteedPullRates.threeStarCharRate,
+            &guaranteedPullRates.threeStarCharRate,
+            &guaranteedPullRates.threeStarTCRate,
+            nullptr,
+            nullptr,
+            nullptr
+        );
+    }
+    if (ImGui::DragFloat("threeStarTCRate##2", &guaranteedPullRates.threeStarTCRate, 1.0f, 0.0f, 100.0f)) {
+        ensureHundredPercent(
+            &guaranteedPullRates.threeStarTCRate,
+            &guaranteedPullRates.threeStarCharRate,
+            &guaranteedPullRates.threeStarTCRate,
+            nullptr,
+            nullptr,
+            nullptr
+        );
+    }
 }

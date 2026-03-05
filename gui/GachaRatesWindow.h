@@ -8,6 +8,13 @@
 #include <functional>
 #include <string>
 
+enum GachaRatesWindowState {
+    GACHA_RATES_STATE_START,
+    GACHA_RATES_STATE_LOADING,
+    GACHA_RATES_STATE_INITIALIZED,
+    GACHA_RATES_STATE_ERROR
+};
+
 struct NormalPullRates {
     float threeStarCharRate;
     float threeStarTCRate;
@@ -33,6 +40,8 @@ using GetGachaRatesFuncType = std::function<json_t*()>;
 class GachaRatesWindow {
     public:
 
+    GachaRatesWindowState state;
+
     GetGachaRatesFuncType getGachaRates;
     std::function<void(json_t*)> setGachaRates;
 
@@ -40,6 +49,12 @@ class GachaRatesWindow {
     void Show(bool* showGachaRates);
     bool InitGachaRates();
     void ApplyGachaRates();
+
+    GachaRatesWindowState HandleStartState();
+    GachaRatesWindowState HandleLoadingState();
+    void HandleInitializedState();
+
+    void DrawGachaRateSliders();
 
     private:
 
