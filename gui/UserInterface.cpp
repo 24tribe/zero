@@ -6,6 +6,7 @@ extern "C" {
 #include "semba/semba.h"
 #include <jansson.h>
 #include "create_file_hook.h"
+#include "il2cpp_lean.h"
 }
 
 #include "Backend.h"
@@ -16,9 +17,20 @@ extern "C" {
 #include <synchapi.h>
 
 #include <sstream>
+#include <iostream>
 
 static bool KeyPressed(int vKey) {
 	return (GetAsyncKeyState(vKey) & 1) != 0;
+}
+
+json_t *createUpdateColorReq(CharHairColor& charHairColor) {
+    json_t *req = json_object();
+    json_object_set_new(req, "charId", json_integer(charHairColor.charId));
+    json_object_set_new(req, "r", json_real(charHairColor.hairColor[0]));
+    json_object_set_new(req, "g", json_real(charHairColor.hairColor[1]));
+    json_object_set_new(req, "b", json_real(charHairColor.hairColor[2]));
+    json_object_set_new(req, "enabled", json_boolean(charHairColor.enable));
+    return req;
 }
 
 std::string createSaveReq(const char* saves_dir, const char *name) {
@@ -44,6 +56,58 @@ std::string unpackSaveResError(const char *res) {
     std::string errStr = err;
     json_decref(resJson);
     return errStr;
+}
+
+static json_t *getHairColors() {
+    char *res = SembaCall("/semba/get_hair_colors", "");
+    if (!res) {
+        return NULL;
+    }
+    json_t *jsonRes = json_loads(res, 0, NULL);
+
+    return jsonRes;
+}
+
+int saveHairColorToDB(void *userdata) {
+    auto& charHairColor = *reinterpret_cast<CharHairColor *>(userdata);
+
+    json_t *req = createUpdateColorReq(charHairColor);
+    char *reqStr = json_dumps(req, 0);
+    SembaCall("/semba/update_hair_color", reqStr);
+    free(reqStr);
+    json_decref(req);
+
+    return 0;
+}
+
+int onLoadHairColors(void *userdata) {
+    auto& customColorWindow = *reinterpret_cast<CustomColorWindow*>(userdata);
+    auto& hairColorMap = customColorWindow.hairColorHelper.hairColorMap;
+
+    json_t *hair_colors = getHairColors();
+
+    for (size_t i = 0; i < json_array_size(hair_colors); ++i) {
+        json_t *hair_color = json_array_get(hair_colors, i);
+
+        int charId = json_integer_value(json_object_get(hair_color, "charId"));
+        float r = json_real_value(json_object_get(hair_color, "r"));
+        float g = json_real_value(json_object_get(hair_color, "g"));
+        float b = json_real_value(json_object_get(hair_color, "b"));
+        bool enabled = json_boolean_value(json_object_get(hair_color, "enabled"));
+
+        if (auto search = hairColorMap.find(charId); search != hairColorMap.end()) {
+            search->second.hairColor[0] = r;
+            search->second.hairColor[1] = g;
+            search->second.hairColor[2] = b;
+            search->second.enable = enabled;
+        } else {
+            std::cout << "Warning: charId=" << charId << " not found is hairColorMap\n";
+        }
+    }
+
+    json_decref(hair_colors);
+
+    return 0;
 }
 
 void InitDrawFunc(DrawFunc& draw_func) {
@@ -117,14 +181,59 @@ void InitDrawFunc(DrawFunc& draw_func) {
         free(reqStr);
     };
 
+#ifndef TRIBE_NINE_DEMO
     draw_func.runCommand = [&draw_func]() {
     };
+
+    HookTN_SetHairColorHelper(&draw_func.customColorWindow.hairColorHelper);
+
+    draw_func.customColorWindow.onHairColorChange = [](CharHairColor& charHairColor) {
+        if (charHairColor.material && charHairColor.enable) {
+            il2cpp_thread_attach( il2cpp_domain_get());
+            SetMaterialAlbedoColor(
+                reinterpret_cast<UnityEngine_Material_o *>(charHairColor.material),
+                &charHairColor.hairColor[0]
+            );
+        }
+    };
+
+    draw_func.customColorWindow.onEndHairColorChange = [](CharHairColor& charHairColor) {
+        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)saveHairColorToDB, &charHairColor, 0, NULL);
+    };
+
+    draw_func.customColorWindow.onEnableHairColor = [](CharHairColor& charHairColor) {
+        auto mat = reinterpret_cast<UnityEngine_Material_o *>(charHairColor.material);
+
+        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)saveHairColorToDB, &charHairColor, 0, NULL);
+
+        if (charHairColor.enable) {
+            if (mat) {
+                il2cpp_thread_attach( il2cpp_domain_get());
+                SetMaterialAlbedoColor(mat, &charHairColor.hairColor[0]);
+                SetMaterialAlbedoTexture(mat, NULL);
+            }
+        } else {
+            if (mat) {
+                il2cpp_thread_attach( il2cpp_domain_get());
+                float white[] = {1.0f, 1.0f, 1.0f};
+                SetMaterialAlbedoColor(mat, white);
+                SetMaterialAlbedoTexture(
+                    mat, reinterpret_cast<UnityEngine_Texture_o*>(charHairColor.texture)
+                );
+            }
+        }
+    };
+#endif
 
     draw_func.fov_scale = getFovScale();
     draw_func.customFovFlag = getCustomFovFlag();
 
     draw_func.pos = getPosArray();
     draw_func.rotation = getRotationArray();
+
+    CreateThread(
+        NULL, 0, (LPTHREAD_START_ROUTINE)onLoadHairColors, &draw_func.customColorWindow, 0, NULL
+    );
 }
 
 extern "C" int UIMainThread(LPVOID _1) {
@@ -139,6 +248,8 @@ extern "C" int UIMainThread(LPVOID _1) {
         }
         (*draw_func)(); 
     });
+
+    
 
 	while (1) {
         if (KeyPressed(VK_INSERT) && draw_func) {

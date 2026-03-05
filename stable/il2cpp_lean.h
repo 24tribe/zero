@@ -12,6 +12,9 @@ typedef struct MethodInfo_20B62E0 GetResultMethodInfo;
 typedef struct MethodInfo_F6CAF0 NeonApiGetResponse_MethodInfo;
 typedef struct LPCOHPIGHIN_o NeonApiGetResponse_ThirdParam;
 typedef struct Neon_Game_Scene_MailBox_MailBoxMailListItem_o Neon_Game_Scene_MailBox_MailBoxMailListItem_o;
+typedef struct UnityEngine_Texture2D_o UnityEngine_Texture2D_o;
+typedef struct UnityEngine_Material_o UnityEngine_Material_o;
+typedef struct UnityEngine_Texture_o UnityEngine_Texture_o;
 
 typedef struct System_Byte_array {
 	Il2CppObject obj;
@@ -9614,5 +9617,16 @@ typedef struct Neon_Model_UserData_UserMail_o {
 	void *monitor;
 	Neon_Model_UserData_UserMail_Fields fields;
 } Neon_Model_UserData_UserMail_o;
+
+typedef struct UnityEngine_Color_Fields {
+	float r;
+	float g;
+	float b;
+	float a;
+} UnityEngine_Color_Fields;
+
+typedef struct UnityEngine_Color_o {
+	UnityEngine_Color_Fields fields;
+} UnityEngine_Color_o;
 
 #endif

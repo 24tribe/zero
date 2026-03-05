@@ -5,17 +5,15 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
 struct HairColorHelper;
 
 bool HairColorHelper_IsHairColorEnabled(struct HairColorHelper *hairColorHelper, int charId);
 void HairColorHelper_GetHairColor(struct HairColorHelper *hairColorHelper, int charId, float color[3]);
-void HairColorHelper_AddChar(
-    struct HairColorHelper *hairColorHelper,
-    float hairColor[3], const char *charName, int charId, bool enable
-);
-void *HairColorHelper_GetMaterial(HairColorHelper *hairColorHelper, int charId);
+void *HairColorHelper_GetMaterial(struct HairColorHelper *hairColorHelper, int charId);
+void HairColorHelper_SetMaterial(struct HairColorHelper *hairColorHelper, int charId, void *material, void *texture);
 int HairColorHelper_GetCharIdFromMaterialName(const char *materialName);
-
 
 #ifdef __cplusplus
 }
