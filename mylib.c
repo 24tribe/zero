@@ -4,6 +4,8 @@
 #include "gui/UserInterface.h"
 #include "create_file_hook.h"
 #include "ModHelper.h"
+#include "semba/semba.h"
+#include "semba/NimInit.h"
 
 #include <MinHook.h>
 
@@ -25,6 +27,16 @@ void MyMain(HMODULE hModule) {
     }
 
     InitConfig();
+
+    RunNimMainOnce();
+
+    if (ZERO_CONFIG.remoteUrl) {
+        SembaSetRemoteUrl(ZERO_CONFIG.remoteUrl);
+    } else {
+        if (ZERO_CONFIG.sembaDbPath) {
+            SembaInitOfflineDb(ZERO_CONFIG.sembaDbPath);
+        }
+    }
 
     // HookNtQueryDirectoryFile();
     HookLoadLibrary();

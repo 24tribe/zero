@@ -666,16 +666,6 @@ void HookTN(void *GameAssembly) {
     Hook_Neon_Battle_Character_LoadRequest___ctor();
 #endif
 
-    RunNimMainOnce();
-
-    if (ZERO_CONFIG.remoteUrl) {
-        SembaSetRemoteUrl(ZERO_CONFIG.remoteUrl);
-    } else {
-        if (ZERO_CONFIG.sembaDbPath) {
-            SembaInitOfflineDb(ZERO_CONFIG.sembaDbPath);
-        }
-    }
-
     printf("Applying autohooks...\n");
     FILETIME start;
     GetSystemTimeAsFileTime(&start);
