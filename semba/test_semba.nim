@@ -201,6 +201,31 @@ proc test_talk_hoimi_read_sequence() =
   doAssert(challengeTask["count"].getInt() == 1)
 
 
+proc test_endrone_battle_start() =
+  var ctx = getInMemorySembaCtx()
+
+  loadSaveFile(ctx, "before endrone fight bug")
+
+  let res = sembaCall(ctx, "/battle/start", %*{
+    "battleEntryIds": [ 1000004 ],
+    "lineCharacterIds": [ 101101, 100801, 100201 ],
+    "battleTriggers": [ { "triggerType": "action_sequence" } ],
+    "currentLocation": {
+      "areaType": 1,
+      "direction": 1,
+      "positionCoordinates": { "x": 99.96959, "y": 11.0309982, "z": 0.120423831 },
+      "areaKeyId": 300401
+    },
+    "bloodStainLocation": {
+      "areaKeyId": 300401,
+      "areaType": 1,
+      "positionCoordinates": { "x": 99.96959, "y": 11.0309982, "z": 0.120423831 }
+    }
+  })
+
+  doAssert(res != nil)
+
+
 proc test_update_hair_color() =
   var ctx = getInMemorySembaCtx()
 
@@ -264,6 +289,7 @@ let retval = test_reset_db()
 test_talk_hoimi_read_sequence()
 test_talk_to_branch_manager_after_hoimi_read_sequence()
 test_update_hair_color()
+test_endrone_battle_start()
 
 echo("End of test_semba.nim")
 
