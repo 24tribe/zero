@@ -53,7 +53,7 @@ type BattleFinishRequest = object
 
 type BattleTrigger* = object
   triggerType: Option[string]
-  triggerIds: seq[int]
+  triggerIds: Option[seq[int]]
 
 type BattleInfo* = object
   battleEntryIds: seq[int]
@@ -1685,7 +1685,7 @@ proc battle_Finish(db: DbConn, lastBattleInfo: var Option[BattleInfo], jsonReq: 
     var isDungeon = battleTrigger.triggerType.get("") == "dungeon"
 
     if not isActionSequence:
-      for triggerId in battleTrigger.triggerIds:
+      for triggerId in battleTrigger.triggerIds.get(@[]):
         if isDungeon:
           removeDungeonEnemy(db, dungeonId.get(), triggerId)
         else:
@@ -4215,7 +4215,7 @@ proc dungeon_BattleStart(db: DbConn, jsonReq: JsonNode, lastBattleInfo: var Opti
   let tensionCards = getEquippedTensionCards(db)
   let battleEntryIds = getBattleEntryIdsFromDungeonEntityIds(db, dungeonId, req.entityIds)
   let battleParameters = getBattleParametersFromBattleEntryIds(db, battleEntryIds)
-  let battleTriggers = @[BattleTrigger(triggerType: some("dungeon"), triggerIds: req.entityIds)]
+  let battleTriggers = @[BattleTrigger(triggerType: some("dungeon"), triggerIds: some(req.entityIds))]
 
   result = %*{
     "characters": characters,
