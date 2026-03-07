@@ -226,6 +226,67 @@ proc test_endrone_battle_start() =
   doAssert(res != nil)
 
 
+proc test_talk_with_enoki_first() =
+  var ctx = getInMemorySembaCtx()
+
+  loadSaveFile(ctx, "before talking enoki first")
+
+  let res = sembaCall(ctx, "/adventure/read_sequence", %*{
+    "sequenceRequestIds": [ 80100431, 8011622 ],
+    "currentLocation": {
+      "areaType": 1, "direction": 5,
+      "positionCoordinates": { "x": -15.2384529, "y": 0.015625, "z": -19.510952 },
+      "areaKeyId": 101301
+    },
+    "areaType": 1,
+    "areaKeyId": 101301
+  })
+
+  let changedResources = res["changedResources"]
+
+  let challengeProgresses = to(changedResources["challengeProgresses"], seq[ChallengeProgress])
+  doAssert(challengeProgresses.len == 1)
+  doAssert(challengeProgresses[0].challengeProgressId == 1010043)
+  doAssert(challengeProgresses[0].state == challengeProgressStateStarted.int)
+
+  let challengeTasks = to(changedResources["challengeTasks"], seq[ChallengeTask])
+  doAssert(challengeTasks.len == 1)
+  doAssert(challengeTasks[0].challengeTaskId == 10100431)
+  doAssert(challengeTasks[0].clearedAt.isSome())
+  doAssert(challengeTasks[0].count == 1)
+
+  var expectedAreaObjects = to(%*[
+    {
+      "areaObjectId": 801009,
+      "areaPointId": 101301002,
+      "areaObjectBehaviorId": 8010043,
+      "action": {
+        "type": 3,
+        "id": 1,
+        "sequenceId": 8010044,
+        "label": "Enoki Yukigaya"
+      }
+    },
+    {
+      "areaObjectId": 801005,
+      "areaPointId": 101511002,
+      "areaObjectBehaviorId": 8010047,
+      "action": {
+        "type": 3,
+        "id": 1,
+        "sequenceId": 8010043,
+        "label": "Miu Jujo"
+      }
+    }
+  ], seq[AreaObject])
+
+  expectedAreaObjects.sort(sortByAreaPointId)
+
+  doAssert(expectedAreaObjects == to(res["areaObjects"], seq[AreaObject]))
+
+  # FIXME: changedResources.adventureVariables??
+
+
 proc test_update_hair_color() =
   var ctx = getInMemorySembaCtx()
 
