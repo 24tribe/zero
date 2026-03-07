@@ -157,6 +157,10 @@ proc test_talk_to_branch_manager_after_hoimi_read_sequence() =
   doAssert(challengeTasks[0].clearedAt.isSome())
   doAssert(challengeTasks[0].count == 1)
 
+  let adventureVariables = to(changedResources["adventureVariables"], seq[AdventureVariable])
+  doAssert(adventureVariables[0].adventureVariableId == 10030)
+  doAssert(adventureVariables[0].value.get(0) == 2)
+
 
 proc test_talk_hoimi_read_sequence() =
   var ctx = getInMemorySembaCtx()
@@ -199,6 +203,10 @@ proc test_talk_hoimi_read_sequence() =
   doAssert(challengeTask["challengeTaskId"].getInt() == 10100422)
   doAssert(challengeTask.hasKey("clearedAt"))
   doAssert(challengeTask["count"].getInt() == 1)
+
+  let adventureVariables = to(changedResources["adventureVariables"], seq[AdventureVariable])
+  doAssert(adventureVariables[0].adventureVariableId == 10030)
+  doAssert(adventureVariables[0].value.get(0) == 1)
 
 
 proc test_endrone_battle_start() =
@@ -296,7 +304,9 @@ proc test_talk_with_enoki_first() =
     (areaObjects.len == 1 and areaObjects[0] == expectedAreaObjects[0])
   )
 
-  # FIXME: changedResources.adventureVariables??
+  let adventureVariables = to(changedResources["adventureVariables"], seq[AdventureVariable])
+  doAssert(adventureVariables[0].adventureVariableId == 10031)
+  doAssert(adventureVariables[0].value.get(0) == 1)
 
 
 proc test_talk_to_miu_after_enonki_read_sequence() =
@@ -366,6 +376,10 @@ proc test_talk_to_miu_after_enonki_read_sequence() =
   doAssert(nineSequences[0].nineSequenceId == 10000002)
   doAssert(nineSequences[0].choices == "{\"Selections\":[]}")
   doAssert(nineSequences[0].lastReadAt.isSome())
+
+  let adventureVariables = to(changedResources["adventureVariables"], seq[AdventureVariable])
+  doAssert(adventureVariables[0].adventureVariableId == 10031)
+  doAssert(adventureVariables[0].value.get(0) == 2)
 
 
 proc test_update_hair_color() =

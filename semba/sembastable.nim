@@ -15,6 +15,10 @@ import dungeongen
 
 type Timestamp* = distinct string
 
+type AdventureVariable* = object
+  adventureVariableId*: int
+  value*: Option[int]
+
 type NineSequence* = object
   nineSequenceId*: int
   choices*: string
