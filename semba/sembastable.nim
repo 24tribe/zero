@@ -2651,6 +2651,11 @@ proc changeNineSequences(
 
   response["changedResources"]["nineSequences"] = %*nineSequences
 
+proc changeAdventureVariables(db: DbConn, sequenceRequestIds: seq[int], response: JsonNode) =
+  let changedResources = response["changedResources"]
+  let adventureVariables = newSeq[AdventureVariable]()
+  changedResources["adventureVariables"] = %*adventureVariables
+
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = to(
     jsonReq.getOrDefault("sequenceRequestIds"), Option[seq[int]]
@@ -2676,6 +2681,7 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
     if seqReqId in [80100421, 80100422, talkWithEnokiSeqReqId, talkWithMiuSeqReqId]:
       changeReadSequenceResponse(db, seqReqId, result)
       changeNineSequences(db, nineSequences, result)
+      changeAdventureVariables(db, sequenceRequestIds, result)
 
     updateFromReadSequenceResponse(db, result)
 
