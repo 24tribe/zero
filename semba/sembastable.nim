@@ -22,6 +22,10 @@ type NineSequence* = object
   lastReceiveAt*: Option[Timestamp]
   lastReadAt*: Option[Timestamp]
 
+type NineSequenceRequest* = object
+  id*: int
+  choices*: string
+
 type AreaObjectBehaviorConditionType = enum
   areaObjectConditionTypeStartedChallengeProgress = 1
   areaObjectConditionTypeClearedChallengeProgress = 2
@@ -2596,7 +2600,10 @@ proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
 
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
-  let nineSequences = jsonReq.getOrDefault("nineSequences").getElems()
+  let nineSequences = to(
+    jsonReq.getOrDefault("nineSequences"), Option[seq[NineSequenceRequest]]
+  ).get(@[])
+
   let areaKeyId = jsonReq["areaKeyId"].getInt()
 
   if sequenceRequestIds.len > 0:
@@ -2625,7 +2632,7 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
     if readSequenceAreaBgm.areaId != 0:
       updateAreaBgm(db, readSequenceAreaBgm.areaId, readSequenceAreaBgm.id, readSequenceAreaBgm.eventName)
   else:
-    let nineSequenceId = nineSequences[0]["id"].getInt()
+    let nineSequenceId = nineSequences[0].id
     let row = db.getRow(sql"""
       SELECT areaObjects, changedResources FROM readSequence WHERE nineSequenceId=?
     """, nineSequenceId);
