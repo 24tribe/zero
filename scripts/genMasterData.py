@@ -71,6 +71,9 @@ def main():
     with open(args.masterdata_dir/"challenge_route.json", "r", encoding="utf-8") as f:
         md_challenge_route_json = json.load(f)
 
+    with open(args.masterdata_dir/"sequence_request.json", "r", encoding="utf-8") as f:
+        md_sequence_request_json = json.load(f)
+
     with open(args.out_sql, "w", encoding="utf-8") as f:
         gen_md_tension_card(md_tension_card_json, f)
         gen_md_ability_tension_card(md_ability_tension_card_json, f)
@@ -91,6 +94,38 @@ def main():
         gen_md_challenge_task(md_challenge_task_json, f)
         gen_md_area_object_behavior(md_area_object_behavior_json, f)
         gen_md_challenge_route_json(md_challenge_route_json, f)
+        gen_md_sequence_request_json(md_sequence_request_json, f)
+
+
+def gen_md_sequence_request_json(md_sequence_request_json, f):
+    xprint = lambda *args: print(*args, file=f)
+
+    xprint("""
+INSERT INTO mdSequenceRequest (
+    adventureVariableId, areaChangeLockId, areaGroupId, areaId,
+    areaObjectId, areaObjectState, cityId, costs, eventLiftId,
+    id, rewards, type, variableChangeValue, variableOperator
+) VALUES
+""")
+
+    write_rows(xprint, f, [
+        (seqreq["adventure_variable_id"],
+        seqreq["area_change_lock_id"],
+        seqreq["area_group_id"],
+        seqreq["area_id"],
+        seqreq["area_object_id"],
+        seqreq["area_object_state"],
+        seqreq["city_id"],
+        seqreq["costs"],
+        seqreq["event_lift_id"],
+        seqreq["id"],
+        seqreq["rewards"],
+        seqreq["type"],
+        seqreq["variable_change_value"],
+        seqreq["variable_operator"]) for seqreq in md_sequence_request_json
+    ])
+
+    xprint(";")
 
 
 def gen_md_challenge_route_json(md_challenge_route_json, f):
