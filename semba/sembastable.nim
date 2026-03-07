@@ -2652,7 +2652,10 @@ proc changeNineSequences(
   response["changedResources"]["nineSequences"] = %*nineSequences
 
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
-  let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
+  let sequenceRequestIds = to(
+    jsonReq.getOrDefault("sequenceRequestIds"), Option[seq[int]]
+  ).get(@[])
+
   let nineSequences = to(
     jsonReq.getOrDefault("nineSequences"), Option[seq[NineSequenceRequest]]
   ).get(@[])
@@ -2660,7 +2663,7 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let areaKeyId = jsonReq["areaKeyId"].getInt()
 
   if sequenceRequestIds.len > 0:
-    let seqReqId = sequenceRequestIds[0].getInt()
+    let seqReqId = sequenceRequestIds[0]
     let row = db.getRow(sql"""
       SELECT areaObjects, changedResources FROM readSequence WHERE sequenceRequestId=?
     """, seqReqId);
