@@ -2645,8 +2645,7 @@ proc changeNineSequences(
   which one to return.
   ]#
 
-  if nineSequences.len > 0:
-    response["changedResources"]["nineSequences"] = %*nineSequences
+  response["changedResources"]["nineSequences"] = %*nineSequences
 
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
