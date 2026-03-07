@@ -1913,6 +1913,27 @@ proc getNineSequences*(db: DbConn): seq[JsonNode] =
     
     result.add(content)
 
+proc getNineSequence(db: DbConn, nineSequenceId: int): Option[NineSequence] =
+  let row = db.getRow(
+    sql"SELECT content FROM nineSequences WHERE nineSequenceId = ?", nineSequenceId
+  )
+
+  if row[0] != "":
+    let jsonData = parseJson(row[0])
+    jsonData["nineSequenceId"] = %*nineSequenceId
+    result = some(to(jsonData, NineSequence))
+
+proc updateNineSequence(db: DbConn, nineSequence: NineSequence) =
+  let jsonData = %*nineSequence
+  jsonData.delete("nineSequenceId")
+
+  db.exec(sql"""
+    INSERT INTO nineSequences (nineSequenceId, content)
+    VALUES (?, ?)
+    ON CONFLICT (nineSequenceId) DO
+    UPDATE SET content = excluded.content
+  """, nineSequence.nineSequenceId, $jsonData)
+
 proc getChallengeProgress*(db: DbConn, challengeProgressId: int): JsonNode =
   let row = db.getRow(sql"""
     SELECT challengeProgressId, clearedAt, state FROM challengeProgresses
@@ -2598,6 +2619,35 @@ proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
 
     response["areaObjects"] = %*areaObjects
 
+#[
+Swaps the nineSequences taken from online logs to the ones generated
+by a proper implementation.
+]#
+proc changeNineSequences(
+  db: DbConn, nineSequenceRequests: seq[NineSequenceRequest], response: JsonNode
+) =
+  var nineSequences = newSeq[NineSequence]()
+
+  for nineSequenceReq in nineSequenceRequests:
+    var nineSequence = getNineSequence(db, nineSequenceReq.id).get(NineSequence(
+      nineSequenceId: nineSequenceReq.id,
+      choices: "{\"Selections\":[]}",
+    ))
+
+    nineSequence.lastReadAt = some(getTimestampNow())
+
+    nineSequences.add(nineSequence)
+    updateNineSequence(db, nineSequence)
+
+  #[
+  FIXME: `nineSequences` is missing some nine sequences (taken from master data nine_trigger.json)
+  that are returned from an unrelated nine sequence request. I still don't know how to pick
+  which one to return.
+  ]#
+
+  if nineSequences.len > 0:
+    response["changedResources"]["nineSequences"] = %*nineSequences
+
 proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
   let sequenceRequestIds = jsonReq.getOrDefault("sequenceRequestIds").getElems()
   let nineSequences = to(
@@ -2619,6 +2669,7 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
 
     if seqReqId in [80100421, 80100422, talkWithEnokiSeqReqId, talkWithMiuSeqReqId]:
       changeReadSequenceResponse(db, seqReqId, result)
+      changeNineSequences(db, nineSequences, result)
 
     updateFromReadSequenceResponse(db, result)
 
