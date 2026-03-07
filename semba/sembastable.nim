@@ -15,6 +15,13 @@ import dungeongen
 
 type Timestamp* = distinct string
 
+type NineSequence* = object
+  nineSequenceId*: int
+  choices*: string
+  expiresAt*: Option[Timestamp]
+  lastReceiveAt*: Option[Timestamp]
+  lastReadAt*: Option[Timestamp]
+
 type AreaObjectBehaviorConditionType = enum
   areaObjectConditionTypeStartedChallengeProgress = 1
   areaObjectConditionTypeClearedChallengeProgress = 2
@@ -2601,8 +2608,9 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
     result = parseReadSequenceRow(row)
 
     const talkWithEnokiSeqReqId = 80100431
+    const talkWithMiuSeqReqId = 80100432
 
-    if seqReqId == 80100421 or seqReqId == 80100422 or seqReqId == talkWithEnokiSeqReqId:
+    if seqReqId in [80100421, 80100422, talkWithEnokiSeqReqId, talkWithMiuSeqReqId]:
       changeReadSequenceResponse(db, seqReqId, result)
 
     updateFromReadSequenceResponse(db, result)
