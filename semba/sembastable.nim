@@ -2528,7 +2528,10 @@ proc getNextChallengeProgress(db: DbConn, challengeProgressId: int): Option[int]
   if row[0] != "":
     result = some(parseInt(row[0]))
 
-
+#[
+Swap the changed areaObjects, challengeTasks and challengeProgresses taken from
+the online logs with the ones from the master data
+]# 
 proc changeReadSequenceResponse(db: DbConn, seqReqId: int, response: JsonNode) =
   response["areaObjects"] = %*[]
 
@@ -2597,7 +2600,9 @@ proc adventure_ReadSequence(db: DbConn, jsonReq: JsonNode): JsonNode =
 
     result = parseReadSequenceRow(row)
 
-    if seqReqId == 80100421 or seqReqId == 80100422:
+    const talkWithEnokiSeqReqId = 80100431
+
+    if seqReqId == 80100421 or seqReqId == 80100422 or seqReqId == talkWithEnokiSeqReqId:
       changeReadSequenceResponse(db, seqReqId, result)
 
     updateFromReadSequenceResponse(db, result)
