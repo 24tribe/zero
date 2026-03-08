@@ -8,10 +8,6 @@
 int LoadGame(const char *path, const char *dll_path) {
     unsigned int dll_path_len = strlen(dll_path) + 1;
 
-    HANDLE ph; // process handle
-    HANDLE rt; // remote thread
-    LPVOID rb; // remote buffer
-
     HMODULE hKernel32 = GetModuleHandle("Kernel32");
 
     if (!hKernel32) {
@@ -37,8 +33,8 @@ int LoadGame(const char *path, const char *dll_path) {
         return 1;
     }
 
-    ph = pi.hProcess;
-    rb = VirtualAllocEx(ph, NULL, dll_path_len, (MEM_RESERVE | MEM_COMMIT), PAGE_EXECUTE_READWRITE);
+    HANDLE ph = pi.hProcess;
+    LPVOID rb = VirtualAllocEx(ph, NULL, dll_path_len, (MEM_RESERVE | MEM_COMMIT), PAGE_EXECUTE_READWRITE);
 
     if (!rb) {
         fputs("VirtualAllocEx failed", stderr);
@@ -53,7 +49,7 @@ int LoadGame(const char *path, const char *dll_path) {
     HANDLE zeroHookFinishEvent = CreateEventA(NULL, TRUE, FALSE, "zeroHookFinishEvent");
     ResetEvent(zeroHookFinishEvent);
 
-    rt = CreateRemoteThread(ph, NULL, 0, lb, rb, 0, NULL);
+    HANDLE rt = CreateRemoteThread(ph, NULL, 0, lb, rb, 0, NULL);
 
     if (!rt) {
         fputs("CreateRemoteThread failed", stderr);
