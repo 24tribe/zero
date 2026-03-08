@@ -60,6 +60,7 @@ def main():
     with open(args.output_c, "w", encoding="utf-8") as f:
         f.write("#ifndef FUNCPTRS_H_2025_09_23_04_08\n")
         f.write("#define FUNCPTRS_H_2025_09_23_04_08\n")
+        f.write("#include <stddef.h>")
         f.write("\n#include \"il2cpp_lean.h\"\n")
         f.write("\n".join(signatures))
         f.write("\n")
