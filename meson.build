@@ -115,7 +115,12 @@ shared_library(
     link_with : bundlemod
 )
 
-executable('loader', 'loader.c', 'LoaderAux.c')
+executable(
+    'loader', 'loader.c', 'LoaderAux.c',
+    install : true, install_dir : '.',
+    c_args : '-municode', link_args : '-municode'
+)
+
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
 
 executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
