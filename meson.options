@@ -1,0 +1,1 @@
+option('build_launcher', type : 'boolean', value : true)
