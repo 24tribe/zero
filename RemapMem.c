@@ -1,7 +1,7 @@
 // thanks to WWWC: https://www.unknowncheats.me/forum/3121760-post7.html
 
 #include <stdio.h>
-#include <Windows.h>
+#include <windows.h>
 #include <ntdef.h>
 
 #include <stdio.h>
