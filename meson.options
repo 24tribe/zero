@@ -1,1 +1,2 @@
 option('build_launcher', type : 'boolean', value : true)
+option('texture_mods_support', type: 'boolean', value: true)
