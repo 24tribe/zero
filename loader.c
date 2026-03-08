@@ -1,5 +1,7 @@
 #include "LoaderAux.h"
 
+#include <fileapi.h>
+
 #include <stdio.h>
 
 int wmain(int argc, wchar_t* argv[]) {
@@ -10,6 +12,13 @@ int wmain(int argc, wchar_t* argv[]) {
 
     wchar_t *path = argv[1];
     wchar_t *dll_path = argv[2];
+
+    wchar_t dll_full_path[MAX_PATH] = {0};
+
+    if (GetFullPathNameW(dll_path, MAX_PATH, dll_full_path, NULL) >= MAX_PATH) {
+        fputs("GetFullPathNameW failed\n", stdout);
+        return 1;
+    }
     
     return LoadGameEx(path, dll_path);
 }
