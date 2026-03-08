@@ -22,6 +22,10 @@ else
     nim_release_args = []
 endif
 
+if build_machine.system() != 'windows'
+    nim_release_args += ['-d:mingw']
+endif
+
 semba_db = custom_target(
     'semba_db',
     input : 'semba.sql',
