@@ -1,3 +1,5 @@
+if get_option('texture_mods_support')
+
 bundlemod_files = files(
     'BundleMod.cs',
     'BundleMod.csproj',
@@ -18,3 +20,9 @@ bundlemod = custom_target(
     install : true,
     install_dir : '.',
 )
+
+else
+
+bundlemod = static_library('bundlemod', 'BundleModMock.c')
+
+endif
