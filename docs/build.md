@@ -24,7 +24,7 @@ mklink bundlemod.dll bundlemod\bundlemod.dll
 
 - In the build/config.ini change the sembaDbPath and goldbergPath to:
 ```
-sembaDbPath=semba/semba.db
+sembaDbPath=subprojects/semba/semba.db
 goldbergPath=subprojects/goldberg_steam/steam_api64.dll
 ```
 
