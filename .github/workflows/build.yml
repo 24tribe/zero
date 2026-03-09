@@ -12,6 +12,9 @@ jobs:
     permissions:
       contents: write
 
+    environment:
+      name: MYENV
+
     steps:
     - uses: actions/checkout@v4
 
