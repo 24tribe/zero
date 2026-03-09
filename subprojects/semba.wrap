@@ -1,0 +1,5 @@
+[wrap-git]
+
+url = git@github.com:/24tribe/semba.git
+revision = HEAD
+depth = 1

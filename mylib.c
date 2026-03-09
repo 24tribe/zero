@@ -4,8 +4,8 @@
 #include "gui/UserInterface.h"
 #include "create_file_hook.h"
 #include "ModHelper.h"
-#include "semba/semba.h"
-#include "semba/NimInit.h"
+#include "semba.h"
+#include "NimInit.h"
 
 #include <MinHook.h>
 

@@ -3,7 +3,7 @@
 extern "C" {
 #include "HookTN.h"
 #include "Config.h"
-#include "semba/semba.h"
+#include "semba.h"
 #include <jansson.h>
 #include "create_file_hook.h"
 #include "il2cpp_lean.h"
