@@ -115,7 +115,17 @@ void DetourHTTPRequestCtor(Best_HTTP_HTTPRequest_o* __this, System_Uri_o* uri, i
     sds url = System_String_toSds(uri->fields.m_String);
     printf("[DetourHttpRequestCtor] %s\n", url);
 
-    uri = CreateSystemUri("https://httpbin.org/status/500");
+    int baseUrlSize = getBaseUrlSize(url);
+
+    if (ZERO_CONFIG.sembaStandaloneUrl) {
+        sds finalUrl = sdsnew(ZERO_CONFIG.sembaStandaloneUrl);
+        finalUrl = sdscat(finalUrl, url + baseUrlSize);
+        uri = CreateSystemUri(finalUrl);
+        sdsfree(finalUrl);
+    } else {
+        char *httpBinUrl = "https://httpbin.org/status/500";
+        uri = CreateSystemUri(httpBinUrl);
+    }
 
     SaveNeonApiPath(url);
     sdsfree(url);
@@ -358,15 +368,17 @@ Cysharp_Threading_Tasks_UniTask_TResponse__o DetourNeonApiGetResponse(
 ) {
 
     Il2CppClass *uniTaskClass = il2cpp_type_get_class_or_element_class(method->return_type);
-    Il2CppObject *xResponse = GetMockResponse(PNICKJFPBHH);
 
-    if (xResponse) {
-        Cysharp_Threading_Tasks_UniTask_TResponse__o *res;
-        res = (Cysharp_Threading_Tasks_UniTask_TResponse__o *)CreateUniTask(uniTaskClass, xResponse);
-        return *res;
+    if (!ZERO_CONFIG.sembaStandaloneUrl) {
+        Il2CppObject *xResponse = GetMockResponse(PNICKJFPBHH);
+
+        if (xResponse) {
+            Cysharp_Threading_Tasks_UniTask_TResponse__o *res;
+            res = (Cysharp_Threading_Tasks_UniTask_TResponse__o *)CreateUniTask(uniTaskClass, xResponse);
+            return *res;
+        }
     }
 
-      
     return fpNeonApiGetResponse(__this, EFCDPGBOIHC, EAGJONBIADJ, JLCCEAFOLOE, PNICKJFPBHH, method);
 }
 
