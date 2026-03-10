@@ -1,5 +1,6 @@
 project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'], meson_version : '>=1.4.0')
 
+dump_ga_support = get_option('dump_ga_support')
 build_launcher = get_option('build_launcher')
 
 add_project_arguments('-Wno-pedantic', language : ['c', 'cpp'])
@@ -17,8 +18,10 @@ endif
 ntdll_lib = cc.find_library('ntdll')
 shlwapi_lib = cc.find_library('shlwapi')
 
+if dump_ga_support
 libpeconv_proj = subproject('libpeconv')
 libpeconv_dep = libpeconv_proj.get_variable('libpeconv_dep')
+endif
 
 minhook_proj = subproject('minhook')
 libminhook_dep = minhook_proj.get_variable('libminhook_dep')
@@ -96,7 +99,6 @@ zero_demo_src = [
 zero_deps = [
     libminhook_dep,
     ntdll_lib,
-    libpeconv_dep,
     sds_dep,
     jansson_dep,
     inih_dep,
@@ -104,6 +106,10 @@ zero_deps = [
     shlwapi_lib,
     imgui
 ]
+
+if dump_ga_support
+    zero_deps += [libpeconv_dep]
+endif
 
 shared_library(
     'zero', zero_stable_src, dependencies : zero_deps, install : true,
