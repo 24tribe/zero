@@ -15,3 +15,6 @@ savesDir=saves
 
 # path to texture mods location
 modsDir=mods
+
+# if set, ignores the offline mode and tries to connect to this semba standalone server
+#sembaStandaloneUrl=http://127.0.0.1:5052
