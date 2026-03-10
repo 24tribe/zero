@@ -11,6 +11,7 @@ struct Config {
     bool dumpGameAssembly;
     char *savesDir;
     char *modsDir;
+    char *sembaStandaloneUrl;
 };
 
 extern struct Config ZERO_CONFIG;
