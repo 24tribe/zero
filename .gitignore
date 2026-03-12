@@ -37,3 +37,5 @@ bundlemod/obj
 *.swp
 
 /mods
+
+install_out
