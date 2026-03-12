@@ -20,7 +20,20 @@ extern "C" {
 #include <iostream>
 
 static bool KeyPressed(int vKey) {
-	return (GetAsyncKeyState(vKey) & 1) != 0;
+    static bool pressed = false;
+    
+    short state = GetAsyncKeyState(vKey);
+    
+    if (!pressed && state != 0) {
+        pressed = true;
+        return true;
+    }
+
+    if (pressed && state == 0) {
+        pressed = false;
+    }
+
+    return false;
 }
 
 json_t *createUpdateColorReq(CharHairColor& charHairColor) {
