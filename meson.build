@@ -4,6 +4,12 @@ dump_ga_support = get_option('dump_ga_support')
 build_launcher = get_option('build_launcher')
 
 add_project_arguments('-Wno-pedantic', language : ['c', 'cpp'])
+add_global_arguments(
+    '-DVK_NO_PROTOTYPES',
+    '-DIMGUI_IMPL_VULKAN_USE_VOLK',
+    '-DVK_USE_PLATFORM_WIN32_KHR',
+    language : ['c', 'cpp']
+)
 add_global_link_arguments('-static', language : ['c', 'cpp'])
 
 cc = meson.get_compiler('c')
@@ -104,6 +110,7 @@ zero_deps = [
     inih_dep,
     semba_dep,
     shlwapi_lib,
+    vulkan_dep,
     imgui
 ]
 

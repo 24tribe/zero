@@ -258,15 +258,17 @@ extern "C" int UIMainThread(LPVOID _1) {
         if (!draw_func) {
             draw_func = new DrawFunc(false);
             InitDrawFunc(*draw_func);
+            printf("Callback called!!\n");
         }
         (*draw_func)(); 
     });
 
-    
+    printf("Finished backend load!!\n");
 
 	while (1) {
         if (KeyPressed(VK_INSERT) && draw_func) {
             draw_func->active = !draw_func->active;
+            printf("VK_INSERT PRESSED\n");
         }
 
         if (draw_func) {
