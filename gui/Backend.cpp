@@ -64,7 +64,7 @@ bool DirectXPresentHook()
 	return true;
 }
 
-LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 
 	ImGuiIO& io = ImGui::GetIO();
