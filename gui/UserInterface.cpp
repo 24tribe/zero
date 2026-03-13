@@ -253,20 +253,20 @@ extern "C" int UIMainThread(LPVOID _1) {
     (void)_1;
 
     DrawFunc *draw_func = nullptr;
-
-    Backend_Load([&draw_func]{
-        if (!draw_func) {
-            draw_func = new DrawFunc(false);
-            InitDrawFunc(*draw_func);
-        }
-        (*draw_func)(); 
-    });
-
-    
-
+ 
 	while (1) {
-        if (KeyPressed(VK_INSERT) && draw_func) {
-            draw_func->active = !draw_func->active;
+        if (KeyPressed(VK_INSERT)) {
+            if (draw_func) {
+                draw_func->active = !draw_func->active;
+            } else {
+                Backend_Load([&draw_func]{
+                    if (!draw_func) {
+                        draw_func = new DrawFunc(true);
+                        InitDrawFunc(*draw_func);
+                    }
+                    (*draw_func)(); 
+                });
+            }
         }
 
         if (draw_func) {
