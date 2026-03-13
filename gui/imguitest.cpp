@@ -1,8 +1,6 @@
 #include "DrawFunc.h"
+#include "Backend.h"
 
-#include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
 #include <d3d11.h>
 #include <tchar.h>
 
@@ -25,68 +23,7 @@ void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-// Main code
-int main(int, char**)
-{
-    // Make process DPI aware and obtain main monitor scale
-    ImGui_ImplWin32_EnableDpiAwareness();
-    float main_scale = ImGui_ImplWin32_GetDpiScaleForMonitor(::MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY));
-
-    RECT work_area;
-    ZeroMemory(&work_area, sizeof(work_area));
-
-    if (!SystemParametersInfoA(SPI_GETWORKAREA, 0, &work_area, 0)) {
-        std::cout << "SystemParametersInfoA failed\n";
-        return 1;
-    }
-
-    LONG width = work_area.right;
-    LONG height = work_area.bottom;
-
-    // Create application window
-    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
-    ::RegisterClassExW(&wc);
-    HWND hwnd = ::CreateWindowW(
-        wc.lpszClassName, L"Dear ImGui DirectX11 Example", WS_OVERLAPPEDWINDOW,
-        0, 0,
-        (int)(width * main_scale), (int)(height * main_scale),
-        nullptr, nullptr, wc.hInstance, nullptr
-    );
-
-    // Initialize Direct3D
-    if (!CreateDeviceD3D(hwnd))
-    {
-        CleanupDeviceD3D();
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-        return 1;
-    }
-
-    // Show the window
-    ::ShowWindow(hwnd, SW_SHOWDEFAULT);
-    ::UpdateWindow(hwnd);
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
-
-    // Setup scaling
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.ScaleAllSizes(main_scale);        // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
-    // style.FontScaleDpi = main_scale;        // Set initial font scale. (using io.ConfigDpiScaleFonts=true makes this unnecessary. We leave both here for documentation purpose)
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplWin32_Init(hwnd);
-    ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
-
-    DrawFunc draw_func{true};
-
+static void InitDrawFunc(DrawFunc& draw_func) {
     draw_func.save_files.push_back("Shark");
     draw_func.save_files.push_back("Solitaire");
 
@@ -124,8 +61,65 @@ int main(int, char**)
         std::cout << s << '\n';
         free(s);
     };
+}
 
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+static unsigned long GUIThreadMain(void *) {
+    DrawFunc *draw_func = NULL;
+
+    Backend_Load([&draw_func](){
+        if (!draw_func) {
+            draw_func = new DrawFunc{true};
+            InitDrawFunc(*draw_func);
+        }
+        (*draw_func)();
+    });
+    
+    while (1) {
+        Sleep(100);
+    }
+}
+
+static void InjectDrawFunc() {
+    CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)GUIThreadMain, NULL, 0, NULL);
+}
+
+// Main code
+int main(int, char**)
+{
+    RECT work_area;
+    ZeroMemory(&work_area, sizeof(work_area));
+
+    if (!SystemParametersInfoA(SPI_GETWORKAREA, 0, &work_area, 0)) {
+        std::cout << "SystemParametersInfoA failed\n";
+        return 1;
+    }
+
+    LONG width = work_area.right;
+    LONG height = work_area.bottom;
+
+    // Create application window
+    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
+    ::RegisterClassExW(&wc);
+    HWND hwnd = ::CreateWindowW(
+        wc.lpszClassName, L"Dear ImGui DirectX11 Example", WS_OVERLAPPEDWINDOW,
+        0, 0,
+        width, height,
+        nullptr, nullptr, wc.hInstance, nullptr
+    );
+
+    // Initialize Direct3D
+    if (!CreateDeviceD3D(hwnd))
+    {
+        CleanupDeviceD3D();
+        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+        return 1;
+    }
+
+    // Show the window
+    ::ShowWindow(hwnd, SW_SHOWDEFAULT);
+    ::UpdateWindow(hwnd);
+
+    InjectDrawFunc();
 
     // Main loop
     bool done = false;
@@ -161,27 +155,15 @@ int main(int, char**)
             CreateRenderTarget();
         }
 
-        // Start the Dear ImGui frame
-        ImGui_ImplDX11_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-
-        draw_func();
-
-        const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
+        const float clear_color_with_alpha[4] = { 0.45f, 0.55f, 0.60f, 1.00f };
         g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
         g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
-        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
         // Present
         HRESULT hr = g_pSwapChain->Present(1, 0);   // Present with vsync
         //HRESULT hr = g_pSwapChain->Present(0, 0); // Present without vsync
         g_SwapChainOccluded = (hr == DXGI_STATUS_OCCLUDED);
     }
-
-    // Cleanup
-    ImGui_ImplDX11_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
 
     CleanupDeviceD3D();
     ::DestroyWindow(hwnd);
@@ -247,9 +229,6 @@ void CleanupRenderTarget()
     if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
 }
 
-// Forward declare message handler from imgui_impl_win32.cpp
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 // Win32 message handler
 // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
 // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
@@ -257,12 +236,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    
-    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-        return true;
-    
-    
-
     switch (msg)
     {
     case WM_SIZE:
