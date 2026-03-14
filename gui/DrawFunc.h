@@ -3,6 +3,7 @@
 
 #include "GachaRatesWindow.h"
 #include "CustomColorWindow.h"
+#include "SavesWindow.h"
 
 #include <jansson.h>
 
@@ -22,6 +23,7 @@ class DrawFunc {
 
     GachaRatesWindow gachaRatesWindow;
     CustomColorWindow customColorWindow;
+    SavesWindow savesWindow;
 
     float* pos;
     float* rotation;
@@ -29,16 +31,9 @@ class DrawFunc {
     bool* customFovFlag;
     bool* pausePositionPtr;
 
-    char *saves_dir;
-
     int zone_area_id;
 
-    std::vector<std::string> save_files;
-
     std::function<void(int)> on_move_to_zone_area;
-    std::function<char*(char*)> createSaveFile;
-    std::function<char*(const char*)> loadSaveFile;
-    std::function<void(const std::string&)> deleteSaveFile;
     std::function<void()> runCommand;
 
     DrawFunc(bool active);

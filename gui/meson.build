@@ -7,6 +7,7 @@ gui_src = files(
     'UserInterface.cpp',
     'GachaRatesWindow.cpp',
     'CustomColorWindow.cpp',
+    'SavesWindow.cpp',
 )
 
 imguitest_src = [
@@ -17,6 +18,7 @@ imguitest_src = [
     'CustomColorWindow.cpp',
     '../HairColorHelper.cpp',
     'Backend.cpp',
+    'SavesWindow.cpp',
 ]
 
 

@@ -24,8 +24,8 @@ void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 static void InitDrawFunc(DrawFunc& draw_func) {
-    draw_func.save_files.push_back("Shark");
-    draw_func.save_files.push_back("Solitaire");
+    draw_func.savesWindow.save_files.push_back("Shark");
+    draw_func.savesWindow.save_files.push_back("Solitaire");
 
     draw_func.runCommand = [](){
         std::cout << "Hello World!!\n";
@@ -36,17 +36,17 @@ static void InitDrawFunc(DrawFunc& draw_func) {
         std::cout << "onEndHairColorChange called!!!\n";
     };
 
-    draw_func.createSaveFile = [](char *name) {
+    draw_func.savesWindow.createSaveFile = [](char *name) {
         std::cout << "Created (/s) save file with name: " << name << "\n";
         return nullptr;
     };
 
-    draw_func.loadSaveFile = [](const char *name) {
+    draw_func.savesWindow.loadSaveFile = [](const char *name) {
         std::cout << "Loaded (/s) save file with name: " << name << "\n";
         return nullptr;
     };
 
-    draw_func.deleteSaveFile = [](const std::string &name) {
+    draw_func.savesWindow.deleteSaveFile = [](const std::string &name) {
         std::cout << "Deleted save file with name: " << name << "\n";
     };
 

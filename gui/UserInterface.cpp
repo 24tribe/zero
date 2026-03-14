@@ -124,12 +124,12 @@ int onLoadHairColors(void *userdata) {
 }
 
 void InitDrawFunc(DrawFunc& draw_func) {
-    draw_func.saves_dir = ZERO_CONFIG.savesDir;
+    draw_func.savesWindow.saves_dir = ZERO_CONFIG.savesDir;
 
     std::string what;
 
     try {
-        if (GetSaveFiles(ZERO_CONFIG.savesDir, draw_func.save_files) != SH_OK) {
+        if (GetSaveFiles(ZERO_CONFIG.savesDir, draw_func.savesWindow.save_files) != SH_OK) {
             draw_func.result = "Failed to load save files names";
         }
     } catch (const std::exception& e) {
@@ -141,7 +141,7 @@ void InitDrawFunc(DrawFunc& draw_func) {
 
     static std::string saveFileErr;
 
-    draw_func.createSaveFile = [](char *name) {
+    draw_func.savesWindow.createSaveFile = [](char *name) {
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
         char *res = SembaCall("/semba/create_save_file", req.c_str());
         if (res) {
@@ -151,7 +151,7 @@ void InitDrawFunc(DrawFunc& draw_func) {
         return res;
     };
 
-    draw_func.loadSaveFile = [](const char *name) {
+    draw_func.savesWindow.loadSaveFile = [](const char *name) {
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
         char *res = SembaCall("/semba/load_save_file", req.c_str());
         if (res) {
@@ -161,7 +161,7 @@ void InitDrawFunc(DrawFunc& draw_func) {
         return res;
     };
 
-    draw_func.deleteSaveFile = [](const std::string& name) {
+    draw_func.savesWindow.deleteSaveFile = [](const std::string& name) {
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name.c_str());
         SembaCall("/semba/delete_save_file", req.c_str());
     };
