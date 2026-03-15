@@ -19,6 +19,7 @@ class DrawFunc {
     bool showGachaRates;
     bool gamePtrsReady;
     bool showCustomColorWindow;
+    bool skipTutorial;
     const char* result;
 
     GachaRatesWindow gachaRatesWindow;
@@ -34,6 +35,8 @@ class DrawFunc {
     int zone_area_id;
 
     std::function<void(int)> on_move_to_zone_area;
+    std::function<void(bool)> onChangeSkipTutorial;
+    std::function<void(const char **)> onStartNewGame;
     std::function<void()> runCommand;
 
     DrawFunc(bool active);

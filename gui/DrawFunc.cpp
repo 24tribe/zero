@@ -8,6 +8,7 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   showGachaRates(false),
                                   gamePtrsReady(false),
                                   showCustomColorWindow(false),
+                                  skipTutorial(true),
                                   result("..."),
                                   gachaRatesWindow(),
                                   customColorWindow(),
@@ -19,7 +20,9 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   pausePositionPtr(nullptr),
                                   zone_area_id(130801),
                                   on_move_to_zone_area(),
-                                  runCommand() {
+                                  onChangeSkipTutorial(),
+                                  onStartNewGame(),
+                                  runCommand() {    
 }
 
 void DrawFunc::operator()(void) {
@@ -67,6 +70,17 @@ void DrawFunc::operator()(void) {
             ImGui::InputInt("zone_area_id", &zone_area_id);
             if (ImGui::Button("Move to zoneArea") && on_move_to_zone_area) {
                 on_move_to_zone_area(zone_area_id);
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::Checkbox("Skip tutorial for new games", &skipTutorial) && onChangeSkipTutorial) {
+                onChangeSkipTutorial(skipTutorial);
+            }
+
+            // FIXME: add a confirmation dialog
+            if (ImGui::Button("Start a new game") && onStartNewGame) {
+                onStartNewGame(&result);
             }
 
             ImGui::Separator();
