@@ -5,7 +5,7 @@
 #include "md5sum.h"
 #include "sds_utf_conv.h"
 #include "dump_ga/GameAssemblyDump.h"
-#include "version.h"
+#include "runtime_version.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -34,6 +34,15 @@ char *GetMd5Sum(sds path) {
     return NULL;
 }
 
+void CheckVersion(const char *hex) {
+    enum SembaGameVersion version = RuntimeVersionGet(hex);
+    if (version == GAME_VERSION_UNKNOWN) {
+        printf("WARNING: unknown version, the offline mode won't work!");
+    } else {
+        printf("GameVersion enum: %d\n", (int)version);
+    }
+}
+
 void GameAssemblyCallback(HMODULE GameAssembly) {
     char path[MAX_PATH];
 
@@ -45,11 +54,12 @@ void GameAssemblyCallback(HMODULE GameAssembly) {
     // FIXME: should use GetModuleFileNameW
     if (GetModuleFileNameA(GameAssembly, path, MAX_PATH) < MAX_PATH) {
         hex = GetMd5Sum(path);
-        InitGameVersion(hex);
+        if (hex) {
+            CheckVersion(hex);
+        }
     }
 
     printf("GameAssembly hex: %s\n", hex);
-    printf("GameVersion enum: %d\n", (int)GetGameVersion());
 
     if (alreadyCalledGameAssemblyCallback) {
         return;

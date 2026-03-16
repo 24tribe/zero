@@ -6,6 +6,9 @@
 #include "ModHelper.h"
 #include "semba.h"
 #include "NimInit.h"
+#include "SembaContext.h"
+#include "game_version.h"
+#include "semba_enum.h"
 
 #include <MinHook.h>
 
@@ -30,8 +33,14 @@ void MyMain(HMODULE hModule) {
 
     RunNimMainOnce();
 
-    if (ZERO_CONFIG.sembaDbPath) {
-        SembaInitOfflineDb(ZERO_CONFIG.sembaDbPath);
+    if (ZERO_CONFIG.sembaDbPath && !ZERO_CONFIG.sembaStandaloneUrl) {
+        int32_t status;
+        struct SembaExContext *ctx = SembaExInit(ZERO_CONFIG.sembaDbPath, GAME_VERSION, &status);
+        if (status != SEMBA_STATUS_OK) {
+            printf("SembaExInit failed!!!\n");
+        } else {
+            SembaContextSet(ctx);
+        }
     }
 
     // HookNtQueryDirectoryFile();

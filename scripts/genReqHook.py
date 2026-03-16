@@ -255,7 +255,15 @@ def appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, pat
     const char *path = "{path}";
     sds jsonReq = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
 
-    SembaCall(path, jsonReq);
+    int32_t status;
+    
+    char *res = SembaExCall(SembaContextGet(), path, jsonReq, &status);
+
+    if (status == SEMBA_STATUS_EXCEPTION) {{
+        printf("%s: %s\\n", path, res);
+    }}
+
+    SembaExFreeResponse(res);
 
     sdsfree(jsonReq);
 
@@ -279,7 +287,14 @@ def appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, 
 
     const char *path = "{path}";
 
-    SembaCall(path, "");
+    int32_t status;
+    char *res = SembaExCall(SembaContextGet(), path, "", &status);
+
+    if (status == SEMBA_STATUS_EXCEPTION) {{
+        printf("%s: %s\\n", path, res);
+    }}
+
+    SembaExFreeResponse(res);
 
     return (Cysharp_Threading_Tasks_UniTask_o){{
         .fields = {{.source = NULL, .token = 0}}

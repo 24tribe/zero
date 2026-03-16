@@ -71,12 +71,13 @@ zero_src = [
     'Patterns.c',
     'dump_ga/GameAssemblyDump.c',
     'dump_ga/MetadataDump.c',
-    'version.c',
+    'runtime_version.c',
     'create_file_hook.c',
     'SavesHelper.cpp',
     'TimeUtil.c',
     'ModHelper.cpp',
     'HairColorHelper.cpp',
+    'SembaContext.c',
     gui_src,
 ]
 

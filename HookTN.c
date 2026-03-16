@@ -19,10 +19,11 @@ References:
 #include "NimInit.h"
 #include "Patterns.h"
 #include "semba.h"
-#include "version.h"
+#include "runtime_version.h"
 #include "TimeUtil.h"
 #include "../HairColorHelper.h"
 #include "defer.h"
+#include "SembaContext.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -334,20 +335,22 @@ Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messag
     Il2CppObject *res = NULL;
 
     if (resTypeToReqPtr) {
-        char *resJson;
-
-        if (GetGameVersion() == VERSION_DEMO) {
-            resJson = SembaCallDemo(resTypeToReqPtr->uriPath, reqJson);
-        } else {
-            resJson = SembaCall(resTypeToReqPtr->uriPath, reqJson);
+        int32_t status;
+        char *resJson = SembaExCall(SembaContextGet(), resTypeToReqPtr->uriPath, reqJson, &status);
+        if (status == SEMBA_STATUS_EXCEPTION) {
+            printf("SembaExCall Exception: %s\n", resJson);
+            SembaExFreeResponse(resJson);
+            resJson = NULL;
+        } else if (status != SEMBA_STATUS_OK) {
+            printf("SembaExCall failed!!!\n");
         }
 
         if (resJson) {
             res = CallParseJson(messageParser, resJson);
             if (!res) {
-                printf("WARNING: MessageParser.ParseJson failed to decode SembaCall response\n");
+                printf("WARNING: MessageParser.ParseJson failed to decode SembaExCall response\n");
             }
-            free(resJson);
+            SembaExFreeResponse(resJson);
         }
     }
 
