@@ -30,12 +30,8 @@ void MyMain(HMODULE hModule) {
 
     RunNimMainOnce();
 
-    if (ZERO_CONFIG.remoteUrl) {
-        SembaSetRemoteUrl(ZERO_CONFIG.remoteUrl);
-    } else {
-        if (ZERO_CONFIG.sembaDbPath) {
-            SembaInitOfflineDb(ZERO_CONFIG.sembaDbPath);
-        }
+    if (ZERO_CONFIG.sembaDbPath) {
+        SembaInitOfflineDb(ZERO_CONFIG.sembaDbPath);
     }
 
     // HookNtQueryDirectoryFile();

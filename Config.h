@@ -7,7 +7,6 @@
 struct Config {
     uint16_t *goldbergPath;
     char *sembaDbPath;
-    char *remoteUrl;
     bool dumpGameAssembly;
     char *savesDir;
     char *modsDir;
