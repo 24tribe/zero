@@ -8,8 +8,18 @@
 #include <array>
 #include <utility>
   
+enum SavesWindowState {
+    SAVES_WINDOW_STATE_START,
+    SAVES_WINDOW_STATE_LOADING,
+    SAVES_WINDOW_STATE_INITIALIZED,
+    SAVES_WINDOW_STATE_ERROR,
+};
+
 class SavesWindow {
     public:
+
+    SavesWindowState state;
+    std::function<std::pair<int, std::string>()> onStart;
 
     std::string msg;
     std::future<std::pair<int, std::string>> currentOperation;
@@ -27,6 +37,10 @@ class SavesWindow {
 
     SavesWindow();
     void DrawSaveTable();
+    void HandleStartState();
+    void HandleLoadingState();
+    void HandleErrorState();
+    void HandleInitializedState();
 
     void Show(bool* p_open);
 };

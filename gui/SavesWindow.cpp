@@ -13,6 +13,8 @@ extern "C" {
 #include <chrono>
 
 SavesWindow::SavesWindow() :
+    state(SAVES_WINDOW_STATE_START),
+    onStart(),
     msg(),
     currentOperation(),
     onCurrentOperationSuccess(),
@@ -90,14 +92,37 @@ void SavesWindow::DrawSaveTable() {
     }
 }
 
-void SavesWindow::Show(bool* p_open) {
-    ImGui::SetNextWindowSize(ImVec2(450,360), ImGuiCond_FirstUseEver);
-
-    if (!ImGui::Begin("Saves", p_open)) {
-        ImGui::End();
+void SavesWindow::HandleStartState() {
+    if (onStart) {
+        currentOperation = std::async(std::launch::async, [this]() {
+            return onStart();
+        });
+        state = SAVES_WINDOW_STATE_LOADING;
         return;
     }
 
+    ImGui::Text("Waiting for onStart to be set...");
+}
+
+void SavesWindow::HandleLoadingState() {
+    if (auto status = currentOperation.wait_for(std::chrono::milliseconds(0)); status == std::future_status::ready) {
+        auto result = currentOperation.get();
+        if (!result.first) {
+            state = SAVES_WINDOW_STATE_INITIALIZED;
+        } else {
+            state = SAVES_WINDOW_STATE_ERROR;
+            msg = result.second;
+        }
+    }
+
+    ImGui::Text("Loading SavesWindow...");
+}
+
+void SavesWindow::HandleErrorState() {
+    ImGui::Text("Error: %s", msg.c_str());
+}
+
+void SavesWindow::HandleInitializedState() {
     if (currentOperation.valid()) {
         if (auto status = currentOperation.wait_for(std::chrono::milliseconds(0)); status == std::future_status::ready) {
             auto res = currentOperation.get();
@@ -142,6 +167,30 @@ void SavesWindow::Show(bool* p_open) {
     ImGui::EndChild();
 
     ImGui::EndDisabled();
+}
+
+void SavesWindow::Show(bool* p_open) {
+    ImGui::SetNextWindowSize(ImVec2(450,360), ImGuiCond_FirstUseEver);
+
+    if (!ImGui::Begin("Saves", p_open)) {
+        ImGui::End();
+        return;
+    }
+
+    switch (state) {
+    case SAVES_WINDOW_STATE_START:
+        HandleStartState();
+        break;
+    case SAVES_WINDOW_STATE_LOADING:
+        HandleLoadingState();
+        break;
+    case SAVES_WINDOW_STATE_INITIALIZED:
+        HandleInitializedState();
+        break;
+    case SAVES_WINDOW_STATE_ERROR:
+        HandleErrorState();
+        break;
+    }
 
     ImGui::End();
 }

@@ -9,7 +9,6 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   gamePtrsReady(false),
                                   showCustomColorWindow(false),
                                   skipTutorial(true),
-                                  result("..."),
                                   gachaRatesWindow(),
                                   customColorWindow(),
                                   savesWindow(),
@@ -19,10 +18,12 @@ DrawFunc::DrawFunc(bool active) : active(active),
                                   customFovFlag(nullptr),
                                   pausePositionPtr(nullptr),
                                   zone_area_id(130801),
-                                  on_move_to_zone_area(),
+                                  onMoveToZoneArea(),
                                   onChangeSkipTutorial(),
                                   onStartNewGame(),
-                                  runCommand() {    
+                                  runCommand(),
+                                  result("...")
+{
 }
 
 void DrawFunc::operator()(void) {
@@ -68,8 +69,9 @@ void DrawFunc::operator()(void) {
             ImGui::Separator();
 
             ImGui::InputInt("zone_area_id", &zone_area_id);
-            if (ImGui::Button("Move to zoneArea") && on_move_to_zone_area) {
-                on_move_to_zone_area(zone_area_id);
+            if (ImGui::Button("Move to zoneArea") && onMoveToZoneArea) {
+                // FIXME: in another thread
+                onMoveToZoneArea(zone_area_id);
             }
 
             ImGui::Separator();

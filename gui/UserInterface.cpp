@@ -137,16 +137,17 @@ int onLoadHairColors(void *userdata) {
 void InitDrawFunc(DrawFunc& draw_func) {
     draw_func.savesWindow.saves_dir = ZERO_CONFIG.savesDir;
 
-    std::string what;
-
-    try {
-        if (GetSaveFiles(ZERO_CONFIG.savesDir, draw_func.savesWindow.save_files) != SH_OK) {
-            draw_func.result = "Failed to load save files names";
+    draw_func.savesWindow.onStart = [&draw_func]() {
+        try {
+            if (GetSaveFiles(ZERO_CONFIG.savesDir, draw_func.savesWindow.save_files) != SH_OK) {
+                return std::make_pair(-1, std::string("Failed to load save files names"));
+            }
+        } catch (const std::exception& e) {
+            return std::make_pair(-1, std::string(e.what()));
         }
-    } catch (const std::exception& e) {
-        what = e.what();
-        draw_func.result = what.c_str();
-    }
+
+        return std::make_pair(0, std::string());
+    };
 
     draw_func.pausePositionPtr = getPausePositionPtr();
 
@@ -212,7 +213,7 @@ void InitDrawFunc(DrawFunc& draw_func) {
         return result;
     };
 
-    draw_func.on_move_to_zone_area = [&draw_func](int zone_area_id) {
+    draw_func.onMoveToZoneArea = [&draw_func](int zone_area_id) {
         const char *currentLocation = "{\"areaType\": 1, \"direction\": 5, \"positionCoordinates\": {\"x\": -6, \"y\": 53.59764, \"z\": -15.75}, \"areaKeyId\": 300402}";
 
         std::stringstream ss;
@@ -221,11 +222,17 @@ void InitDrawFunc(DrawFunc& draw_func) {
         ss << "\"currentLocation\": " << currentLocation << ", ";
         ss << "}";
 
-        // FIXME: free this???
-        draw_func.result = SembaExCall(SembaContextGet(), "/adventure/move_to_area", ss.str().c_str(), NULL);
+        int32_t status;
+        char *res = SembaExCall(SembaContextGet(), "/adventure/move_to_area", ss.str().c_str(), &status);
 
-        if (!draw_func.result) {
-            draw_func.result = "Failed to move to area";
+        std::string result;
+        if (res) { result = res; };
+        SembaExFreeResponse(res);
+
+        if (status == SEMBA_STATUS_OK) {
+            return std::make_pair(0, result);
+        } else {
+            return std::make_pair(-1, std::string("Failed to move to area"));
         }
     };
 

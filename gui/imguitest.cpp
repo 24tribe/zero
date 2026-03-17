@@ -24,8 +24,14 @@ void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 static void InitDrawFunc(DrawFunc& draw_func) {
-    draw_func.savesWindow.save_files.push_back("Shark");
-    draw_func.savesWindow.save_files.push_back("Solitaire");
+    auto& savesWindow = draw_func.savesWindow;
+    
+    draw_func.savesWindow.onStart = [&savesWindow]() {
+        auto& save_files = savesWindow.save_files;
+        save_files.push_back("Shark");
+        save_files.push_back("Solitaire");
+        return std::make_pair(0, std::string());
+    };
 
     draw_func.runCommand = [](){
         std::cout << "Hello World!!\n";
