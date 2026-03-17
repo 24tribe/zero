@@ -1,13 +1,14 @@
 #include "TimeUtil.h"
 
-ULONGLONG GetFileTimeDiff(FILETIME tim1, FILETIME tim2) {
-    ULARGE_INTEGER res = {
-        .LowPart = tim1.dwLowDateTime - tim2.dwLowDateTime,
-        .HighPart = tim1.dwHighDateTime - tim2.dwHighDateTime
-    };
-    return res.QuadPart;
-}
+#include "windows.h"
+#include "sysinfoapi.h"
 
-ULONGLONG TimeDiffToMs(ULONGLONG timeDiff) {
-    return timeDiff / 10000ull;
+uint64_t TimeUtil_GetTimeInMs(void) {
+    FILETIME fileTime;
+    GetSystemTimeAsFileTime(&fileTime);
+    ULARGE_INTEGER result = {
+        .LowPart = fileTime.dwLowDateTime,
+        .HighPart = fileTime.dwHighDateTime
+    };
+    return (uint64_t)(result.QuadPart / 10000ULL);
 }

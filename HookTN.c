@@ -812,11 +812,8 @@ void HookTN(void *GameAssembly) {
 #endif
 
     printf("Applying autohooks...\n");
-    FILETIME start;
-    GetSystemTimeAsFileTime(&start);
+    uint64_t start = TimeUtil_GetTimeInMs();
     AutoHookTN();
-    FILETIME end;
-    GetSystemTimeAsFileTime(&end);
-    ULONGLONG diff = GetFileTimeDiff(end, start);
-    printf("Autohooking done in %llu ms!\n", TimeDiffToMs(diff));
+    uint64_t end = TimeUtil_GetTimeInMs();
+    printf("Autohooking done in %" PRIu64 " ms!\n", end - start);
 }

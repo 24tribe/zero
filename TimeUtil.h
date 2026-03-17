@@ -1,10 +1,8 @@
 #ifndef TIME_UTIL_H_13_12_2025_07_02_PM
 #define TIME_UTIL_H_13_12_2025_07_02_PM
 
-#include "windows.h"
-#include "sysinfoapi.h"
+#include <stdint.h>
 
-ULONGLONG GetFileTimeDiff(FILETIME tim1, FILETIME tim2);
-ULONGLONG TimeDiffToMs(ULONGLONG timeDiff);
+uint64_t TimeUtil_GetTimeInMs(void);
 
 #endif
