@@ -152,47 +152,64 @@ void InitDrawFunc(DrawFunc& draw_func) {
 
     static std::string saveFileErr;
 
-    draw_func.savesWindow.createSaveFile = [](char *name) {
+    draw_func.savesWindow.createSaveFile = [](const char *name) {
+        auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
         int32_t status;
         char *res = SembaExCall(SembaContextGet(), "/semba/create_save_file", req.c_str(), &status);
+
         if (status == SEMBA_STATUS_OK) {
-            saveFileErr = unpackSaveResError(res);
-            SembaExFreeResponse(res);
-            res = (saveFileErr != "" ? (char *)saveFileErr.c_str() : NULL);
+            result.second = unpackSaveResError(res);
+            result.first = (result.second == "" ? 0 : -1);
         } else if (status == SEMBA_STATUS_EXCEPTION) {
-            printf("createSaveFile: %s\n", res);
-            SembaExFreeResponse(res);
-            res = NULL;
+            result.first = -1;
+            result.second = res;
+        } else {
+            result.first = -1;
+            result.second = "SembaExCall failed";
         }
 
-        return res;
+        SembaExFreeResponse(res);
+
+        return result;
     };
 
     draw_func.savesWindow.loadSaveFile = [](const char *name) {
+        auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
         int32_t status;
         char *res = SembaExCall(SembaContextGet(), "/semba/load_save_file", req.c_str(), &status);
         if (status == SEMBA_STATUS_OK) {
-            saveFileErr = unpackSaveResError(res);
-            SembaExFreeResponse(res);
-            res = (saveFileErr != "" ? (char *)saveFileErr.c_str() : NULL);
+            result.second = unpackSaveResError(res);
+            result.first = (result.second == "" ? 0 : -1);
         } else if (status == SEMBA_STATUS_EXCEPTION) {
-            printf("loadSaveFile: %s\n", res);
-            SembaExFreeResponse(res);
-            res = NULL;
-        }
-        return res;
-    };
-
-    draw_func.savesWindow.deleteSaveFile = [](const std::string& name) {
-        std::string req = createSaveReq(ZERO_CONFIG.savesDir, name.c_str());
-        int32_t status;
-        char *res = SembaExCall(SembaContextGet(), "/semba/delete_save_file", req.c_str(), &status);
-        if (status == SEMBA_STATUS_EXCEPTION) {
-            printf("deleteSaveFile: %s\n", res);
+            result.first = -1;
+            result.second = res;
+        } else {
+            result.first = -1;
+            result.second = "SembaExCall failed";
         }
         SembaExFreeResponse(res);
+        return result;
+    };
+
+    draw_func.savesWindow.deleteSaveFile = [](const char* name) {
+        auto result = std::make_pair(0, std::string());
+        std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
+        int32_t status;
+        char *res = SembaExCall(SembaContextGet(), "/semba/delete_save_file", req.c_str(), &status);
+        if (status == SEMBA_STATUS_OK) {
+            result.second = "";
+            result.first = 0;
+        } else if (status == SEMBA_STATUS_EXCEPTION) {
+            result.first = -1;
+            result.second = res;
+        } else {
+            result.first = -1;
+            result.second = "SembaExCall failed";
+        }
+        SembaExFreeResponse(res);
+        return result;
     };
 
     draw_func.on_move_to_zone_area = [&draw_func](int zone_area_id) {

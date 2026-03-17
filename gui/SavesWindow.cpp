@@ -10,35 +10,19 @@ extern "C" {
 
 #include <algorithm>
 #include <sstream>
+#include <chrono>
 
 SavesWindow::SavesWindow() :
-    line_buffer{0},
-    err(""),
+    msg(),
+    currentOperation(),
+    onCurrentOperationSuccess(),
+    inputFilename{{0}},
     saves_dir(nullptr),
     save_files(),
     createSaveFile(),
     loadSaveFile(),
     deleteSaveFile()
 {
-}
-
-struct ThreadData {
-    std::function<char *(const char *)> loadSaveFile;
-    const char *name;
-    bool completed;
-    char *res;
-    bool started;
-    uint64_t start;
-    uint64_t end;
-};
-
-int CallLoadSaveFile(void *userData) {
-    ThreadData& data = *reinterpret_cast<ThreadData*>(userData);
-    data.started = true;
-    data.res = data.loadSaveFile(data.name);
-    data.completed = true;
-    data.end = TimeUtil_GetTimeInMs();
-    return 0;
 }
 
 void SavesWindow::DrawSaveTable() {
@@ -52,27 +36,6 @@ void SavesWindow::DrawSaveTable() {
         | ImGuiTableFlags_BordersInnerH
         | ImGuiTableFlags_NoBordersInBody
     );
-
-    static ThreadData thread_data = {0, NULL, false, NULL, false, 0, 0};
-    static std::string msg;
-
-    if (thread_data.completed) {
-        thread_data.started = false;
-        thread_data.completed = false;
-        if (thread_data.res) {
-            err = thread_data.res;
-        } else {
-            std::stringstream ss;
-            uint64_t diff = thread_data.end - thread_data.start;
-            ss << "Save file loaded in " << diff << " ms";
-            msg = ss.str();
-            err = msg.c_str();
-        }
-    }
-
-    if (thread_data.started) {
-        err = "Loading game...";
-    }
 
     if (ImGui::BeginTable("saves_table", 2, flags)) {
         ImGuiListClipper clipper;
@@ -90,31 +53,39 @@ void SavesWindow::DrawSaveTable() {
 
                 ImGui::TableSetColumnIndex(1);
 
-                if (ImGui::Button("Load Game") && loadSaveFile && !thread_data.started) {
-                    thread_data.started = true;
-                    thread_data.name = save_file.c_str();
-                    thread_data.loadSaveFile = loadSaveFile;
-                    thread_data.start = TimeUtil_GetTimeInMs();
-                    if (!CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CallLoadSaveFile, &thread_data, 0, NULL)) {
-                        thread_data.started = false;
-                        err = "Failed to create thread";
-                    }
+                if (ImGui::Button("Load Game") && loadSaveFile) {
+                    msg = "Loading game...";
+                    currentOperation = std::async(std::launch::async, [this, save_file](){
+                        uint64_t startTime = TimeUtil_GetTimeInMs();
+                        auto res = loadSaveFile(save_file.c_str());
+                        uint64_t endTime = TimeUtil_GetTimeInMs();
+                        if (res.first < 0) {
+                            return res;
+                        }
+                        std::stringstream ss;
+                        ss << "Save file loaded in " << endTime - startTime << " ms";
+                        res.second = ss.str();
+                        return res;
+                    });
                 }
 
                 ImGui::SameLine();
 
                 // FIXME: should ask for confirmation
                 if (ImGui::Button("Delete Game") && deleteSaveFile) {
-                    deleteSaveFile(save_file);
-                    save_files.erase(save_files.begin() + row_n);
-                    ImGui::PopID();
-                    goto endloop;
+                    msg = "Deleting save...";
+                    currentOperation = std::async(std::launch::async, [this, save_file](){
+                        return deleteSaveFile(save_file.c_str());
+                    });
+                    onCurrentOperationSuccess = [this, row_n]() {
+                        save_files.erase(save_files.begin() + row_n);
+                    };
                 }
 
                 ImGui::PopID();
             }
         }
-        endloop:
+
         ImGui::EndTable();
     }
 }
@@ -127,25 +98,40 @@ void SavesWindow::Show(bool* p_open) {
         return;
     }
 
-    ImGui::Text("Saves Directory Path: %s", saves_dir ? saves_dir : "(null)");
-
-    ImGui::InputText("File Name", line_buffer, LINE_BUFFER_SIZE);
-    if (ImGui::Button("Save Game") && createSaveFile && line_buffer[0] != '\0') {
-        std::string name{line_buffer};
-
-        if (std::find(save_files.begin(), save_files.end(), name) != save_files.end()) {
-            err = "error: can't overwrite save file yet";
-        } else {
-            err = createSaveFile(line_buffer);
-            if (!err) {
-                save_files.push_back(line_buffer);
-                err = "";
+    if (currentOperation.valid()) {
+        if (auto status = currentOperation.wait_for(std::chrono::milliseconds(0)); status == std::future_status::ready) {
+            auto res = currentOperation.get();
+            msg = res.second;
+            if (!res.first && onCurrentOperationSuccess) {
+                onCurrentOperationSuccess();
+                onCurrentOperationSuccess = std::function<void()>();
             }
         }
     }
 
+    ImGui::Text("Saves Directory Path: %s", saves_dir ? saves_dir : "(null)");
+
+    ImGui::BeginDisabled(currentOperation.valid());
+
+    ImGui::InputText("File Name", &(inputFilename[0]), inputFilename.size());
+    if (ImGui::Button("Save Game") && createSaveFile && inputFilename[0] != '\0') {
+        const char *name = &(inputFilename[0]);
+
+        if (std::find(save_files.begin(), save_files.end(), name) != save_files.end()) {
+            msg = "error: can't overwrite save files yet";
+        } else {
+            msg = "Saving game...";
+            currentOperation = std::async(std::launch::async, [this, name]() {
+                return createSaveFile(name);
+            });
+            onCurrentOperationSuccess = [this, name]() {
+                save_files.push_back(name);
+            };
+        }
+    }
+
     ImGui::SameLine();
-    ImGui::Text("%s", err);
+    ImGui::Text("%s", msg.c_str());
 
     if (ImGui::BeginChild("saves_child",
         ImVec2(-FLT_MIN, ImGui::GetFontSize() * 20),
@@ -154,6 +140,8 @@ void SavesWindow::Show(bool* p_open) {
         DrawSaveTable();
     }
     ImGui::EndChild();
+
+    ImGui::EndDisabled();
 
     ImGui::End();
 }

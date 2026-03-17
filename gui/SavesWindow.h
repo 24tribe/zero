@@ -4,22 +4,26 @@
 #include <vector>
 #include <string>
 #include <functional>
-
-#define LINE_BUFFER_SIZE 1024
-    
+#include <future>
+#include <array>
+#include <utility>
+  
 class SavesWindow {
     public:
 
-    char line_buffer[LINE_BUFFER_SIZE];
-    const char *err;
-    
+    std::string msg;
+    std::future<std::pair<int, std::string>> currentOperation;
+    std::function<void()> onCurrentOperationSuccess;
+
+    std::array<char, 1024> inputFilename;
+
     char *saves_dir;
 
     std::vector<std::string> save_files;
 
-    std::function<char*(char*)> createSaveFile;
-    std::function<char*(const char*)> loadSaveFile;
-    std::function<void(const std::string&)> deleteSaveFile;
+    std::function<std::pair<int, std::string>(const char*)> createSaveFile;
+    std::function<std::pair<int, std::string>(const char*)> loadSaveFile;
+    std::function<std::pair<int, std::string>(const char*)> deleteSaveFile;
 
     SavesWindow();
     void DrawSaveTable();

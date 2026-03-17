@@ -36,18 +36,25 @@ static void InitDrawFunc(DrawFunc& draw_func) {
         std::cout << "onEndHairColorChange called!!!\n";
     };
 
-    draw_func.savesWindow.createSaveFile = [](char *name) {
+    draw_func.savesWindow.createSaveFile = [](const char *name) {
+        std::cout << "Sleeping 3 seconds to simulate work...\n";
+        Sleep(3000);
         std::cout << "Created (/s) save file with name: " << name << "\n";
-        return nullptr;
+        return std::make_pair(0, std::string());
     };
 
     draw_func.savesWindow.loadSaveFile = [](const char *name) {
+        std::cout << "Waiting 3 seconds to simulate work...\n";
+        Sleep(3000);
         std::cout << "Loaded (/s) save file with name: " << name << "\n";
-        return nullptr;
+        return std::make_pair(0, std::string());
     };
 
-    draw_func.savesWindow.deleteSaveFile = [](const std::string &name) {
+    draw_func.savesWindow.deleteSaveFile = [](const char *name) {
+        std::cout << "Waiting 3 seconds to simulate work...\n";
+        Sleep(3000);
         std::cout << "Deleted save file with name: " << name << "\n";
+        return std::make_pair(1, std::string("Error deleting save file!!"));
     };
 
     draw_func.gachaRatesWindow.getGachaRates = []() {
