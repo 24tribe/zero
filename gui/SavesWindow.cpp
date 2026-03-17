@@ -12,6 +12,8 @@ extern "C" {
 #include <sstream>
 
 SavesWindow::SavesWindow() :
+    line_buffer{0},
+    err(""),
     saves_dir(nullptr),
     save_files(),
     createSaveFile(),
@@ -39,12 +41,7 @@ int CallLoadSaveFile(void *userData) {
     return 0;
 }
 
-void DrawSaveTable(
-    std::vector<std::string>& save_files,
-    std::function<char *(const char *)> loadSaveFile,
-    std::function<void (const std::string&)> deleteSaveFile,
-    const char **err
-) {
+void SavesWindow::DrawSaveTable() {
     ImGuiTableFlags flags = (
         ImGuiTableFlags_RowBg
         | ImGuiTableFlags_BordersV
@@ -63,18 +60,18 @@ void DrawSaveTable(
         thread_data.started = false;
         thread_data.completed = false;
         if (thread_data.res) {
-            *err = thread_data.res;
+            err = thread_data.res;
         } else {
             std::stringstream ss;
             uint64_t diff = thread_data.end - thread_data.start;
             ss << "Save file loaded in " << diff << " ms";
             msg = ss.str();
-            *err = msg.c_str();
+            err = msg.c_str();
         }
     }
 
     if (thread_data.started) {
-        *err = "Loading game...";
+        err = "Loading game...";
     }
 
     if (ImGui::BeginTable("saves_table", 2, flags)) {
@@ -100,7 +97,7 @@ void DrawSaveTable(
                     thread_data.start = TimeUtil_GetTimeInMs();
                     if (!CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CallLoadSaveFile, &thread_data, 0, NULL)) {
                         thread_data.started = false;
-                        *err = "Failed to create thread";
+                        err = "Failed to create thread";
                     }
                 }
 
@@ -132,10 +129,6 @@ void SavesWindow::Show(bool* p_open) {
 
     ImGui::Text("Saves Directory Path: %s", saves_dir ? saves_dir : "(null)");
 
-#define LINE_BUFFER_SIZE 1024
-    static char line_buffer[LINE_BUFFER_SIZE] = {0};
-    static const char *err = "";
-
     ImGui::InputText("File Name", line_buffer, LINE_BUFFER_SIZE);
     if (ImGui::Button("Save Game") && createSaveFile && line_buffer[0] != '\0') {
         std::string name{line_buffer};
@@ -158,7 +151,7 @@ void SavesWindow::Show(bool* p_open) {
         ImVec2(-FLT_MIN, ImGui::GetFontSize() * 20),
         ImGuiChildFlags_ResizeY)
     ) {
-        DrawSaveTable(save_files, loadSaveFile, deleteSaveFile, &err);
+        DrawSaveTable();
     }
     ImGui::EndChild();
 

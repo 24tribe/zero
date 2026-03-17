@@ -5,9 +5,14 @@
 #include <string>
 #include <functional>
 
+#define LINE_BUFFER_SIZE 1024
+    
 class SavesWindow {
     public:
 
+    char line_buffer[LINE_BUFFER_SIZE];
+    const char *err;
+    
     char *saves_dir;
 
     std::vector<std::string> save_files;
@@ -17,6 +22,7 @@ class SavesWindow {
     std::function<void(const std::string&)> deleteSaveFile;
 
     SavesWindow();
+    void DrawSaveTable();
 
     void Show(bool* p_open);
 };
