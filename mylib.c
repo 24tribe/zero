@@ -37,7 +37,7 @@ void MyMain(HMODULE hModule) {
         int32_t status;
         struct SembaExContext *ctx = SembaExInit(ZERO_CONFIG.sembaDbPath, GAME_VERSION, &status);
         if (status != SEMBA_STATUS_OK) {
-            printf("SembaExInit failed!!!\n");
+            printf("SembaExInit failed: status %d\n!!!\n", (int)status);
         } else {
             SembaContextSet(ctx);
         }
