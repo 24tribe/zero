@@ -41,7 +41,7 @@ jobs:
         options: --destdir=tnz-${{ github.ref_name }}-x64
 
     - name: Compress files
-      run: cd build && 7z a tnz-${{ github.ref_name }}-x64.zip tnz-${{ github.ref_name }}-x64
+      run: cd build && rm -rf tnz-${{ github.ref_name }}-x64/*.a tnz-${{ github.ref_name }}-x64/lib && 7z a tnz-${{ github.ref_name }}-x64.zip tnz-${{ github.ref_name }}-x64
 
     - name: Upload Release
       uses: svenstaro/upload-release-action@v2
