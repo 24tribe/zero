@@ -45,6 +45,9 @@ script_json = dumper_out_proj.get_variable('script_json')
 goldberg_steam_proj = subproject('goldberg_steam')
 goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
+UnityPlayer_proj = subproject('UnityPlayer')
+UnityPlayer = UnityPlayer_proj.get_variable('UnityPlayer')
+
 semba_project = subproject('semba', default_options : 'default_library=static')
 semba_dep = semba_project.get_variable('semba_dep')
 

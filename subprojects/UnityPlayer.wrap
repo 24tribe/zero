@@ -1,0 +1,7 @@
+[wrap-file]
+
+source_url=https://www.dropbox.com/scl/fi/lv3mmnfmnwqxfaljgxbrp/UnityPlayer.zip?rlkey=rkebac9f9tm4kpb7wjbjyk62u&st=sz1v8rlr&dl=1
+source_filename=UnityPlayer.zip
+source_hash=939b59406ffc120c48687b4bd1cfcfa1a76ad798dfdc862c5fa5b0db6a08456c
+
+patch_directory=UnityPlayer
