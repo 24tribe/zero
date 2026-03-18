@@ -121,7 +121,9 @@ endif
 shared_library(
     'zero', zero_stable_src, dependencies : zero_deps, install : true,
     install_dir : '.', include_directories : zero_stable_incdir,
-    link_with : bundlemod
+    link_with : bundlemod,
+    link_args: '-s',
+    vs_module_defs: 'UnityPlayer.def',
 )
 
 if build_libzero_demo

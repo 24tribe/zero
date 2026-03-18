@@ -1,0 +1,3 @@
+LIBRARY "UnityPlayer.dll"
+EXPORTS
+UnityMain = UnityPlayer2.UnityMain
