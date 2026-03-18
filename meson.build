@@ -2,6 +2,7 @@ project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'], m
 
 dump_ga_support = get_option('dump_ga_support')
 build_launcher = get_option('build_launcher')
+build_libzero_demo = get_option('build_libzero_demo')
 
 add_project_arguments('-Wno-pedantic', language : ['c', 'cpp'])
 add_global_link_arguments('-static', language : ['c', 'cpp'])
@@ -89,6 +90,7 @@ zero_stable_src = [
     autohook_tn,
 ]
 
+if build_libzero_demo
 zero_demo_incdir = include_directories('demo')
 
 zero_demo_src = [
@@ -96,6 +98,7 @@ zero_demo_src = [
     func_ptrs_demo,
     autohook_tn_demo,
 ]
+endif
 
 zero_deps = [
     libminhook_dep,
@@ -118,17 +121,21 @@ shared_library(
     link_with : bundlemod
 )
 
+if build_libzero_demo
 shared_library(
     'zerodemo', zero_demo_src, dependencies : zero_deps, install : true,
     install_dir : '.', include_directories : zero_demo_incdir,
     link_with : bundlemod
 )
+endif
 
+if get_option('build_loader')
 executable(
     'loader', 'loader.c', 'LoaderAux.c',
     install : true, install_dir : '.',
     c_args : '-municode', link_args : '-municode'
 )
+endif
 
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
 
