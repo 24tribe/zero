@@ -38,6 +38,25 @@ static bool KeyPressed(int vKey) {
     return false;
 }
 
+std::string sembaStatusToString(SembaStatus status) {
+    switch (status) {
+    case SEMBA_STATUS_OK:
+        return "SEMBA_STATUS_OK";
+    case SEMBA_STATUS_EXCEPTION:
+        return "SEMBA_STATUS_EXCEPTION";
+    case SEMBA_STATUS_VERSION_UNKNOWN:
+        return "SEMBA_STATUS_VERSION_UNKNOWN";
+    case SEMBA_STATUS_DB_ERROR:
+        return "SEMBA_STATUS_DB_ERROR";
+    case SEMBA_STATUS_ALLOC_ERROR:
+        return "SEMBA_STATUS_ALLOC_ERROR";
+    case SEMBA_STATUS_INVALID_CONTEXT:
+        return "SEMBA_STATUS_INVALID_CONTEXT";
+    }
+
+    return "";
+}
+
 json_t *createUpdateColorReq(CharHairColor& charHairColor) {
     json_t *req = json_object();
     json_object_set_new(req, "charId", json_integer(charHairColor.charId));
@@ -74,11 +93,11 @@ std::string unpackSaveResError(const char *res) {
 }
 
 static json_t *getHairColors() {
-    int32_t status;
-    char *res = SembaExCall(SembaContextGet(), "/semba/get_hair_colors", "", &status);
+    enum SembaStatus status;
+    char *res = GlobalSembaCall("/semba/get_hair_colors", "", &status);
     if (status == SEMBA_STATUS_EXCEPTION) {
         printf("getHairColors: %s\n", res);
-        SembaExFreeResponse(res);
+        GlobalSembaFreeResponse(res);
         return NULL;
     }
     json_t *jsonRes = json_loads(res, 0, NULL);
@@ -91,12 +110,12 @@ int saveHairColorToDB(void *userdata) {
 
     json_t *req = createUpdateColorReq(charHairColor);
     char *reqStr = json_dumps(req, 0);
-    int32_t status;
-    char *res = SembaExCall(SembaContextGet(), "/semba/update_hair_color", reqStr, &status);
+    enum SembaStatus status;
+    char *res = GlobalSembaCall("/semba/update_hair_color", reqStr, &status);
     if (status == SEMBA_STATUS_EXCEPTION) {
         printf("saveHairColorToDB: %s\n", res);
     }
-    SembaExFreeResponse(res);
+    GlobalSembaFreeResponse(res);
     
     free(reqStr);
     json_decref(req);
@@ -156,10 +175,11 @@ void InitDrawFunc(DrawFunc& draw_func) {
     draw_func.savesWindow.createSaveFile = [](const char *name) {
         auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
-        int32_t status;
-        char *res = SembaExCall(SembaContextGet(), "/semba/create_save_file", req.c_str(), &status);
+        enum SembaStatus status;
+        char *res = GlobalSembaCall("/semba/create_save_file", req.c_str(), &status);
 
         if (status == SEMBA_STATUS_OK) {
+            printf("res: %s\n", res);
             result.second = unpackSaveResError(res);
             result.first = (result.second == "" ? 0 : -1);
         } else if (status == SEMBA_STATUS_EXCEPTION) {
@@ -167,10 +187,10 @@ void InitDrawFunc(DrawFunc& draw_func) {
             result.second = res;
         } else {
             result.first = -1;
-            result.second = "SembaExCall failed";
+            result.second = std::string("SembaExCall failed: ") + sembaStatusToString(status);
         }
 
-        SembaExFreeResponse(res);
+        GlobalSembaFreeResponse(res);
 
         return result;
     };
@@ -178,8 +198,8 @@ void InitDrawFunc(DrawFunc& draw_func) {
     draw_func.savesWindow.loadSaveFile = [](const char *name) {
         auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
-        int32_t status;
-        char *res = SembaExCall(SembaContextGet(), "/semba/load_save_file", req.c_str(), &status);
+        enum SembaStatus status;
+        char *res = GlobalSembaCall("/semba/load_save_file", req.c_str(), &status);
         if (status == SEMBA_STATUS_OK) {
             result.second = unpackSaveResError(res);
             result.first = (result.second == "" ? 0 : -1);
@@ -188,17 +208,17 @@ void InitDrawFunc(DrawFunc& draw_func) {
             result.second = res;
         } else {
             result.first = -1;
-            result.second = "SembaExCall failed";
+            result.second = std::string("SembaExCall failed: ") + sembaStatusToString(status);
         }
-        SembaExFreeResponse(res);
+        GlobalSembaFreeResponse(res);
         return result;
     };
 
     draw_func.savesWindow.deleteSaveFile = [](const char* name) {
         auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
-        int32_t status;
-        char *res = SembaExCall(SembaContextGet(), "/semba/delete_save_file", req.c_str(), &status);
+        enum SembaStatus status;
+        char *res = GlobalSembaCall("/semba/delete_save_file", req.c_str(), &status);
         if (status == SEMBA_STATUS_OK) {
             result.second = "";
             result.first = 0;
@@ -207,9 +227,9 @@ void InitDrawFunc(DrawFunc& draw_func) {
             result.second = res;
         } else {
             result.first = -1;
-            result.second = "SembaExCall failed";
+            result.second = std::string("SembaExCall failed: ") + sembaStatusToString(status);
         }
-        SembaExFreeResponse(res);
+        GlobalSembaFreeResponse(res);
         return result;
     };
 
@@ -222,12 +242,12 @@ void InitDrawFunc(DrawFunc& draw_func) {
         ss << "\"currentLocation\": " << currentLocation << ", ";
         ss << "}";
 
-        int32_t status;
-        char *res = SembaExCall(SembaContextGet(), "/adventure/move_to_area", ss.str().c_str(), &status);
+        enum SembaStatus status;
+        char *res = GlobalSembaCall("/adventure/move_to_area", ss.str().c_str(), &status);
 
         std::string result;
         if (res) { result = res; };
-        SembaExFreeResponse(res);
+        GlobalSembaFreeResponse(res);
 
         if (status == SEMBA_STATUS_OK) {
             return std::make_pair(0, result);
@@ -237,25 +257,25 @@ void InitDrawFunc(DrawFunc& draw_func) {
     };
 
     draw_func.gachaRatesWindow.getGachaRates = []() {
-        int32_t status;
-        char *resStr = SembaExCall(SembaContextGet(), "/semba/get_std_gacha_rates", "", &status);
+        enum SembaStatus status;
+        char *resStr = GlobalSembaCall("/semba/get_std_gacha_rates", "", &status);
         if (status == SEMBA_STATUS_EXCEPTION) {
             printf("getGachaRates: %s\n", resStr);
-            SembaExFreeResponse(resStr);
+            GlobalSembaFreeResponse(resStr);
             return (json_t *)nullptr;
         }
         json_t *res = json_loads(resStr, 0, NULL);
-        SembaExFreeResponse(resStr);
+        GlobalSembaFreeResponse(resStr);
         return res; 
     };
 
     draw_func.gachaRatesWindow.setGachaRates = [](json_t* req) {
         char *reqStr = json_dumps(req, 0);
-        int32_t status;
-        char *res = SembaExCall(SembaContextGet(), "/semba/set_std_gacha_rates", reqStr, &status);
+        enum SembaStatus status;
+        char *res = GlobalSembaCall("/semba/set_std_gacha_rates", reqStr, &status);
         if (status == SEMBA_STATUS_EXCEPTION) {
             printf("setGachaRates: %s\n", res);
-            SembaExFreeResponse(res);
+            GlobalSembaFreeResponse(res);
         }
         free(reqStr);
     };

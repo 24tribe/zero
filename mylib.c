@@ -43,6 +43,16 @@ void MyMain(HMODULE hModule) {
         }
     }
 
+    if (ZERO_CONFIG.sembaStandaloneUrl) {
+        enum SembaStatus status;
+        struct SembaRemote *remote = SembaRemote_Init(ZERO_CONFIG.sembaStandaloneUrl, &status);
+        if (status != SEMBA_STATUS_OK) {
+            printf("SembaRemote_Init failed: status %d\n!!!\n", (int)status);
+        } else {
+            SembaRemoteSet(remote);
+        }
+    }
+
     // HookNtQueryDirectoryFile();
     HookLoadLibrary();
     HookCreateFile();

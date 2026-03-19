@@ -82,6 +82,7 @@ zero_src = [
     'ModHelper.cpp',
     'HairColorHelper.cpp',
     'SembaContext.c',
+    'SembaRemote.cpp',
     gui_src,
 ]
 
@@ -103,6 +104,8 @@ zero_demo_src = [
 ]
 endif
 
+libcurl_dep = dependency('libcurl', default_options : 'default_library=static')
+
 zero_deps = [
     libminhook_dep,
     ntdll_lib,
@@ -111,7 +114,8 @@ zero_deps = [
     inih_dep,
     semba_dep,
     shlwapi_lib,
-    imgui
+    imgui,
+    libcurl_dep,
 ]
 
 if dump_ga_support
@@ -119,11 +123,12 @@ if dump_ga_support
 endif
 
 shared_library(
-    'zero', zero_stable_src, dependencies : zero_deps, install : true,
+    'UnityPlayer', zero_stable_src, dependencies : zero_deps, install : true,
     install_dir : '.', include_directories : zero_stable_incdir,
     link_with : bundlemod,
     link_args: '-s',
     vs_module_defs: 'UnityPlayer.def',
+    name_prefix : '',
 )
 
 if build_libzero_demo
