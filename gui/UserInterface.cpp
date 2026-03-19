@@ -303,7 +303,7 @@ static void InitCustomColorWindow(CustomColorWindow& customColorWindow) {
     );
 }
 
-std::pair<int, std::string> parseGetSkipTutorialResponse(std::string response, bool& skipTutorial) {
+static std::pair<int, std::string> parseGetSkipTutorialResponse(std::string response, bool& skipTutorial) {
     json_t *resJson = json_loads(response.c_str(), 0, NULL);
 
     if (!resJson) {
@@ -321,6 +321,27 @@ std::pair<int, std::string> parseGetSkipTutorialResponse(std::string response, b
     json_decref(resJson);
 
     return std::make_pair(0, std::string());
+}
+
+static std::pair<int, std::string> wrapSkipTutorial(bool skipTutorial) {
+    json_t* req = json_object();
+
+    if (!req) {
+        return std::make_pair(-1, "json_object() failed!");
+    }
+
+    json_object_set_new(req, "skipTutorial", json_boolean(skipTutorial));
+
+    char *reqStr = json_dumps(req, 0);
+
+    if (!reqStr) {
+        return std::make_pair(-1, "json_dumps failed!");
+    }
+
+    std::string reqResult(reqStr);
+    ::free(reqStr);
+
+    return std::make_pair(0, reqResult);
 }
 
 void InitDrawFunc(DrawFunc& draw_func) {
@@ -345,6 +366,27 @@ void InitDrawFunc(DrawFunc& draw_func) {
             } else {
                 return std::make_pair(0, std::string(""));
             }
+        } else if (status == SEMBA_STATUS_EXCEPTION) {
+            return std::make_pair(-1, result);
+        } else {
+            return std::make_pair(-1, std::string("SembaCall failed: ") + sembaStatusToString(status));
+        }
+    };
+
+    draw_func.onChangeSkipTutorial = [&draw_func](bool skipTutorial) {
+        auto req = wrapSkipTutorial(skipTutorial);
+        if (req.first < 0) {
+            return req;
+        }
+
+        SembaStatus status;
+        char *res = GlobalSembaCall("/semba/set_skip_tutorial", req.second.c_str(), &status);
+        std::string result;
+        if (res) { result = res; }
+        GlobalSembaFreeResponse(res);
+
+        if (status == SEMBA_STATUS_OK) {
+            return std::make_pair(0, result);
         } else if (status == SEMBA_STATUS_EXCEPTION) {
             return std::make_pair(-1, result);
         } else {
