@@ -153,12 +153,12 @@ int onLoadHairColors(void *userdata) {
     return 0;
 }
 
-void InitDrawFunc(DrawFunc& draw_func) {
-    draw_func.savesWindow.saves_dir = ZERO_CONFIG.savesDir;
+static void InitSavesWindow(SavesWindow& savesWindow) {
+    savesWindow.saves_dir = ZERO_CONFIG.savesDir;
 
-    draw_func.savesWindow.onStart = [&draw_func]() {
+    savesWindow.onStart = [&savesWindow]() {
         try {
-            if (GetSaveFiles(ZERO_CONFIG.savesDir, draw_func.savesWindow.save_files) != SH_OK) {
+            if (GetSaveFiles(ZERO_CONFIG.savesDir, savesWindow.save_files) != SH_OK) {
                 return std::make_pair(-1, std::string("Failed to load save files names"));
             }
         } catch (const std::exception& e) {
@@ -168,9 +168,7 @@ void InitDrawFunc(DrawFunc& draw_func) {
         return std::make_pair(0, std::string());
     };
 
-    draw_func.pausePositionPtr = getPausePositionPtr();
-
-    draw_func.savesWindow.createSaveFile = [](const char *name) {
+    savesWindow.createSaveFile = [](const char *name) {
         auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
         enum SembaStatus status;
@@ -193,7 +191,7 @@ void InitDrawFunc(DrawFunc& draw_func) {
         return result;
     };
 
-    draw_func.savesWindow.loadSaveFile = [](const char *name) {
+    savesWindow.loadSaveFile = [](const char *name) {
         auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
         enum SembaStatus status;
@@ -212,7 +210,7 @@ void InitDrawFunc(DrawFunc& draw_func) {
         return result;
     };
 
-    draw_func.savesWindow.deleteSaveFile = [](const char* name) {
+    savesWindow.deleteSaveFile = [](const char* name) {
         auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
         enum SembaStatus status;
@@ -230,6 +228,12 @@ void InitDrawFunc(DrawFunc& draw_func) {
         GlobalSembaFreeResponse(res);
         return result;
     };
+}
+
+void InitDrawFunc(DrawFunc& draw_func) {
+    InitSavesWindow(draw_func.savesWindow);
+
+    draw_func.pausePositionPtr = getPausePositionPtr();
 
     draw_func.onMoveToZoneArea = [&draw_func](int zone_area_id) {
         const char *currentLocation = "{\"areaType\": 1, \"direction\": 5, \"positionCoordinates\": {\"x\": -6, \"y\": 53.59764, \"z\": -15.75}, \"areaKeyId\": 300402}";
