@@ -170,8 +170,6 @@ void InitDrawFunc(DrawFunc& draw_func) {
 
     draw_func.pausePositionPtr = getPausePositionPtr();
 
-    static std::string saveFileErr;
-
     draw_func.savesWindow.createSaveFile = [](const char *name) {
         auto result = std::make_pair(0, std::string());
         std::string req = createSaveReq(ZERO_CONFIG.savesDir, name);
