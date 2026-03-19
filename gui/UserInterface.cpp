@@ -230,8 +230,35 @@ static void InitSavesWindow(SavesWindow& savesWindow) {
     };
 }
 
+static void InitGachaRatesWindow(GachaRatesWindow gachaRatesWindow) {
+    gachaRatesWindow.getGachaRates = []() {
+        enum SembaStatus status;
+        char *resStr = GlobalSembaCall("/semba/get_std_gacha_rates", "", &status);
+        if (status == SEMBA_STATUS_EXCEPTION) {
+            printf("getGachaRates: %s\n", resStr);
+            GlobalSembaFreeResponse(resStr);
+            return (json_t *)nullptr;
+        }
+        json_t *res = json_loads(resStr, 0, NULL);
+        GlobalSembaFreeResponse(resStr);
+        return res; 
+    };
+
+    gachaRatesWindow.setGachaRates = [](json_t* req) {
+        char *reqStr = json_dumps(req, 0);
+        enum SembaStatus status;
+        char *res = GlobalSembaCall("/semba/set_std_gacha_rates", reqStr, &status);
+        if (status == SEMBA_STATUS_EXCEPTION) {
+            printf("setGachaRates: %s\n", res);
+            GlobalSembaFreeResponse(res);
+        }
+        free(reqStr);
+    };
+}
+
 void InitDrawFunc(DrawFunc& draw_func) {
     InitSavesWindow(draw_func.savesWindow);
+    InitGachaRatesWindow(draw_func.gachaRatesWindow);
 
     draw_func.pausePositionPtr = getPausePositionPtr();
 
@@ -256,30 +283,6 @@ void InitDrawFunc(DrawFunc& draw_func) {
         } else {
             return std::make_pair(-1, std::string("Failed to move to area"));
         }
-    };
-
-    draw_func.gachaRatesWindow.getGachaRates = []() {
-        enum SembaStatus status;
-        char *resStr = GlobalSembaCall("/semba/get_std_gacha_rates", "", &status);
-        if (status == SEMBA_STATUS_EXCEPTION) {
-            printf("getGachaRates: %s\n", resStr);
-            GlobalSembaFreeResponse(resStr);
-            return (json_t *)nullptr;
-        }
-        json_t *res = json_loads(resStr, 0, NULL);
-        GlobalSembaFreeResponse(resStr);
-        return res; 
-    };
-
-    draw_func.gachaRatesWindow.setGachaRates = [](json_t* req) {
-        char *reqStr = json_dumps(req, 0);
-        enum SembaStatus status;
-        char *res = GlobalSembaCall("/semba/set_std_gacha_rates", reqStr, &status);
-        if (status == SEMBA_STATUS_EXCEPTION) {
-            printf("setGachaRates: %s\n", res);
-            GlobalSembaFreeResponse(res);
-        }
-        free(reqStr);
     };
 
 #ifndef TRIBE_NINE_DEMO
