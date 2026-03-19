@@ -318,6 +318,8 @@ std::pair<int, std::string> parseGetSkipTutorialResponse(std::string response, b
 
     skipTutorial = json_boolean_value(skipTutorialJson);
 
+    json_decref(resJson);
+
     return std::make_pair(0, std::string());
 }
 
