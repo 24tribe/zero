@@ -9,9 +9,22 @@
 
 #include <functional>
 #include <string>
+#include <future>
+#include <utility>
+
+enum DrawFuncState {
+    DRAW_FUNC_STATE_START,
+    DRAW_FUNC_STATE_LOADING,
+    DRAW_FUNC_STATE_INITIALIZED,
+    DRAW_FUNC_STATE_ERROR,
+};
 
 class DrawFunc {
     public:
+
+    std::future<std::pair<int, std::string>> currentOperation;
+    DrawFuncState state;
+    std::function<std::pair<int, std::string>()> onStart;
 
     bool active;
     bool showSavesWindow;
@@ -34,15 +47,21 @@ class DrawFunc {
     int zone_area_id;
 
     std::function<std::pair<int, std::string>(int)> onMoveToZoneArea;
-    std::function<void(bool)> onChangeSkipTutorial;
-    std::function<void(const char **)> onStartNewGame;
+    std::function<std::pair<int, std::string>(bool)> onChangeSkipTutorial;
+    std::function<std::pair<int, std::string>(bool)> onStartNewGame;
     std::function<void()> runCommand;
 
     DrawFunc(bool active);
     void operator()(void);
+    void HandleStartState();
+    void HandleErrorState();
+    void HandleInitializedState();
+    void HandleLoadingState();
+    void CheckCurrentOperation();
 
     private:
-    const char* result;
+    std::function<void()> onCurrentOperationFail;
+    std::string msg;
 };
 
 #endif

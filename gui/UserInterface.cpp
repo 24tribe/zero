@@ -303,12 +303,52 @@ static void InitCustomColorWindow(CustomColorWindow& customColorWindow) {
     );
 }
 
+std::pair<int, std::string> parseGetSkipTutorialResponse(std::string response, bool& skipTutorial) {
+    json_t *resJson = json_loads(response.c_str(), 0, NULL);
+
+    if (!resJson) {
+        return std::make_pair(-1, std::string("json_loads failed!"));
+    }
+
+    json_t *skipTutorialJson = json_object_get(resJson, "skipTutorial");
+
+    if (!skipTutorialJson) {
+        return std::make_pair(-1, std::string("skipTutorial field missing from response"));
+    }
+
+    skipTutorial = json_boolean_value(skipTutorialJson);
+
+    return std::make_pair(0, std::string());
+}
+
 void InitDrawFunc(DrawFunc& draw_func) {
     InitSavesWindow(draw_func.savesWindow);
     InitGachaRatesWindow(draw_func.gachaRatesWindow);
     InitCustomColorWindow(draw_func.customColorWindow);
 
     draw_func.pausePositionPtr = getPausePositionPtr();
+
+    draw_func.onStart = [&draw_func]() {
+        SembaStatus status;
+        char *res = GlobalSembaCall("/semba/get_skip_tutorial", "", &status);
+
+        std::string result;
+        if (res) { result = res; }
+        GlobalSembaFreeResponse(res);
+
+        if (status == SEMBA_STATUS_OK) {
+            auto getSkipTutorialRes = parseGetSkipTutorialResponse(result, draw_func.skipTutorial);
+            if (getSkipTutorialRes.first < 0) {
+                return std::make_pair(-1, getSkipTutorialRes.second);
+            } else {
+                return std::make_pair(0, std::string(""));
+            }
+        } else if (status == SEMBA_STATUS_EXCEPTION) {
+            return std::make_pair(-1, result);
+        } else {
+            return std::make_pair(-1, std::string("SembaCall failed: ") + sembaStatusToString(status));
+        }
+    };
 
     draw_func.onMoveToZoneArea = [&draw_func](int zone_area_id) {
         const char *currentLocation = "{\"areaType\": 1, \"direction\": 5, \"positionCoordinates\": {\"x\": -6, \"y\": 53.59764, \"z\": -15.75}, \"areaKeyId\": 300402}";
