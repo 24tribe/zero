@@ -230,7 +230,7 @@ static void InitSavesWindow(SavesWindow& savesWindow) {
     };
 }
 
-static void InitGachaRatesWindow(GachaRatesWindow gachaRatesWindow) {
+static void InitGachaRatesWindow(GachaRatesWindow& gachaRatesWindow) {
     gachaRatesWindow.getGachaRates = []() {
         enum SembaStatus status;
         char *resStr = GlobalSembaCall("/semba/get_std_gacha_rates", "", &status);
@@ -256,9 +256,57 @@ static void InitGachaRatesWindow(GachaRatesWindow gachaRatesWindow) {
     };
 }
 
+static void InitCustomColorWindow(CustomColorWindow& customColorWindow) {
+#ifndef TRIBE_NINE_DEMO
+    HookTN_SetHairColorHelper(&customColorWindow.hairColorHelper);
+
+    customColorWindow.onHairColorChange = [](CharHairColor& charHairColor) {
+        if (charHairColor.material && charHairColor.enable) {
+            il2cpp_thread_attach( il2cpp_domain_get());
+            SetMaterialAlbedoColor(
+                reinterpret_cast<UnityEngine_Material_o *>(charHairColor.material),
+                &charHairColor.hairColor[0]
+            );
+        }
+    };
+
+    customColorWindow.onEndHairColorChange = [](CharHairColor& charHairColor) {
+        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)saveHairColorToDB, &charHairColor, 0, NULL);
+    };
+
+    customColorWindow.onEnableHairColor = [](CharHairColor& charHairColor) {
+        auto mat = reinterpret_cast<UnityEngine_Material_o *>(charHairColor.material);
+
+        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)saveHairColorToDB, &charHairColor, 0, NULL);
+
+        if (charHairColor.enable) {
+            if (mat) {
+                il2cpp_thread_attach( il2cpp_domain_get());
+                SetMaterialAlbedoColor(mat, &charHairColor.hairColor[0]);
+                SetMaterialAlbedoTexture(mat, NULL);
+            }
+        } else {
+            if (mat) {
+                il2cpp_thread_attach( il2cpp_domain_get());
+                float white[] = {1.0f, 1.0f, 1.0f};
+                SetMaterialAlbedoColor(mat, white);
+                SetMaterialAlbedoTexture(
+                    mat, reinterpret_cast<UnityEngine_Texture_o*>(charHairColor.texture)
+                );
+            }
+        }
+    };
+#endif
+
+    CreateThread(
+        NULL, 0, (LPTHREAD_START_ROUTINE)onLoadHairColors, &customColorWindow, 0, NULL
+    );
+}
+
 void InitDrawFunc(DrawFunc& draw_func) {
     InitSavesWindow(draw_func.savesWindow);
     InitGachaRatesWindow(draw_func.gachaRatesWindow);
+    InitCustomColorWindow(draw_func.customColorWindow);
 
     draw_func.pausePositionPtr = getPausePositionPtr();
 
@@ -285,59 +333,14 @@ void InitDrawFunc(DrawFunc& draw_func) {
         }
     };
 
-#ifndef TRIBE_NINE_DEMO
     draw_func.runCommand = [&draw_func]() {
     };
-
-    HookTN_SetHairColorHelper(&draw_func.customColorWindow.hairColorHelper);
-
-    draw_func.customColorWindow.onHairColorChange = [](CharHairColor& charHairColor) {
-        if (charHairColor.material && charHairColor.enable) {
-            il2cpp_thread_attach( il2cpp_domain_get());
-            SetMaterialAlbedoColor(
-                reinterpret_cast<UnityEngine_Material_o *>(charHairColor.material),
-                &charHairColor.hairColor[0]
-            );
-        }
-    };
-
-    draw_func.customColorWindow.onEndHairColorChange = [](CharHairColor& charHairColor) {
-        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)saveHairColorToDB, &charHairColor, 0, NULL);
-    };
-
-    draw_func.customColorWindow.onEnableHairColor = [](CharHairColor& charHairColor) {
-        auto mat = reinterpret_cast<UnityEngine_Material_o *>(charHairColor.material);
-
-        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)saveHairColorToDB, &charHairColor, 0, NULL);
-
-        if (charHairColor.enable) {
-            if (mat) {
-                il2cpp_thread_attach( il2cpp_domain_get());
-                SetMaterialAlbedoColor(mat, &charHairColor.hairColor[0]);
-                SetMaterialAlbedoTexture(mat, NULL);
-            }
-        } else {
-            if (mat) {
-                il2cpp_thread_attach( il2cpp_domain_get());
-                float white[] = {1.0f, 1.0f, 1.0f};
-                SetMaterialAlbedoColor(mat, white);
-                SetMaterialAlbedoTexture(
-                    mat, reinterpret_cast<UnityEngine_Texture_o*>(charHairColor.texture)
-                );
-            }
-        }
-    };
-#endif
 
     draw_func.fov_scale = getFovScale();
     draw_func.customFovFlag = getCustomFovFlag();
 
     draw_func.pos = getPosArray();
     draw_func.rotation = getRotationArray();
-
-    CreateThread(
-        NULL, 0, (LPTHREAD_START_ROUTINE)onLoadHairColors, &draw_func.customColorWindow, 0, NULL
-    );
 }
 
 extern "C" int UIMainThread(LPVOID _1) {
