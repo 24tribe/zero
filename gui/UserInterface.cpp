@@ -175,7 +175,6 @@ static void InitSavesWindow(SavesWindow& savesWindow) {
         char *res = GlobalSembaCall("/semba/create_save_file", req.c_str(), &status);
 
         if (status == SEMBA_STATUS_OK) {
-            printf("res: %s\n", res);
             result.second = unpackSaveResError(res);
             result.first = (result.second == "" ? 0 : -1);
         } else if (status == SEMBA_STATUS_EXCEPTION) {
