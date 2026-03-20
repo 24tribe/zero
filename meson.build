@@ -77,7 +77,6 @@ zero_src = [
     'dump_ga/MetadataDump.c',
     'runtime_version.c',
     'create_file_hook.c',
-    'SavesHelper.cpp',
     'TimeUtil.c',
     'ModHelper.cpp',
     'HairColorHelper.cpp',

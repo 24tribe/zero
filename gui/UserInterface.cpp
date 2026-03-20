@@ -12,7 +12,6 @@ extern "C" {
 #include "semba_enum.h"
 #include "Backend.h"
 #include "DrawFunc.h"
-#include "SavesHelper.hpp"
 #include "SembaContext.h"
 
 #include <windows.h>
@@ -153,19 +152,75 @@ int onLoadHairColors(void *userdata) {
     return 0;
 }
 
+static std::pair<int, std::string> parseListSaveFilesResponse(
+    const std::string& response, std::vector<std::string>& save_files
+) {
+    json_t *resJson = json_loads(response.c_str(), 0, NULL);
+
+    if (!resJson) {
+        return std::make_pair(-1, std::string("json_loads failed!"));
+    }
+
+    json_t *names = json_object_get(resJson, "names");
+
+    if (!names) {
+        return std::make_pair(-1, std::string("failed to get names field from res"));
+    }
+
+    for (size_t i = 0; i < json_array_size(names); ++i) {
+        json_t *name = json_array_get(names, i);
+
+        save_files.push_back(json_string_value(name));
+    }
+
+    return std::make_pair(0, std::string());
+}
+
+static std::pair<int, std::string> createListSaveFilesRequest(const std::string& savesDir) {
+    json_t *req = json_object();
+
+    if (!req) {
+        return std::make_pair(-1, std::string("json_object() failed!"));
+    }
+
+    json_object_set_new(req, "savesDir", json_string(savesDir.c_str()));
+
+    char *reqStr = json_dumps(req, 0);
+
+    if (!reqStr) {
+        return std::make_pair(-1, std::string("json_dumps failed!"));
+    }
+
+    std::string result = reqStr;
+
+    ::free(reqStr);
+
+    return std::make_pair(0, result);
+}
+
 static void InitSavesWindow(SavesWindow& savesWindow) {
     savesWindow.saves_dir = ZERO_CONFIG.savesDir;
 
     savesWindow.onStart = [&savesWindow]() {
-        try {
-            if (GetSaveFiles(ZERO_CONFIG.savesDir, savesWindow.save_files) != SH_OK) {
-                return std::make_pair(-1, std::string("Failed to load save files names"));
-            }
-        } catch (const std::exception& e) {
-            return std::make_pair(-1, std::string(e.what()));
+        auto reqResult = createListSaveFilesRequest(ZERO_CONFIG.savesDir);
+
+        if (reqResult.first < 0) {
+            return reqResult;
         }
 
-        return std::make_pair(0, std::string());
+        enum SembaStatus status;
+        char *res = GlobalSembaCall("/semba/list_save_files", reqResult.second.c_str(), &status);
+        std::string response;
+        if (res) { response = res; }
+        GlobalSembaFreeResponse(res);
+
+        if (status == SEMBA_STATUS_OK) {
+            return parseListSaveFilesResponse(response, savesWindow.save_files);
+        } else if (status == SEMBA_STATUS_EXCEPTION) {
+            return std::make_pair(-1, response);
+        } else {
+            return std::make_pair(-1, std::string("SembaCall failed: ") + sembaStatusToString(status));
+        }
     };
 
     savesWindow.createSaveFile = [](const char *name) {
