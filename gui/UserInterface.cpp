@@ -394,6 +394,27 @@ void InitDrawFunc(DrawFunc& draw_func) {
         }
     };
 
+    draw_func.onStartNewGame = [&draw_func](bool skipTutorial) {
+        auto req = wrapSkipTutorial(skipTutorial);
+        if (req.first < 0) {
+            return req;
+        }
+
+        SembaStatus status;
+        char *res = GlobalSembaCall("/semba/new_game", req.second.c_str(), &status);
+        std::string result;
+        if (res) { result = res; }
+        GlobalSembaFreeResponse(res);
+
+        if (status == SEMBA_STATUS_OK) {
+            return std::make_pair(0, result);
+        } else if (status == SEMBA_STATUS_EXCEPTION) {
+            return std::make_pair(-1, result);
+        } else {
+            return std::make_pair(-1, std::string("SembaCall failed: ") + sembaStatusToString(status));
+        }
+    };
+
     draw_func.onMoveToZoneArea = [&draw_func](int zone_area_id) {
         const char *currentLocation = "{\"areaType\": 1, \"direction\": 5, \"positionCoordinates\": {\"x\": -6, \"y\": 53.59764, \"z\": -15.75}, \"areaKeyId\": 300402}";
 
