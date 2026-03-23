@@ -32,16 +32,18 @@ jobs:
       with:
         nim-version: '2.2.4'
 
-    - name: Meson install
+    - name: Meson build
       uses: BSFishy/meson-build@v1.0.3
       with:
         meson-version: 1.8.1
-        action: install
-        setup-options: -Dwarning_level=3 -Dbuild_launcher=false
-        options: --destdir=tnz-${{ github.ref_name }}-x64
+        action: build
+        setup-options: -Dwarning_level=3
+    
+    - name: Meson install
+      run: python install.py build tnz-${{ github.ref_name }}-x64
 
     - name: Compress files
-      run: cd build && rm -Recurse -Force -Path tnz-${{ github.ref_name }}-x64/*.a,tnz-${{ github.ref_name }}-x64/lib && mv tnz-${{ github.ref_name }}-x64/libzero.dll tnz-${{ github.ref_name }}-x64/UnityPlayer.dll && 7z a tnz-${{ github.ref_name }}-x64.zip tnz-${{ github.ref_name }}-x64
+      run: 7z a tnz-${{ github.ref_name }}-x64.zip tnz-${{ github.ref_name }}-x64
 
     - name: Upload Release
       uses: svenstaro/upload-release-action@v2
