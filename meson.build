@@ -1,7 +1,6 @@
 project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'], meson_version : '>=1.4.0')
 
 dump_ga_support = get_option('dump_ga_support')
-build_launcher = get_option('build_launcher')
 build_libzero_demo = get_option('build_libzero_demo')
 
 add_project_arguments('-Wno-pedantic', language : ['c', 'cpp'])
@@ -10,11 +9,6 @@ add_global_link_arguments('-static', language : ['c', 'cpp'])
 cc = meson.get_compiler('c')
 fs = import('fs')
 python3 = find_program('python3', required : true)
-
-if build_launcher
-    webview_proj = subproject('webview-55b438dc11d0e46bc68526822380963ae9d362af')
-    webview_dep = webview_proj.get_variable('webview_dep')
-endif
 
 ntdll_lib = cc.find_library('ntdll')
 shlwapi_lib = cc.find_library('shlwapi')
@@ -138,14 +132,6 @@ shared_library(
 )
 endif
 
-if get_option('build_loader')
-executable(
-    'loader', 'loader.c', 'LoaderAux.c',
-    install : true, install_dir : '.',
-    c_args : '-municode', link_args : '-municode'
-)
-endif
-
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
 
 executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
@@ -156,10 +142,6 @@ test_hair_color_helper = executable(
 test('test hair color helper', test_hair_color_helper)
 
 subdir('dump_ga')
-
-if build_launcher
-    subdir('launcher')
-endif
 
 fs.copyfile('LICENSE', 'LICENSE.txt', install : true, install_dir : '.')
 fs.copyfile('THIRD_PARTY_LICENSES.txt', install : true, install_dir : '.')

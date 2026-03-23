@@ -1,7 +1,0 @@
-[wrap-file]
-
-source_url=https://github.com/webview/webview/archive/55b438d.zip
-source_filename=webview-55b438dc11d0e46bc68526822380963ae9d362af.zip
-source_hash=c5832cb51d84eaf73b6d714be04b12f5f642a52c7263ceff2b28bbf72d46ac25
-
-patch_directory=webview-55b438dc11d0e46bc68526822380963ae9d362af
