@@ -1,11 +1,19 @@
 #include "SembaContext.h"
 
+#include <windows.h>
+
 #include <stddef.h>
+#include <stdio.h>
 
 static struct SembaExContext *gCtx = NULL;
 static struct SembaRemote *gRemote = NULL;
+static HANDLE gMutex;
 
 void SembaContextSet(struct SembaExContext *ctx) {
+    gMutex = CreateMutex(NULL, FALSE, NULL);
+    if (!gMutex) {
+        printf("WARNING: failed to create SembaContext mutex!\n");
+    }
     gCtx = ctx;
 }
 
@@ -24,7 +32,9 @@ struct SembaRemote *SembaRemoteGet(void) {
 char *GlobalSembaCall(const char *path, const char *req, enum SembaStatus *status) {
     if (gCtx) {
         int32_t st;
+        WaitForSingleObject(gMutex, INFINITE);
         char *res = SembaExCall(gCtx, path, req, &st);
+        ReleaseMutex(gMutex);
         *status = (enum SembaStatus)st;
         return res;
     } else if (gRemote) {
