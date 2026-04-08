@@ -29,9 +29,16 @@ void MyMain(HMODULE hModule) {
         return;
     }
 
+
     InitConfig();
 
+    puts("Before RunNimMainOnce");
+
     RunNimMainOnce();
+
+    puts("After RunNimMainOnce");
+
+    puts("Before SembaExInit");
 
     if (ZERO_CONFIG.sembaDbPath && !ZERO_CONFIG.sembaStandaloneUrl) {
         int32_t status;
@@ -42,6 +49,8 @@ void MyMain(HMODULE hModule) {
             SembaContextSet(ctx);
         }
     }
+
+    puts("After SembaExInit");
 
     if (ZERO_CONFIG.sembaStandaloneUrl) {
         enum SembaStatus status;
@@ -54,8 +63,13 @@ void MyMain(HMODULE hModule) {
     }
 
     // HookNtQueryDirectoryFile();
+    puts("Before HookLoadLibrary");
     HookLoadLibrary();
+    puts("After HookLoadLibrary");
+
+    puts("Before HookCreateFile");
     HookCreateFile();
+    puts("After HookCreateFile");
 
     HANDLE hMainThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UIMainThread, hModule, 0, NULL);
 
@@ -63,11 +77,21 @@ void MyMain(HMODULE hModule) {
         CloseHandle(hMainThread);
     }
 
+    puts("After CreateThread UIMainThread");
+
+    puts("Before SetGlobalModManager(ModHelper_ParseMods(ZERO_CONFIG.modsDir));");
+
     SetGlobalModManager(ModHelper_ParseMods(ZERO_CONFIG.modsDir));
+
+    puts("After SetGlobalModManager(ModHelper_ParseMods(ZERO_CONFIG.modsDir));");
+
+    puts("Before CreateEventA");
 
     HANDLE zeroHookFinishEvent = CreateEventA(NULL, TRUE, FALSE, "zeroHookFinishEvent");
     SetEvent(zeroHookFinishEvent);
     CloseHandle(zeroHookFinishEvent);
+
+    puts("After CreateEventA");
 
     printf("OK! Reached end of MyMain!\n");
 }
