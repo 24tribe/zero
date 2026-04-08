@@ -38,6 +38,7 @@ jobs:
         meson-version: 1.8.1
         action: build
         setup-options: -Dwarning_level=3
+        options: -v
     
     - name: Meson install
       run: python install.py build tnz-${{ github.ref_name }}-x64
