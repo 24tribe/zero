@@ -63,6 +63,10 @@ struct ResponseTypeToRequestPtr_List RES_TYPE_TO_REQ_PTR_LIST = {
 
 KBJLHEAOHMD__KPFFCLMEMEG_FuncPtr fpKbjlheaohmd__Kpffclmemeg = NULL;
 
+/*
+Needed to avoid ArgumentOutOfRangeException:
+"The added or subtracted value results in an un-representable DateTime.""
+*/
 bool DetourKbjlheaohmd__Kpffclmemeg(System_DateTime_o HKIOCIMKCCP, System_DateTime_o CJKBFINFMNP, const MethodInfo* method) {
     if (HKIOCIMKCCP.fields._dateData == 0) {
         return false;
