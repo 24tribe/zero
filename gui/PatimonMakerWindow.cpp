@@ -8,7 +8,10 @@ PatimonMakerWindow::PatimonMakerWindow() :
     rarity(0),
     piece(0),
     set(0),
-    tier(0)
+    tier(0),
+    substat1(0),
+    substat2(0),
+    substat3(0)
 {
 }
 
