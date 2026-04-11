@@ -8,6 +8,7 @@ gui_src = files(
     'GachaRatesWindow.cpp',
     'CustomColorWindow.cpp',
     'SavesWindow.cpp',
+    'PatimonMakerWindow.cpp',
 )
 
 imguitest_src = [
@@ -19,6 +20,7 @@ imguitest_src = [
     '../HairColorHelper.cpp',
     'Backend.cpp',
     'SavesWindow.cpp',
+    'PatimonMakerWindow.cpp',
 ]
 
 

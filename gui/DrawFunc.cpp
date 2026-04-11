@@ -9,12 +9,14 @@ DrawFunc::DrawFunc(bool active) : currentOperation(),
                                   showSavesWindow(false),
                                   showDemo(false),
                                   showGachaRates(false),
+                                  showPatimonMakerWindow(false),
                                   gamePtrsReady(false),
                                   showCustomColorWindow(false),
                                   skipTutorial(true),
                                   gachaRatesWindow(),
                                   customColorWindow(),
                                   savesWindow(),
+                                  patimonMakerWindow(),
                                   pos(nullptr),
                                   rotation(nullptr),
                                   fov_scale(nullptr),
@@ -80,6 +82,7 @@ void DrawFunc::HandleInitializedState() {
     ImGui::Checkbox("Show saves window", &showSavesWindow);
     ImGui::Checkbox("Show gacha rates window", &showGachaRates);
     ImGui::Checkbox("Show hair colors window", &showCustomColorWindow);
+    ImGui::Checkbox("Show Patimon maker", &showPatimonMakerWindow);
 
     ImGui::Separator();
 
@@ -184,6 +187,10 @@ void DrawFunc::operator()(void) {
 
         if (showSavesWindow) {
             savesWindow.Show(&showSavesWindow);
+        }
+
+        if (showPatimonMakerWindow) {
+            patimonMakerWindow.Show(&showPatimonMakerWindow);
         }
     }
 

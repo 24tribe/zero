@@ -4,6 +4,7 @@
 #include "GachaRatesWindow.h"
 #include "CustomColorWindow.h"
 #include "SavesWindow.h"
+#include "PatimonMakerWindow.h"
 
 #include <jansson.h>
 
@@ -30,6 +31,7 @@ class DrawFunc {
     bool showSavesWindow;
     bool showDemo;
     bool showGachaRates;
+    bool showPatimonMakerWindow;
     bool gamePtrsReady;
     bool showCustomColorWindow;
     bool skipTutorial;
@@ -37,6 +39,7 @@ class DrawFunc {
     GachaRatesWindow gachaRatesWindow;
     CustomColorWindow customColorWindow;
     SavesWindow savesWindow;
+    PatimonMakerWindow patimonMakerWindow;
 
     float* pos;
     float* rotation;
