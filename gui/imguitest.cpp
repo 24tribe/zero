@@ -37,6 +37,10 @@ static void InitDrawFunc(DrawFunc& draw_func) {
         std::cout << "Hello World!!\n";
     };
 
+    draw_func.onStart = []() {
+        return std::make_pair(0, std::string());
+    };
+
     draw_func.customColorWindow.onEndHairColorChange = [](CharHairColor& hairColor) {
         (void)hairColor;
         std::cout << "onEndHairColorChange called!!!\n";
