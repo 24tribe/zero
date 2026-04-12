@@ -13,6 +13,7 @@ extern "C" {
 #include "Backend.h"
 #include "DrawFunc.h"
 #include "SembaContext.h"
+#include "SembaClient.h"
 
 #include <windows.h>
 #include <synchapi.h>
@@ -54,26 +55,6 @@ std::string sembaStatusToString(SembaStatus status) {
     }
 
     return "";
-}
-
-json_t *createUpdateColorReq(CharHairColor& charHairColor) {
-    json_t *req = json_object();
-    json_object_set_new(req, "charId", json_integer(charHairColor.charId));
-    json_object_set_new(req, "r", json_real(charHairColor.hairColor[0]));
-    json_object_set_new(req, "g", json_real(charHairColor.hairColor[1]));
-    json_object_set_new(req, "b", json_real(charHairColor.hairColor[2]));
-    json_object_set_new(req, "enabled", json_boolean(charHairColor.enable));
-    return req;
-}
-
-std::string createSaveReq(const char* saves_dir, const char *name) {
-    json_t *req = json_object();
-    json_object_set_new(req, "saves_dir", json_string(saves_dir));
-    json_object_set_new(req, "name", json_string(name));
-    char *req_s = json_dumps(req, 0);
-    std::string result = req_s;
-    free(req_s);
-    return result;
 }
 
 std::string unpackSaveResError(const char *res) {

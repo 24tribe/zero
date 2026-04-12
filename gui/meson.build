@@ -9,6 +9,7 @@ gui_src = files(
     'CustomColorWindow.cpp',
     'SavesWindow.cpp',
     'PatimonMakerWindow.cpp',
+    'SembaClient.cpp',
 )
 
 imguitest_src = [
