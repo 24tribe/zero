@@ -57,6 +57,24 @@ std::string sembaStatusToString(SembaStatus status) {
     return "";
 }
 
+std::pair<int, std::string> SembaCallPair(char *path, json_t *req) {
+    SembaStatus status;
+    char *reqStr = json_dumps(req, 0);
+    char *res = GlobalSembaCall(path, reqStr, &status);
+    ::free(reqStr);
+    std::string response;
+    if (res) { response = res; }
+    GlobalSembaFreeResponse(res);
+
+    if (status == SEMBA_STATUS_OK) {
+        return std::make_pair(0, response);
+    } else if (status == SEMBA_STATUS_EXCEPTION) {
+        return std::make_pair(-1, response);
+    } else {
+        return std::make_pair(-1, std::string("SembaCall failed: ") + sembaStatusToString(status));
+    }
+}
+
 std::string unpackSaveResError(const char *res) {
     json_error_t unused;
     json_t *resJson = json_loads(res, 0, &unused);
@@ -279,6 +297,14 @@ void InitDrawFunc(DrawFunc& draw_func) {
     InitSavesWindow(draw_func.savesWindow);
     InitGachaRatesWindow(draw_func.gachaRatesWindow);
     InitCustomColorWindow(draw_func.customColorWindow);
+
+    draw_func.patimonMakerWindow.onSendGear = [](
+        int rarity, int piece, int set, int tier, int substat1, int substat2, int substat3
+    ) {
+        json_t *req = encode_semba_mail_gear_request(rarity, piece, set, tier, substat1, substat2, substat3);
+        char path[] = "/semba/mail_gear";
+        return SembaCallPair(path, req);
+    };
 
     draw_func.pausePositionPtr = getPausePositionPtr();
 

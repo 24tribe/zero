@@ -1,5 +1,8 @@
 #pragma once
 
+#include <functional>
+#include <future>
+
 class PatimonMakerWindow {
     public:
     PatimonMakerWindow();
@@ -14,4 +17,9 @@ class PatimonMakerWindow {
     int substat1;
     int substat2;
     int substat3;
+
+    std::string msg;
+
+    std::function<std::pair<int, std::string>(int, int, int, int, int, int, int)> onSendGear;
+    std::future<std::pair<int, std::string>> currentOperation;
 };

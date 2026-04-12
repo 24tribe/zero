@@ -11,7 +11,10 @@ PatimonMakerWindow::PatimonMakerWindow() :
     tier(0),
     substat1(0),
     substat2(0),
-    substat3(0)
+    substat3(0),
+    msg(),
+    onSendGear(),
+    currentOperation()
 {
 }
 
@@ -110,6 +113,21 @@ void PatimonMakerWindow::ShowSetsCombo() {
 
 void PatimonMakerWindow::Show(bool* p_open) {
     if (ImGui::Begin("Patimon Maker", p_open, 0)) {
+        if (currentOperation.valid()) {
+            if (auto status = currentOperation.wait_for(std::chrono::milliseconds(0)); status == std::future_status::ready) {
+                auto result = currentOperation.get();
+                if (!result.first) {
+                    msg = "Patimon sended to mails!!";
+                } else {
+                    msg = "Error: " + result.second;
+                }
+            } else {
+                msg = "Sending to mails...";
+            }
+        }
+
+        ImGui::Text("Msg: %s", msg.c_str());
+
         ImGui::Combo("Rarity", &rarity, "Gray Rarity\0Blue Rarity\0Purple Rarity\0Gold Rarity\0\0");
         ImGui::Combo("Piece", &piece, "Head\0Body\0Other\0\0");
         ShowSetsCombo();
@@ -117,8 +135,16 @@ void PatimonMakerWindow::Show(bool* p_open) {
         ShowSubstatCombo("1st Substat", substat1);
         ShowSubstatCombo("2nd Substat", substat2);
         ShowSubstatCombo("3rd Substat", substat3);
-        if (ImGui::Button("Save gear")) {
+
+        ImGui::BeginDisabled(currentOperation.valid());
+
+        if (ImGui::Button("Send gear to mails") && onSendGear) {
+            currentOperation = std::async(std::launch::async,
+                onSendGear, rarity, piece, set, tier, substat1, substat2, substat3
+            );
         }
+
+        ImGui::EndDisabled();
     }
 
     ImGui::End();
