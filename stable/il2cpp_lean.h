@@ -6,8 +6,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define HAVE_LUX_PHANTASM
-
 typedef struct MethodInfo_20B62E0 GetResultMethodInfo;
 typedef struct MethodInfo_F6CAF0 NeonApiGetResponse_MethodInfo;
 typedef struct LPCOHPIGHIN_o NeonApiGetResponse_ThirdParam;
