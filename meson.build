@@ -80,7 +80,15 @@ elif game_version == '0.2.1.20'
     subdir('demo')
 endif
 
-libcurl_dep = dependency('libcurl', default_options : 'default_library=static')
+libcurl_dep = dependency('libcurl', default_options : [
+    'default_library=static',
+    'alt-svc=disabled', 'proxy=disabled','kerberos-auth=disabled', 'dict=disabled',
+    'file=disabled', 'ftp=disabled', 'gopher=disabled', 'imap=disabled',
+    'ipfs=disabled', 'ldap=disabled', 'ldaps=disabled', 'mqtt=disabled',
+    'pop3=disabled', 'rtmp=disabled', 'rtsp=disabled', 'smb=disabled',
+    'smtp=disabled', 'telnet=disabled', 'tftp=disabled', 'websockets=disabled',
+    'ntlm=disabled',
+])
 
 zero_deps = [
     libminhook_dep,
