@@ -45,8 +45,8 @@ UnityPlayer = UnityPlayer_proj.get_variable('UnityPlayer')
 semba_project = subproject('semba', default_options : 'default_library=static')
 semba_dep = semba_project.get_variable('semba_dep')
 
-subdir('autogen')
-subdir('autogen_demo')
+subdir('stable')
+# subdir('autogen_demo')
 subdir('gui')
 subdir('bundlemod')
 
