@@ -153,7 +153,7 @@ void DrawFunc::operator()(void) {
     ImGui::NewFrame();
 
     if (active) {
-        ImGui::SetNextWindowSize(ImVec2(300,345), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(390, 420), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Tribe Nine Zero", &active, 0)) {
             switch (state) {
             case DRAW_FUNC_STATE_START:

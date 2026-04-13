@@ -112,6 +112,7 @@ void PatimonMakerWindow::ShowSetsCombo() {
 }
 
 void PatimonMakerWindow::Show(bool* p_open) {
+    ImGui::SetNextWindowSize(ImVec2(480, 245), ImGuiCond_FirstUseEver);
     if (ImGui::Begin("Patimon Maker", p_open, 0)) {
         if (currentOperation.valid()) {
             if (auto status = currentOperation.wait_for(std::chrono::milliseconds(0)); status == std::future_status::ready) {
