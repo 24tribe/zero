@@ -14,3 +14,11 @@ autohook_tn_demo = custom_target(
     output : 'autohookTN.h',
     command : [python3, '@INPUT@', 'requestHandle', '@OUTPUT@']
 )
+
+zero_incdir = include_directories('.')
+
+zero_src = [
+    zero_common_src,
+    func_ptrs_demo,
+    autohook_tn_demo,
+]

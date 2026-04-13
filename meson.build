@@ -45,12 +45,6 @@ UnityPlayer = UnityPlayer_proj.get_variable('UnityPlayer')
 semba_project = subproject('semba', default_options : 'default_library=static')
 semba_dep = semba_project.get_variable('semba_dep')
 
-if game_version == '1.1.3.35'
-    subdir('stable')
-elif game_version == '0.2.1.20'
-    subdir('demo')
-endif
-
 subdir('gui')
 subdir('bundlemod')
 
@@ -84,20 +78,9 @@ zero_common_src = [
 ]
 
 if game_version == '1.1.3.35'
-    zero_incdir = include_directories('stable')
-    zero_src = [
-        zero_common_src,
-        func_ptrs,
-        autohook_tn,
-    ]
+    subdir('stable')
 elif game_version == '0.2.1.20'
-    zero_incdir = include_directories('demo')
-
-    zero_src = [
-        zero_common_src,
-        func_ptrs_demo,
-        autohook_tn_demo,
-    ]
+    subdir('demo')
 endif
 
 libcurl_dep = dependency('libcurl', default_options : 'default_library=static')
