@@ -1,4 +1,3 @@
-if build_libzero_demo
 dumper_out_cbt_proj = subproject('dumper_out_cbt')
 script_json_demo = dumper_out_cbt_proj.get_variable('script_json')
 
@@ -15,4 +14,3 @@ autohook_tn_demo = custom_target(
     output : 'autohookTN.h',
     command : [python3, '@INPUT@', 'requestHandle', '@OUTPUT@']
 )
-endif

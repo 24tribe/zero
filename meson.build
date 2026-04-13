@@ -1,7 +1,7 @@
 project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'], meson_version : '>=1.4.0')
 
+game_version = get_option('game_version')
 dump_ga_support = get_option('dump_ga_support')
-build_libzero_demo = get_option('build_libzero_demo')
 
 add_project_arguments('-Wno-pedantic', language : ['c', 'cpp'])
 add_global_link_arguments('-static', language : ['c', 'cpp'])
@@ -45,12 +45,16 @@ UnityPlayer = UnityPlayer_proj.get_variable('UnityPlayer')
 semba_project = subproject('semba', default_options : 'default_library=static')
 semba_dep = semba_project.get_variable('semba_dep')
 
-subdir('stable')
-# subdir('autogen_demo')
+if game_version == '1.1.3.35'
+    subdir('stable')
+elif game_version == '0.2.1.20'
+    subdir('demo')
+endif
+
 subdir('gui')
 subdir('bundlemod')
 
-zero_src = [
+zero_common_src = [
     'mylib.c',
     'load_library_hook.c',
     'NtQueryDirectoryFileHook.c',
@@ -79,22 +83,21 @@ zero_src = [
     gui_src,
 ]
 
-zero_stable_incdir = include_directories('stable')
+if game_version == '1.1.3.35'
+    zero_incdir = include_directories('stable')
+    zero_src = [
+        zero_common_src,
+        func_ptrs,
+        autohook_tn,
+    ]
+elif game_version == '0.2.1.20'
+    zero_incdir = include_directories('demo')
 
-zero_stable_src = [
-    zero_src,
-    func_ptrs,
-    autohook_tn,
-]
-
-if build_libzero_demo
-zero_demo_incdir = include_directories('demo')
-
-zero_demo_src = [
-    zero_src,
-    func_ptrs_demo,
-    autohook_tn_demo,
-]
+    zero_src = [
+        zero_common_src,
+        func_ptrs_demo,
+        autohook_tn_demo,
+    ]
 endif
 
 libcurl_dep = dependency('libcurl', default_options : 'default_library=static')
@@ -116,21 +119,13 @@ if dump_ga_support
 endif
 
 shared_library(
-    'UnityPlayer', zero_stable_src, dependencies : zero_deps, install : true,
-    install_dir : '.', include_directories : zero_stable_incdir,
+    'UnityPlayer', zero_src, dependencies : zero_deps, install : true,
+    install_dir : '.', include_directories : zero_incdir,
     link_with : bundlemod,
     link_args: '-s',
     vs_module_defs: 'UnityPlayer.def',
     name_prefix : '',
 )
-
-if build_libzero_demo
-shared_library(
-    'zerodemo', zero_demo_src, dependencies : zero_deps, install : true,
-    install_dir : '.', include_directories : zero_demo_incdir,
-    link_with : bundlemod
-)
-endif
 
 executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
 
