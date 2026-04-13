@@ -24,6 +24,7 @@ References:
 #include "../HairColorHelper.h"
 #include "defer.h"
 #include "SembaContext.h"
+#include "dump_protobuf_descriptors.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -201,6 +202,9 @@ Il2CppObject *DetourSourceCore_GetResult(
     const GetResultMethodInfo* method
 ) {
     RunNimMainOnce();
+
+    // FIXME: this should be a config option
+    // DumpProtobufDescriptors();
 
     Il2CppClass *klass = il2cpp_type_get_class_or_element_class(method->return_type);
 

@@ -46,6 +46,7 @@ subdir('gui')
 subdir('bundlemod')
 
 zero_common_src = [
+    'dump_protobuf_descriptors.c',
     'mylib.c',
     'load_library_hook.c',
     'NtQueryDirectoryFileHook.c',

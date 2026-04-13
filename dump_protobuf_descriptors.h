@@ -1,0 +1,6 @@
+#ifndef DUMP_PROTOBUF_DESCRIPTORS_H_2026_APRIL_13_01_36
+#define DUMP_PROTOBUF_DESCRIPTORS_H_2026_APRIL_13_01_36
+
+void DumpProtobufDescriptors(void);
+
+#endif
