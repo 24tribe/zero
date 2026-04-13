@@ -21,4 +21,5 @@ zero_src = [
     zero_common_src,
     func_ptrs_demo,
     autohook_tn_demo,
+    files('version_specific_hooks.c'),
 ]
