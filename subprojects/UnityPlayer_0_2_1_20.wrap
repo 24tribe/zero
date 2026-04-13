@@ -1,0 +1,7 @@
+[wrap-file]
+
+source_url=https://www.dropbox.com/scl/fi/hffxj54q1bzyt5acracq9/UnityPlayer_0_2_1_20.zip?rlkey=9vhjcl7vf8ktunnw91bhp26s7&st=42gdbapx&dl=1
+source_filename=UnityPlayer_0_2_1_20.zip
+source_hash=3cfff65d62fbccbf4cc28e52fd60837731c52db9817a301c8a8ecd6857bf26fe
+
+patch_directory=UnityPlayer_0_2_1_20
