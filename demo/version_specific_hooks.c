@@ -1,5 +1,13 @@
 #include "version_specific_hooks.h"
 
+#include "funcPtrs.h"
+
+#include <MinHook.h>
+
+#include <windows.h>
+
+#include <stdio.h>
+
 typedef void (*OJLLOCJDBLM___ctor_FuncPtr) (OJLLOCJDBLM_o* __this, MNHJNDFAPMD_o* NFADCMKHEAI, Neon_Model_Api_Model_Enemy_o* PIOECLPHAFK, EJOPFMGFPOA_o* LFLBBLLOAKF, int32_t ODCLDJBPJMJ, const MethodInfo* method);
 
 OJLLOCJDBLM___ctor_FuncPtr OJLLOCJDBLM___ctor = NULL;
@@ -34,7 +42,7 @@ void Hook_OJLLOCJDBLM___ctor(void) {
     }
 }
 
-void ApplyVersionSpecificHooks(void) {
-    OJLLOCJDBLM___ctor = (OJLLOCJDBLM___ctor_FuncPtr)((uintptr_t)GameAssembly + 60351888ull);
+void ApplyVersionSpecificHooks(uintptr_t GameAssembly) {
+    OJLLOCJDBLM___ctor = (OJLLOCJDBLM___ctor_FuncPtr)(GameAssembly + 60351888ull);
     Hook_OJLLOCJDBLM___ctor();
 }
