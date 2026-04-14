@@ -3,6 +3,7 @@
 #include "defer.h"
 #include "bundlemod/BundleMod.h"
 #include "ModHelper.h"
+#include "game_version.h"
 
 #include <MinHook.h>
 #include <jansson.h>
@@ -43,12 +44,11 @@ HANDLE WINAPI DetourCreateFileW(
 
     defer { sdsfree(filename); }
 
-#ifdef TRIBE_NINE_DEMO
-    // FIXME: change abcache.json contents to {"IgnoreCatalogCache":false,"IgnoreRemoteCatalog":true}
-    if (strstr(filename, "abcache.json")) {
-        printf("CreateFileW: %s\n", filename);
+    if (GAME_VERSION == GAME_VERSION_0_2_1_20 && strstr(filename, "abcache.json")) {
+        printf("Changing abcache path from %s to abcache.json\n", filename);
+        filenameW = L"abcache.json";
     }
-#else
+
     char *textureChanges = (gModManager ? ModHelper_GetTextureChanges(gModManager, filename) : NULL);
     defer { free(textureChanges); }
 
@@ -64,7 +64,6 @@ HANDLE WINAPI DetourCreateFileW(
 
         return fpCreateFileW(tempPath, access, shareMode, attrs, creationDisp, flags, template);
     }
-#endif
 
     return fpCreateFileW(filenameW, access, shareMode, attrs, creationDisp, flags, template);
 }

@@ -25,3 +25,6 @@ zero_src = [
     autohook_tn_demo,
     files('version_specific_hooks.c'),
 ]
+
+fs = import('fs')
+fs.copyfile('abcache.json', install : true, install_dir : '.')
