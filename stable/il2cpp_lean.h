@@ -9627,4 +9627,60 @@ typedef struct UnityEngine_Color_o {
 	UnityEngine_Color_Fields fields;
 } UnityEngine_Color_o;
 
+typedef struct System_Delegate_Fields {
+	intptr_t method_ptr;
+	intptr_t invoke_impl;
+	Il2CppObject* m_target;
+	intptr_t method;
+	intptr_t delegate_trampoline;
+	intptr_t extra_arg;
+	intptr_t method_code;
+	intptr_t interp_method;
+	intptr_t interp_invoke_impl;
+	struct System_Reflection_MethodInfo_o* method_info;
+	struct System_Reflection_MethodInfo_o* original_method_info;
+	struct System_DelegateData_o* data;
+	bool method_is_virtual;
+} System_Delegate_Fields;
+
+typedef struct System_MulticastDelegate_Fields {
+	struct System_Delegate_Fields superFields;
+	struct System_Delegate_array* delegates;
+} System_MulticastDelegate_Fields;
+
+typedef struct System_Action_Fields {
+	struct System_MulticastDelegate_Fields superFields;
+} System_Action_Fields;
+
+typedef struct System_Action_VTable {
+	VirtualInvokeData _0_Equals;
+	VirtualInvokeData _1_Finalize;
+	VirtualInvokeData _2_GetHashCode;
+	VirtualInvokeData _3_ToString;
+	VirtualInvokeData _4_unknown;
+	VirtualInvokeData _5_unknown;
+	VirtualInvokeData _6_DynamicInvokeImpl;
+	VirtualInvokeData _7_Clone;
+	VirtualInvokeData _8_GetMethodImpl;
+	VirtualInvokeData _9_GetObjectData;
+	VirtualInvokeData _10_GetInvocationList;
+	VirtualInvokeData _11_CombineImpl;
+	VirtualInvokeData _12_RemoveImpl;
+	VirtualInvokeData _13_Invoke;
+} System_Action_VTable;
+
+typedef struct System_Action_c {
+	Il2CppClass_1 _1;
+	void* static_fields;
+	Il2CppRGCTXData* rgctx_data;
+	Il2CppClass_2 _2;
+	System_Action_VTable vtable;
+} System_Action_c;
+
+typedef struct System_Action_o {
+	System_Action_c *klass;
+	void *monitor;
+	System_Action_Fields fields;
+} System_Action_o;
+
 #endif
