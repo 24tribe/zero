@@ -26,3 +26,5 @@ std::pair<int, std::string> parseListSaveFilesResponse(
 );
 
 void updateHairColorMapWithHairColors(CharHairColorMap& hairColorMap, json_t *hair_colors);
+
+json_t *encode_move_to_area_request(int area_id);

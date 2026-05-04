@@ -57,7 +57,7 @@ std::string sembaStatusToString(SembaStatus status) {
     return "";
 }
 
-std::pair<int, std::string> SembaCallPair(char *path, json_t *req) {
+std::pair<int, std::string> SembaCallPair(const char *path, json_t *req) {
     SembaStatus status;
     char *reqStr = json_dumps(req, 0);
     char *res = GlobalSembaCall(path, reqStr, &status);
@@ -302,8 +302,7 @@ void InitDrawFunc(DrawFunc& draw_func) {
         int rarity, int piece, int set, int tier, int substat1, int substat2, int substat3
     ) {
         json_t *req = encode_semba_mail_gear_request(rarity, piece, set, tier, substat1, substat2, substat3);
-        char path[] = "/semba/mail_gear";
-        return SembaCallPair(path, req);
+        return SembaCallPair("/semba/mail_gear", req);
     };
 
     draw_func.pausePositionPtr = getPausePositionPtr();
@@ -373,26 +372,13 @@ void InitDrawFunc(DrawFunc& draw_func) {
     };
 
     draw_func.onMoveToZoneArea = [&draw_func](int zone_area_id) {
-        const char *currentLocation = "{\"areaType\": 1, \"direction\": 5, \"positionCoordinates\": {\"x\": -6, \"y\": 53.59764, \"z\": -15.75}, \"areaKeyId\": 300402}";
+        json_t *req = encode_move_to_area_request(zone_area_id);
 
-        std::stringstream ss;
-        ss << "{";
-        ss << "\"areaId\": " << zone_area_id << ", ";
-        ss << "\"currentLocation\": " << currentLocation << ", ";
-        ss << "}";
-
-        enum SembaStatus status;
-        char *res = GlobalSembaCall("/adventure/move_to_area", ss.str().c_str(), &status);
-
-        std::string result;
-        if (res) { result = res; };
-        GlobalSembaFreeResponse(res);
-
-        if (status == SEMBA_STATUS_OK) {
-            return std::make_pair(0, result);
-        } else {
-            return std::make_pair(-1, std::string("Failed to move to area"));
+        if (!req) {
+            return std::make_pair(-1, std::string("Failed to create move to area request"));
         }
+
+        return SembaCallPair("/semba/move_to_area", req);
     };
 
     draw_func.runCommand = [&draw_func]() {

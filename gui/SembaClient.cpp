@@ -147,3 +147,15 @@ void updateHairColorMapWithHairColors(CharHairColorMap& hairColorMap, json_t *ha
         }
     }
 }
+
+json_t *encode_move_to_area_request(int area_id) {
+    json_t *req = json_object();
+
+    if (!req) {
+        return NULL;
+    }
+
+    json_object_set_new(req, "areaId", json_integer(area_id));
+
+    return req;
+}
