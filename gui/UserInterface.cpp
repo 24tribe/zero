@@ -378,7 +378,15 @@ void InitDrawFunc(DrawFunc& draw_func) {
             return std::make_pair(-1, std::string("Failed to create move to area request"));
         }
 
-        return SembaCallPair("/semba/move_to_area", req);
+        auto res = SembaCallPair("/semba/move_to_area", req);
+
+        if (!res.first) {
+            std::stringstream ss;
+            ss << "Moved to area with id " << zone_area_id;
+            res.second = ss.str();
+        }
+
+        return res;
     };
 
     draw_func.runCommand = [&draw_func]() {

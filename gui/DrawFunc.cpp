@@ -114,8 +114,8 @@ void DrawFunc::HandleInitializedState() {
 
     ImGui::InputInt("zone_area_id", &zone_area_id);
     if (ImGui::Button("Move to zoneArea") && onMoveToZoneArea) {
-        // FIXME: in another thread
-        onMoveToZoneArea(zone_area_id);
+        msg = "Moving to area zone...";
+        currentOperation = std::async(std::launch::async, onMoveToZoneArea, zone_area_id);
     }
 
     ImGui::Separator();
