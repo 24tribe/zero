@@ -65,10 +65,6 @@ void MyMain(HMODULE hModule) {
 
     SetGlobalModManager(ModHelper_ParseMods(ZERO_CONFIG.modsDir));
 
-    HANDLE zeroHookFinishEvent = CreateEventA(NULL, TRUE, FALSE, "zeroHookFinishEvent");
-    SetEvent(zeroHookFinishEvent);
-    CloseHandle(zeroHookFinishEvent);
-
     printf("OK! Reached end of MyMain!\n");
 }
 
