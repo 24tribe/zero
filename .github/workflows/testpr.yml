@@ -1,0 +1,32 @@
+on: pull_request
+
+jobs:
+  default:
+    runs-on: windows-latest
+
+    environment:
+      name: MYENV
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.13'
+
+    - name: Setup Nim
+      uses: jiro4989/setup-nim-action@v2
+      with:
+        nim-version: '2.2.4'
+
+    - name: Meson test
+      uses: BSFishy/meson-build@v1.0.3
+      with:
+        action: test
+        setup-options: -Dwarning_level=3
+        options: -v
