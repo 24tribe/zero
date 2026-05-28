@@ -5,7 +5,8 @@
 - Install [Nim](https://nim-lang.org/install.html)
 - Install [dotnet](https://dotnet.microsoft.com/en-us/download/dotnet)
 - Make sure [git-lfs](https://git-lfs.com/) is installed
-- Clone and change to the source dir. Then setup the build dir and compile the project with Meson
+- Clone and change your working directory to the source dir.
+Then setup the build dir and compile the project with Meson
 ```
 git clone https://github.com/gyubid/zero
 cd zero
