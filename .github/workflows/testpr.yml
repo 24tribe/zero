@@ -27,6 +27,7 @@ jobs:
     - name: Meson test
       uses: BSFishy/meson-build@v1.0.3
       with:
+        meson-version: 1.11.0
         action: test
         setup-options: -Dwarning_level=3
         options: -v
