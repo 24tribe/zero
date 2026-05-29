@@ -25,6 +25,7 @@ References:
 #include "defer.h"
 #include "SembaContext.h"
 #include "dump_protobuf_descriptors.h"
+#include "HookAddressables.h"
 
 #include <MinHook.h>
 #include <sds.h>
@@ -605,6 +606,7 @@ void HookTN(void *GameAssembly) {
     Hook_EMDHIMNBAPC___ctor();
 #endif
 
+    HookAddressables((uintptr_t)GameAssembly);
     ApplyVersionSpecificHooks((uintptr_t)GameAssembly);
 
     printf("Applying autohooks...\n");

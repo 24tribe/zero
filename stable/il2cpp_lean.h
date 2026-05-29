@@ -9683,4 +9683,16 @@ typedef struct System_Action_o {
 	System_Action_Fields fields;
 } System_Action_o;
 
+typedef struct UnityEngine_ResourceManagement_AsyncOperations_AsyncOperationHandle_TObject__Fields {
+	struct UnityEngine_ResourceManagement_AsyncOperations_AsyncOperationBase_TObject__o* m_InternalOp;
+	int32_t m_Version;
+	struct System_String_o* m_LocationName;
+} UnityEngine_ResourceManagement_AsyncOperations_AsyncOperationHandle_TObject__Fields;
+
+typedef struct UnityEngine_ResourceManagement_AsyncOperations_AsyncOperationHandle_TObject__o {
+	UnityEngine_ResourceManagement_AsyncOperations_AsyncOperationHandle_TObject__Fields fields;
+} UnityEngine_ResourceManagement_AsyncOperations_AsyncOperationHandle_TObject__o;
+
+typedef struct UnityEngine_AddressableAssets_AddressablesImpl_o UnityEngine_AddressableAssets_AddressablesImpl_o;
+
 #endif

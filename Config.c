@@ -19,6 +19,7 @@ struct Config ZERO_CONFIG = {
     .savesDir = NULL,
     .modsDir = NULL,
     .sembaStandaloneUrl = NULL,
+    .logAddressables = false,
 };
 
 static void setGoldbergPath(const char *value) {
@@ -58,6 +59,14 @@ static int handler(void *user, const char *section, const char *name, const char
         } else {
             return 0; /* unknown section/name, error */
         }
+    } else if (!strcmp(name, "logAddressables")) {
+        if (strstr(value, "true")) {
+            ZERO_CONFIG.logAddressables = true;
+        } else if (strstr(value, "false")) {
+            ZERO_CONFIG.logAddressables = false;
+        } else {
+            return 0; /* unknown section/name, error */
+        }
     } else if (!strcmp(name, "modsDir")) {
         ZERO_CONFIG.modsDir = sdsnew(value);
     } else {
@@ -77,6 +86,7 @@ void PrintZeroConfig(void) {
     printf("savesDir=%s\n", string_null_escape(ZERO_CONFIG.savesDir));
     printf("modsDir=%s\n", string_null_escape(ZERO_CONFIG.modsDir));
     printf("sembaStandaloneUrl=%s\n", string_null_escape(ZERO_CONFIG.sembaStandaloneUrl));
+    printf("logAddressables=%s\n", ZERO_CONFIG.logAddressables ? "true" : "false");
 
     sds goldbergPath;
     if (ZERO_CONFIG.goldbergPath) {

@@ -11,6 +11,7 @@ struct Config {
     char *savesDir;
     char *modsDir;
     char *sembaStandaloneUrl;
+    bool logAddressables;
 };
 
 extern struct Config ZERO_CONFIG;

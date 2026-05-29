@@ -54,6 +54,7 @@ zero_common_src = [
     'utils.c',
     'HookIl2Cpp.c',
     'HookTN.c',
+    'HookAddressables.c',
     'Logger.c',
     'Config.c',
     'Il2CppHelper.c',
