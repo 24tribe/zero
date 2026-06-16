@@ -3,3 +3,5 @@
 url = git@github.com:/24tribe/semba.git
 revision = HEAD
 depth = 1
+
+patch_directory=semba
