@@ -9,9 +9,6 @@ jobs:
   build:
     runs-on: windows-latest
 
-    permissions:
-      contents: write
-
     environment:
       name: MYENV
 
@@ -32,24 +29,21 @@ jobs:
       with:
         nim-version: '2.2.10'
 
+    - name: Get Meson
+      run: pip install meson
+
+    - name: Meson setup
+      run: meson setup build -Dwarning_level=3 -Dbuildtype=release
+
     - name: Meson build
-      uses: BSFishy/meson-build@v1.0.3
-      with:
-        meson-version: 1.8.1
-        action: build
-        setup-options: -Dwarning_level=3 -Dbuildtype=release
-        options: -v
-    
+      run: meson compile -C build -v
+
     - name: Meson install
       run: python install.py build tnz-${{ github.ref_name }}-x64
 
-    - name: Compress files
-      run: 7z a tnz-${{ github.ref_name }}-x64.zip tnz-${{ github.ref_name }}-x64
-
-    - name: Upload Release
-      uses: svenstaro/upload-release-action@v2
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v7
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: tnz-${{ github.ref_name }}-x64.zip
-        tag: ${{ github.ref }}
-        overwrite: true
+        name: tnz-${{ github.ref_name }}-x64
+        path: tnz-${{ github.ref_name }}-x64
+        if-no-files-found: error
