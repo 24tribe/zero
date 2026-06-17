@@ -37,7 +37,7 @@ jobs:
       with:
         meson-version: 1.8.1
         action: build
-        setup-options: -Dwarning_level=3
+        setup-options: -Dwarning_level=3 -Dbuildtype=release
         options: -v
     
     - name: Meson install
