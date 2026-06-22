@@ -18,3 +18,7 @@ modsDir=mods
 
 # if set, logs the name of the Unity addressables loaded by AddressablesImpl.LoadAssetAsync
 #logAddressables=true
+
+# key that opens the cheats menu, can be any key mentioned in:
+# https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+#cheatsKey=VK_INSERT
