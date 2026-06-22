@@ -4,15 +4,8 @@ jobs:
   default:
     runs-on: windows-latest
 
-    environment:
-      name: MYENV
-
     steps:
-    - uses: actions/checkout@v4
-
-    - uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - uses: actions/checkout@v6
 
     - name: Setup Python
       uses: actions/setup-python@v6
@@ -24,10 +17,24 @@ jobs:
       with:
         nim-version: '2.2.4'
 
+    - name: Get Meson
+      run: pip install meson
+
+    - name: Meson setup
+      run: meson setup build -Dwarning_level=3 -Dbuildtype=release
+
+    - name: Meson build
+      run: meson compile -C build -v
+
     - name: Meson test
-      uses: BSFishy/meson-build@v1.0.3
+      run: meson test -C build -v
+
+    - name: Meson install
+      run: python install.py build tnz-${{ github.ref_name }}-x64
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v7
       with:
-        meson-version: 1.11.0
-        action: test
-        setup-options: -Dwarning_level=3
-        options: -v
+        name: tnz-${{ github.ref_name }}-x64
+        path: tnz-${{ github.ref_name }}-x64
+        if-no-files-found: error
