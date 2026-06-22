@@ -30,11 +30,11 @@ jobs:
       run: meson test -C build -v
 
     - name: Meson install
-      run: python install.py build tnz-${{ github.ref_name }}-x64
+      run: python install.py build tnz-${{ github.sha }}-x64
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: tnz-${{ github.ref_name }}-x64
-        path: tnz-${{ github.ref_name }}-x64
+        name: tnz-${{ github.sha }}-x64
+        path: tnz-${{ github.sha }}-x64
         if-no-files-found: error
