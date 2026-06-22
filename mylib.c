@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+extern void NimMain(void);
+
 void MyMain(HMODULE hModule) {
     AllocConsole();
     freopen("CONOUT$", "w", stdout);
@@ -31,7 +33,7 @@ void MyMain(HMODULE hModule) {
 
     InitConfig();
 
-    RunNimMainOnce();
+    NimMain();
 
     if (ZERO_CONFIG.sembaDbPath && !ZERO_CONFIG.sembaStandaloneUrl) {
         int32_t status;

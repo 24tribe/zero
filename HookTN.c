@@ -202,8 +202,6 @@ Il2CppObject *DetourSourceCore_GetResult(
     int16_t token,
     const GetResultMethodInfo* method
 ) {
-    RunNimMainOnce();
-
     // FIXME: this should be a config option
     // DumpProtobufDescriptors();
 
@@ -303,8 +301,6 @@ Il2CppObject *CallParseJson(
 }
 
 Il2CppObject *GetMockResponse(Google_Protobuf_MessageParser_TResponse__o *messageParser) {
-    RunNimMainOnce();
-
     System_String_o *s = ConvertObjectToString((Il2CppObject *)messageParser);
     sds sUtf8 = System_String_toSds(s);
 

@@ -250,8 +250,6 @@ def appendDetourFunctionReqAndEmptyRes(impl_code, newSignature, fpVar, args, pat
     (void)cancellationToken;
     (void){requestHandler};
 
-    RunNimMainOnce();
-
     const char *path = "{path}";
     sds jsonReq = System_String_toSds(ConvertObjectToString((Il2CppObject *)data));
 
@@ -282,8 +280,6 @@ def appendDetourFunctionEmptyReqRes(impl_code, newSignature, fpVar, args, path, 
     (void)method;
     (void)cancellationToken;
     (void){requestHandler};
-
-    RunNimMainOnce();
 
     const char *path = "{path}";
 
