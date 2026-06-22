@@ -12,6 +12,7 @@ struct Config {
     char *modsDir;
     char *sembaStandaloneUrl;
     bool logAddressables;
+    uint8_t cheatsKey;
 };
 
 extern struct Config ZERO_CONFIG;

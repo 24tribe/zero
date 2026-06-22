@@ -2,6 +2,7 @@
 
 #include "utils.h"
 #include "sds_utf_conv.h"
+#include "Keys.h"
 
 #include <ini.h>
 #include <sds.h>
@@ -20,6 +21,7 @@ struct Config ZERO_CONFIG = {
     .modsDir = NULL,
     .sembaStandaloneUrl = NULL,
     .logAddressables = false,
+    .cheatsKey = VK_INSERT,
 };
 
 static void setGoldbergPath(const char *value) {
@@ -69,6 +71,13 @@ static int handler(void *user, const char *section, const char *name, const char
         }
     } else if (!strcmp(name, "modsDir")) {
         ZERO_CONFIG.modsDir = sdsnew(value);
+    } else if (!strcmp(name, "cheatsKey")) {
+        uint8_t cheatsKey = findVirtualKeyCode(value);
+        if (cheatsKey) {
+            ZERO_CONFIG.cheatsKey = cheatsKey;
+        } else {
+            printf("Warning: couldn't find virtual key code for %s, defaulting to VK_INSERT\n", value);
+        }
     } else {
         return 0; /* unknown section/name, error */
     }
@@ -87,6 +96,7 @@ void PrintZeroConfig(void) {
     printf("modsDir=%s\n", string_null_escape(ZERO_CONFIG.modsDir));
     printf("sembaStandaloneUrl=%s\n", string_null_escape(ZERO_CONFIG.sembaStandaloneUrl));
     printf("logAddressables=%s\n", ZERO_CONFIG.logAddressables ? "true" : "false");
+    printf("cheatsKey=%02x\n", (int)ZERO_CONFIG.cheatsKey);
 
     sds goldbergPath;
     if (ZERO_CONFIG.goldbergPath) {
