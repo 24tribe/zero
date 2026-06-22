@@ -405,7 +405,7 @@ extern "C" int UIMainThread(LPVOID _1) {
     DrawFunc *draw_func = nullptr;
  
 	while (1) {
-        if (KeyPressed(VK_INSERT)) {
+        if (KeyPressed(ZERO_CONFIG.cheatsKey)) {
             if (draw_func) {
                 draw_func->active = !draw_func->active;
             } else {
