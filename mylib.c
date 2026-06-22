@@ -5,7 +5,6 @@
 #include "create_file_hook.h"
 #include "ModHelper.h"
 #include "semba.h"
-#include "NimInit.h"
 #include "SembaContext.h"
 #include "game_version.h"
 #include "semba_enum.h"

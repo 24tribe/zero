@@ -16,7 +16,6 @@ References:
 #include "Il2CppHelper.h"
 #include "Config.h"
 #include "TimeString.h"
-#include "NimInit.h"
 #include "Patterns.h"
 #include "semba.h"
 #include "runtime_version.h"
