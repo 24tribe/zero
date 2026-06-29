@@ -30,6 +30,7 @@ imguitest_deps = [
     imgui,
     jansson_dep,
     libminhook_dep,
+    fuzzymatcher_dep,
 ]
 
 executable('imguitest', imguitest_src, dependencies : imguitest_deps)

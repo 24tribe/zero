@@ -25,6 +25,9 @@ libminhook_dep = minhook_proj.get_variable('libminhook_dep')
 sds_proj = subproject('sds')
 sds_dep = sds_proj.get_variable('libsds_dep')
 
+fuzzymatcher_proj = subproject('fuzzy-matcher')
+fuzzymatcher_dep = fuzzymatcher_proj.get_variable('fuzzymatcher_dep')
+
 jansson_proj = subproject('jansson')
 jansson_dep = jansson_proj.get_variable('libjansson_dep')
 
@@ -110,6 +113,7 @@ zero_deps = [
     shlwapi_lib,
     imgui,
     libcurl_dep,
+    fuzzymatcher_dep,
 ]
 
 if dump_ga_support
