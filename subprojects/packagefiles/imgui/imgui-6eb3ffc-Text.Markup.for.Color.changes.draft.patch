@@ -1,0 +1,148 @@
+From 6eb3ffc9039a412f7e88ab4572156b4952cb6363 Mon Sep 17 00:00:00 2001
+From: ocornut <omar@miracleworld.net>
+Date: Fri, 22 May 2026 17:09:18 +0200
+Subject: [PATCH] Text Markup for Color changes (draft)
+
+---
+ imgui_draw.cpp | 97 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 97 insertions(+)
+
+diff --git a/imgui_draw.cpp b/imgui_draw.cpp
+index dce53339b8..5541b7bbae 100644
+--- a/imgui_draw.cpp
++++ b/imgui_draw.cpp
+@@ -5525,6 +5525,87 @@ void ImTextInitClassifiers()
+     ImTextClassifierSetCharClass(g_CharClassifierIsSeparator_3000_300f, 0x3000, 0x300F, ImWcharClass_Punct, 0x3002);
+ }
+ 
++// text expected to point to '[' in a typical ^[ sequence, but we perform the check here to remove burden from caller.
++const char* ImTextColorMarkerSkip(const char* text, const char* text_end)
++{
++    if (*text != '[')
++        return text;
++    for (const char* s = ++text; s < text_end; s++)
++        if (*s == ']')
++            return s + 1;
++    return text_end;
++    //return text + 1; // Rather than returning text_end, this makes syntax errors more visible
++}
++
++static int ImParseHexDigit(char c)
++{
++    if (c >= '0' && c <= '9')
++        return c - '0';
++    if (c >= 'A' && c <= 'F')
++        return c - 'A' + 10;
++    if (c >= 'a' && c <= 'f')
++        return c - 'a' + 10;
++    return 0;
++}
++
++// Q: Why using \f ?
++// - C/C++ doesn't have so many legal escape sequences. \e is unfortunately not legal (https://en.cppreference.com/w/cpp/language/escape.html)
++// - Using a value that is <32 ensure we never collide with real text and don't need to provide some form of stateful backslash/escape parsing.
++// - FIXME: Ensure if this is valid in many other languages. Alternative would be: \a (bell = risky), \v (vertical tab)
++//   - OK: C, C++, C#, Go, Javascript, Python, Lua
++//   - KO: Rust, Haxe (would be \x0C)
++//   -> TL;DR: can't use \f should use another syntax, probably need to combine two characters to reduce likelihood of conflicts.
++// Alt: using ^[]
++// - ^[ is unlikely sequence. Could add exceptionally support for ^\\[ escaping since it is already in the ^ block.
++// - ] marker allows for dumb fast-forward skipping for CalcTextSizeA() and word-wrapping, which are very hot paths.
++// Need a survey on existing markup languages. Most are not designed for fast parsing.
++
++// Supported:
++// "^[#F00]red text"
++// "^[#]restore initial color text"
++
++// TODO:
++// - #RGB vs #RGBA vs #RRGGBB vs #RRGGBBAA                      ^[#RGB]     ^[#RGBA]    ^[#RRGGBB]
++// - A push/pop syntax?
++// - Color names w/ semantic: bold/highlight, disabled/dim, error, warning, icon     ^[b] ^[+b] ^[#bold] 
++// - Indexed color palette                                      ^[#
++// - Alpha might need to be multiplier rather than override, requires more state tracking. Start without support for changing alpha.
++// - Other potentially desirable features (no need to impl now but ensure syntax could allow them): Background color? Underline/strike-through/squiggle
++
++// KEY POINTS
++// - Parsing need to be optimal (exceptionally in the fast-forward case), as well as performance side-effects on caller loops.
++// - Invalid markers should ideally be made visible.
++// - Feature set assumed to not change font or font size. That would require a higher-level helper.
++// - Ensure syntax can cohabit if we e.g. separately implement e.g. higher-level Markdown helper.
++// - Ensure syntax can cohabit with various string formatter (std::format use {xx}.)
++// - Need to be able to disable in e.g. raw InputText().
++
++// - It is assumed that s[0] == '[' here.
++const char* ImTextColorMarkerProcess(const char* s, const char* text_end, ImU32* p_col, ImU32 col_initial)
++{
++    if (s[1] == '#')
++    {
++        if (s[2] == ']')
++        {
++            *p_col = col_initial;
++            return s + 3;
++        }
++        else
++        {
++            ImU32 col = *p_col & IM_COL32_A_MASK;
++            col &= IM_COL32_A_MASK;
++            col |= ((ImParseHexDigit(s[2])) * 0x11) << IM_COL32_R_SHIFT;
++            col |= ((ImParseHexDigit(s[3])) * 0x11) << IM_COL32_G_SHIFT;
++            col |= ((ImParseHexDigit(s[4])) * 0x11) << IM_COL32_B_SHIFT;
++            *p_col = col;
++        }
++    }
++    for (; s < text_end; s++)
++        if (*s == ']')
++            return s + 1;
++    return text_end;
++}
++
+ // Simple word-wrapping for English, not full-featured. Please submit failing cases!
+ // This will return the next location to wrap from. If no wrapping if necessary, this will fast-forward to e.g. text_end.
+ // Refer to imgui_test_suite's "drawlist_text_wordwrap_1" for tests.
+@@ -5577,6 +5658,11 @@ const char* ImFontCalcWordWrapPositionEx(ImFont* font, float size, const char* t
+                 continue;
+             }
+         }
++        if (c == '^')
++        {
++            s = ImTextColorMarkerSkip(next_s, text_end); // ^[xxx] sequences.
++            continue;
++        }
+ 
+         // Optimized inline version of 'float char_width = GetCharAdvance((ImWchar)c);'
+         float char_width = (c < (unsigned int)baked->IndexAdvanceX.Size) ? baked->IndexAdvanceX.Data[c] : -1.0f;
+@@ -5708,6 +5794,11 @@ ImVec2 ImFontCalcTextSizeEx(ImFont* font, float size, float max_width, float wra
+         }
+         if (c == '\r')
+             continue;
++        if (c == '^')
++        {
++            s = ImTextColorMarkerSkip(s, text_end_display); // ^[xxx] sequences.
++            continue;
++        }
+ 
+         // Optimized inline version of 'float char_width = GetCharAdvance((ImWchar)c);'
+         float char_width = (c < (unsigned int)baked->IndexAdvanceX.Size) ? baked->IndexAdvanceX.Data[c] : -1.0f;
+@@ -5853,6 +5944,7 @@ begin:
+     const int cmd_count = draw_list->CmdBuffer.Size;
+     const bool cpu_fine_clip = (flags & ImDrawTextFlags_CpuFineClip) != 0;
+ 
++    const ImU32 col_initial = col;
+     const ImU32 col_untinted = col | ~IM_COL32_A_MASK;
+     const char* word_wrap_eol = NULL;
+ 
+@@ -5896,6 +5988,11 @@ begin:
+             if (c == '\r')
+                 continue;
+         }
++        if (c == '^' && *s == '[')
++        {
++            s = ImTextColorMarkerProcess(s, text_end, &col, col_initial);
++            continue;
++        }
+ 
+         const ImFontGlyph* glyph = baked->FindGlyph((ImWchar)c);
+         //if (glyph == NULL)
+-- 
+2.50.1.windows.1
+

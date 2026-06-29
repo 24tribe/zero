@@ -1,13 +1,15 @@
 [wrap-file]
-directory = imgui-1.91.6
-source_url = https://github.com/ocornut/imgui/archive/refs/tags/v1.91.6.tar.gz
-source_filename = imgui-1.91.6.tar.gz
-source_hash = c5fbc5dcab1d46064001c3b84d7a88812985cde7e0e9ced03f5677bec1ba502a
-patch_filename = imgui_1.91.6-3_patch.zip
-patch_url = https://wrapdb.mesonbuild.com/v2/imgui_1.91.6-3/get_patch
-patch_hash = 2f7977114ba07d06559aaf8890a92a4ebd25186592d4447954605aaf2244634d
-source_fallback_url = https://github.com/mesonbuild/wrapdb/releases/download/imgui_1.91.6-3/imgui-1.91.6.tar.gz
-wrapdb_version = 1.91.6-3
+directory = imgui-1.92.5
+source_url = https://github.com/ocornut/imgui/archive/refs/tags/v1.92.5.tar.gz
+source_filename = imgui-1.92.5.tar.gz
+source_hash = 0eb50fe9aeba1a51f96b5843c7f630a32ed2e9362d693c61b87e4fa870cf826d
+source_fallback_url = https://wrapdb.mesonbuild.com/v2/imgui_1.92.5-1/get_source/imgui-1.92.5.tar.gz
+patch_filename = imgui_1.92.5-1_patch.zip
+patch_url = https://wrapdb.mesonbuild.com/v2/imgui_1.92.5-1/get_patch
+patch_fallback_url = https://github.com/mesonbuild/wrapdb/releases/download/imgui_1.92.5-1/imgui_1.92.5-1_patch.zip
+patch_hash = 636e9099a55869f25a95739b345e844c6b42166a0a0d22837ffbedd8e7af0bce
+wrapdb_version = 1.92.5-1
+diff_files = imgui/imgui-6eb3ffc-Text.Markup.for.Color.changes.draft.patch
 
 [provide]
-imgui = imgui_dep
+dependency_names = imgui
