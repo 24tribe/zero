@@ -129,14 +129,7 @@ shared_library(
     name_prefix : '',
 )
 
-executable('test_utf', 'test_utf.c', 'sds_utf_conv.c', dependencies : sds_dep)
-
-executable('test_re', 'test_re.c', 're.c', 'Patterns.c', dependencies : sds_dep)
-
-test_hair_color_helper = executable(
-    'test_hair_color_helper', 'test_hair_color_helper.cpp', 'HairColorHelper.cpp'
-)
-test('test hair color helper', test_hair_color_helper)
+subdir('tests')
 
 subdir('dump_ga')
 
