@@ -1,5 +1,7 @@
 #include "SembaClient.h"
 
+#include "SaveFileRow.h"
+
 #include <iostream>
 
 json_t* encode_semba_mail_gear_request(
@@ -104,7 +106,7 @@ std::pair<int, std::string> parseGetSkipTutorialResponse(std::string response, b
 }
 
 std::pair<int, std::string> parseListSaveFilesResponse(
-    const std::string& response, std::vector<std::string>& save_files
+    const std::string& response, std::vector<SaveFileRow>& saveFileRows
 ) {
     json_t *resJson = json_loads(response.c_str(), 0, NULL);
 
@@ -121,7 +123,7 @@ std::pair<int, std::string> parseListSaveFilesResponse(
     for (size_t i = 0; i < json_array_size(names); ++i) {
         json_t *name = json_array_get(names, i);
 
-        save_files.push_back(json_string_value(name));
+        saveFileRows.push_back({json_string_value(name), 0, {}});
     }
 
     return std::make_pair(0, std::string());

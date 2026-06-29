@@ -27,9 +27,10 @@ static void InitDrawFunc(DrawFunc& draw_func) {
     auto& savesWindow = draw_func.savesWindow;
     
     draw_func.savesWindow.onStart = [&savesWindow]() {
-        auto& save_files = savesWindow.save_files;
-        save_files.push_back("Shark");
-        save_files.push_back("Solitaire");
+        auto& saveFileRows = savesWindow.saveFileRows;
+ 
+        saveFileRows.push_back({"Shark", 0, {}});
+        saveFileRows.push_back({"Solitaire", 0, {}});
         return std::make_pair(0, std::string());
     };
 

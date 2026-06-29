@@ -10,6 +10,7 @@ gui_src = files(
     'SavesWindow.cpp',
     'PatimonMakerWindow.cpp',
     'SembaClient.cpp',
+    'HighlightCharacters.cpp',
 )
 
 imguitest_src = [
@@ -22,6 +23,7 @@ imguitest_src = [
     'Backend.cpp',
     'SavesWindow.cpp',
     'PatimonMakerWindow.cpp',
+    'HighlightCharacters.cpp',
 ]
 
 

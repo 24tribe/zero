@@ -9,6 +9,7 @@ extern "C" {
 #include "il2cpp_lean.h"
 }
 
+#include "SaveFileRow.h"
 #include "semba_enum.h"
 #include "Backend.h"
 #include "DrawFunc.h"
@@ -151,7 +152,7 @@ static void InitSavesWindow(SavesWindow& savesWindow) {
         GlobalSembaFreeResponse(res);
 
         if (status == SEMBA_STATUS_OK) {
-            return parseListSaveFilesResponse(response, savesWindow.save_files);
+            return parseListSaveFilesResponse(response, savesWindow.saveFileRows);
         } else if (status == SEMBA_STATUS_EXCEPTION) {
             return std::make_pair(-1, response);
         } else {

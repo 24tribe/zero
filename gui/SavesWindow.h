@@ -1,7 +1,8 @@
 #ifndef SAVES_WINDOW_H_MAR_14_20_11
 #define SAVES_WINDOW_H_MAR_14_20_11
 
-#include <vector>
+#include "SaveFileRow.h"
+
 #include <string>
 #include <functional>
 #include <future>
@@ -29,7 +30,7 @@ class SavesWindow {
 
     char *saves_dir;
 
-    std::vector<std::string> save_files;
+    std::vector<SaveFileRow> saveFileRows;
 
     std::function<std::pair<int, std::string>(const char*)> createSaveFile;
     std::function<std::pair<int, std::string>(const char*)> loadSaveFile;

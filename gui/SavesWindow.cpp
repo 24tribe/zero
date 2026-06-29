@@ -1,6 +1,7 @@
 #include "SavesWindow.h"
 
 #include "FuzzyMatcher.h"
+#include "HighlightCharacters.hpp"
 
 extern "C" {
 #include "../TimeUtil.h"
@@ -22,7 +23,7 @@ SavesWindow::SavesWindow() :
     onCurrentOperationSuccess(),
     inputFilename{{0}},
     saves_dir(nullptr),
-    save_files(),
+    saveFileRows(),
     createSaveFile(),
     loadSaveFile(),
     deleteSaveFile()
@@ -43,23 +44,23 @@ void SavesWindow::DrawSaveTable() {
 
     if (ImGui::BeginTable("saves_table", 2, flags)) {
         ImGuiListClipper clipper;
-        clipper.Begin(save_files.size());
+        clipper.Begin(saveFileRows.size());
 
         while (clipper.Step()) {
             for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; ++row_n) {
-                const std::string& save_file = save_files[row_n];
+                const SaveFileRow& row = saveFileRows[row_n];
 
-                ImGui::PushID(save_file.c_str());
+                ImGui::PushID(row.name.c_str());
                 ImGui::TableNextRow(ImGuiTableRowFlags_None, 0);
 
                 ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%s", save_file.c_str());
+                ImGui::Text("%s", HighlightCharacters(row.name, row.positions).c_str());
 
                 ImGui::TableSetColumnIndex(1);
 
                 if (ImGui::Button("Load Game") && loadSaveFile) {
                     msg = "Loading game...";
-                    currentOperation = std::async(std::launch::async, [this, save_file](){
+                    currentOperation = std::async(std::launch::async, [this](std::string save_file){
                         uint64_t startTime = TimeUtil_GetTimeInMs();
                         auto res = loadSaveFile(save_file.c_str());
                         uint64_t endTime = TimeUtil_GetTimeInMs();
@@ -70,7 +71,7 @@ void SavesWindow::DrawSaveTable() {
                         ss << "Save file loaded in " << endTime - startTime << " ms";
                         res.second = ss.str();
                         return res;
-                    });
+                    }, row.name);
                 }
 
                 ImGui::SameLine();
@@ -78,11 +79,11 @@ void SavesWindow::DrawSaveTable() {
                 // FIXME: should ask for confirmation
                 if (ImGui::Button("Delete Game") && deleteSaveFile) {
                     msg = "Deleting save...";
-                    currentOperation = std::async(std::launch::async, [this, save_file](){
+                    currentOperation = std::async(std::launch::async, [this](std::string save_file){
                         return deleteSaveFile(save_file.c_str());
-                    });
+                    }, row.name);
                     onCurrentOperationSuccess = [this, row_n]() {
-                        save_files.erase(save_files.begin() + row_n);
+                        saveFileRows.erase(saveFileRows.begin() + row_n);
                     };
                 }
 
@@ -98,7 +99,11 @@ void SavesWindow::HandleStartState() {
     if (onStart) {
         currentOperation = std::async(std::launch::async, [this]() {
             auto res = onStart();
-            std::sort(save_files.begin(), save_files.end());
+
+            std::sort(saveFileRows.begin(), saveFileRows.end(), [](const SaveFileRow& a, const SaveFileRow& b) {
+                return a.name < b.name;              
+            });
+
             return res;
         });
         state = SAVES_WINDOW_STATE_LOADING;
@@ -144,15 +149,21 @@ void SavesWindow::HandleInitializedState() {
 
     if (ImGui::InputText("File Name", &(inputFilename[0]), inputFilename.size())) {
         FuzzyMatcher matcher(&inputFilename[0]);
-        std::sort(save_files.begin(), save_files.end(), [&matcher](const std::string a, const std::string b) {
-            return matcher.ScoreMatch(b) < matcher.ScoreMatch(a); 
+        std::for_each(saveFileRows.begin(), saveFileRows.end(), [&matcher](SaveFileRow &row) {
+            row.fuzzyScore = matcher.ScoreMatch(row.name, &row.positions);
+        });
+
+        std::sort(saveFileRows.begin(), saveFileRows.end(), [](const SaveFileRow& a, const SaveFileRow &b) {
+            return (b.fuzzyScore < a.fuzzyScore) || ((a.fuzzyScore == b.fuzzyScore) && (a.name < b.name));
         });
     }
 
     if (ImGui::Button("Save Game") && createSaveFile && inputFilename[0] != '\0') {
         const char *name = &(inputFilename[0]);
 
-        if (std::find(save_files.begin(), save_files.end(), name) != save_files.end()) {
+        if (std::find_if(saveFileRows.begin(), saveFileRows.end(), [name](const SaveFileRow& row) {
+            return row.name == name;
+        }) != saveFileRows.end()) {
             msg = "error: can't overwrite save files yet";
         } else {
             msg = "Saving game...";
@@ -160,7 +171,7 @@ void SavesWindow::HandleInitializedState() {
                 return createSaveFile(name);
             });
             onCurrentOperationSuccess = [this, name]() {
-                save_files.push_back(name);
+                saveFileRows.push_back({name, 0, {}});
             };
         }
     }

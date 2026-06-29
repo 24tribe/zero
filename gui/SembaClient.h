@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SaveFileRow.h"
 #include "../CharHairColor.h"
 
 #include <jansson.h>
@@ -22,7 +23,7 @@ std::pair<int, std::string> wrapSkipTutorial(bool skipTutorial);
 std::pair<int, std::string> parseGetSkipTutorialResponse(std::string response, bool& skipTutorial);
 
 std::pair<int, std::string> parseListSaveFilesResponse(
-    const std::string& response, std::vector<std::string>& save_files
+    const std::string& response, std::vector<SaveFileRow>& save_files
 );
 
 void updateHairColorMapWithHairColors(CharHairColorMap& hairColorMap, json_t *hair_colors);
