@@ -2,6 +2,7 @@ project('tribenine_zero', ['c', 'cpp'], default_options : ['warning_level=3'], m
 
 game_version = get_option('game_version')
 dump_ga_support = get_option('dump_ga_support')
+offline_support = get_option('offline_support')
 
 add_project_arguments('-Wno-pedantic', language : ['c', 'cpp'])
 add_global_link_arguments('-static', language : ['c', 'cpp'])
@@ -39,8 +40,14 @@ script_json = dumper_out_proj.get_variable('script_json')
 goldberg_steam_proj = subproject('goldberg_steam')
 goldberg_steam = goldberg_steam_proj.get_variable('steam_api64')
 
-semba_project = subproject('semba', default_options : 'default_library=static')
-semba_dep = semba_project.get_variable('semba_dep')
+if offline_support
+    semba_project = subproject('semba', default_options : 'default_library=static')
+    semba_dep = semba_project.get_variable('semba_dep')
+else
+    semba_mock = static_library('semba_mock', 'semba_mock/semba_mock.c')
+    semba_mock_incdir = include_directories('semba_mock')
+    semba_dep = declare_dependency(link_with: semba_mock, include_directories: semba_mock_incdir)
+endif
 
 subdir('gui')
 subdir('bundlemod')
