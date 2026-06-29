@@ -1,5 +1,7 @@
 #include "SavesWindow.h"
 
+#include "FuzzyMatcher.h"
+
 extern "C" {
 #include "../TimeUtil.h"
 }
@@ -95,7 +97,9 @@ void SavesWindow::DrawSaveTable() {
 void SavesWindow::HandleStartState() {
     if (onStart) {
         currentOperation = std::async(std::launch::async, [this]() {
-            return onStart();
+            auto res = onStart();
+            std::sort(save_files.begin(), save_files.end());
+            return res;
         });
         state = SAVES_WINDOW_STATE_LOADING;
         return;
@@ -138,7 +142,13 @@ void SavesWindow::HandleInitializedState() {
 
     ImGui::BeginDisabled(currentOperation.valid());
 
-    ImGui::InputText("File Name", &(inputFilename[0]), inputFilename.size());
+    if (ImGui::InputText("File Name", &(inputFilename[0]), inputFilename.size())) {
+        FuzzyMatcher matcher(&inputFilename[0]);
+        std::sort(save_files.begin(), save_files.end(), [&matcher](const std::string a, const std::string b) {
+            return matcher.ScoreMatch(b) < matcher.ScoreMatch(a); 
+        });
+    }
+
     if (ImGui::Button("Save Game") && createSaveFile && inputFilename[0] != '\0') {
         const char *name = &(inputFilename[0]);
 
