@@ -17,6 +17,7 @@ def main():
         with open(config_path, "r", encoding="utf-8") as f:
             config = f.read()
 
+    run("meson", "configure", "-Dprefix=/", str(args.build_dir))
     run("meson", "install", "-C", str(args.build_dir), "--destdir", str(args.install_out.resolve()))
 
     if config is not None:
