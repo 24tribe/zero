@@ -25,6 +25,7 @@
 #include <cwctype>
 #include <memory>
 #include <algorithm>
+#include <cstdint>
 
 namespace {
     struct ScoringConstants {
