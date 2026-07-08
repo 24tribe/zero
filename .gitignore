@@ -42,3 +42,5 @@ bundlemod/obj
 /mods
 
 install_out
+
+/.cache
