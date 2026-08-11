@@ -1,5 +1,0 @@
-Profile
-
-[ProtoMember(1)]
-name: string
-

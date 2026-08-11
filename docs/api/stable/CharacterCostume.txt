@@ -1,8 +1,0 @@
-CharacterCostume
-
-[ProtoMember(1)]
-characterCostumeId: int
-
-[ProtoMember(2)]
-receivedAt: Timestamp
-

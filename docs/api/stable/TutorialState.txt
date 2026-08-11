@@ -1,8 +1,0 @@
-TutorialState
-
-[ProtoMember(1)]
-tutorialStatusKey: int
-
-[ProtoMember(2)]
-enabled: bool
-

@@ -1,8 +1,0 @@
-BattleParameter
-
-[ProtoMember(1)]
-id: int
-
-[ProtoMember(7)]
-enemies: RepeatedField<Enemy>
-

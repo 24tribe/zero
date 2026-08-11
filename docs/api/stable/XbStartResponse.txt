@@ -1,5 +1,0 @@
-XbStartResponse
-
-[ProtoMember(8)]
-nextAtBatGameInfo: XbGameInfo
-

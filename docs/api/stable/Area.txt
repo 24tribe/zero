@@ -1,8 +1,0 @@
-Area
-
-[ProtoMember(1)]
-areaId: int
-
-[ProtoMember(2)]
-isDark: bool
-

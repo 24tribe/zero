@@ -1,8 +1,0 @@
-MasterData
-
-[ProtoMember(2)]
-shopProducts: RepeatedField<ShopProduct>
-
-[ProtoMember(3)]
-shopProductLimitedDiscounts: RepeatedField<ShopProductLimitedDiscount>
-

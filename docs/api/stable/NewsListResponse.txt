@@ -1,5 +1,0 @@
-NewsListResponse
-
-[ProtoMember(1)]
-news: RepeatedField<NewsItem>
-

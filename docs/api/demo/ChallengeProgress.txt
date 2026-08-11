@@ -1,8 +1,0 @@
-ChallengeProgress
-
-[ProtoMember(1)]
-challengeProgressId: int
-
-[ProtoMember(3)]
-clearedAt: Timestamp
-

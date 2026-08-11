@@ -1,8 +1,0 @@
-Tip
-
-[ProtoMember(1)]
-tipId: int
-
-[ProtoMember(2)]
-releasedAt: Timestamp
-

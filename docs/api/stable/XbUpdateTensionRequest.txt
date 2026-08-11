@@ -1,8 +1,0 @@
-XbUpdateTensionRequest
-
-[ProtoMember(1)]
-xbId: int
-
-[ProtoMember(2)]
-tensionFluctuationIds: RepeatedField<int>
-

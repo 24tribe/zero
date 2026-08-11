@@ -1,8 +1,0 @@
-AdventureAreaObjectResponse
-
-[ProtoMember(1)]
-areaObjects: RepeatedField<AreaObject>
-
-[ProtoMember(2)]
-bloodStains: RepeatedField<BloodStain>
-
